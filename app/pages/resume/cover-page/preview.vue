@@ -22,11 +22,48 @@ const textFontSize = ref(24)
 const textColor = ref('#475569')
 const barRadius = ref(0)
 const barLayout = ref<'single' | 'double'>('single')
+
+const elementStyles = reactive({
+  fullName: { size: 58, color: '#111827', weight: '700' },
+  role: { size: 30, color: '#475569', weight: '500' },
+  heading: { size: 32, color: '#0F4C81', weight: '600' },
+  summary: { size: 24, color: '#475569', weight: '400' },
+  email: { size: 16, color: '#475569', weight: '400' },
+  phone: { size: 16, color: '#475569', weight: '400' },
+})
+const fontWeightMap: Record<string, string> = { regular: '400', medium: '500', semibold: '600', bold: '700' }
 const primaryBarWidth = ref(10)
 const secondaryBarWidth = ref(5)
 const model = reactive({ fullName:'Alex Martin', role:'Senior Full Stack Developer', summary:'Driven engineer delivering robust products with strong UX and clean architecture.', location:'Paris, France', email:'alex@example.com', phone:'+33 6 00 00 00 00', date:new Date().toLocaleDateString('en-US'), photoUrl:photoOptions[0], heading:'About Me' })
 const activeTemplate = computed(() => GENERATED_COVER_PAGE_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_PAGE_TEMPLATES[0])
+const templateItemConfig = computed(() => activeTemplate.value?.items || {})
+const styleOptionsFor = (key: string) => ((templateItemConfig.value as any)?.[key]?.styles || ['regular','medium','semibold','bold']).map((v:string)=>({title:v,value:fontWeightMap[v]||'400'}))
+const sizeBoundsFor = (key: string, fallbackMin: number, fallbackMax: number) => ({ min: (templateItemConfig.value as any)?.[key]?.size?.min ?? fallbackMin, max: (templateItemConfig.value as any)?.[key]?.size?.max ?? fallbackMax })
 const editableDecorObjects = ref<any[]>([])
+
+function toPercentNumber(value: unknown, fallback = 50): number {
+  if (typeof value === 'number' && Number.isFinite(value)) return Math.min(100, Math.max(0, value))
+  if (typeof value === 'string') {
+    const parsed = Number.parseFloat(value.replace('%', '').trim())
+    if (Number.isFinite(parsed)) return Math.min(100, Math.max(0, parsed))
+  }
+  return fallback
+}
+
+function toNumber(value: unknown, fallback: number): number {
+  const parsed = typeof value === 'number' ? value : Number.parseFloat(String(value ?? ''))
+  return Number.isFinite(parsed) ? parsed : fallback
+}
+
+function normalizeDecorObject(obj: any) {
+  return {
+    ...obj,
+    x: toPercentNumber(obj?.x, 50),
+    y: toPercentNumber(obj?.y, 50),
+    size: toNumber(obj?.size, 120),
+    opacity: toNumber(obj?.opacity, 0.15),
+  }
+}
 const sectionDividerStyle = computed(() => {
   const showDivider = activeTemplate.value?.layoutOptions?.showDivider ?? true
   if (!showDivider) return 'none'
@@ -47,7 +84,7 @@ const photoInput = ref<HTMLInputElement | null>(null)
 const layoutMenuOpen = ref(false)
 const photoQuickMenuOpen = ref(false)
 
-watch(activeTemplate, (tpl) => { editableDecorObjects.value = JSON.parse(JSON.stringify(tpl?.decor?.objects || [])); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left' }, { immediate: true })
+watch(activeTemplate, (tpl) => { editableDecorObjects.value = JSON.parse(JSON.stringify(tpl?.decor?.objects || [])); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; for (const key of ['fullName','role','heading','summary','email','phone']) { const b=items[key]?.size; if (b) elementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) elementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) elementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
 function addDecorObject(){ editableDecorObjects.value.push({ type:'circle', x:'50%', y:'50%', size:'120', opacity:0.15 }) }
 function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
 function goToCreateResume(){ navigateTo('/resume/preview') }
@@ -103,12 +140,23 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
     </template>
     <template #right>
       <AppSelect v-model="selectedTemplate" :items="coverPageTemplates.map((t)=>({title:t.title,value:t.id}))" label="Template" hide-details class="mt-3"/>
+      <v-divider class="my-3"/>
+      <p class="text-caption mb-2">Element styles</p>
+      <v-card class="pa-2" variant="outlined">
+        <p class="text-caption mb-2">Fullname</p><v-slider v-model="elementStyles.fullName.size"  :min="sizeBoundsFor('fullName',50,80).min" :max="sizeBoundsFor('fullName',50,80).max" step="1" hide-details/><v-text-field v-model="elementStyles.fullName.color" type="color" hide-details class="mt-2"/><AppSelect v-model="elementStyles.fullName.weight" :items="styleOptionsFor('fullName')" hide-details class="mt-2"/>
+        <p class="text-caption my-2">Role</p><v-slider v-model="elementStyles.role.size"  :min="sizeBoundsFor('role',25,40).min" :max="sizeBoundsFor('role',25,40).max" step="1" hide-details/><v-text-field v-model="elementStyles.role.color" type="color" hide-details class="mt-2"/><AppSelect v-model="elementStyles.role.weight" :items="styleOptionsFor('role')" hide-details class="mt-2"/>
+        <p class="text-caption my-2">Heading</p><v-slider v-model="elementStyles.heading.size"  :min="sizeBoundsFor('heading',25,40).min" :max="sizeBoundsFor('heading',25,40).max" step="1" hide-details/><v-text-field v-model="elementStyles.heading.color" type="color" hide-details class="mt-2"/><AppSelect v-model="elementStyles.heading.weight" :items="styleOptionsFor('heading')" hide-details class="mt-2"/>
+        <p class="text-caption my-2">Summary</p><v-slider v-model="elementStyles.summary.size"  :min="sizeBoundsFor('summary',20,30).min" :max="sizeBoundsFor('summary',20,30).max" step="1" hide-details/><v-text-field v-model="elementStyles.summary.color" type="color" hide-details class="mt-2"/><AppSelect v-model="elementStyles.summary.weight" :items="styleOptionsFor('summary')" hide-details class="mt-2"/>
+        <p class="text-caption my-2">Email</p><v-slider v-model="elementStyles.email.size"  :min="sizeBoundsFor('email',14,20).min" :max="sizeBoundsFor('email',14,20).max" step="1" hide-details/><v-text-field v-model="elementStyles.email.color" type="color" hide-details class="mt-2"/><AppSelect v-model="elementStyles.email.weight" :items="styleOptionsFor('email')" hide-details class="mt-2"/>
+        <p class="text-caption my-2">Phone</p><v-slider v-model="elementStyles.phone.size"  :min="sizeBoundsFor('phone',14,20).min" :max="sizeBoundsFor('phone',14,20).max" step="1" hide-details/><v-text-field v-model="elementStyles.phone.color" type="color" hide-details class="mt-2"/><AppSelect v-model="elementStyles.phone.weight" :items="styleOptionsFor('phone')" hide-details class="mt-2"/>
+      </v-card>
       <v-btn class="mt-3" size="small" variant="outlined" @click="addDecorObject">Add decor</v-btn>
       <v-card v-for="(obj,i) in editableDecorObjects" :key="`obj-${i}`" class="mt-3 pa-2" variant="outlined">
         <AppSelect v-model="obj.type" :items="decorShapeOptions.map((s)=>({title:s,value:s}))" label="Shape" hide-details class="mt-3"/>
-        <v-slider v-model="obj.size" label="Size" min="30" max="260" step="1" hide-details class="mt-3"/>
+        <v-slider v-model="obj.size" label="Size" min="20" max="420" step="1" hide-details class="mt-3"/>
         <v-slider v-model="obj.opacity" label="Opacity" min="0.02" max="0.4" step="0.01" hide-details class="mt-3"/>
-        <v-text-field v-model="obj.x" label="X (50%)" hide-details class="mt-3"/><v-text-field v-model="obj.y" label="Y (50%)" hide-details class="mt-3"/>
+        <v-slider v-model="obj.x" label="X (%)" min="0" max="100" step="1" hide-details class="mt-3"/>
+        <v-slider v-model="obj.y" label="Y (%)" min="0" max="100" step="1" hide-details class="mt-3"/>
         <v-btn size="x-small" color="error" variant="text" @click="removeDecorObject(i)">remove</v-btn>
       </v-card>
     </template>
@@ -122,7 +170,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
       <v-menu v-model="layoutMenuOpen"><template #activator="{ props }"><v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-view-grid-outline" v-bind="props">Templates</v-btn></template><v-list density="compact"><v-list-item v-for="template in coverPageTemplates" :key="template.id" :title="template.title" @click="applyPreviewTemplate(template.id)"/></v-list></v-menu>
     </div></div>
     <div class="py-8 d-flex justify-center"><main class="capture-cover-page" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
-      <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="{left:obj.x,top:obj.y,width:`${obj.size}px`,height:`${obj.size}px`,opacity:obj.opacity}"/>
+      <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="{left:`${obj.x}%`,top:`${obj.y}%`,width:`${obj.size}px`,height:`${obj.size}px`,opacity:obj.opacity}"/>
       <header class="hero" :class="{'hero--double': barLayout === 'double', 'hero--photo-right': photoPosition === 'right'}">
         <div class="hero-row">
 
@@ -146,14 +194,14 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
             </v-menu>
             <v-img :src="model.photoUrl" cover @click.stop="openPhotoUpload" class="photo-shell__img"/>
           </div>
-          <HoverRichTextEditor v-model="model.fullName" />
-          <HoverRichTextEditor v-model="model.role" />
+          <HoverRichTextEditor v-model="model.fullName" :font-size="`${elementStyles.fullName.size}px`" :color="elementStyles.fullName.color" :font-weight="elementStyles.fullName.weight" />
+          <HoverRichTextEditor v-model="model.role" :font-size="`${elementStyles.role.size}px`" :color="elementStyles.role.color" :font-weight="elementStyles.role.weight" />
         </div>
       </header>
-      <section><HoverRichTextEditor v-model="model.heading" />
-        <HoverRichTextEditor v-model="model.summary" />
-        <HoverRichTextEditor v-model="model.email" />
-        <HoverRichTextEditor v-model="model.phone" />
+      <section><HoverRichTextEditor v-model="model.heading" :font-size="`${elementStyles.heading.size}px`" :color="elementStyles.heading.color" :font-weight="elementStyles.heading.weight" />
+        <HoverRichTextEditor v-model="model.summary" :font-size="`${elementStyles.summary.size}px`" :color="elementStyles.summary.color" :font-weight="elementStyles.summary.weight" />
+        <HoverRichTextEditor v-model="model.email" :font-size="`${elementStyles.email.size}px`" :color="elementStyles.email.color" :font-weight="elementStyles.email.weight" />
+        <HoverRichTextEditor v-model="model.phone" :font-size="`${elementStyles.phone.size}px`" :color="elementStyles.phone.color" :font-weight="elementStyles.phone.weight" />
       </section>
       <footer v-if="signatureDataUrl" class="signature-footer"><img :src="signatureDataUrl" alt="signature" class="signature-image"/></footer>
     </main></div>

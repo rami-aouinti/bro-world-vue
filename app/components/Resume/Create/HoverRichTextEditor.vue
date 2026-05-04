@@ -6,10 +6,13 @@ import { TextStyle } from '@tiptap/extension-text-style'
 import { Color } from '@tiptap/extension-color'
 
 const props = withDefaults(
-  defineProps<{ modelValue: string; label?: string; placeholder?: string }>(),
+  defineProps<{ modelValue: string; label?: string; placeholder?: string; fontSize?: string; color?: string; fontWeight?: string | number }>(),
   {
     label: '',
     placeholder: 'Write here...',
+    fontSize: '',
+    color: '',
+    fontWeight: '400',
   },
 )
 
@@ -36,6 +39,14 @@ watch(
 )
 
 const isEmpty = computed(() => !props.modelValue)
+
+watch(() => props.fontSize, (value) => {
+  if (value) selectedSize.value = value
+}, { immediate: true })
+
+watch(() => props.color, (value) => {
+  if (value) selectedColor.value = value
+}, { immediate: true })
 </script>
 
 <template>
@@ -120,7 +131,7 @@ const isEmpty = computed(() => !props.modelValue)
     <div
       class="hover-editor__surface"
       :class="{ 'hover-editor__surface--empty': isEmpty }"
-      :style="{ '--editor-font-size': selectedSize, '--editor-color': selectedColor }"
+      :style="{ '--editor-font-size': props.fontSize || selectedSize, '--editor-color': props.color || selectedColor, '--editor-font-weight': String(props.fontWeight || '400') }"
     >
       <EditorContent :editor="editor" />
       <span v-if="isEmpty" class="hover-editor__placeholder">{{
@@ -163,5 +174,6 @@ const isEmpty = computed(() => !props.modelValue)
   outline: none;
   color: var(--editor-color);
   font-size: var(--editor-font-size);
+  font-weight: var(--editor-font-weight);
 }
 </style>
