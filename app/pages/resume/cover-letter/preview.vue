@@ -19,22 +19,17 @@ const fontWeightMap: Record<string, string> = { regular: '400', medium: '500', s
 const primaryBarWidth = ref(10)
 const secondaryBarWidth = ref(5)
 const letterModel = reactive({ fullName:'Alex Martin', role:'Senior Full Stack Developer', location:'221B Baker Street, London, UK', date:new Date().toLocaleDateString('en-US'), heading:'Cover Letter', company:'Dear Hiring Manager,', companyParagraph:'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.', summary:'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.', email:'Sincerely,', phone:'Alex Martin' })
-const activeTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
+const activeLetterTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
 const editableDecorObjects = ref<any[]>([])
-
-const itemStyles = reactive<Record<string, { size: number, color: string, weight: string }>>({
-  fullName: { size: 56, color: '#0F172A', weight: '700' },
-  role: { size: 28, color: '#64748B', weight: '500' },
-  date: { size: 18, color: '#64748B', weight: '400' },
-  address: { size: 18, color: '#0F172A', weight: '500' },
-  location: { size: 18, color: '#0F172A', weight: '500' },
-  heading: { size: 24, color: '#0F172A', weight: '700' },
-  greeting: { size: 24, color: '#0F172A', weight: '600' },
-  paragraphOne: { size: 22, color: '#0F172A', weight: '400' },
-  paragraphTwo: { size: 22, color: '#0F172A', weight: '400' },
-  signoff: { size: 24, color: '#0F172A', weight: '600' },
-  email: { size: 18, color: '#0F172A', weight: '500' },
-  phone: { size: 18, color: '#0F172A', weight: '500' },
+const defaultDecorPresets = [
+  { type: 'circle', x: 8, y: 6, size: 80, opacity: 0.08 },
+  { type: 'diamond', x: 70, y: 75, size: 120, opacity: 0.08 },
+  { type: 'star', x: 14, y: 84, size: 28, opacity: 0.1 },
+  { type: 'square', x: 82, y: 10, size: 24, opacity: 0.08 },
+]
+const templateDecorPresets = computed(() => {
+  const fromTemplate = (activeLetterTemplate.value?.decor?.objects || []).map((obj:any) => normalizeDecorObject(obj))
+  return fromTemplate.length ? fromTemplate : defaultDecorPresets.map((obj) => normalizeDecorObject(obj))
 })
 
 const model = reactive({
@@ -68,16 +63,21 @@ function decorObjectStyle(obj: any) {
   return { left: `${x}%`, top: `${y}%`, opacity, width: `${size}px`, height: `${size}px` }
 }
 
-const sectionDividerStyle = computed(() => activeTemplate.value?.decor?.divider === 'dashed' ? 'dashed' : 'solid')
+const sectionDividerStyle = computed(() => {
+  const showDivider = activeLetterTemplate.value?.layoutOptions?.showDivider ?? true
+  if (!showDivider) return 'none'
+  return activeLetterTemplate.value?.decor?.divider === 'dashed' ? 'dashed' : 'solid'
+})
+const sectionSpacing = computed(() => activeLetterTemplate.value?.layoutOptions?.sectionSpacing === 'wide' ? '40px' : '24px')
 const activeColors = computed(() => {
-  const palette = activeTemplate.value.theme.palette
+  const palette = activeLetterTemplate.value.theme.palette
   if (selectedPalette.value === 'sunset') return { ...palette, primary: '#C2410C', secondary: '#FDBA74', pageBackground: '#FFF7ED' }
   if (selectedPalette.value === 'forest') return { ...palette, primary: '#166534', secondary: '#86EFAC', pageBackground: '#F0FDF4' }
   if (selectedPalette.value === 'custom') return { ...palette, primary: customPrimary.value, secondary: customSecondary.value, pageBackground: customPageBackground.value }
   return palette
 })
 
-watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; const aliases: Record<string, string[]> = { fullName:['fullName'], role:['role'], date:['date'], address:['location','address'], heading:['heading'], greeting:['greeting','company'], paragraphOne:['paragraphOne','companyParagraph'], paragraphTwo:['paragraphTwo','summary'], signoff:['signoff','email'], email:['email'], phone:['phone'] }; for (const key of Object.keys(aliases)) { const sourceKey = aliases[key].find((candidate)=>items[candidate]); const cfg = sourceKey ? items[sourceKey] : null; const b=cfg?.size; if (b) (letterElementStyles as any)[key].size=Math.round((b.min+b.max)/2); if (cfg?.colors?.[0]) (letterElementStyles as any)[key].color=cfg.colors[0]; if (cfg?.styles?.[0]) (letterElementStyles as any)[key].weight=fontWeightMap[cfg.styles[0]]||'400' } }, { immediate: true })
+watch(activeLetterTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; const aliases: Record<string, string[]> = { fullName:['fullName'], role:['role'], date:['date'], address:['location','address'], heading:['heading'], greeting:['greeting','company'], paragraphOne:['paragraphOne','companyParagraph'], paragraphTwo:['paragraphTwo','summary'], signoff:['signoff','email'], email:['email'], phone:['phone'] }; for (const key of Object.keys(aliases)) { const sourceKey = aliases[key].find((candidate)=>items[candidate]); const cfg = sourceKey ? items[sourceKey] : null; const b=cfg?.size; if (b) (letterElementStyles as any)[key].size=Math.round((b.min+b.max)/2); if (cfg?.colors?.[0]) (letterElementStyles as any)[key].color=cfg.colors[0]; if (cfg?.styles?.[0]) (letterElementStyles as any)[key].weight=fontWeightMap[cfg.styles[0]]||'400' } }, { immediate: true })
 function addDecorObject(){ editableDecorObjects.value.push(normalizeDecorObject({ type:'circle', x:50, y:50, size:120, opacity:0.15 })) }
 function addDecorObjectFromPreset(preset:any){ editableDecorObjects.value.push(normalizeDecorObject({ ...preset })) }
 function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
