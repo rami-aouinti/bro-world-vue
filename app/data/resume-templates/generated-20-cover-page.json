@@ -88,7 +88,25 @@
           "#111827",
           "#0F4C81",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -105,7 +123,25 @@
           "#111827",
           "#0F4C81",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -122,7 +158,25 @@
           "#0F4C81",
           "#111827",
           "#5FA8D3"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -138,7 +192,25 @@
           "#111827",
           "#6B7280",
           "#0F4C81"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -154,7 +226,25 @@
           "#111827",
           "#6B7280",
           "#0F4C81"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -170,7 +260,25 @@
           "#111827",
           "#6B7280",
           "#0F4C81"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -263,7 +371,25 @@
           "#111827",
           "#7C3AED",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -280,7 +406,25 @@
           "#111827",
           "#7C3AED",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -297,7 +441,25 @@
           "#7C3AED",
           "#111827",
           "#C4B5FD"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -313,7 +475,25 @@
           "#111827",
           "#6B7280",
           "#7C3AED"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -329,7 +509,25 @@
           "#111827",
           "#6B7280",
           "#7C3AED"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -345,7 +543,25 @@
           "#111827",
           "#6B7280",
           "#7C3AED"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -438,7 +654,25 @@
           "#111827",
           "#BE123C",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -455,7 +689,25 @@
           "#111827",
           "#BE123C",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -472,7 +724,25 @@
           "#BE123C",
           "#111827",
           "#FDA4AF"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -488,7 +758,25 @@
           "#111827",
           "#6B7280",
           "#BE123C"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -504,7 +792,25 @@
           "#111827",
           "#6B7280",
           "#BE123C"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -520,7 +826,25 @@
           "#111827",
           "#6B7280",
           "#BE123C"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -613,7 +937,25 @@
           "#111827",
           "#065F46",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -630,7 +972,25 @@
           "#111827",
           "#065F46",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -647,7 +1007,25 @@
           "#065F46",
           "#111827",
           "#6EE7B7"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -663,7 +1041,25 @@
           "#111827",
           "#6B7280",
           "#065F46"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -679,7 +1075,25 @@
           "#111827",
           "#6B7280",
           "#065F46"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -695,7 +1109,25 @@
           "#111827",
           "#6B7280",
           "#065F46"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -788,7 +1220,25 @@
           "#111827",
           "#9A3412",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -805,7 +1255,25 @@
           "#111827",
           "#9A3412",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -822,7 +1290,25 @@
           "#9A3412",
           "#111827",
           "#FDBA74"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -838,7 +1324,25 @@
           "#111827",
           "#6B7280",
           "#9A3412"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -854,7 +1358,25 @@
           "#111827",
           "#6B7280",
           "#9A3412"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -870,7 +1392,25 @@
           "#111827",
           "#6B7280",
           "#9A3412"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -963,7 +1503,25 @@
           "#111827",
           "#0F4C81",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -980,7 +1538,25 @@
           "#111827",
           "#0F4C81",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -997,7 +1573,25 @@
           "#0F4C81",
           "#111827",
           "#5FA8D3"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -1013,7 +1607,25 @@
           "#111827",
           "#6B7280",
           "#0F4C81"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -1029,7 +1641,25 @@
           "#111827",
           "#6B7280",
           "#0F4C81"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -1045,7 +1675,25 @@
           "#111827",
           "#6B7280",
           "#0F4C81"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -1138,7 +1786,25 @@
           "#111827",
           "#7C3AED",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -1155,7 +1821,25 @@
           "#111827",
           "#7C3AED",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -1172,7 +1856,25 @@
           "#7C3AED",
           "#111827",
           "#C4B5FD"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -1188,7 +1890,25 @@
           "#111827",
           "#6B7280",
           "#7C3AED"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -1204,7 +1924,25 @@
           "#111827",
           "#6B7280",
           "#7C3AED"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -1220,7 +1958,25 @@
           "#111827",
           "#6B7280",
           "#7C3AED"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -1313,7 +2069,25 @@
           "#111827",
           "#BE123C",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -1330,7 +2104,25 @@
           "#111827",
           "#BE123C",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -1347,7 +2139,25 @@
           "#BE123C",
           "#111827",
           "#FDA4AF"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -1363,7 +2173,25 @@
           "#111827",
           "#6B7280",
           "#BE123C"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -1379,7 +2207,25 @@
           "#111827",
           "#6B7280",
           "#BE123C"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -1395,7 +2241,25 @@
           "#111827",
           "#6B7280",
           "#BE123C"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -1488,7 +2352,25 @@
           "#111827",
           "#065F46",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -1505,7 +2387,25 @@
           "#111827",
           "#065F46",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -1522,7 +2422,25 @@
           "#065F46",
           "#111827",
           "#6EE7B7"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -1538,7 +2456,25 @@
           "#111827",
           "#6B7280",
           "#065F46"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -1554,7 +2490,25 @@
           "#111827",
           "#6B7280",
           "#065F46"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -1570,7 +2524,25 @@
           "#111827",
           "#6B7280",
           "#065F46"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -1663,7 +2635,25 @@
           "#111827",
           "#9A3412",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -1680,7 +2670,25 @@
           "#111827",
           "#9A3412",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -1697,7 +2705,25 @@
           "#9A3412",
           "#111827",
           "#FDBA74"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -1713,7 +2739,25 @@
           "#111827",
           "#6B7280",
           "#9A3412"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -1729,7 +2773,25 @@
           "#111827",
           "#6B7280",
           "#9A3412"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -1745,7 +2807,25 @@
           "#111827",
           "#6B7280",
           "#9A3412"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -1838,7 +2918,25 @@
           "#111827",
           "#0F4C81",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -1855,7 +2953,25 @@
           "#111827",
           "#0F4C81",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -1872,7 +2988,25 @@
           "#0F4C81",
           "#111827",
           "#5FA8D3"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -1888,7 +3022,25 @@
           "#111827",
           "#6B7280",
           "#0F4C81"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -1904,7 +3056,25 @@
           "#111827",
           "#6B7280",
           "#0F4C81"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -1920,7 +3090,25 @@
           "#111827",
           "#6B7280",
           "#0F4C81"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -2013,7 +3201,25 @@
           "#111827",
           "#7C3AED",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -2030,7 +3236,25 @@
           "#111827",
           "#7C3AED",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -2047,7 +3271,25 @@
           "#7C3AED",
           "#111827",
           "#C4B5FD"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -2063,7 +3305,25 @@
           "#111827",
           "#6B7280",
           "#7C3AED"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -2079,7 +3339,25 @@
           "#111827",
           "#6B7280",
           "#7C3AED"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -2095,7 +3373,25 @@
           "#111827",
           "#6B7280",
           "#7C3AED"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -2188,7 +3484,25 @@
           "#111827",
           "#BE123C",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -2205,7 +3519,25 @@
           "#111827",
           "#BE123C",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -2222,7 +3554,25 @@
           "#BE123C",
           "#111827",
           "#FDA4AF"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -2238,7 +3588,25 @@
           "#111827",
           "#6B7280",
           "#BE123C"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -2254,7 +3622,25 @@
           "#111827",
           "#6B7280",
           "#BE123C"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -2270,7 +3656,25 @@
           "#111827",
           "#6B7280",
           "#BE123C"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -2363,7 +3767,25 @@
           "#111827",
           "#065F46",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -2380,7 +3802,25 @@
           "#111827",
           "#065F46",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -2397,7 +3837,25 @@
           "#065F46",
           "#111827",
           "#6EE7B7"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -2413,7 +3871,25 @@
           "#111827",
           "#6B7280",
           "#065F46"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -2429,7 +3905,25 @@
           "#111827",
           "#6B7280",
           "#065F46"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -2445,7 +3939,25 @@
           "#111827",
           "#6B7280",
           "#065F46"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -2538,7 +4050,25 @@
           "#111827",
           "#9A3412",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -2555,7 +4085,25 @@
           "#111827",
           "#9A3412",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -2572,7 +4120,25 @@
           "#9A3412",
           "#111827",
           "#FDBA74"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -2588,7 +4154,25 @@
           "#111827",
           "#6B7280",
           "#9A3412"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -2604,7 +4188,25 @@
           "#111827",
           "#6B7280",
           "#9A3412"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -2620,7 +4222,25 @@
           "#111827",
           "#6B7280",
           "#9A3412"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -2713,7 +4333,25 @@
           "#111827",
           "#0F4C81",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -2730,7 +4368,25 @@
           "#111827",
           "#0F4C81",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -2747,7 +4403,25 @@
           "#0F4C81",
           "#111827",
           "#5FA8D3"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -2763,7 +4437,25 @@
           "#111827",
           "#6B7280",
           "#0F4C81"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -2779,7 +4471,25 @@
           "#111827",
           "#6B7280",
           "#0F4C81"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -2795,7 +4505,25 @@
           "#111827",
           "#6B7280",
           "#0F4C81"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -2888,7 +4616,25 @@
           "#111827",
           "#7C3AED",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -2905,7 +4651,25 @@
           "#111827",
           "#7C3AED",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -2922,7 +4686,25 @@
           "#7C3AED",
           "#111827",
           "#C4B5FD"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -2938,7 +4720,25 @@
           "#111827",
           "#6B7280",
           "#7C3AED"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -2954,7 +4754,25 @@
           "#111827",
           "#6B7280",
           "#7C3AED"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -2970,7 +4788,25 @@
           "#111827",
           "#6B7280",
           "#7C3AED"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -3063,7 +4899,25 @@
           "#111827",
           "#BE123C",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -3080,7 +4934,25 @@
           "#111827",
           "#BE123C",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -3097,7 +4969,25 @@
           "#BE123C",
           "#111827",
           "#FDA4AF"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -3113,7 +5003,25 @@
           "#111827",
           "#6B7280",
           "#BE123C"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -3129,7 +5037,25 @@
           "#111827",
           "#6B7280",
           "#BE123C"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -3145,7 +5071,25 @@
           "#111827",
           "#6B7280",
           "#BE123C"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -3238,7 +5182,25 @@
           "#111827",
           "#065F46",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -3255,7 +5217,25 @@
           "#111827",
           "#065F46",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -3272,7 +5252,25 @@
           "#065F46",
           "#111827",
           "#6EE7B7"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -3288,7 +5286,25 @@
           "#111827",
           "#6B7280",
           "#065F46"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -3304,7 +5320,25 @@
           "#111827",
           "#6B7280",
           "#065F46"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -3320,7 +5354,25 @@
           "#111827",
           "#6B7280",
           "#065F46"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   },
@@ -3413,7 +5465,25 @@
           "#111827",
           "#9A3412",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "role": {
         "size": {
@@ -3430,7 +5500,25 @@
           "#111827",
           "#9A3412",
           "#6B7280"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "heading": {
         "size": {
@@ -3447,7 +5535,25 @@
           "#9A3412",
           "#111827",
           "#FDBA74"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "summary": {
         "size": {
@@ -3463,7 +5569,25 @@
           "#111827",
           "#6B7280",
           "#9A3412"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "email": {
         "size": {
@@ -3479,7 +5603,25 @@
           "#111827",
           "#6B7280",
           "#9A3412"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       },
       "phone": {
         "size": {
@@ -3495,7 +5637,25 @@
           "#111827",
           "#6B7280",
           "#9A3412"
-        ]
+        ],
+        "designConfig": {
+          "barRadius": {
+            "min": 0,
+            "max": 30
+          },
+          "barLayout": [
+            "single",
+            "double"
+          ],
+          "barWidth": {
+            "min": 4,
+            "max": 24
+          },
+          "secondaryBarWidth": {
+            "min": 2,
+            "max": 20
+          }
+        }
       }
     }
   }
