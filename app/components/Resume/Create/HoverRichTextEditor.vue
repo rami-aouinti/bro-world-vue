@@ -41,11 +41,20 @@ watch(
 const isEmpty = computed(() => !props.modelValue)
 
 watch(() => props.fontSize, (value) => {
-  if (value) selectedSize.value = value
+  if (!value) return
+  selectedSize.value = value
+  editor.value?.chain().focus().selectAll().setMark('textStyle', { fontSize: value }).run()
 }, { immediate: true })
 
 watch(() => props.color, (value) => {
-  if (value) selectedColor.value = value
+  if (!value) return
+  selectedColor.value = value
+  editor.value?.chain().focus().selectAll().setColor(value).run()
+}, { immediate: true })
+
+watch(() => props.fontWeight, (value) => {
+  if (!value) return
+  editor.value?.chain().focus().selectAll().setMark('textStyle', { fontWeight: String(value) }).run()
 }, { immediate: true })
 </script>
 
@@ -66,7 +75,7 @@ watch(() => props.color, (value) => {
       <select
         v-model="selectedSize"
         class="toolbar-size"
-        @change="editor?.chain().focus().setMark('textStyle', { fontSize: selectedSize }).run()"
+        @change="editor?.chain().focus().selectAll().setMark('textStyle', { fontSize: selectedSize }).run()"
       >
         <option value="16px">16</option>
         <option value="18px">18</option>
@@ -176,4 +185,5 @@ watch(() => props.color, (value) => {
   font-size: var(--editor-font-size);
   font-weight: var(--editor-font-weight);
 }
+
 </style>
