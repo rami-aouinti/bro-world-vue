@@ -1,48 +1,30 @@
 <script setup lang="ts">
-import CoverPageTemplateAuroraFrame from '~/components/Resume/Templates/CoverPageTemplateAuroraFrame.vue'
-import CoverPageTemplateElegant from '~/components/Resume/Templates/CoverPageTemplateElegant.vue'
-import CoverPageTemplateHeroCentered from '~/components/Resume/Templates/CoverPageTemplateHeroCentered.vue'
-import CoverPageTemplateSidebarPulse from '~/components/Resume/Templates/CoverPageTemplateSidebarPulse.vue'
-import CoverPageTemplateSplitEditorial from '~/components/Resume/Templates/CoverPageTemplateSplitEditorial.vue'
-import CoverPageTemplateTerra from '~/components/Resume/Templates/CoverPageTemplateTerra.vue'
-import { COVER_PAGE_TEMPLATE_IDS } from '~/constants/resumeTemplates'
-import type { RoundedOptionId, Typography } from '~/constants/resumeDesign'
-import { useResumeDesignControls } from '~/composables/useResumeDesignControls'
+import GENERATED_COVER_PAGE_TEMPLATES from '~/data/resume-templates/generated-20-cover-page.json'
 
 definePageMeta({ title: 'Resume · Cover Page Preview', layout: 'resume' })
 
-type CoverPageModel = { fullName: string; role: string; summary: string; location: string; email: string; phone: string; date: string; photoUrl: string }
 const route = useRoute()
 const { coverPageTemplates } = useResumeTemplates()
-const fallbackTemplateId = COVER_PAGE_TEMPLATE_IDS[0] ?? 'cover-page-terra'
-const selectedTemplate = ref(fallbackTemplateId)
-const selectedTheme = ref('ocean')
-const selectedRounded = ref<RoundedOptionId>('md')
-const selectedTextStyle = ref<Typography>('clean')
-const { colorThemes, roundedOptions, textStyleOptions, toCoverPalette } = useResumeDesignControls()
-const coverLayoutSettings = reactive({ dividerStyle: 'solid' as const, dividerWeight: 'thin' as const })
 
+const selectedTemplate = ref(coverPageTemplates.value[0]?.id || GENERATED_COVER_PAGE_TEMPLATES[0]?.id || '')
 const photoOptions = ['/img/team-1.jpg', '/img/team-2.jpg', '/img/team-3.jpg', '/img/team-4.jpg']
 
-const model = reactive<CoverPageModel>({
-  fullName: 'John Doe', role: 'Full Stack Developer', summary: 'Professional application pack cover page.',
-  location: 'Paris, France', email: 'john@example.com', phone: '+33 6 00 00 00 00', date: new Date().toLocaleDateString('en-US'), photoUrl: photoOptions[0],
+const model = reactive({
+  fullName: 'Alex Martin',
+  role: 'Senior Full Stack Developer',
+  summary: 'Driven engineer delivering robust products with strong UX and clean architecture.',
+  location: 'Paris, France',
+  email: 'alex@example.com',
+  phone: '+33 6 00 00 00 00',
+  date: new Date().toLocaleDateString('en-US'),
+  photoUrl: photoOptions[0],
 })
 
-const templateComponents = {
-  'cover-page-terra': CoverPageTemplateTerra,
-  'cover-page-elegant': CoverPageTemplateElegant,
-  'cover-page-hero-centered': CoverPageTemplateHeroCentered,
-  'cover-page-sidebar-pulse': CoverPageTemplateSidebarPulse,
-  'cover-page-split-editorial': CoverPageTemplateSplitEditorial,
-  'cover-page-aurora-frame': CoverPageTemplateAuroraFrame,
-} as const
-const activeTemplateComponent = computed(() => templateComponents[selectedTemplate.value as keyof typeof templateComponents] ?? CoverPageTemplateTerra)
-const activePalette = computed(() => toCoverPalette(selectedTheme.value))
+const activeTemplate = computed(() => GENERATED_COVER_PAGE_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_PAGE_TEMPLATES[0])
 
 onMounted(() => {
   const q = typeof route.query.template === 'string' ? route.query.template : ''
-  if (q && COVER_PAGE_TEMPLATE_IDS.includes(q)) selectedTemplate.value = q
+  if (q && coverPageTemplates.value.some((tpl) => tpl.id === q)) selectedTemplate.value = q
 })
 </script>
 
@@ -50,24 +32,52 @@ onMounted(() => {
   <div>
     <AppPageDrawers>
       <template #left>
-        <v-text-field v-model="model.fullName" label="Full name" variant="outlined" hide-details />
-        <v-text-field v-model="model.role" label="Title" variant="outlined" hide-details />
-        <v-textarea v-model="model.summary" label="Summary" variant="outlined" auto-grow hide-details />
-        <v-text-field v-model="model.location" label="Location" variant="outlined" hide-details />
-        <v-text-field v-model="model.email" label="Email" variant="outlined" hide-details />
-        <v-text-field v-model="model.phone" label="Phone" variant="outlined" hide-details />
-        <v-select v-model="model.photoUrl" :items="photoOptions" label="Photo" variant="outlined" hide-details />
+        <v-text-field v-model="model.fullName" label="Full name" variant="outlined" hide-details class="mt-3" />
+        <v-text-field v-model="model.role" label="Title" variant="outlined" hide-details class="mt-3" />
+        <v-textarea v-model="model.summary" label="Summary" variant="outlined" auto-grow hide-details class="mt-3" />
+        <v-text-field v-model="model.location" label="Location" variant="outlined" hide-details class="mt-3" />
+        <v-text-field v-model="model.email" label="Email" variant="outlined" hide-details class="mt-3" />
+        <v-text-field v-model="model.phone" label="Phone" variant="outlined" hide-details class="mt-3" />
+        <AppSelect v-model="model.photoUrl" :items="photoOptions.map((value) => ({ title: value, value }))" label="Photo" hide-details class="mt-3" />
       </template>
       <template #right>
-        <v-select v-model="selectedTemplate" :items="coverPageTemplates.map((t) => ({ title: t.title, value: t.id }))" label="Template" variant="outlined" hide-details />
-        <v-select v-model="selectedTheme" :items="colorThemes" item-title="label" item-value="value" label="Theme" variant="outlined" hide-details />
-        <v-select v-model="selectedRounded" :items="roundedOptions" item-title="label" item-value="value" label="Rounded" variant="outlined" hide-details />
-        <v-select v-model="selectedTextStyle" :items="textStyleOptions" item-title="label" item-value="value" label="Typography" variant="outlined" hide-details />
+        <AppSelect v-model="selectedTemplate" :items="coverPageTemplates.map((t) => ({ title: t.title, value: t.id }))" label="Template" hide-details class="mt-3" />
       </template>
     </AppPageDrawers>
 
-    <v-container fluid class="py-8">
-      <component :is="activeTemplateComponent" :model="model" :palette="activePalette" :rounded="selectedRounded" :text-style="selectedTextStyle" :layout-settings="coverLayoutSettings" />
+    <v-container fluid class="py-8 d-flex justify-center">
+      <main
+        class="capture-cover-page"
+        :style="{
+          '--cp-primary': activeTemplate.theme.palette.primary,
+          '--cp-secondary': activeTemplate.theme.palette.secondary,
+          '--cp-text': activeTemplate.theme.palette.text,
+          '--cp-muted': activeTemplate.theme.palette.muted,
+          '--cp-bg': activeTemplate.theme.palette.pageBackground,
+        }"
+      >
+        <header class="hero">
+          <v-avatar size="84" class="mb-4"><v-img :src="model.photoUrl" cover /></v-avatar>
+          <h1>{{ model.fullName }}</h1>
+          <p>{{ model.role }}</p>
+          <p class="meta">{{ model.date }} · {{ model.location }}</p>
+        </header>
+        <section>
+          <h2>Application Pack</h2>
+          <p>{{ model.summary }}</p>
+          <p class="meta">{{ model.email }} · {{ model.phone }}</p>
+        </section>
+      </main>
     </v-container>
   </div>
 </template>
+
+<style scoped>
+.capture-cover-page { width: 850px; min-height: 1123px; padding: 80px; background: var(--cp-bg); color: var(--cp-text); }
+.hero { border-left: 10px solid var(--cp-primary); padding-left: 24px; margin-bottom: 48px; }
+h1 { font-size: 58px; margin: 0; }
+p { font-size: 24px; color: var(--cp-muted); }
+.meta { font-size: 16px; }
+h2 { color: var(--cp-primary); font-size: 40px; margin: 0 0 16px; }
+section { border-top: 3px solid var(--cp-secondary); padding-top: 24px; }
+</style>

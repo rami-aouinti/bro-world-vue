@@ -1,43 +1,27 @@
 <script setup lang="ts">
-import CoverLetterTemplateAtsMinimal from '~/components/Resume/Templates/CoverLetterTemplateAtsMinimal.vue'
-import CoverLetterTemplateClassic from '~/components/Resume/Templates/CoverLetterTemplateClassic.vue'
-import CoverLetterTemplateModern from '~/components/Resume/Templates/CoverLetterTemplateModern.vue'
-import CoverLetterTemplateNordicSlate from '~/components/Resume/Templates/CoverLetterTemplateNordicSlate.vue'
-import CoverLetterTemplatePremiumEditorial from '~/components/Resume/Templates/CoverLetterTemplatePremiumEditorial.vue'
-import CoverLetterTemplateSplitFocus from '~/components/Resume/Templates/CoverLetterTemplateSplitFocus.vue'
-import { COVER_LETTER_TEMPLATE_IDS } from '~/constants/resumeTemplates'
-import type { RoundedOptionId, Typography } from '~/constants/resumeDesign'
-import { useResumeDesignControls } from '~/composables/useResumeDesignControls'
+import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-20-cover-letter.json'
 
 definePageMeta({ title: 'Resume · Cover Letter Preview', layout: 'resume' })
 
-type CoverLetterModel = { fullName: string; role: string; recipient: string; company: string; date: string; intro: string; body: string; closing: string; email: string; phone: string }
 const route = useRoute()
 const { coverLetterTemplates } = useResumeTemplates()
-const fallbackTemplateId = COVER_LETTER_TEMPLATE_IDS[0] ?? 'cover-letter-classic'
-const selectedTemplate = ref(fallbackTemplateId)
-const selectedTheme = ref('ocean')
-const selectedRounded = ref<RoundedOptionId>('md')
-const selectedTextStyle = ref<Typography>('clean')
-const { colorThemes, roundedOptions, textStyleOptions, toCoverPalette } = useResumeDesignControls()
-const coverLayoutSettings = reactive({ dividerStyle: 'solid' as const, dividerWeight: 'thin' as const })
+const selectedTemplate = ref(coverLetterTemplates.value[0]?.id || GENERATED_COVER_LETTER_TEMPLATES[0]?.id || '')
 
-const model = reactive<CoverLetterModel>({ fullName:'John Doe', role:'Full Stack Developer', recipient:'Hiring Manager', company:'', date:new Date().toLocaleDateString('en-US'), intro:'I am excited to submit my application.', body:'My experience allows me to contribute quickly to business and technical priorities.', closing:'Thank you for your consideration.', email:'john@example.com', phone:'+33 6 00 00 00 00' })
+const model = reactive({
+  date: new Date().toLocaleDateString('en-US'),
+  title: 'Cover Letter',
+  intro: 'Dear Hiring Manager,',
+  bodyA: 'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.',
+  bodyB: 'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.',
+  signature: 'Sincerely,',
+  fullName: 'Alex Martin',
+})
 
-const templateComponents = {
-  'cover-letter-classic': CoverLetterTemplateClassic,
-  'cover-letter-modern': CoverLetterTemplateModern,
-  'cover-letter-ats-minimal': CoverLetterTemplateAtsMinimal,
-  'cover-letter-premium-editorial': CoverLetterTemplatePremiumEditorial,
-  'cover-letter-split-focus': CoverLetterTemplateSplitFocus,
-  'cover-letter-nordic-slate': CoverLetterTemplateNordicSlate,
-} as const
-const activeTemplateComponent = computed(() => templateComponents[selectedTemplate.value as keyof typeof templateComponents] ?? CoverLetterTemplateClassic)
-const activePalette = computed(() => toCoverPalette(selectedTheme.value))
+const activeTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
 
 onMounted(() => {
   const q = typeof route.query.template === 'string' ? route.query.template : ''
-  if (q && COVER_LETTER_TEMPLATE_IDS.includes(q)) selectedTemplate.value = q
+  if (q && coverLetterTemplates.value.some((tpl) => tpl.id === q)) selectedTemplate.value = q
 })
 </script>
 
@@ -45,22 +29,45 @@ onMounted(() => {
   <div>
     <AppPageDrawers>
       <template #left>
-        <v-text-field v-model="model.fullName" label="Full name" variant="outlined" hide-details />
-        <v-text-field v-model="model.role" label="Title" variant="outlined" hide-details />
-        <v-text-field v-model="model.recipient" label="Recipient" variant="outlined" hide-details />
-        <v-text-field v-model="model.company" label="Company" variant="outlined" hide-details />
-        <v-textarea v-model="model.intro" label="Intro" variant="outlined" auto-grow hide-details />
-        <v-textarea v-model="model.body" label="Body" variant="outlined" auto-grow hide-details />
+        <v-text-field v-model="model.date" label="Date" variant="outlined" hide-details class="mt-3" />
+        <v-text-field v-model="model.title" label="Title" variant="outlined" hide-details class="mt-3" />
+        <v-text-field v-model="model.intro" label="Intro" variant="outlined" hide-details class="mt-3" />
+        <v-textarea v-model="model.bodyA" label="Paragraph 1" variant="outlined" auto-grow hide-details class="mt-3" />
+        <v-textarea v-model="model.bodyB" label="Paragraph 2" variant="outlined" auto-grow hide-details class="mt-3" />
+        <v-text-field v-model="model.fullName" label="Full Name" variant="outlined" hide-details class="mt-3" />
       </template>
       <template #right>
-        <v-select v-model="selectedTemplate" :items="coverLetterTemplates.map((t) => ({ title: t.title, value: t.id }))" label="Template" variant="outlined" hide-details />
-        <v-select v-model="selectedTheme" :items="colorThemes" item-title="label" item-value="value" label="Theme" variant="outlined" hide-details />
-        <v-select v-model="selectedRounded" :items="roundedOptions" item-title="label" item-value="value" label="Rounded" variant="outlined" hide-details />
-        <v-select v-model="selectedTextStyle" :items="textStyleOptions" item-title="label" item-value="value" label="Typography" variant="outlined" hide-details />
+        <AppSelect v-model="selectedTemplate" :items="coverLetterTemplates.map((t) => ({ title: t.title, value: t.id }))" label="Template" hide-details class="mt-3" />
       </template>
     </AppPageDrawers>
-    <v-container fluid class="py-8">
-      <component :is="activeTemplateComponent" :model="model" :palette="activePalette" :rounded="selectedRounded" :text-style="selectedTextStyle" :layout-settings="coverLayoutSettings" />
+
+    <v-container fluid class="py-8 d-flex justify-center">
+      <main
+        class="capture-cover-letter"
+        :style="{
+          '--cl-primary': activeTemplate.theme.palette.primary,
+          '--cl-secondary': activeTemplate.theme.palette.secondary,
+          '--cl-text': activeTemplate.theme.palette.text,
+          '--cl-muted': activeTemplate.theme.palette.muted,
+          '--cl-bg': activeTemplate.theme.palette.pageBackground,
+        }"
+      >
+        <p class="date">{{ model.date }}</p>
+        <h1>{{ model.title }}</h1>
+        <p class="intro">{{ model.intro }}</p>
+        <p>{{ model.bodyA }}</p>
+        <p>{{ model.bodyB }}</p>
+        <p class="signature">{{ model.signature }}<br>{{ model.fullName }}</p>
+      </main>
     </v-container>
   </div>
 </template>
+
+<style scoped>
+.capture-cover-letter { width: 850px; min-height: 1123px; padding: 72px; background: var(--cl-bg); color: var(--cl-text); }
+.date { text-align: right; color: var(--cl-muted); }
+h1 { color: var(--cl-primary); margin: 24px 0; }
+p { font-size: 24px; line-height: 1.5; margin: 20px 0; }
+.intro { font-weight: 700; }
+.signature { margin-top: 60px; border-top: 2px solid var(--cl-secondary); padding-top: 24px; width: fit-content; }
+</style>
