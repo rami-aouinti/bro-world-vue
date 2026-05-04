@@ -8,7 +8,7 @@ const route = useRoute()
 const { coverLetterTemplates } = useResumeTemplates()
 const selectedTemplate = ref(coverLetterTemplates.value[0]?.id || GENERATED_COVER_LETTER_TEMPLATES[0]?.id || '')
 const photoOptions = ['/img/team-1.jpg', '/img/team-2.jpg', '/img/team-3.jpg', '/img/team-4.jpg']
-const decorShapeOptions = ['circle', 'ring', 'blob']
+const decorShapeOptions = ['circle', 'ring', 'blob', 'square', 'diamond', 'star', 'triangle', 'pill', 'bar']
 const imageShape = ref<'circle' | 'square'>('circle')
 const imageSize = ref(84)
 const imageBorderWidth = ref(2)
@@ -48,8 +48,11 @@ function toNumber(value: unknown, fallback: number): number {
 }
 
 function normalizeDecorObject(obj: any) {
+  const rawType = String(obj?.type ?? 'circle')
+  const normalizedType = rawType === 'diamand' ? 'diamond' : rawType
   return {
     ...obj,
+    type: normalizedType,
     x: toPercentNumber(obj?.x, 50),
     y: toPercentNumber(obj?.y, 50),
     size: toNumber(obj?.size, 120),
@@ -76,7 +79,7 @@ const photoInput = ref<HTMLInputElement | null>(null)
 const layoutMenuOpen = ref(false)
 const photoQuickMenuOpen = ref(false)
 
-watch(activeTemplate, (tpl) => { editableDecorObjects.value = JSON.parse(JSON.stringify(tpl?.decor?.objects || [])); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; for (const key of ['date','address']) { const b=items[key]?.size; if (b) letterElementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) letterElementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) letterElementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
+watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; for (const key of ['date','address']) { const b=items[key]?.size; if (b) letterElementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) letterElementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) letterElementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
 function addDecorObject(){ editableDecorObjects.value.push({ type:'circle', x:'50%', y:'50%', size:'120', opacity:0.15 }) }
 function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
 function goToCreateResume(){ navigateTo('/resume/preview') }
