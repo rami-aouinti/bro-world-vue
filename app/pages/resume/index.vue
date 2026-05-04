@@ -214,7 +214,7 @@ onUnmounted(() => {
                 variant="text"
                 size="small"
                 class="mt-2"
-                :to="`/resume/preview?template=${templateCard.id}`"
+                :to="templateCard.type === 'resume' ? `/resume/preview?template=${templateCard.id}` : templateCard.type === 'cover-page' ? `/resume/cover-page/preview?template=${templateCard.id}` : `/resume/cover-letter/preview?template=${templateCard.id}`"
                 @click.stop
               >
                 Preview
