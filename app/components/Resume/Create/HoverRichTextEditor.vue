@@ -2,6 +2,8 @@
 import { computed, watch } from 'vue'
 import { EditorContent, useEditor } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
+import TextStyle from '@tiptap/extension-text-style'
+import Color from '@tiptap/extension-color'
 
 const props = withDefaults(
   defineProps<{ modelValue: string; label?: string; placeholder?: string }>(),
@@ -13,9 +15,11 @@ const props = withDefaults(
 
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
 const hover = ref(false)
+const selectedColor = ref('#0f172a')
+const selectedSize = ref('24px')
 
 const editor = useEditor({
-  extensions: [StarterKit],
+  extensions: [StarterKit, TextStyle, Color],
   content: props.modelValue || '<p></p>',
   editorProps: { attributes: { class: 'hover-editor__content' } },
   onUpdate: ({ editor }) =>
@@ -42,6 +46,24 @@ const isEmpty = computed(() => !props.modelValue)
   >
     <label v-if="label" class="text-body-2 mb-2 d-inline-block">{{ label }}</label>
     <div v-show="hover" class="hover-editor__toolbar">
+      <input
+        v-model="selectedColor"
+        type="color"
+        class="toolbar-color"
+        @input="editor?.chain().focus().setColor(selectedColor).run()"
+      >
+      <select
+        v-model="selectedSize"
+        class="toolbar-size"
+        @change="editor?.chain().focus().setMark('textStyle', { fontSize: selectedSize }).run()"
+      >
+        <option value="16px">16</option>
+        <option value="18px">18</option>
+        <option value="20px">20</option>
+        <option value="24px">24</option>
+        <option value="28px">28</option>
+        <option value="32px">32</option>
+      </select>
       <v-btn
         size="x-small"
         variant="text"
@@ -107,7 +129,10 @@ const isEmpty = computed(() => !props.modelValue)
   display: flex;
   gap: 4px;
   margin-bottom: 6px;
+  align-items: center;
 }
+.toolbar-color { width: 28px; height: 24px; border: 0; background: transparent; padding: 0; }
+.toolbar-size { border: 1px solid rgba(120,120,120,.4); border-radius: 6px; font-size: 12px; padding: 2px 4px; }
 .hover-editor__surface {
   position: relative;
   border: 1px solid transparent;
