@@ -6,7 +6,7 @@ import StarterKit from '@tiptap/starter-kit'
 const props = withDefaults(
   defineProps<{ modelValue: string; label?: string; placeholder?: string }>(),
   {
-    label: 'Text',
+    label: '',
     placeholder: 'Write here...',
   },
 )
@@ -40,7 +40,7 @@ const isEmpty = computed(() => !props.modelValue)
     @mouseenter="hover = true"
     @mouseleave="hover = false"
   >
-    <label class="text-body-2 mb-2 d-inline-block">{{ label }}</label>
+    <label v-if="label" class="text-body-2 mb-2 d-inline-block">{{ label }}</label>
     <div v-show="hover" class="hover-editor__toolbar">
       <v-btn
         size="x-small"

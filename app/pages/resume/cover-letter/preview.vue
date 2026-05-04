@@ -17,6 +17,8 @@ const selectedPalette = ref<'template' | 'sunset' | 'forest' | 'custom'>('templa
 const customPrimary = ref('#0F4C81')
 const customSecondary = ref('#5FA8D3')
 const customPageBackground = ref('#F8FAFC')
+const textFontSize = ref(24)
+const textColor = ref('#475569')
 const model = reactive({ fullName:'Alex Martin', role:'Senior Full Stack Developer', summary:'Driven engineer delivering robust products with strong UX and clean architecture.', location:'Paris, France', email:'alex@example.com', phone:'+33 6 00 00 00 00', date:new Date().toLocaleDateString('en-US'), photoUrl:photoOptions[0], heading:'Cover Letter' })
 const activeTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
 const editableDecorObjects = ref<any[]>([])
@@ -67,6 +69,8 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
       <v-text-field v-if="selectedPalette==='custom'" v-model="customPrimary" label="Custom primary" hide-details class="mt-3"/>
       <v-text-field v-if="selectedPalette==='custom'" v-model="customSecondary" label="Custom secondary" hide-details class="mt-3"/>
       <v-text-field v-if="selectedPalette==='custom'" v-model="customPageBackground" label="Custom page background" hide-details class="mt-3"/>
+      <v-slider v-model="textFontSize" label="Text size" min="16" max="36" step="1" hide-details class="mt-3"/>
+      <v-text-field v-model="textColor" type="color" label="Text color" hide-details class="mt-3"/>
     </template>
     <template #right>
       <AppSelect v-model="selectedTemplate" :items="coverLetterTemplates.map((t)=>({title:t.title,value:t.id}))" label="Template" hide-details class="mt-3"/>
@@ -88,18 +92,18 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
       <v-btn class="preview-toolbar-btn" size="small" variant="outlined" prepend-icon="mdi-file-pdf-box" @click="downloadPdf">PDF</v-btn>
       <v-menu v-model="layoutMenuOpen"><template #activator="{ props }"><v-btn class="preview-toolbar-btn" size="small" variant="outlined" prepend-icon="mdi-view-grid-outline" v-bind="props">Templates</v-btn></template><v-list density="compact"><v-list-item v-for="template in coverLetterTemplates" :key="template.id" :title="template.title" @click="applyPreviewTemplate(template.id)"/></v-list></v-menu>
     </div></div>
-    <div class="py-8 d-flex justify-center"><main class="capture-cover-letter" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-spacing':sectionSpacing}">
+    <div class="py-8 d-flex justify-center"><main class="capture-cover-letter" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor}">
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="{left:obj.x,top:obj.y,width:`${obj.size}px`,height:`${obj.size}px`,opacity:obj.opacity}"/>
       <header class="hero"><v-avatar :size="imageSize" class="mb-4 avatar-upload" :rounded="imageShape === 'circle' ? 'circle' : 'lg'" @click="openPhotoUpload"><v-img :src="model.photoUrl" cover @click.stop="openPhotoUpload"/><div class="avatar-overlay">Change</div></v-avatar>
         <HoverRichTextEditor v-model="model.fullName" label="Full name" />
         <HoverRichTextEditor v-model="model.role" label="Role" />
-        <p class="meta" contenteditable="true" @input="model.date=($event.target as HTMLElement).innerText">{{ model.date }}</p>
-        <p class="meta" contenteditable="true" @input="model.location=($event.target as HTMLElement).innerText">{{ model.location }}</p>
+        <HoverRichTextEditor v-model="model.date" />
+        <HoverRichTextEditor v-model="model.location" />
       </header>
-      <section><h2 contenteditable="true" @input="model.heading=($event.target as HTMLElement).innerText">{{ model.heading }}</h2>
+      <section><HoverRichTextEditor v-model="model.heading" />
         <HoverRichTextEditor v-model="model.summary" label="Summary" />
-        <p class="meta" contenteditable="true" @input="model.email=($event.target as HTMLElement).innerText">{{ model.email }}</p>
-        <p class="meta" contenteditable="true" @input="model.phone=($event.target as HTMLElement).innerText">{{ model.phone }}</p>
+        <HoverRichTextEditor v-model="model.email" />
+        <HoverRichTextEditor v-model="model.phone" />
       </section>
       <footer v-if="signatureDataUrl" class="signature-footer"><img :src="signatureDataUrl" alt="signature" class="signature-image"/></footer>
     </main></div>
@@ -107,6 +111,6 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
   </v-container>
 </div>
 </template>
-<style scoped>.capture-cover-letter{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:80px;background:var(--cp-bg);color:var(--cp-text)}.hero{border-left:10px solid var(--cp-primary);padding-left:24px;margin-bottom:48px}.avatar-upload{cursor:pointer;position:relative;overflow:hidden;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px')} .avatar-overlay{position:absolute;inset:auto 0 0 0;padding:2px 0;background:rgba(15,23,42,.55);color:#fff;font-size:10px;text-align:center}h1{font-size:58px;margin:0}p{font-size:24px;color:var(--cp-muted)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:40px;margin:0 0 16px}section{border-top:3px var(--section-divider-style) var(--cp-secondary);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.preview-toolbar-wrap{position:sticky;top:74px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background:rgba(255,255,255,.92)}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}</style>
+<style scoped>.capture-cover-letter{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:80px;background:var(--cp-bg);color:var(--cp-text)}.hero{border-left:10px solid var(--cp-primary);padding-left:24px;margin-bottom:48px}.avatar-upload{cursor:pointer;position:relative;overflow:hidden;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px')} .avatar-overlay{position:absolute;inset:auto 0 0 0;padding:2px 0;background:rgba(15,23,42,.55);color:#fff;font-size:10px;text-align:center}h1{font-size:58px;margin:0}p{font-size:var(--body-size);color:var(--body-color)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:40px;margin:0 0 16px}section{border-top:3px var(--section-divider-style) var(--cp-secondary);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.preview-toolbar-wrap{position:sticky;top:74px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background:rgba(255,255,255,.92)}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}</style>
 
 <style scoped>@media (prefers-color-scheme: dark){.preview-toolbar-row{background:rgba(15,23,42,.82);border-color:rgba(148,163,184,.45)} .preview-toolbar-btn{color:#e2e8f0} .capture-cover-page,.capture-cover-letter{box-shadow:0 10px 30px rgba(0,0,0,.45)}}</style>
