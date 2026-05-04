@@ -4,6 +4,36 @@ import { EditorContent, useEditor } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import { TextStyle } from '@tiptap/extension-text-style'
 import { Color } from '@tiptap/extension-color'
+import { Extension } from '@tiptap/core'
+
+const FontSize = Extension.create({
+  name: 'fontSize',
+  addGlobalAttributes() {
+    return [
+      {
+        types: ['textStyle'],
+        attributes: {
+          fontSize: {
+            default: null,
+            parseHTML: (element) => element.style.fontSize || null,
+            renderHTML: (attributes) => {
+              if (!attributes.fontSize) return {}
+              return { style: `font-size: ${attributes.fontSize}` }
+            },
+          },
+          fontWeight: {
+            default: null,
+            parseHTML: (element) => element.style.fontWeight || null,
+            renderHTML: (attributes) => {
+              if (!attributes.fontWeight) return {}
+              return { style: `font-weight: ${attributes.fontWeight}` }
+            },
+          },
+        },
+      },
+    ]
+  },
+})
 
 const props = withDefaults(
   defineProps<{ modelValue: string; label?: string; placeholder?: string; fontSize?: string; color?: string; fontWeight?: string | number }>(),
@@ -22,7 +52,7 @@ const selectedColor = ref('#0f172a')
 const selectedSize = ref('24px')
 
 const editor = useEditor({
-  extensions: [StarterKit, TextStyle, Color],
+  extensions: [StarterKit, TextStyle, Color, FontSize],
   content: props.modelValue || '<p></p>',
   editorProps: { attributes: { class: 'hover-editor__content' } },
   onUpdate: ({ editor }) =>
