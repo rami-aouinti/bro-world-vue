@@ -14,16 +14,20 @@ function resolveGeneratedTemplateId(rawTemplateId: string): string {
   const normalized = rawTemplateId.trim()
   if (!normalized) return ''
 
-  const exactGenerated = GENERATED_COVER_PAGE_TEMPLATES.find((template) => template.id === normalized)
+  const withoutTemplatePrefix = normalized.startsWith('template=')
+    ? normalized.slice('template='.length).trim()
+    : normalized
+
+  const exactGenerated = GENERATED_COVER_PAGE_TEMPLATES.find((template) => template.id === withoutTemplatePrefix)
   if (exactGenerated) return exactGenerated.id
 
-  const unprefixed = normalized.startsWith('cover-page-')
-    ? normalized.slice('cover-page-'.length)
-    : normalized
+  const unprefixed = withoutTemplatePrefix.startsWith('cover-page-')
+    ? withoutTemplatePrefix.slice('cover-page-'.length)
+    : withoutTemplatePrefix
   const prefixedGenerated = GENERATED_COVER_PAGE_TEMPLATES.find((template) => template.id === unprefixed)
   if (prefixedGenerated) return prefixedGenerated.id
 
-  const startsWithGenerated = GENERATED_COVER_PAGE_TEMPLATES.find((template) => template.id.startsWith(normalized))
+  const startsWithGenerated = GENERATED_COVER_PAGE_TEMPLATES.find((template) => template.id.startsWith(withoutTemplatePrefix))
   if (startsWithGenerated) return startsWithGenerated.id
 
   return ''
