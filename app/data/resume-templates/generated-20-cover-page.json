@@ -20,7 +20,8 @@
       "alignment": "left",
       "showPhoto": true,
       "accent": "bar",
-      "accentIntensity": "medium"
+      "accentIntensity": "medium",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "sectionSpacing": "normal",
@@ -79,7 +80,8 @@
       "alignment": "center",
       "showPhoto": false,
       "accent": "shape",
-      "accentIntensity": "bold"
+      "accentIntensity": "bold",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "sectionSpacing": "relaxed",
@@ -138,7 +140,8 @@
       "alignment": "right",
       "showPhoto": true,
       "accent": "line",
-      "accentIntensity": "subtle"
+      "accentIntensity": "subtle",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "sectionSpacing": "tight",
@@ -197,7 +200,8 @@
       "alignment": "left",
       "showPhoto": false,
       "accent": "badge",
-      "accentIntensity": "medium"
+      "accentIntensity": "medium",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "sectionSpacing": "normal",
@@ -256,7 +260,8 @@
       "alignment": "center",
       "showPhoto": true,
       "accent": "bar",
-      "accentIntensity": "bold"
+      "accentIntensity": "bold",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "sectionSpacing": "relaxed",
@@ -315,7 +320,8 @@
       "alignment": "right",
       "showPhoto": false,
       "accent": "shape",
-      "accentIntensity": "subtle"
+      "accentIntensity": "subtle",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "sectionSpacing": "tight",
@@ -374,7 +380,8 @@
       "alignment": "left",
       "showPhoto": true,
       "accent": "line",
-      "accentIntensity": "medium"
+      "accentIntensity": "medium",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "sectionSpacing": "normal",
@@ -433,7 +440,8 @@
       "alignment": "center",
       "showPhoto": false,
       "accent": "badge",
-      "accentIntensity": "bold"
+      "accentIntensity": "bold",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "sectionSpacing": "relaxed",
@@ -492,7 +500,8 @@
       "alignment": "right",
       "showPhoto": true,
       "accent": "bar",
-      "accentIntensity": "subtle"
+      "accentIntensity": "subtle",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "sectionSpacing": "tight",
@@ -551,7 +560,8 @@
       "alignment": "left",
       "showPhoto": false,
       "accent": "shape",
-      "accentIntensity": "medium"
+      "accentIntensity": "medium",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "sectionSpacing": "normal",
@@ -610,7 +620,8 @@
       "alignment": "center",
       "showPhoto": true,
       "accent": "line",
-      "accentIntensity": "bold"
+      "accentIntensity": "bold",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "sectionSpacing": "relaxed",
@@ -669,7 +680,8 @@
       "alignment": "right",
       "showPhoto": false,
       "accent": "badge",
-      "accentIntensity": "subtle"
+      "accentIntensity": "subtle",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "sectionSpacing": "tight",
@@ -728,7 +740,8 @@
       "alignment": "left",
       "showPhoto": true,
       "accent": "bar",
-      "accentIntensity": "medium"
+      "accentIntensity": "medium",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "sectionSpacing": "normal",
@@ -787,7 +800,8 @@
       "alignment": "center",
       "showPhoto": false,
       "accent": "shape",
-      "accentIntensity": "bold"
+      "accentIntensity": "bold",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "sectionSpacing": "relaxed",
@@ -846,7 +860,8 @@
       "alignment": "right",
       "showPhoto": true,
       "accent": "line",
-      "accentIntensity": "subtle"
+      "accentIntensity": "subtle",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "sectionSpacing": "tight",
@@ -905,7 +920,8 @@
       "alignment": "left",
       "showPhoto": false,
       "accent": "badge",
-      "accentIntensity": "medium"
+      "accentIntensity": "medium",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "sectionSpacing": "normal",
@@ -964,7 +980,8 @@
       "alignment": "center",
       "showPhoto": true,
       "accent": "bar",
-      "accentIntensity": "bold"
+      "accentIntensity": "bold",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "sectionSpacing": "relaxed",
@@ -1023,7 +1040,8 @@
       "alignment": "right",
       "showPhoto": false,
       "accent": "shape",
-      "accentIntensity": "subtle"
+      "accentIntensity": "subtle",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "sectionSpacing": "tight",
@@ -1082,7 +1100,8 @@
       "alignment": "left",
       "showPhoto": true,
       "accent": "line",
-      "accentIntensity": "medium"
+      "accentIntensity": "medium",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "sectionSpacing": "normal",
@@ -1141,7 +1160,8 @@
       "alignment": "center",
       "showPhoto": false,
       "accent": "badge",
-      "accentIntensity": "bold"
+      "accentIntensity": "bold",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "sectionSpacing": "relaxed",

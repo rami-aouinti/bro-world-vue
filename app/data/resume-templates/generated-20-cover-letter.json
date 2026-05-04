@@ -20,7 +20,8 @@
       "header": "minimal",
       "body": "narrative",
       "signature": "simple",
-      "calloutStyle": "quote"
+      "calloutStyle": "quote",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "normal",
@@ -79,7 +80,8 @@
       "header": "detailed",
       "body": "bullet-mix",
       "signature": "formal",
-      "calloutStyle": "highlight-box"
+      "calloutStyle": "highlight-box",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "wide",
@@ -138,7 +140,8 @@
       "header": "contact-band",
       "body": "impact",
       "signature": "simple",
-      "calloutStyle": "none"
+      "calloutStyle": "none",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "tight",
@@ -197,7 +200,8 @@
       "header": "minimal",
       "body": "narrative",
       "signature": "formal",
-      "calloutStyle": "quote"
+      "calloutStyle": "quote",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "normal",
@@ -256,7 +260,8 @@
       "header": "detailed",
       "body": "bullet-mix",
       "signature": "simple",
-      "calloutStyle": "highlight-box"
+      "calloutStyle": "highlight-box",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "wide",
@@ -315,7 +320,8 @@
       "header": "contact-band",
       "body": "impact",
       "signature": "formal",
-      "calloutStyle": "none"
+      "calloutStyle": "none",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "tight",
@@ -374,7 +380,8 @@
       "header": "minimal",
       "body": "narrative",
       "signature": "simple",
-      "calloutStyle": "quote"
+      "calloutStyle": "quote",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "normal",
@@ -433,7 +440,8 @@
       "header": "detailed",
       "body": "bullet-mix",
       "signature": "formal",
-      "calloutStyle": "highlight-box"
+      "calloutStyle": "highlight-box",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "wide",
@@ -492,7 +500,8 @@
       "header": "contact-band",
       "body": "impact",
       "signature": "simple",
-      "calloutStyle": "none"
+      "calloutStyle": "none",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "tight",
@@ -551,7 +560,8 @@
       "header": "minimal",
       "body": "narrative",
       "signature": "formal",
-      "calloutStyle": "quote"
+      "calloutStyle": "quote",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "normal",
@@ -610,7 +620,8 @@
       "header": "detailed",
       "body": "bullet-mix",
       "signature": "simple",
-      "calloutStyle": "highlight-box"
+      "calloutStyle": "highlight-box",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "wide",
@@ -669,7 +680,8 @@
       "header": "contact-band",
       "body": "impact",
       "signature": "formal",
-      "calloutStyle": "none"
+      "calloutStyle": "none",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "tight",
@@ -728,7 +740,8 @@
       "header": "minimal",
       "body": "narrative",
       "signature": "simple",
-      "calloutStyle": "quote"
+      "calloutStyle": "quote",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "normal",
@@ -787,7 +800,8 @@
       "header": "detailed",
       "body": "bullet-mix",
       "signature": "formal",
-      "calloutStyle": "highlight-box"
+      "calloutStyle": "highlight-box",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "wide",
@@ -846,7 +860,8 @@
       "header": "contact-band",
       "body": "impact",
       "signature": "simple",
-      "calloutStyle": "none"
+      "calloutStyle": "none",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "tight",
@@ -905,7 +920,8 @@
       "header": "minimal",
       "body": "narrative",
       "signature": "formal",
-      "calloutStyle": "quote"
+      "calloutStyle": "quote",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "normal",
@@ -964,7 +980,8 @@
       "header": "detailed",
       "body": "bullet-mix",
       "signature": "simple",
-      "calloutStyle": "highlight-box"
+      "calloutStyle": "highlight-box",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "wide",
@@ -1023,7 +1040,8 @@
       "header": "contact-band",
       "body": "impact",
       "signature": "formal",
-      "calloutStyle": "none"
+      "calloutStyle": "none",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "tight",
@@ -1082,7 +1100,8 @@
       "header": "minimal",
       "body": "narrative",
       "signature": "simple",
-      "calloutStyle": "quote"
+      "calloutStyle": "quote",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "normal",
@@ -1141,7 +1160,8 @@
       "header": "detailed",
       "body": "bullet-mix",
       "signature": "formal",
-      "calloutStyle": "highlight-box"
+      "calloutStyle": "highlight-box",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "wide",
