@@ -176,6 +176,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
           <HoverRichTextEditor v-model="model.date" :font-size="`${letterElementStyles.date.size}px`" :color="letterElementStyles.date.color" :font-weight="letterElementStyles.date.weight" />
           <HoverRichTextEditor v-model="model.location" :font-size="`${letterElementStyles.address.size}px`" :color="letterElementStyles.address.color" :font-weight="letterElementStyles.address.weight" />
         </div>
+      </header>
       <section class="letter-body">
         <HoverRichTextEditor v-model="model.heading" />
         <HoverRichTextEditor v-model="model.company" />
