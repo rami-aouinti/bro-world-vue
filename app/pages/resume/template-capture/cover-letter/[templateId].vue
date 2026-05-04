@@ -4,7 +4,11 @@ import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-
 definePageMeta({ layout: false })
 
 const route = useRoute()
-const templateId = computed(() => String(route.params.templateId || 'cletter-001'))
+const templateId = computed(() => {
+  const fromParams = typeof route.params.templateId === 'string' ? route.params.templateId : ''
+  const fromQuery = typeof route.query.template === 'string' ? route.query.template : ''
+  return String(fromParams || fromQuery || 'cletter-001')
+})
 
 function resolveGeneratedTemplateId(rawTemplateId: string): string {
   const normalized = rawTemplateId.trim()
