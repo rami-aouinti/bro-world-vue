@@ -22,10 +22,23 @@ const textFontSize = ref(24)
 const textColor = ref('#475569')
 const barRadius = ref(0)
 const barLayout = ref<'single' | 'double'>('single')
+
+const elementStyles = reactive({
+  fullName: { size: 58, color: '#111827', weight: '700' },
+  role: { size: 30, color: '#475569', weight: '500' },
+  heading: { size: 32, color: '#0F4C81', weight: '600' },
+  summary: { size: 24, color: '#475569', weight: '400' },
+  email: { size: 16, color: '#475569', weight: '400' },
+  phone: { size: 16, color: '#475569', weight: '400' },
+})
+const fontWeightMap: Record<string, string> = { regular: '400', medium: '500', semibold: '600', bold: '700' }
 const primaryBarWidth = ref(10)
 const secondaryBarWidth = ref(5)
 const model = reactive({ fullName:'Alex Martin', role:'Senior Full Stack Developer', summary:'Driven engineer delivering robust products with strong UX and clean architecture.', location:'Paris, France', email:'alex@example.com', phone:'+33 6 00 00 00 00', date:new Date().toLocaleDateString('en-US'), photoUrl:photoOptions[0], heading:'About Me' })
 const activeTemplate = computed(() => GENERATED_COVER_PAGE_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_PAGE_TEMPLATES[0])
+const templateItemConfig = computed(() => activeTemplate.value?.items || {})
+const styleOptionsFor = (key: string) => ((templateItemConfig.value as any)?.[key]?.styles || ['regular','medium','semibold','bold']).map((v:string)=>({title:v,value:fontWeightMap[v]||'400'}))
+const sizeBoundsFor = (key: string, fallbackMin: number, fallbackMax: number) => ({ min: (templateItemConfig.value as any)?.[key]?.size?.min ?? fallbackMin, max: (templateItemConfig.value as any)?.[key]?.size?.max ?? fallbackMax })
 const editableDecorObjects = ref<any[]>([])
 
 function toPercentNumber(value: unknown, fallback = 50): number {
@@ -69,9 +82,10 @@ const signatureDialogOpen = ref(false)
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const photoInput = ref<HTMLInputElement | null>(null)
 const layoutMenuOpen = ref(false)
+const photoQuickMenuOpen = ref(false)
 
-watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj: any) => normalizeDecorObject(JSON.parse(JSON.stringify(obj)))); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left' }, { immediate: true })
-function addDecorObject(){ editableDecorObjects.value.push({ type:'circle', x:50, y:50, size:120, opacity:0.15 }) }
+watch(activeTemplate, (tpl) => { editableDecorObjects.value = JSON.parse(JSON.stringify(tpl?.decor?.objects || [])); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; for (const key of ['fullName','role','heading','summary','email','phone']) { const b=items[key]?.size; if (b) elementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) elementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) elementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
+function addDecorObject(){ editableDecorObjects.value.push({ type:'circle', x:'50%', y:'50%', size:'120', opacity:0.15 }) }
 function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
 function goToCreateResume(){ navigateTo('/resume/preview') }
 function applyPreviewTemplate(id:string){ selectedTemplate.value = id; layoutMenuOpen.value = false }
@@ -126,6 +140,16 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
     </template>
     <template #right>
       <AppSelect v-model="selectedTemplate" :items="coverPageTemplates.map((t)=>({title:t.title,value:t.id}))" label="Template" hide-details class="mt-3"/>
+      <v-divider class="my-3"/>
+      <p class="text-caption mb-2">Element styles</p>
+      <v-card class="pa-2" variant="outlined">
+        <p class="text-caption mb-2">Fullname</p><v-slider v-model="elementStyles.fullName.size"  :min="sizeBoundsFor('fullName',50,80).min" :max="sizeBoundsFor('fullName',50,80).max" step="1" hide-details/><v-text-field v-model="elementStyles.fullName.color" type="color" hide-details class="mt-2"/><AppSelect v-model="elementStyles.fullName.weight" :items="styleOptionsFor('fullName')" hide-details class="mt-2"/>
+        <p class="text-caption my-2">Role</p><v-slider v-model="elementStyles.role.size"  :min="sizeBoundsFor('role',25,40).min" :max="sizeBoundsFor('role',25,40).max" step="1" hide-details/><v-text-field v-model="elementStyles.role.color" type="color" hide-details class="mt-2"/><AppSelect v-model="elementStyles.role.weight" :items="styleOptionsFor('role')" hide-details class="mt-2"/>
+        <p class="text-caption my-2">Heading</p><v-slider v-model="elementStyles.heading.size"  :min="sizeBoundsFor('heading',25,40).min" :max="sizeBoundsFor('heading',25,40).max" step="1" hide-details/><v-text-field v-model="elementStyles.heading.color" type="color" hide-details class="mt-2"/><AppSelect v-model="elementStyles.heading.weight" :items="styleOptionsFor('heading')" hide-details class="mt-2"/>
+        <p class="text-caption my-2">Summary</p><v-slider v-model="elementStyles.summary.size"  :min="sizeBoundsFor('summary',20,30).min" :max="sizeBoundsFor('summary',20,30).max" step="1" hide-details/><v-text-field v-model="elementStyles.summary.color" type="color" hide-details class="mt-2"/><AppSelect v-model="elementStyles.summary.weight" :items="styleOptionsFor('summary')" hide-details class="mt-2"/>
+        <p class="text-caption my-2">Email</p><v-slider v-model="elementStyles.email.size"  :min="sizeBoundsFor('email',14,20).min" :max="sizeBoundsFor('email',14,20).max" step="1" hide-details/><v-text-field v-model="elementStyles.email.color" type="color" hide-details class="mt-2"/><AppSelect v-model="elementStyles.email.weight" :items="styleOptionsFor('email')" hide-details class="mt-2"/>
+        <p class="text-caption my-2">Phone</p><v-slider v-model="elementStyles.phone.size"  :min="sizeBoundsFor('phone',14,20).min" :max="sizeBoundsFor('phone',14,20).max" step="1" hide-details/><v-text-field v-model="elementStyles.phone.color" type="color" hide-details class="mt-2"/><AppSelect v-model="elementStyles.phone.weight" :items="styleOptionsFor('phone')" hide-details class="mt-2"/>
+      </v-card>
       <v-btn class="mt-3" size="small" variant="outlined" @click="addDecorObject">Add decor</v-btn>
       <v-card v-for="(obj,i) in editableDecorObjects" :key="`obj-${i}`" class="mt-3 pa-2" variant="outlined">
         <AppSelect v-model="obj.type" :items="decorShapeOptions.map((s)=>({title:s,value:s}))" label="Shape" hide-details class="mt-3"/>
@@ -151,16 +175,33 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
         <div class="hero-row">
 
           <div class="mb-4 avatar-upload hero-avatar photo-shell" :style="{ width: `${imageSize}px`, height: `${imageSize}px`, borderRadius: imageShape === 'circle' ? '999px' : '12px' }" @click="openPhotoUpload">
+            <v-menu v-model="photoQuickMenuOpen" :close-on-content-click="false" location="bottom start" persistent>
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  icon="mdi-tune-variant"
+                  size="x-small"
+                  class="photo-quick-trigger"
+                  @click.stop
+                />
+              </template>
+              <v-card class="pa-3 photo-quick-menu" min-width="240" @click.stop>
+                <v-slider v-model="imageSize" label="Image size" min="48" max="180" step="1" hide-details class="mt-1"/>
+                <v-slider v-model="imageBorderWidth" label="Border width" min="0" max="8" step="1" hide-details class="mt-3"/>
+                <v-text-field v-model="imageBorderColor" type="color" label="Border color" hide-details class="mt-3"/>
+                <AppSelect v-model="imageShape" :items="[{ title: 'Circle', value: 'circle' }, { title: 'Square', value: 'square' }]" label="Image shape" hide-details class="mt-3"/>
+              </v-card>
+            </v-menu>
             <v-img :src="model.photoUrl" cover @click.stop="openPhotoUpload" class="photo-shell__img"/>
           </div>
-          <HoverRichTextEditor v-model="model.fullName" />
-          <HoverRichTextEditor v-model="model.role" />
+          <div class="styled-item" :style="{fontSize:`${elementStyles.fullName.size}px`,color:elementStyles.fullName.color,fontWeight:elementStyles.fullName.weight}"><HoverRichTextEditor v-model="model.fullName" /></div>
+          <div class="styled-item" :style="{fontSize:`${elementStyles.role.size}px`,color:elementStyles.role.color,fontWeight:elementStyles.role.weight}"><HoverRichTextEditor v-model="model.role" /></div>
         </div>
       </header>
-      <section><HoverRichTextEditor v-model="model.heading" />
-        <HoverRichTextEditor v-model="model.summary" />
-        <HoverRichTextEditor v-model="model.email" />
-        <HoverRichTextEditor v-model="model.phone" />
+      <section><div class="styled-item" :style="{fontSize:`${elementStyles.heading.size}px`,color:elementStyles.heading.color,fontWeight:elementStyles.heading.weight}"><HoverRichTextEditor v-model="model.heading" /></div>
+        <div class="styled-item" :style="{fontSize:`${elementStyles.summary.size}px`,color:elementStyles.summary.color,fontWeight:elementStyles.summary.weight}"><HoverRichTextEditor v-model="model.summary" /></div>
+        <div class="styled-item" :style="{fontSize:`${elementStyles.email.size}px`,color:elementStyles.email.color,fontWeight:elementStyles.email.weight}"><HoverRichTextEditor v-model="model.email" /></div>
+        <div class="styled-item" :style="{fontSize:`${elementStyles.phone.size}px`,color:elementStyles.phone.color,fontWeight:elementStyles.phone.weight}"><HoverRichTextEditor v-model="model.phone" /></div>
       </section>
       <footer v-if="signatureDataUrl" class="signature-footer"><img :src="signatureDataUrl" alt="signature" class="signature-image"/></footer>
     </main></div>
@@ -190,7 +231,10 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
 .hero--photo-right{padding-top:8px}
 .hero--double::before{content:'';position:absolute;left:calc(var(--bar-primary-width) + 6px);top:0;bottom:0;width:var(--bar-secondary-width);background:var(--cp-secondary);border-radius:var(--bar-radius)}
 .avatar-upload{cursor:pointer;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px');overflow:hidden}
-.photo-shell{display:block}
+.photo-shell{display:block;position:relative}
+.photo-quick-trigger{position:absolute;top:-22px;left:-22px;z-index:4;opacity:0;transition:opacity .15s ease;background:#fff;border:1px solid rgba(15,23,42,.2)}
+.photo-shell:hover .photo-quick-trigger,.photo-quick-trigger:focus-visible{opacity:1}
+.photo-quick-menu{border:1px solid rgba(148,163,184,.4)}
 .photo-shell__img{width:100%;height:100%}
 .photo-shell__img :deep(.v-img__img)
 {
