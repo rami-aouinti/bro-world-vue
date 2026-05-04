@@ -44,3 +44,7 @@ p { font-size: 24px; line-height: 1.5; margin: 20px 0; }
 .intro { font-weight: 700; }
 .signature { margin-top: 60px; border-top: 2px solid var(--cl-secondary); padding-top: 24px; width: fit-content; }
 </style>
+
+<style scoped>
+.capture-photo{width:92px;height:92px;border-radius:999px;object-fit:cover;margin-bottom:16px}
+</style>

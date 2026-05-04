@@ -20,7 +20,8 @@
       "header": "minimal",
       "body": "narrative",
       "signature": "simple",
-      "calloutStyle": "quote"
+      "calloutStyle": "quote",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "normal",
@@ -39,7 +40,23 @@
       "headerStyle": "band",
       "footerStyle": "line",
       "divider": "dashed",
-      "iconStyle": "rounded"
+      "iconStyle": "rounded",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "8%",
+          "y": "6%",
+          "size": "80",
+          "opacity": 0.08
+        },
+        {
+          "type": "ring",
+          "x": "70%",
+          "y": "75%",
+          "size": "120",
+          "opacity": 0.08
+        }
+      ]
     }
   },
   {
@@ -63,7 +80,8 @@
       "header": "detailed",
       "body": "bullet-mix",
       "signature": "formal",
-      "calloutStyle": "highlight-box"
+      "calloutStyle": "highlight-box",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "wide",
@@ -82,7 +100,23 @@
       "headerStyle": "split-band",
       "footerStyle": "block",
       "divider": "double",
-      "iconStyle": "outline"
+      "iconStyle": "outline",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "15%",
+          "y": "17%",
+          "size": "100",
+          "opacity": 0.11
+        },
+        {
+          "type": "blob",
+          "x": "65%",
+          "y": "72%",
+          "size": "138",
+          "opacity": 0.11
+        }
+      ]
     }
   },
   {
@@ -106,7 +140,8 @@
       "header": "contact-band",
       "body": "impact",
       "signature": "simple",
-      "calloutStyle": "none"
+      "calloutStyle": "none",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "tight",
@@ -125,7 +160,23 @@
       "headerStyle": "ribbon",
       "footerStyle": "signature-bar",
       "divider": "gradient",
-      "iconStyle": "minimal"
+      "iconStyle": "minimal",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "22%",
+          "y": "28%",
+          "size": "120",
+          "opacity": 0.14
+        },
+        {
+          "type": "ring",
+          "x": "60%",
+          "y": "69%",
+          "size": "156",
+          "opacity": 0.14
+        }
+      ]
     }
   },
   {
@@ -149,7 +200,8 @@
       "header": "minimal",
       "body": "narrative",
       "signature": "formal",
-      "calloutStyle": "quote"
+      "calloutStyle": "quote",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "normal",
@@ -168,7 +220,23 @@
       "headerStyle": "plain",
       "footerStyle": "none",
       "divider": "solid",
-      "iconStyle": "rounded"
+      "iconStyle": "rounded",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "29%",
+          "y": "39%",
+          "size": "140",
+          "opacity": 0.17
+        },
+        {
+          "type": "blob",
+          "x": "55%",
+          "y": "66%",
+          "size": "174",
+          "opacity": 0.16
+        }
+      ]
     }
   },
   {
@@ -192,7 +260,8 @@
       "header": "detailed",
       "body": "bullet-mix",
       "signature": "simple",
-      "calloutStyle": "highlight-box"
+      "calloutStyle": "highlight-box",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "wide",
@@ -211,7 +280,23 @@
       "headerStyle": "band",
       "footerStyle": "line",
       "divider": "dashed",
-      "iconStyle": "outline"
+      "iconStyle": "outline",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "36%",
+          "y": "50%",
+          "size": "160",
+          "opacity": 0.08
+        },
+        {
+          "type": "ring",
+          "x": "50%",
+          "y": "63%",
+          "size": "192",
+          "opacity": 0.06
+        }
+      ]
     }
   },
   {
@@ -235,7 +320,8 @@
       "header": "contact-band",
       "body": "impact",
       "signature": "formal",
-      "calloutStyle": "none"
+      "calloutStyle": "none",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "tight",
@@ -254,7 +340,23 @@
       "headerStyle": "split-band",
       "footerStyle": "block",
       "divider": "double",
-      "iconStyle": "minimal"
+      "iconStyle": "minimal",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "43%",
+          "y": "61%",
+          "size": "80",
+          "opacity": 0.11
+        },
+        {
+          "type": "blob",
+          "x": "45%",
+          "y": "60%",
+          "size": "210",
+          "opacity": 0.08
+        }
+      ]
     }
   },
   {
@@ -278,7 +380,8 @@
       "header": "minimal",
       "body": "narrative",
       "signature": "simple",
-      "calloutStyle": "quote"
+      "calloutStyle": "quote",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "normal",
@@ -297,7 +400,23 @@
       "headerStyle": "ribbon",
       "footerStyle": "signature-bar",
       "divider": "gradient",
-      "iconStyle": "rounded"
+      "iconStyle": "rounded",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "50%",
+          "y": "72%",
+          "size": "100",
+          "opacity": 0.14
+        },
+        {
+          "type": "ring",
+          "x": "40%",
+          "y": "57%",
+          "size": "120",
+          "opacity": 0.11
+        }
+      ]
     }
   },
   {
@@ -321,7 +440,8 @@
       "header": "detailed",
       "body": "bullet-mix",
       "signature": "formal",
-      "calloutStyle": "highlight-box"
+      "calloutStyle": "highlight-box",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "wide",
@@ -340,7 +460,23 @@
       "headerStyle": "plain",
       "footerStyle": "none",
       "divider": "solid",
-      "iconStyle": "outline"
+      "iconStyle": "outline",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "57%",
+          "y": "13%",
+          "size": "120",
+          "opacity": 0.17
+        },
+        {
+          "type": "blob",
+          "x": "35%",
+          "y": "54%",
+          "size": "138",
+          "opacity": 0.14
+        }
+      ]
     }
   },
   {
@@ -364,7 +500,8 @@
       "header": "contact-band",
       "body": "impact",
       "signature": "simple",
-      "calloutStyle": "none"
+      "calloutStyle": "none",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "tight",
@@ -383,7 +520,23 @@
       "headerStyle": "band",
       "footerStyle": "line",
       "divider": "dashed",
-      "iconStyle": "minimal"
+      "iconStyle": "minimal",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "64%",
+          "y": "24%",
+          "size": "140",
+          "opacity": 0.08
+        },
+        {
+          "type": "ring",
+          "x": "30%",
+          "y": "51%",
+          "size": "156",
+          "opacity": 0.16
+        }
+      ]
     }
   },
   {
@@ -407,7 +560,8 @@
       "header": "minimal",
       "body": "narrative",
       "signature": "formal",
-      "calloutStyle": "quote"
+      "calloutStyle": "quote",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "normal",
@@ -426,7 +580,23 @@
       "headerStyle": "split-band",
       "footerStyle": "block",
       "divider": "double",
-      "iconStyle": "rounded"
+      "iconStyle": "rounded",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "71%",
+          "y": "35%",
+          "size": "160",
+          "opacity": 0.11
+        },
+        {
+          "type": "blob",
+          "x": "25%",
+          "y": "48%",
+          "size": "174",
+          "opacity": 0.06
+        }
+      ]
     }
   },
   {
@@ -450,7 +620,8 @@
       "header": "detailed",
       "body": "bullet-mix",
       "signature": "simple",
-      "calloutStyle": "highlight-box"
+      "calloutStyle": "highlight-box",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "wide",
@@ -469,7 +640,23 @@
       "headerStyle": "ribbon",
       "footerStyle": "signature-bar",
       "divider": "gradient",
-      "iconStyle": "outline"
+      "iconStyle": "outline",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "78%",
+          "y": "46%",
+          "size": "80",
+          "opacity": 0.14
+        },
+        {
+          "type": "ring",
+          "x": "20%",
+          "y": "45%",
+          "size": "192",
+          "opacity": 0.08
+        }
+      ]
     }
   },
   {
@@ -493,7 +680,8 @@
       "header": "contact-band",
       "body": "impact",
       "signature": "formal",
-      "calloutStyle": "none"
+      "calloutStyle": "none",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "tight",
@@ -512,7 +700,23 @@
       "headerStyle": "plain",
       "footerStyle": "none",
       "divider": "solid",
-      "iconStyle": "minimal"
+      "iconStyle": "minimal",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "85%",
+          "y": "57%",
+          "size": "100",
+          "opacity": 0.17
+        },
+        {
+          "type": "blob",
+          "x": "15%",
+          "y": "42%",
+          "size": "210",
+          "opacity": 0.11
+        }
+      ]
     }
   },
   {
@@ -536,7 +740,8 @@
       "header": "minimal",
       "body": "narrative",
       "signature": "simple",
-      "calloutStyle": "quote"
+      "calloutStyle": "quote",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "normal",
@@ -555,7 +760,23 @@
       "headerStyle": "band",
       "footerStyle": "line",
       "divider": "dashed",
-      "iconStyle": "rounded"
+      "iconStyle": "rounded",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "12%",
+          "y": "68%",
+          "size": "120",
+          "opacity": 0.08
+        },
+        {
+          "type": "ring",
+          "x": "70%",
+          "y": "39%",
+          "size": "120",
+          "opacity": 0.14
+        }
+      ]
     }
   },
   {
@@ -579,7 +800,8 @@
       "header": "detailed",
       "body": "bullet-mix",
       "signature": "formal",
-      "calloutStyle": "highlight-box"
+      "calloutStyle": "highlight-box",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "wide",
@@ -598,7 +820,23 @@
       "headerStyle": "split-band",
       "footerStyle": "block",
       "divider": "double",
-      "iconStyle": "outline"
+      "iconStyle": "outline",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "19%",
+          "y": "9%",
+          "size": "140",
+          "opacity": 0.11
+        },
+        {
+          "type": "blob",
+          "x": "65%",
+          "y": "36%",
+          "size": "138",
+          "opacity": 0.16
+        }
+      ]
     }
   },
   {
@@ -622,7 +860,8 @@
       "header": "contact-band",
       "body": "impact",
       "signature": "simple",
-      "calloutStyle": "none"
+      "calloutStyle": "none",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "tight",
@@ -641,7 +880,23 @@
       "headerStyle": "ribbon",
       "footerStyle": "signature-bar",
       "divider": "gradient",
-      "iconStyle": "minimal"
+      "iconStyle": "minimal",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "26%",
+          "y": "20%",
+          "size": "160",
+          "opacity": 0.14
+        },
+        {
+          "type": "ring",
+          "x": "60%",
+          "y": "33%",
+          "size": "156",
+          "opacity": 0.06
+        }
+      ]
     }
   },
   {
@@ -665,7 +920,8 @@
       "header": "minimal",
       "body": "narrative",
       "signature": "formal",
-      "calloutStyle": "quote"
+      "calloutStyle": "quote",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "normal",
@@ -684,7 +940,23 @@
       "headerStyle": "plain",
       "footerStyle": "none",
       "divider": "solid",
-      "iconStyle": "rounded"
+      "iconStyle": "rounded",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "33%",
+          "y": "31%",
+          "size": "80",
+          "opacity": 0.17
+        },
+        {
+          "type": "blob",
+          "x": "55%",
+          "y": "30%",
+          "size": "174",
+          "opacity": 0.08
+        }
+      ]
     }
   },
   {
@@ -708,7 +980,8 @@
       "header": "detailed",
       "body": "bullet-mix",
       "signature": "simple",
-      "calloutStyle": "highlight-box"
+      "calloutStyle": "highlight-box",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "wide",
@@ -727,7 +1000,23 @@
       "headerStyle": "band",
       "footerStyle": "line",
       "divider": "dashed",
-      "iconStyle": "outline"
+      "iconStyle": "outline",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "40%",
+          "y": "42%",
+          "size": "100",
+          "opacity": 0.08
+        },
+        {
+          "type": "ring",
+          "x": "50%",
+          "y": "27%",
+          "size": "192",
+          "opacity": 0.11
+        }
+      ]
     }
   },
   {
@@ -751,7 +1040,8 @@
       "header": "contact-band",
       "body": "impact",
       "signature": "formal",
-      "calloutStyle": "none"
+      "calloutStyle": "none",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "tight",
@@ -770,7 +1060,23 @@
       "headerStyle": "split-band",
       "footerStyle": "block",
       "divider": "double",
-      "iconStyle": "minimal"
+      "iconStyle": "minimal",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "47%",
+          "y": "53%",
+          "size": "120",
+          "opacity": 0.11
+        },
+        {
+          "type": "blob",
+          "x": "45%",
+          "y": "24%",
+          "size": "210",
+          "opacity": 0.14
+        }
+      ]
     }
   },
   {
@@ -794,7 +1100,8 @@
       "header": "minimal",
       "body": "narrative",
       "signature": "simple",
-      "calloutStyle": "quote"
+      "calloutStyle": "quote",
+      "photoPosition": "left"
     },
     "layoutOptions": {
       "paragraphSpacing": "normal",
@@ -813,7 +1120,23 @@
       "headerStyle": "ribbon",
       "footerStyle": "signature-bar",
       "divider": "gradient",
-      "iconStyle": "rounded"
+      "iconStyle": "rounded",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "54%",
+          "y": "64%",
+          "size": "140",
+          "opacity": 0.14
+        },
+        {
+          "type": "ring",
+          "x": "40%",
+          "y": "21%",
+          "size": "120",
+          "opacity": 0.16
+        }
+      ]
     }
   },
   {
@@ -837,7 +1160,8 @@
       "header": "detailed",
       "body": "bullet-mix",
       "signature": "formal",
-      "calloutStyle": "highlight-box"
+      "calloutStyle": "highlight-box",
+      "photoPosition": "right"
     },
     "layoutOptions": {
       "paragraphSpacing": "wide",
@@ -856,7 +1180,23 @@
       "headerStyle": "plain",
       "footerStyle": "none",
       "divider": "solid",
-      "iconStyle": "outline"
+      "iconStyle": "outline",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "61%",
+          "y": "75%",
+          "size": "160",
+          "opacity": 0.17
+        },
+        {
+          "type": "blob",
+          "x": "35%",
+          "y": "73%",
+          "size": "138",
+          "opacity": 0.06
+        }
+      ]
     }
   }
 ]
