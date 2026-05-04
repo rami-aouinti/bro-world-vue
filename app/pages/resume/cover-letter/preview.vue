@@ -32,6 +32,16 @@ const letterItemConfig = computed(() => activeTemplate.value?.items || {})
 const letterStyleOptionsFor = (key: 'date' | 'address') => ((letterItemConfig.value as any)?.[key]?.styles || ['regular','medium','semibold','bold']).map((v:string)=>({title:v,value:fontWeightMap[v]||'400'}))
 const letterSizeBoundsFor = (key: 'date' | 'address') => ({ min: (letterItemConfig.value as any)?.[key]?.size?.min ?? 16, max: (letterItemConfig.value as any)?.[key]?.size?.max ?? 22 })
 const editableDecorObjects = ref<any[]>([])
+const defaultDecorPresets = [
+  { type: 'circle', x: 8, y: 6, size: 80, opacity: 0.08 },
+  { type: 'diamond', x: 70, y: 75, size: 120, opacity: 0.08 },
+  { type: 'star', x: 14, y: 84, size: 28, opacity: 0.1 },
+  { type: 'square', x: 82, y: 10, size: 24, opacity: 0.08 },
+]
+const templateDecorPresets = computed(() => {
+  const fromTemplate = (activeTemplate.value?.decor?.objects || []).map((obj:any) => normalizeDecorObject(obj))
+  return fromTemplate.length ? fromTemplate : defaultDecorPresets.map((obj) => normalizeDecorObject(obj))
+})
 
 function toPercentNumber(value: unknown, fallback = 50): number {
   if (typeof value === 'number' && Number.isFinite(value)) return Math.min(100, Math.max(0, value))
@@ -107,7 +117,8 @@ const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const layoutMenuOpen = ref(false)
 
 watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; for (const key of ['date','address']) { const b=items[key]?.size; if (b) letterElementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) letterElementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) letterElementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
-function addDecorObject(){ editableDecorObjects.value.push({ type:'circle', x:'50%', y:'50%', size:'120', opacity:0.15 }) }
+function addDecorObject(){ editableDecorObjects.value.push(normalizeDecorObject({ type:'circle', x:50, y:50, size:120, opacity:0.15 })) }
+function addDecorObjectFromPreset(preset:any){ editableDecorObjects.value.push(normalizeDecorObject({ ...preset })) }
 function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
 function goToCreateResume(){ navigateTo('/resume/preview') }
 function applyPreviewTemplate(id:string){ selectedTemplate.value = id; layoutMenuOpen.value = false }
@@ -133,6 +144,20 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
      </v-card-text>
     </template>
     <template #right>
+      <v-card class="mt-3 pa-3" variant="outlined">
+        <div class="text-caption mb-2">Template decor presets</div>
+        <div class="d-flex flex-wrap ga-2">
+          <v-btn
+            v-for="(preset, presetIndex) in templateDecorPresets"
+            :key="`preset-${presetIndex}`"
+            size="x-small"
+            variant="tonal"
+            @click="addDecorObjectFromPreset(preset)"
+          >
+            {{ preset.type }}
+          </v-btn>
+        </div>
+      </v-card>
       <v-btn class="mt-3" size="small" variant="outlined" @click="addDecorObject">Add decor</v-btn>
       <v-card v-for="(obj,i) in editableDecorObjects" :key="`obj-${i}`" class="mt-3 pa-2" variant="outlined">
         <AppSelect v-model="obj.type" :items="decorShapeOptions.map((s)=>({title:s,value:s}))" label="Shape" hide-details class="mt-3"/>
