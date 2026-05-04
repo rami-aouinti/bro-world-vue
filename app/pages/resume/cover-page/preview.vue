@@ -232,8 +232,8 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
 .hero--double::before{content:'';position:absolute;left:calc(var(--bar-primary-width) + 6px);top:0;bottom:0;width:var(--bar-secondary-width);background:var(--cp-secondary);border-radius:var(--bar-radius)}
 .avatar-upload{cursor:pointer;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px');overflow:hidden}
 .photo-shell{display:block;position:relative}
-.photo-quick-trigger{position:absolute;top:-22px;left:-22px;z-index:4;opacity:0;transition:opacity .15s ease;background:#fff;border:1px solid rgba(15,23,42,.2)}
-.photo-shell:hover .photo-quick-trigger,.photo-quick-trigger:focus-visible{opacity:1}
+.photo-quick-trigger{position:absolute;top:6px;left:6px;z-index:6;opacity:0;transition:opacity .15s ease;background:#fff;border:1px solid rgba(15,23,42,.2)}
+.photo-shell:hover .photo-quick-trigger,.photo-shell:focus-within .photo-quick-trigger,.photo-quick-trigger:focus-visible{opacity:1}
 .photo-quick-menu{border:1px solid rgba(148,163,184,.4)}
 .photo-shell__img{width:100%;height:100%}
 .photo-shell__img :deep(.v-img__img)
