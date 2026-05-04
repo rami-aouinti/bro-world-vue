@@ -163,8 +163,8 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
           </div>
           <HoverRichTextEditor v-model="model.fullName" />
           <HoverRichTextEditor v-model="model.role" />
-          <div class="styled-item" :style="{fontSize:`${letterElementStyles.date.size}px`,color:letterElementStyles.date.color,fontWeight:letterElementStyles.date.weight}"><HoverRichTextEditor v-model="model.date" /></div>
-          <div class="styled-item" :style="{fontSize:`${letterElementStyles.address.size}px`,color:letterElementStyles.address.color,fontWeight:letterElementStyles.address.weight}"><HoverRichTextEditor v-model="model.location" /></div>
+          <HoverRichTextEditor v-model="model.date" :font-size="`${letterElementStyles.date.size}px`" :color="letterElementStyles.date.color" :font-weight="letterElementStyles.date.weight" />
+          <HoverRichTextEditor v-model="model.location" :font-size="`${letterElementStyles.address.size}px`" :color="letterElementStyles.address.color" :font-weight="letterElementStyles.address.weight" />
         </div>
       </header>
       <section><HoverRichTextEditor v-model="model.heading" />

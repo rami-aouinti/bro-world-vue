@@ -194,14 +194,14 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
             </v-menu>
             <v-img :src="model.photoUrl" cover @click.stop="openPhotoUpload" class="photo-shell__img"/>
           </div>
-          <div class="styled-item" :style="{fontSize:`${elementStyles.fullName.size}px`,color:elementStyles.fullName.color,fontWeight:elementStyles.fullName.weight}"><HoverRichTextEditor v-model="model.fullName" /></div>
-          <div class="styled-item" :style="{fontSize:`${elementStyles.role.size}px`,color:elementStyles.role.color,fontWeight:elementStyles.role.weight}"><HoverRichTextEditor v-model="model.role" /></div>
+          <HoverRichTextEditor v-model="model.fullName" :font-size="`${elementStyles.fullName.size}px`" :color="elementStyles.fullName.color" :font-weight="elementStyles.fullName.weight" />
+          <HoverRichTextEditor v-model="model.role" :font-size="`${elementStyles.role.size}px`" :color="elementStyles.role.color" :font-weight="elementStyles.role.weight" />
         </div>
       </header>
-      <section><div class="styled-item" :style="{fontSize:`${elementStyles.heading.size}px`,color:elementStyles.heading.color,fontWeight:elementStyles.heading.weight}"><HoverRichTextEditor v-model="model.heading" /></div>
-        <div class="styled-item" :style="{fontSize:`${elementStyles.summary.size}px`,color:elementStyles.summary.color,fontWeight:elementStyles.summary.weight}"><HoverRichTextEditor v-model="model.summary" /></div>
-        <div class="styled-item" :style="{fontSize:`${elementStyles.email.size}px`,color:elementStyles.email.color,fontWeight:elementStyles.email.weight}"><HoverRichTextEditor v-model="model.email" /></div>
-        <div class="styled-item" :style="{fontSize:`${elementStyles.phone.size}px`,color:elementStyles.phone.color,fontWeight:elementStyles.phone.weight}"><HoverRichTextEditor v-model="model.phone" /></div>
+      <section><HoverRichTextEditor v-model="model.heading" :font-size="`${elementStyles.heading.size}px`" :color="elementStyles.heading.color" :font-weight="elementStyles.heading.weight" />
+        <HoverRichTextEditor v-model="model.summary" :font-size="`${elementStyles.summary.size}px`" :color="elementStyles.summary.color" :font-weight="elementStyles.summary.weight" />
+        <HoverRichTextEditor v-model="model.email" :font-size="`${elementStyles.email.size}px`" :color="elementStyles.email.color" :font-weight="elementStyles.email.weight" />
+        <HoverRichTextEditor v-model="model.phone" :font-size="`${elementStyles.phone.size}px`" :color="elementStyles.phone.color" :font-weight="elementStyles.phone.weight" />
       </section>
       <footer v-if="signatureDataUrl" class="signature-footer"><img :src="signatureDataUrl" alt="signature" class="signature-image"/></footer>
     </main></div>
