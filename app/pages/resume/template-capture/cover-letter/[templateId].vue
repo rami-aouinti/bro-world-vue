@@ -52,15 +52,16 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
   <main
     class="capture-cover-letter"
     :style="{
-      '--cl-primary': selectedTemplate.theme.palette.primary,
-      '--cl-secondary': selectedTemplate.theme.palette.secondary,
-      '--cl-text': selectedTemplate.theme.palette.text,
-      '--cl-muted': selectedTemplate.theme.palette.muted,
-      '--cl-bg': selectedTemplate.theme.palette.pageBackground,
+      '--cp-primary': selectedTemplate.theme.palette.primary,
+      '--cp-secondary': selectedTemplate.theme.palette.secondary,
+      '--cp-text': selectedTemplate.theme.palette.text,
+      '--cp-muted': selectedTemplate.theme.palette.muted,
+      '--cp-bg': selectedTemplate.theme.palette.pageBackground,
       '--section-divider-style': resolvedStyles.sectionDividerStyle,
       '--paragraph-spacing': `${resolvedStyles.paragraphSpacing}px`,
-      '--cl-radius': `${resolvedStyles.radius}px`,
-      '--cl-bar-primary-width': `${resolvedStyles.barPrimaryWidth}px`,
+      '--cp-radius': `${resolvedStyles.radius}px`,
+      '--bar-primary-width': `${resolvedStyles.barPrimaryWidth}px`,
+      '--bar-secondary-width': `${resolvedStyles.barSecondaryWidth}px`,
       '--cl-shadow': resolvedStyles.shadow,
     }"
   >
@@ -75,8 +76,8 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
       <p class="date" :style="itemStyles.date">May 3, 2026</p>
       <p class="address" :style="itemStyles.address">Paris, France</p>
     </div>
-    <header class="hero">
-      <img src="/img/team-1.jpg" alt="profile" class="capture-photo">
+    <header class="hero" :class="{ 'hero--double': selectedTemplate.hero?.barLayout === 'double' }">
+      <img v-if="selectedTemplate.hero?.showPhoto !== false" src="/img/team-1.jpg" alt="profile" class="capture-photo">
       <h1>Alex Martin</h1>
       <p class="role">Senior Full Stack Developer</p>
     </header>
@@ -93,19 +94,19 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
 </template>
 
 <style scoped>
-.capture-cover-letter { position: relative; overflow: hidden; width: 850px; height: 1123px; padding: 72px; background: var(--cl-bg); color: var(--cl-text); border-radius: var(--cl-radius); box-shadow: var(--cl-shadow); }
+.capture-cover-letter { position: relative; overflow: hidden; width: 850px; height: 1123px; padding: 72px; background: var(--cp-bg); color: var(--cp-text); border-radius: var(--cp-radius); box-shadow: var(--cl-shadow); }
 .meta-top-right { position: absolute; top: 72px; right: 72px; text-align: right; }
-.date { color: var(--cl-muted); margin: 0; }
+.date { color: var(--cp-muted); margin: 0; }
 .address { margin-top: 8px; }
-.hero { border-left: var(--cl-bar-primary-width) solid var(--cl-primary); padding-left: 24px; margin-bottom: 48px; }
-h1 { color: var(--cl-text); margin: 0; }
-.role { color: var(--cl-muted); margin-top: 8px; font-size: 24px; }
+.hero { border-left: var(--bar-primary-width) solid var(--cp-primary);position:relative;border-radius:var(--cp-radius); padding-left: 24px; margin-bottom: 48px; }
+h1 { color: var(--cp-text); margin: 0; }
+.role { color: var(--cp-muted); margin-top: 8px; font-size: 24px; }
 p { font-size: 24px; line-height: 1.5; margin: var(--paragraph-spacing) 0; }
 .intro { font-weight: 700; }
-.signature { margin-top: 60px; border-top: 2px var(--section-divider-style) var(--cl-secondary); padding-top: 24px; width: fit-content; }
-.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cl-primary) 35%,transparent)}
+.signature { margin-top: 60px; border-top: 2px var(--section-divider-style) var(--cp-secondary); padding-top: 24px; width: fit-content; }
+.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}
 .decor-circle{border-radius:999px}
-.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cl-secondary) 55%,transparent)}
+.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}
 .decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}
 .decor-square{border-radius:10px}
 .decor-diamond{border-radius:8px;transform:translate(-50%,-50%) rotate(45deg)}
@@ -113,6 +114,7 @@ p { font-size: 24px; line-height: 1.5; margin: var(--paragraph-spacing) 0; }
 .decor-triangle{-webkit-clip-path:polygon(50% 0%,0 100%,100% 100%);clip-path:polygon(50% 0%,0 100%,100% 100%)}
 .decor-pill{border-radius:999px}
 .decor-bar{border-radius:999px}
+.hero--double::before{content:"";position:absolute;left:calc(var(--bar-primary-width) + 6px);top:0;bottom:0;width:var(--bar-secondary-width);background:var(--cp-secondary);border-radius:var(--cp-radius)}
 </style>
 
 <style scoped>

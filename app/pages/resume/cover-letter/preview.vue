@@ -19,13 +19,12 @@ const textFontSize = ref(24)
 const textColor = ref('#475569')
 const barRadius = ref(0)
 const barLayout = ref<'single' | 'double'>('single')
-const letterElementStyles = reactive({ date:{size:18,color:'#475569',weight:'400'}, address:{size:18,color:'#334155',weight:'400'} })
+const letterElementStyles = reactive({ date:{size:18,color:'#475569',weight:'400'}, address:{size:18,color:'#334155',weight:'400'}, heading:{size:34,color:'#0f172a',weight:'700'}, company:{size:24,color:'#0f172a',weight:'600'}, companyParagraph:{size:22,color:'#334155',weight:'400'}, summary:{size:22,color:'#334155',weight:'400'}, email:{size:24,color:'#0f172a',weight:'600'}, phone:{size:24,color:'#0f172a',weight:'500'} })
 const fontWeightMap: Record<string, string> = { regular: '400', medium: '500', semibold: '600', bold: '700' }
 const primaryBarWidth = ref(10)
 const secondaryBarWidth = ref(5)
 const model = reactive({ fullName:'Alex Martin', location:'221B Baker Street, London, UK', date:new Date().toLocaleDateString('en-US'), heading:'Cover Letter', company:'Dear Hiring Manager,', companyParagraph:'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.', summary:'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.', email:'Sincerely,', phone:'Alex Martin' })
 const activeTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
-const letterItemConfig = computed(() => activeTemplate.value?.items || {})
 const editableDecorObjects = ref<any[]>([])
 const defaultDecorPresets = [
   { type: 'circle', x: 8, y: 6, size: 80, opacity: 0.08 },
@@ -111,7 +110,7 @@ const signatureDialogOpen = ref(false)
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const layoutMenuOpen = ref(false)
 
-watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; for (const key of ['date','address']) { const b=items[key]?.size; if (b) letterElementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) letterElementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) letterElementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
+watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; for (const key of ['date','address','heading','company','companyParagraph','summary','email','phone']) { const b=items[key]?.size; if (b) letterElementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) letterElementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) letterElementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
 function addDecorObject(){ editableDecorObjects.value.push(normalizeDecorObject({ type:'circle', x:50, y:50, size:120, opacity:0.15 })) }
 function addDecorObjectFromPreset(preset:any){ editableDecorObjects.value.push(normalizeDecorObject({ ...preset })) }
 function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
@@ -198,13 +197,13 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
         </div>
       </header>
       <section class="letter-body">
-        <HoverRichTextEditor v-model="model.heading" />
-        <HoverRichTextEditor v-model="model.company" />
-        <HoverRichTextEditor v-model="model.companyParagraph" />
-        <HoverRichTextEditor v-model="model.summary" />
+        <HoverRichTextEditor v-model="model.heading" :font-size="`${letterElementStyles.heading.size}px`" :color="letterElementStyles.heading.color" :font-weight="letterElementStyles.heading.weight" />
+        <HoverRichTextEditor v-model="model.company" :font-size="`${letterElementStyles.company.size}px`" :color="letterElementStyles.company.color" :font-weight="letterElementStyles.company.weight" />
+        <HoverRichTextEditor v-model="model.companyParagraph" :font-size="`${letterElementStyles.companyParagraph.size}px`" :color="letterElementStyles.companyParagraph.color" :font-weight="letterElementStyles.companyParagraph.weight" />
+        <HoverRichTextEditor v-model="model.summary" :font-size="`${letterElementStyles.summary.size}px`" :color="letterElementStyles.summary.color" :font-weight="letterElementStyles.summary.weight" />
         <div class="signature-rule" />
-        <HoverRichTextEditor v-model="model.email" />
-        <HoverRichTextEditor v-model="model.phone" />
+        <HoverRichTextEditor v-model="model.email" :font-size="`${letterElementStyles.email.size}px`" :color="letterElementStyles.email.color" :font-weight="letterElementStyles.email.weight" />
+        <HoverRichTextEditor v-model="model.phone" :font-size="`${letterElementStyles.phone.size}px`" :color="letterElementStyles.phone.color" :font-weight="letterElementStyles.phone.weight" />
       </section>
       <footer v-if="signatureDataUrl" class="signature-footer"><img :src="signatureDataUrl" alt="signature" class="signature-image"/></footer>
     </main></div>
