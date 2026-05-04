@@ -106,10 +106,10 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="{left:obj.x,top:obj.y,width:`${obj.size}px`,height:`${obj.size}px`,opacity:obj.opacity}"/>
       <header class="hero" :class="{'hero--double': barLayout === 'double', 'hero--photo-right': photoPosition === 'right'}">
         <div class="hero-row" :class="{ 'hero-row--right': photoPosition === 'right' }">
-          <v-avatar :size="imageSize" class="mb-4 avatar-upload hero-avatar" :style="{ borderRadius: imageShape === 'circle' ? '999px' : '12px' }" @click="openPhotoUpload">
-            <v-img :src="model.photoUrl" cover @click.stop="openPhotoUpload"/>
+          <div class="mb-4 avatar-upload hero-avatar photo-shell" :style="{ width: `${imageSize}px`, height: `${imageSize}px`, borderRadius: imageShape === 'circle' ? '999px' : '12px' }" @click="openPhotoUpload">
+            <v-img :src="model.photoUrl" cover @click.stop="openPhotoUpload" class="photo-shell__img"/>
             <div class="avatar-overlay">Change</div>
-          </v-avatar>
+          </div>
           <HoverRichTextEditor v-model="model.fullName" />
           <HoverRichTextEditor v-model="model.role" />
           <HoverRichTextEditor v-model="model.date" />
