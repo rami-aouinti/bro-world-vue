@@ -63,8 +63,7 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
       '--section-divider-style': resolvedStyles.sectionDividerStyle,
       '--section-spacing': `${resolvedStyles.sectionSpacing}px`,
       '--cp-radius': `${resolvedStyles.radius}px`,
-      '--bar-primary-width': `${resolvedStyles.barWidth}px`,
-      '--bar-secondary-width': `${Math.max(3, Math.round(resolvedStyles.barWidth * 0.5))}px`,
+      '--cp-bar-width': `${resolvedStyles.barWidth}px`,
       '--cp-shadow': resolvedStyles.shadow,
     }"
   >
@@ -79,8 +78,8 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
       <p class="date">May 3, 2026</p>
       <p class="address">Paris, France</p>
     </div>
-    <header class="hero" :class="{ 'hero--double': selectedTemplate.hero?.barLayout === 'double', 'hero--photo-right': selectedTemplate.hero?.photoPosition === 'right' }">
-      <img v-if="selectedTemplate.hero?.showPhoto !== false" src="/img/team-1.jpg" alt="profile" class="capture-photo">
+    <header class="hero">
+      <img src="/img/team-1.jpg" alt="profile" class="capture-photo">
       <h1 :style="itemStyles.fullName">Alex Martin</h1>
       <p class="role" :style="itemStyles.role">Senior Full Stack Developer</p>
     </header>
@@ -100,9 +99,7 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
 .meta-top-right { position: absolute; top: 80px; right: 80px; text-align: right; color: var(--cp-muted); }
 .date, .address { margin: 0; font-size: 18px; }
 .address { margin-top: 8px; color: var(--cp-text); }
-.hero { border-left: var(--bar-primary-width) solid var(--cp-primary); padding-left: 24px; margin-bottom: 48px; position:relative; }
-.hero--photo-right { display:flex; flex-direction:column; align-items:flex-end; }
-.hero--double::before{content:"";position:absolute;left:calc(var(--bar-primary-width) + 6px);top:0;bottom:0;width:var(--bar-secondary-width);background:var(--cp-secondary);border-radius:8px}
+.hero { border-left: var(--cp-bar-width) solid var(--cp-primary); padding-left: 24px; margin-bottom: 48px; }
 h1 { font-size: 58px; margin: 0; }
 p { font-size: 24px; color: var(--cp-muted); }
 .role { margin-top: 8px; }
