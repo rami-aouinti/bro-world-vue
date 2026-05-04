@@ -40,6 +40,20 @@ const templateDecorPresets = computed(() => {
   return fromTemplate.length ? fromTemplate : defaultDecorPresets.map((obj) => normalizeDecorObject(obj))
 })
 
+const templateItemConfig = computed(() => activeTemplate.value?.items || {})
+const defaultBarDesignConfig = {
+  barRadius: { min: 0, max: 30 },
+  barLayout: ['single', 'double'],
+  barWidth: { min: 4, max: 24 },
+  secondaryBarWidth: { min: 2, max: 20 },
+}
+const activeBarDesignConfig = computed(() => {
+  const firstItem = Object.values((templateItemConfig.value as any) || {})[0] as
+    | { designConfig?: typeof defaultBarDesignConfig }
+    | undefined
+  return firstItem?.designConfig || defaultBarDesignConfig
+})
+
 function toPercentNumber(value: unknown, fallback = 50): number {
   if (typeof value === 'number' && Number.isFinite(value)) return Math.min(100, Math.max(0, value))
   if (typeof value === 'string') {

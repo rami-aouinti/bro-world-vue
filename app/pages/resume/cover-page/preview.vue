@@ -49,8 +49,6 @@ const activeBarDesignConfig = computed(() => {
     | undefined
   return firstItem?.designConfig || defaultBarDesignConfig
 })
-const styleOptionsFor = (key: string) => ((templateItemConfig.value as any)?.[key]?.styles || ['regular','medium','semibold','bold']).map((v:string)=>({title:v,value:fontWeightMap[v]||'400'}))
-const sizeBoundsFor = (key: string, fallbackMin: number, fallbackMax: number) => ({ min: (templateItemConfig.value as any)?.[key]?.size?.min ?? fallbackMin, max: (templateItemConfig.value as any)?.[key]?.size?.max ?? fallbackMax })
 const editableDecorObjects = ref<any[]>([])
 
 function toPercentNumber(value: unknown, fallback = 50): number {
