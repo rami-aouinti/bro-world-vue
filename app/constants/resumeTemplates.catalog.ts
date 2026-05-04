@@ -556,6 +556,9 @@ const GENERATED_LAYOUT_BY_STRUCTURE: Record<string, string> = {
   'aside-full-right': 'layout-aside-right-a',
   'bar-left': 'layout-aside-left-b',
   'bar-right': 'layout-aside-right-b',
+  'bar-light': 'layout-aside-left-b',
+  'aside-split': 'layout-aside-left-a',
+  'no-aside-split': 'layout-no-aside-b',
 }
 
 const GENERATED_STRUCTURE_FALLBACK: Record<string, string> = {
@@ -567,6 +570,9 @@ const GENERATED_STRUCTURE_FALLBACK: Record<string, string> = {
   'aside-full-right': 'aside-right',
   'bar-left': 'aside-left',
   'bar-right': 'aside-right',
+  'bar-light': 'aside-left',
+  'aside-split': 'aside-left',
+  'no-aside-split': 'no-aside',
 }
 
 const resolveStructureId = (rawStructure: string): string =>
