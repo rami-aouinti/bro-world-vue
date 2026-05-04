@@ -148,7 +148,24 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
       <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-robot-outline" @click="goToCreateResume">AI</v-btn>
       <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-signature-freehand" @click="openSignatureDialog">Signature</v-btn>
       <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-file-pdf-box" @click="downloadPdf">PDF</v-btn>
-      <v-menu v-model="layoutMenuOpen"><template #activator="{ props }"><v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-view-grid-outline" v-bind="props">Templates</v-btn></template><v-list density="compact"><v-list-item v-for="template in coverPageTemplates" :key="template.id" :title="template.title" @click="applyPreviewTemplate(template.id)"/></v-list></v-menu>
+      <v-menu v-model="layoutMenuOpen" location="bottom center" origin="top center">
+        <template #activator="{ props }"><v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-view-grid-outline" v-bind="props">Templates</v-btn></template>
+        <v-card class="template-menu-card">
+          <div class="template-menu-grid">
+            <v-card
+              v-for="template in coverPageTemplates"
+              :key="`cover-page-preview-${template.id}`"
+              class="template-menu-item"
+              :class="{ 'template-menu-item--active': selectedTemplate === template.id }"
+              variant="outlined"
+              @click="applyPreviewTemplate(template.id)"
+            >
+              <v-img :src="template.image" height="96" cover />
+              <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
+            </v-card>
+          </div>
+        </v-card>
+      </v-menu>
     </div></div>
     <div class="py-8 d-flex justify-center"><main class="capture-cover-page" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="{left:`${obj.x}%`,top:`${obj.y}%`,width:`${obj.size}px`,height:`${obj.size}px`,opacity:obj.opacity}"/>
@@ -227,7 +244,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
 .app-page-drawers{
   display:none !important
 }
-@media print{.preview-toolbar-wrap,.app-page-drawers,.avatar-overlay{display:none !important}}h1{font-size:58px;margin:0}p{font-size:var(--body-size);color:var(--body-color)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:40px;margin:0 0 16px}section{border-top:3px var(--section-divider-style) var(--cp-secondary);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.preview-toolbar-wrap{position:sticky;top:76px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background:rgba(var(--v-theme-primary))}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}
+@media print{.preview-toolbar-wrap,.app-page-drawers,.avatar-overlay{display:none !important}}h1{font-size:58px;margin:0}p{font-size:var(--body-size);color:var(--body-color)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:40px;margin:0 0 16px}section{border-top:3px var(--section-divider-style) var(--cp-secondary);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.preview-toolbar-wrap{position:sticky;top:76px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background:rgba(var(--v-theme-primary))}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}.template-menu-card{width:min(92vw,980px);max-height:min(76vh,760px);overflow:auto}.template-menu-grid{display:grid;gap:10px;grid-template-columns:repeat(4,minmax(0,1fr));padding:12px}.template-menu-item{cursor:pointer;border-radius:12px;overflow:hidden;border:1px solid rgba(15,23,42,.08)}.template-menu-item--active{border-color:rgb(var(--v-theme-primary));box-shadow:0 0 0 1px rgb(var(--v-theme-primary))}.template-menu-item :deep(.v-img){border-bottom:1px solid rgba(15,23,42,.08)}@media (max-width:1100px){.template-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 @media (prefers-color-scheme: dark) {
   .capture-cover-page,
