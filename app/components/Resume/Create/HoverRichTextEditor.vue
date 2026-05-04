@@ -6,7 +6,7 @@ import StarterKit from '@tiptap/starter-kit'
 const props = withDefaults(
   defineProps<{ modelValue: string; label?: string; placeholder?: string }>(),
   {
-    label: 'Text',
+    label: '',
     placeholder: 'Write here...',
   },
 )
@@ -40,7 +40,7 @@ const isEmpty = computed(() => !props.modelValue)
     @mouseenter="hover = true"
     @mouseleave="hover = false"
   >
-    <label class="text-body-2 mb-2 d-inline-block">{{ label }}</label>
+    <label v-if="label" class="text-body-2 mb-2 d-inline-block">{{ label }}</label>
     <div v-show="hover" class="hover-editor__toolbar">
       <v-btn
         size="x-small"
@@ -55,6 +55,32 @@ const isEmpty = computed(() => !props.modelValue)
         :active="editor?.isActive('italic')"
         @click="editor?.chain().focus().toggleItalic().run()"
         >I</v-btn
+      >
+      <v-btn
+        size="x-small"
+        variant="text"
+        :active="editor?.isActive('strike')"
+        @click="editor?.chain().focus().toggleStrike().run()"
+        >S</v-btn
+      >
+      <v-btn
+        size="x-small"
+        variant="text"
+        :active="editor?.isActive('orderedList')"
+        @click="editor?.chain().focus().toggleOrderedList().run()"
+        >1.</v-btn
+      >
+      <v-btn
+        size="x-small"
+        variant="text"
+        @click="editor?.chain().focus().undo().run()"
+        >↶</v-btn
+      >
+      <v-btn
+        size="x-small"
+        variant="text"
+        @click="editor?.chain().focus().redo().run()"
+        >↷</v-btn
       >
       <v-btn
         size="x-small"
@@ -84,10 +110,15 @@ const isEmpty = computed(() => !props.modelValue)
 }
 .hover-editor__surface {
   position: relative;
-  border: 1px solid rgba(120, 120, 120, 0.45);
+  border: 1px solid transparent;
   border-radius: 10px;
   min-height: 100px;
   padding: 10px;
+  transition: border-color .15s ease;
+}
+.hover-editor:hover .hover-editor__surface,
+.hover-editor__surface:focus-within {
+  border-color: rgba(120, 120, 120, 0.45);
 }
 .hover-editor__placeholder {
   position: absolute;
