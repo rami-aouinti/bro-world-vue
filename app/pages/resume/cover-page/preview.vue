@@ -97,7 +97,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
     </div></div>
     <div class="py-8 d-flex justify-center"><main class="capture-cover-page" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground}">
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="{left:obj.x,top:obj.y,width:`${obj.size}px`,height:`${obj.size}px`,opacity:obj.opacity}"/>
-      <header class="hero"><v-avatar :size="imageSize" class="mb-4 avatar-upload" @click="openPhotoUpload"><v-img :src="model.photoUrl" cover/></v-avatar>
+      <header class="hero"><v-avatar :size="imageSize" class="mb-4 avatar-upload" :rounded="imageShape === 'circle' ? 'circle' : 'lg'" @click="openPhotoUpload"><v-img :src="model.photoUrl" cover/></v-avatar>
         <h1 contenteditable="true" @input="model.fullName=($event.target as HTMLElement).innerText">{{ model.fullName }}</h1>
         <p contenteditable="true" @input="model.role=($event.target as HTMLElement).innerText">{{ model.role }}</p>
         <p class="meta" contenteditable="true" @input="model.date=($event.target as HTMLElement).innerText">{{ model.date }}</p>
@@ -114,7 +114,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
   </v-container>
 </div>
 </template>
-<style scoped>.capture-cover-page{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:80px;background:var(--cp-bg);color:var(--cp-text)}.hero{border-left:10px solid var(--cp-primary);padding-left:24px;margin-bottom:48px}.avatar-upload{cursor:pointer;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px');border-radius:v-bind(imageShape === 'circle' ? '999px' : '12px')}
+<style scoped>.capture-cover-page{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:80px;background:var(--cp-bg);color:var(--cp-text)}.hero{border-left:10px solid var(--cp-primary);padding-left:24px;margin-bottom:48px}.avatar-upload{cursor:pointer;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px')}
 :global(body.print-cover-mode) .preview-toolbar-wrap,:global(body.print-cover-mode) .v-navigation-drawer,:global(body.print-cover-mode) .v-app-bar,:global(body.print-cover-mode) .app-page-drawers{display:none !important}
 @media print{.preview-toolbar-wrap,.app-page-drawers{display:none !important}}h1{font-size:58px;margin:0}p{font-size:24px;color:var(--cp-muted)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:40px;margin:0 0 16px}section{border-top:3px solid var(--cp-secondary);padding-top:24px}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.preview-toolbar-wrap{position:sticky;top:74px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background:rgba(255,255,255,.92)}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}</style>
 
