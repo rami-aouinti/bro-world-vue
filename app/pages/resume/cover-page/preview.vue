@@ -23,6 +23,37 @@ const model = reactive({
 const activeTemplate = computed(() => GENERATED_COVER_PAGE_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_PAGE_TEMPLATES[0])
 const decorObjects = computed(() => activeTemplate.value?.decor?.objects || [])
 const styleVariantClass = computed(() => `variant-${activeTemplate.value?.name?.split('-')[2] || '01'}`)
+const layoutMenuOpen = ref(false)
+const signatureDialogOpen = ref(false)
+const signatureCanvas = ref<HTMLCanvasElement | null>(null)
+const drawingSignature = ref(false)
+const saveSuccess = ref('')
+
+function goToCreateResume() { navigateTo('/resume/preview') }
+function downloadPdf() { window.print() }
+function applyPreviewTemplate(templateId: string) { selectedTemplate.value = templateId; layoutMenuOpen.value = false }
+function saveFromPreview() {
+  localStorage.setItem('resume-cover-preview-page', JSON.stringify({ template: selectedTemplate.value, model }))
+  saveSuccess.value = 'Saved in local storage.'
+  setTimeout(() => (saveSuccess.value = ''), 1800)
+}
+function openSignatureDialog() {
+  signatureDialogOpen.value = true
+  nextTick(() => {
+    const c = signatureCanvas.value
+    if (!c) return
+    const ctx = c.getContext('2d')
+    if (!ctx) return
+    c.width = c.clientWidth || 680
+    c.height = 200
+    ctx.lineWidth = 2
+    ctx.lineCap = 'round'
+    const point = (e: PointerEvent) => { const r = c.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top } }
+    c.onpointerdown = (e) => { drawingSignature.value = true; const p = point(e); ctx.beginPath(); ctx.moveTo(p.x, p.y) }
+    c.onpointermove = (e) => { if (!drawingSignature.value) return; const p = point(e); ctx.lineTo(p.x, p.y); ctx.stroke() }
+    c.onpointerup = () => { drawingSignature.value = false }
+  })
+}
 
 onMounted(() => {
   const q = typeof route.query.template === 'string' ? route.query.template : ''
@@ -47,7 +78,18 @@ onMounted(() => {
       </template>
     </AppPageDrawers>
 
-    <v-container fluid class="py-8 d-flex justify-center">
+    <v-container fluid>
+      <div class="preview-toolbar-wrap">
+        <div class="preview-toolbar-row">
+          <v-btn class="preview-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-content-save-cog-outline" @click="saveFromPreview">Save</v-btn>
+          <v-btn class="preview-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-robot-outline" @click="goToCreateResume">AI</v-btn>
+          <v-btn class="preview-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-signature-freehand" @click="openSignatureDialog">Signature</v-btn>
+          <v-btn class="preview-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-file-pdf-box" @click="downloadPdf">PDF</v-btn>
+          <v-menu v-model="layoutMenuOpen" location="bottom center" origin="top center"><template #activator="{ props }"><v-btn class="preview-toolbar-btn" color="primary" size="small" variant="outlined" prepend-icon="mdi-view-grid-outline" v-bind="props">Templates</v-btn></template><v-list density="compact" min-width="260"><v-list-item v-for="template in coverPageTemplates" :key="template.id" :title="template.title" @click="applyPreviewTemplate(template.id)" /></v-list></v-menu>
+        </div>
+      </div>
+      <v-alert v-if="saveSuccess" type="success" variant="tonal" class="mb-3" :text="saveSuccess" />
+      <div class="py-8 d-flex justify-center">
       <main
         class="capture-cover-page" :class="styleVariantClass"
         :style="{
@@ -78,6 +120,8 @@ onMounted(() => {
           <p class="meta">{{ model.email }} · {{ model.phone }}</p>
         </section>
       </main>
+      </div>
+      <v-dialog v-model="signatureDialogOpen" max-width="760"><v-card><v-card-title>Signature</v-card-title><v-card-text><canvas ref="signatureCanvas" style="width:100%;height:200px;border:1px solid rgba(0,0,0,.15);border-radius:10px" /></v-card-text></v-card></v-dialog>
     </v-container>
   </div>
 </template>
@@ -102,4 +146,7 @@ section { border-top: 3px solid var(--cp-secondary); padding-top: 24px; }
 .variant-03 h1 { text-transform: uppercase; }
 .variant-04 p { font-style: italic; }
 .variant-05 .hero, .variant-05 .date { text-align: center; border-left: 0; border-top: 10px solid var(--cp-primary); padding-top: 18px; }
+.preview-toolbar-wrap { position: sticky; top: 74px; z-index: 20; display:flex; justify-content:center; margin-bottom:12px; }
+.preview-toolbar-row { display:flex; flex-wrap:wrap; gap:8px; padding:10px 12px; border:1px solid rgba(148,163,184,.35); border-radius:999px; background:rgba(255,255,255,.92); backdrop-filter: blur(8px); }
+.preview-toolbar-btn { text-transform:none; }
 </style>
