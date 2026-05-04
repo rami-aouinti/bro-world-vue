@@ -295,24 +295,26 @@ onMounted(async () => {
           </v-window-item>
 
           <v-window-item value="template">
-            <v-card
-              v-for="template in coverLetterTemplates"
-              :key="template.id"
-              class="template-card"
-              :class="{
-                'template-card--active': selectedTemplate === template.id,
-              }"
-              variant="outlined"
-              @click="selectedTemplate = template.id"
-            >
-              <v-img :src="template.image" height="130" cover />
-              <v-card-text class="template-card__content">
-                <div class="template-card__title">{{ template.title }}</div>
-                <div class="template-card__subtitle">
-                  {{ template.subtitle }}
-                </div>
-              </v-card-text>
-            </v-card>
+            <div class="template-grid">
+              <v-card
+                v-for="template in coverLetterTemplates"
+                :key="template.id"
+                class="template-card"
+                :class="{
+                  'template-card--active': selectedTemplate === template.id,
+                }"
+                variant="outlined"
+                @click="selectedTemplate = template.id"
+              >
+                <v-img :src="template.image" height="130" cover />
+                <v-card-text class="template-card__content">
+                  <div class="template-card__title">{{ template.title }}</div>
+                  <div class="template-card__subtitle">
+                    {{ template.subtitle }}
+                  </div>
+                </v-card-text>
+              </v-card>
+            </div>
           </v-window-item>
         </v-window>
       </template>
@@ -543,7 +545,7 @@ onMounted(async () => {
 .template-grid {
   display: grid;
   gap: 14px;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 .template-card {
   cursor: pointer;
@@ -662,6 +664,15 @@ onMounted(async () => {
   gap: 10px;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   padding: 12px;
+}
+.template-card :deep(.v-img) {
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+@media (max-width: 1100px) {
+  .template-grid,
+  .toolbar-template-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 @media (max-width: 1260px) {
   .builder-layout {
