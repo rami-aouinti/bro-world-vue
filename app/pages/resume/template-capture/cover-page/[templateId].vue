@@ -44,6 +44,10 @@ const itemStyles = computed(() => {
       '--cp-bg': selectedTemplate.theme.palette.pageBackground,
     }"
   >
+    <div class="meta-top-right">
+      <p class="date">May 3, 2026</p>
+      <p class="address">Paris, France</p>
+    </div>
     <header class="hero">
       <img src="/img/team-1.jpg" alt="profile" class="capture-photo">
       <h1 :style="itemStyles.fullName">Alex Martin</h1>
@@ -61,7 +65,10 @@ const itemStyles = computed(() => {
 </template>
 
 <style scoped>
-.capture-cover-page { width: 850px; height: 1123px; padding: 80px; background: var(--cp-bg); color: var(--cp-text); }
+.capture-cover-page { position: relative; width: 850px; height: 1123px; padding: 80px; background: var(--cp-bg); color: var(--cp-text); }
+.meta-top-right { position: absolute; top: 80px; right: 80px; text-align: right; color: var(--cp-muted); }
+.date, .address { margin: 0; font-size: 18px; }
+.address { margin-top: 8px; color: var(--cp-text); }
 .hero { border-left: 10px solid var(--cp-primary); padding-left: 24px; margin-bottom: 48px; }
 h1 { font-size: 58px; margin: 0; }
 p { font-size: 24px; color: var(--cp-muted); }

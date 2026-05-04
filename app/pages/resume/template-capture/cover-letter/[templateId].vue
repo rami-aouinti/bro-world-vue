@@ -40,9 +40,15 @@ const itemStyles = computed(() => {
       '--cl-bg': selectedTemplate.theme.palette.pageBackground,
     }"
   >
-    <p class="date" :style="itemStyles.date">May 3, 2026</p>
-    <p class="address" :style="itemStyles.address">221B Baker Street, London, UK</p>
-    <h1>Cover Letter</h1>
+    <div class="meta-top-right">
+      <p class="date" :style="itemStyles.date">May 3, 2026</p>
+      <p class="address" :style="itemStyles.address">Paris, France</p>
+    </div>
+    <header class="hero">
+      <img src="/img/team-1.jpg" alt="profile" class="capture-photo">
+      <h1>Alex Martin</h1>
+      <p class="role">Senior Full Stack Developer</p>
+    </header>
     <p class="intro">Dear Hiring Manager,</p>
     <p>
       I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture,
@@ -56,10 +62,13 @@ const itemStyles = computed(() => {
 </template>
 
 <style scoped>
-.capture-cover-letter { width: 850px; height: 1123px; padding: 72px; background: var(--cl-bg); color: var(--cl-text); }
-.date { text-align: right; color: var(--cl-muted); }
-.address { text-align: right; margin-top: 8px; }
-h1 { color: var(--cl-primary); margin: 24px 0; }
+.capture-cover-letter { position: relative; width: 850px; height: 1123px; padding: 72px; background: var(--cl-bg); color: var(--cl-text); }
+.meta-top-right { position: absolute; top: 72px; right: 72px; text-align: right; }
+.date { color: var(--cl-muted); margin: 0; }
+.address { margin-top: 8px; }
+.hero { border-left: 10px solid var(--cl-primary); padding-left: 24px; margin-bottom: 48px; }
+h1 { color: var(--cl-text); margin: 0; }
+.role { color: var(--cl-muted); margin-top: 8px; font-size: 24px; }
 p { font-size: 24px; line-height: 1.5; margin: 20px 0; }
 .intro { font-weight: 700; }
 .signature { margin-top: 60px; border-top: 2px solid var(--cl-secondary); padding-top: 24px; width: fit-content; }
