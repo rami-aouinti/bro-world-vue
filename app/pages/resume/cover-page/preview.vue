@@ -19,6 +19,8 @@ const customSecondary = ref('#5FA8D3')
 const customPageBackground = ref('#F8FAFC')
 const textFontSize = ref(24)
 const textColor = ref('#475569')
+const barRadius = ref(0)
+const barLayout = ref<'single' | 'double'>('single')
 const model = reactive({ fullName:'Alex Martin', role:'Senior Full Stack Developer', summary:'Driven engineer delivering robust products with strong UX and clean architecture.', location:'Paris, France', email:'alex@example.com', phone:'+33 6 00 00 00 00', date:new Date().toLocaleDateString('en-US'), photoUrl:photoOptions[0], heading:'About Me' })
 const activeTemplate = computed(() => GENERATED_COVER_PAGE_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_PAGE_TEMPLATES[0])
 const editableDecorObjects = ref<any[]>([])
@@ -89,6 +91,8 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
       <v-text-field v-if="selectedPalette==='custom'" v-model="customPageBackground" label="Custom page background" hide-details class="mt-3"/>
       <v-slider v-model="textFontSize" label="Text size" min="16" max="36" step="1" hide-details class="mt-3"/>
       <v-text-field v-model="textColor" type="color" label="Text color" hide-details class="mt-3"/>
+      <v-slider v-model="barRadius" label="Bar radius" min="0" max="30" step="1" hide-details class="mt-3"/>
+      <AppSelect v-model="barLayout" :items="[{ title: 'Single bar', value: 'single' }, { title: 'Double bars', value: 'double' }]" label="Bar layout" hide-details class="mt-3"/>
     </template>
     <template #right>
       <AppSelect v-model="selectedTemplate" :items="coverPageTemplates.map((t)=>({title:t.title,value:t.id}))" label="Template" hide-details class="mt-3"/>
@@ -110,16 +114,16 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
       <v-btn class="preview-toolbar-btn" size="small" variant="outlined" prepend-icon="mdi-file-pdf-box" @click="downloadPdf">PDF</v-btn>
       <v-menu v-model="layoutMenuOpen"><template #activator="{ props }"><v-btn class="preview-toolbar-btn" size="small" variant="outlined" prepend-icon="mdi-view-grid-outline" v-bind="props">Templates</v-btn></template><v-list density="compact"><v-list-item v-for="template in coverPageTemplates" :key="template.id" :title="template.title" @click="applyPreviewTemplate(template.id)"/></v-list></v-menu>
     </div></div>
-    <div class="py-8 d-flex justify-center"><main class="capture-cover-page" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor}">
+    <div class="py-8 d-flex justify-center"><main class="capture-cover-page" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor,'--bar-radius':`${barRadius}px`}">
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="{left:obj.x,top:obj.y,width:`${obj.size}px`,height:`${obj.size}px`,opacity:obj.opacity}"/>
-      <header class="hero"><v-avatar :size="imageSize" class="mb-4 avatar-upload" :rounded="imageShape === 'circle' ? 'circle' : 'lg'" @click="openPhotoUpload"><v-img :src="model.photoUrl" cover/></v-avatar>
-        <HoverRichTextEditor v-model="model.fullName" label="Full name" />
-        <HoverRichTextEditor v-model="model.role" label="Role" />
+      <header class="hero" :class="{'hero--double': barLayout === 'double' }"><v-avatar :size="imageSize" class="mb-4 avatar-upload" :rounded="imageShape === 'circle' ? 'circle' : 'lg'" @click="openPhotoUpload"><v-img :src="model.photoUrl" cover/></v-avatar>
+        <HoverRichTextEditor v-model="model.fullName" />
+        <HoverRichTextEditor v-model="model.role" />
         <HoverRichTextEditor v-model="model.date" />
         <HoverRichTextEditor v-model="model.location" />
       </header>
       <section><HoverRichTextEditor v-model="model.heading" />
-        <HoverRichTextEditor v-model="model.summary" label="Summary" />
+        <HoverRichTextEditor v-model="model.summary" />
         <HoverRichTextEditor v-model="model.email" />
         <HoverRichTextEditor v-model="model.phone" />
       </section>
@@ -129,7 +133,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
   </v-container>
 </div>
 </template>
-<style scoped>.capture-cover-page{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:80px;background:var(--cp-bg);color:var(--cp-text)}.hero{border-left:10px solid var(--cp-primary);padding-left:24px;margin-bottom:48px}.avatar-upload{cursor:pointer;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px')}
+<style scoped>.capture-cover-page{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:80px;background:var(--cp-bg);color:var(--cp-text)}.hero{border-left:10px solid var(--cp-primary);padding-left:24px;margin-bottom:48px;border-radius:var(--bar-radius)}.hero--double{border-right:6px solid var(--cp-secondary);padding-right:16px}.avatar-upload{cursor:pointer;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px')}
 :global(body.print-cover-mode) .preview-toolbar-wrap,:global(body.print-cover-mode) .v-navigation-drawer,:global(body.print-cover-mode) .v-app-bar,:global(body.print-cover-mode) .app-page-drawers{display:none !important}
 @media print{.preview-toolbar-wrap,.app-page-drawers{display:none !important}}h1{font-size:58px;margin:0}p{font-size:var(--body-size);color:var(--body-color)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:40px;margin:0 0 16px}section{border-top:3px var(--section-divider-style) var(--cp-secondary);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.preview-toolbar-wrap{position:sticky;top:74px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background:rgba(255,255,255,.92)}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}</style>
 

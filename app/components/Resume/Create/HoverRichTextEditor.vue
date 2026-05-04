@@ -59,6 +59,32 @@ const isEmpty = computed(() => !props.modelValue)
       <v-btn
         size="x-small"
         variant="text"
+        :active="editor?.isActive('strike')"
+        @click="editor?.chain().focus().toggleStrike().run()"
+        >S</v-btn
+      >
+      <v-btn
+        size="x-small"
+        variant="text"
+        :active="editor?.isActive('orderedList')"
+        @click="editor?.chain().focus().toggleOrderedList().run()"
+        >1.</v-btn
+      >
+      <v-btn
+        size="x-small"
+        variant="text"
+        @click="editor?.chain().focus().undo().run()"
+        >↶</v-btn
+      >
+      <v-btn
+        size="x-small"
+        variant="text"
+        @click="editor?.chain().focus().redo().run()"
+        >↷</v-btn
+      >
+      <v-btn
+        size="x-small"
+        variant="text"
         :active="editor?.isActive('bulletList')"
         @click="editor?.chain().focus().toggleBulletList().run()"
         >•</v-btn
