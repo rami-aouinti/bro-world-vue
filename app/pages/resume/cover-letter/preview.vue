@@ -8,6 +8,9 @@ const route = useRoute()
 const { coverLetterTemplates } = useResumeTemplates()
 const selectedTemplate = ref(coverLetterTemplates.value[0]?.id || GENERATED_COVER_LETTER_TEMPLATES[0]?.id || '')
 const decorShapeOptions = ['circle', 'ring', 'blob', 'square', 'diamond', 'star', 'triangle', 'pill', 'bar']
+const photoOptions = ['/img/team-1.jpg', '/img/team-2.jpg', '/img/team-3.jpg', '/img/team-4.jpg']
+const imageShape = ref<'circle' | 'square'>('circle')
+const imageSize = ref(84)
 const imageBorderWidth = ref(2)
 const imageBorderColor = ref('#0f172a')
 const photoPosition = ref<'left' | 'right'>('left')
@@ -23,9 +26,8 @@ const letterElementStyles = reactive({ date:{size:18,color:'#475569',weight:'400
 const fontWeightMap: Record<string, string> = { regular: '400', medium: '500', semibold: '600', bold: '700' }
 const primaryBarWidth = ref(10)
 const secondaryBarWidth = ref(5)
-const model = reactive({ fullName:'Alex Martin', location:'221B Baker Street, London, UK', date:new Date().toLocaleDateString('en-US'), heading:'Cover Letter', company:'Dear Hiring Manager,', companyParagraph:'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.', summary:'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.', email:'Sincerely,', phone:'Alex Martin' })
+const model = reactive({ fullName:'Alex Martin', role:'Senior Full Stack Developer', location:'Paris, France', date:new Date().toLocaleDateString('en-US'), heading:'Dear Hiring Manager,', companyParagraph:'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.', summary:'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.', email:'Sincerely,', phone:'Alex Martin', photoUrl: photoOptions[0] })
 const activeTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
-const letterItemConfig = computed(() => activeTemplate.value?.items || {})
 const editableDecorObjects = ref<any[]>([])
 const defaultDecorPresets = [
   { type: 'circle', x: 8, y: 6, size: 80, opacity: 0.08 },
@@ -109,7 +111,9 @@ const activeColors = computed(() => {
 const signatureDataUrl = ref('')
 const signatureDialogOpen = ref(false)
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
+const photoInput = ref<HTMLInputElement | null>(null)
 const layoutMenuOpen = ref(false)
+const photoQuickMenuOpen = ref(false)
 
 watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; for (const key of ['date','address']) { const b=items[key]?.size; if (b) letterElementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) letterElementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) letterElementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
 function addDecorObject(){ editableDecorObjects.value.push(normalizeDecorObject({ type:'circle', x:50, y:50, size:120, opacity:0.15 })) }
@@ -119,9 +123,18 @@ function goToCreateResume(){ navigateTo('/resume/preview') }
 function applyPreviewTemplate(id:string){ selectedTemplate.value = id; layoutMenuOpen.value = false }
 function saveFromPreview(){ localStorage.setItem('resume-cover-preview-letter', JSON.stringify({ template:selectedTemplate.value, model, decor:editableDecorObjects.value, signature:signatureDataUrl.value })) }
 async function downloadPdf(){ const node=document.querySelector('.capture-cover-letter') as HTMLElement|null; if(!node) return; const w=window.open('','_blank','width=900,height=1300'); if(!w) return; const headStyles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]')).map((el)=>el.outerHTML).join(''); w.document.write(`<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.capture-cover-letter{width:210mm;min-height:297mm;box-sizing:border-box;margin:0}</style></head><body>${node.outerHTML}</body></html>`); w.document.close(); await new Promise((r)=>setTimeout(r,900)); w.focus(); w.print(); w.close() }
+function openPhotoUpload() { photoInput.value?.click() }
+function onPhotoUpload(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  const reader = new FileReader()
+  reader.onload = () => { model.photoUrl = String(reader.result || model.photoUrl) }
+  reader.readAsDataURL(file)
+}
 function openSignatureDialog(){ signatureDialogOpen.value=true; nextTick(initCanvas) }
 function initCanvas(){ const c=signatureCanvas.value; if(!c) return; const ctx=c.getContext('2d'); if(!ctx) return; c.width=c.clientWidth||680; c.height=200; ctx.lineWidth=2; ctx.lineCap='round'; let draw=false; const p=(e:PointerEvent)=>{const r=c.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}; c.onpointerdown=(e)=>{draw=true;const x=p(e);ctx.beginPath();ctx.moveTo(x.x,x.y)}; c.onpointermove=(e)=>{if(!draw)return;const x=p(e);ctx.lineTo(x.x,x.y);ctx.stroke()}; c.onpointerup=()=>{draw=false;signatureDataUrl.value=c.toDataURL('image/png')} }
-onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query.template:''; if(q&&coverLetterTemplates.value.some((t)=>t.id===q)) selectedTemplate.value=q; try { const resumes = await listMyResumes(); const info = resumes?.[0]?.resumeInformation; if (info?.fullName) { model.fullName = info.fullName; model.phone = info.fullName } if (info?.profileText) model.companyParagraph = info.profileText; } catch { /* noop */ } })
+onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query.template:''; if(q&&coverLetterTemplates.value.some((t)=>t.id===q)) selectedTemplate.value=q; try { const resumes = await listMyResumes(); const info = resumes?.[0]?.resumeInformation; if (info?.fullName) { model.fullName = info.fullName; model.phone = info.fullName } if (info?.title) model.role = info.title; if (info?.photo) model.photoUrl = info.photo } catch { /* noop */ } })
 </script>
 <template>
 <div>
@@ -196,24 +209,52 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
           <HoverRichTextEditor v-model="model.date" :font-size="`${letterElementStyles.date.size}px`" :color="letterElementStyles.date.color" :font-weight="letterElementStyles.date.weight" />
           <HoverRichTextEditor v-model="model.location" :font-size="`${letterElementStyles.address.size}px`" :color="letterElementStyles.address.color" :font-weight="letterElementStyles.address.weight" />
         </div>
+        <div class="hero-row">
+          <div class="avatar-upload hero-avatar photo-shell" :style="{ width: `${imageSize}px`, height: `${imageSize}px`, borderRadius: imageShape === 'circle' ? '999px' : '12px' }" @click="openPhotoUpload">
+            <v-menu v-model="photoQuickMenuOpen" location="bottom start">
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  icon="mdi-tune-variant"
+                  size="x-small"
+                  class="photo-quick-trigger"
+                  variant="elevated"
+                  @click.stop
+                />
+              </template>
+              <v-card class="pa-3 photo-quick-menu" min-width="240" @click.stop>
+                <v-slider v-model="imageSize" label="Image size" min="48" max="180" step="1" hide-details class="mt-1"/>
+                <v-slider v-model="imageBorderWidth" label="Border width" min="0" max="12" step="1" hide-details class="mt-3"/>
+                <v-text-field v-model="imageBorderColor" label="Border color" hide-details class="mt-3"/>
+                <v-btn-toggle v-model="imageShape" divided mandatory class="mt-3" density="comfortable">
+                  <v-btn value="circle" size="small">Circle</v-btn><v-btn value="square" size="small">Square</v-btn>
+                </v-btn-toggle>
+              </v-card>
+            </v-menu>
+            <div class="photo-shell__img">
+              <v-img :src="model.photoUrl" alt="profile" cover />
+            </div>
+          </div>
+          <HoverRichTextEditor v-model="model.fullName" class="hero-name"/>
+          <HoverRichTextEditor v-model="model.role" class="hero-role"/>
+        </div>
       </header>
       <section class="letter-body">
-        <HoverRichTextEditor v-model="model.heading" />
-        <HoverRichTextEditor v-model="model.company" />
+        <HoverRichTextEditor v-model="model.heading" class="letter-heading" />
         <HoverRichTextEditor v-model="model.companyParagraph" />
         <HoverRichTextEditor v-model="model.summary" />
-        <div class="signature-rule" />
         <HoverRichTextEditor v-model="model.email" />
         <HoverRichTextEditor v-model="model.phone" />
       </section>
       <footer v-if="signatureDataUrl" class="signature-footer"><img :src="signatureDataUrl" alt="signature" class="signature-image"/></footer>
     </main></div>
+    <input ref="photoInput" type="file" accept="image/*" class="d-none" @change="onPhotoUpload">
     <v-dialog v-model="signatureDialogOpen" max-width="760"><v-card><v-card-title>Signature</v-card-title><v-card-text><canvas ref="signatureCanvas" style="width:100%;height:200px;border:1px solid rgba(0,0,0,.15);border-radius:10px"/></v-card-text></v-card></v-dialog>
   </v-container>
 </div>
 </template>
 <style scoped>
-.capture-cover-letter{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:80px;background:var(--cp-bg);color:var(--cp-text)}.hero{border-left:var(--bar-primary-width) solid var(--cp-primary);padding-left:24px;margin-bottom:48px;border-radius:var(--bar-radius);position:relative}.meta-top-right{position:absolute;top:0;right:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px;text-align:right}.hero-row{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding-top:52px}.hero-avatar{align-self:flex-start}.hero-avatar--right{align-self:flex-end}.hero--photo-right{padding-top:8px}.hero--double::before{content:'';position:absolute;left:calc(var(--bar-primary-width) + 6px);top:0;bottom:0;width:var(--bar-secondary-width);background:var(--cp-secondary);border-radius:var(--bar-radius)}.avatar-upload{cursor:pointer;position:relative;overflow:visible;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px')}.photo-shell{display:block;position:relative}.photo-quick-trigger{position:absolute;top:-10px;left:-10px;z-index:30;opacity:0;transition:opacity .15s ease;background:#fff;border:1px solid rgba(15,23,42,.2)}.photo-shell:hover .photo-quick-trigger,.photo-shell:focus-within .photo-quick-trigger,.photo-quick-trigger:focus-visible{opacity:1}.photo-quick-menu{border:1px solid rgba(148,163,184,.4)}h1{font-size:58px;margin:0}p{font-size:var(--body-size);color:var(--body-color)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:40px;margin:0 0 16px}section{border-top:3px var(--section-divider-style) var(--cp-secondary);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.decor-square{border-radius:10px}.decor-diamond{border-radius:8px;transform:translate(-50%,-50%) rotate(45deg)}.decor-star{-webkit-clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}.decor-triangle{-webkit-clip-path:polygon(50% 0%,0 100%,100% 100%);clip-path:polygon(50% 0%,0 100%,100% 100%)}.decor-pill{border-radius:999px}.decor-bar{border-radius:999px}.preview-toolbar-wrap{position:sticky;top:76px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background: rgba(var(--v-theme-primary))}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}</style>
+.capture-cover-letter{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:64px 72px;background:var(--cp-bg);color:var(--cp-text)}.hero{border-left:var(--bar-primary-width) solid var(--cp-primary);padding-left:24px;padding-top:6px;margin-bottom:42px;border-radius:var(--bar-radius);position:relative;min-height:140px}.meta-top-right{position:absolute;top:0;right:0;display:flex;flex-direction:column;align-items:flex-end;gap:2px;text-align:right}.hero-row{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding-top:8px}.hero-avatar{align-self:flex-start}.hero-avatar--right{align-self:flex-end}.hero--photo-right{padding-top:8px}.hero--double::before{content:'';position:absolute;left:calc(var(--bar-primary-width) + 6px);top:0;bottom:0;width:var(--bar-secondary-width);background:var(--cp-secondary);border-radius:var(--bar-radius)}.avatar-upload{cursor:pointer;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px');overflow:visible}.photo-shell{display:block;position:relative}.photo-quick-trigger{position:absolute;top:-10px;left:-10px;z-index:30;opacity:0;transition:opacity .15s ease;background:#fff;border:1px solid rgba(15,23,42,.2)}.photo-shell:hover .photo-quick-trigger,.photo-shell:focus-within .photo-quick-trigger,.photo-quick-trigger:focus-visible{opacity:1}.photo-quick-menu{border:1px solid rgba(148,163,184,.4)}.photo-shell__img{width:100%;height:100%;overflow:hidden;border-radius:inherit}.photo-shell__img :deep(img){width:100%;height:100%;object-fit:cover;border-radius:inherit}.hero-name :deep(p){margin:2px 0 0;font-size:44px;font-weight:700;color:var(--cp-text);line-height:1.05}.hero-role :deep(p){margin:0;font-size:24px;color:var(--cp-muted)}p{font-size:var(--body-size);color:var(--body-color);line-height:1.55;margin:0 0 18px}.letter-heading :deep(p){font-weight:700;color:var(--cp-text);margin-bottom:24px}section{border-top:2px var(--section-divider-style) color-mix(in srgb,var(--cp-secondary) 45%, transparent);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.decor-square{border-radius:10px}.decor-diamond{border-radius:8px;transform:translate(-50%,-50%) rotate(45deg)}.decor-star{-webkit-clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}.decor-triangle{-webkit-clip-path:polygon(50% 0%,0 100%,100% 100%);clip-path:polygon(50% 0%,0 100%,100% 100%)}.decor-pill{border-radius:999px}.decor-bar{border-radius:999px}.preview-toolbar-wrap{position:sticky;top:76px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background: rgba(var(--v-theme-primary))}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}</style>
 
 <style scoped>
 @media (prefers-color-scheme: dark) {
