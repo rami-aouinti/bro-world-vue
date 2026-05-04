@@ -25,18 +25,8 @@ const primaryBarWidth = ref(10)
 const secondaryBarWidth = ref(5)
 const model = reactive({ fullName:'Alex Martin', location:'221B Baker Street, London, UK', date:new Date().toLocaleDateString('en-US'), heading:'Cover Letter', company:'Dear Hiring Manager,', companyParagraph:'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.', summary:'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.', email:'Sincerely,', phone:'Alex Martin' })
 const activeTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
-const letterItemConfig = computed(() => activeTemplate.value?.items || {})
+const _letterItemConfig = computed(() => activeTemplate.value?.items || {})
 const editableDecorObjects = ref<any[]>([])
-const defaultDecorPresets = [
-  { type: 'circle', x: 8, y: 6, size: 80, opacity: 0.08 },
-  { type: 'diamond', x: 70, y: 75, size: 120, opacity: 0.08 },
-  { type: 'star', x: 14, y: 84, size: 28, opacity: 0.1 },
-  { type: 'square', x: 82, y: 10, size: 24, opacity: 0.08 },
-]
-const templateDecorPresets = computed(() => {
-  const fromTemplate = (activeTemplate.value?.decor?.objects || []).map((obj:any) => normalizeDecorObject(obj))
-  return fromTemplate.length ? fromTemplate : defaultDecorPresets.map((obj) => normalizeDecorObject(obj))
-})
 
 function toPercentNumber(value: unknown, fallback = 50): number {
   if (typeof value === 'number' && Number.isFinite(value)) return Math.min(100, Math.max(0, value))
@@ -113,7 +103,6 @@ const layoutMenuOpen = ref(false)
 
 watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; for (const key of ['date','address']) { const b=items[key]?.size; if (b) letterElementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) letterElementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) letterElementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
 function addDecorObject(){ editableDecorObjects.value.push(normalizeDecorObject({ type:'circle', x:50, y:50, size:120, opacity:0.15 })) }
-function addDecorObjectFromPreset(preset:any){ editableDecorObjects.value.push(normalizeDecorObject({ ...preset })) }
 function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
 function goToCreateResume(){ navigateTo('/resume/preview') }
 function applyPreviewTemplate(id:string){ selectedTemplate.value = id; layoutMenuOpen.value = false }
@@ -135,24 +124,10 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
        <v-slider v-model="barRadius" label="Bar radius" min="0" max="30" step="1" hide-details class="mt-3"/>
        <AppSelect v-model="barLayout" :items="[{ title: 'Single bar', value: 'single' }, { title: 'Double bars', value: 'double' }]" label="Bar layout" hide-details class="mt-3"/>
        <v-slider v-model="primaryBarWidth" label="Bar width" min="4" max="24" step="1" hide-details class="mt-3"/>
-       <v-slider v-if="barLayout==='double'" v-model="secondaryBarWidth" label="Sec bar width" min="2" max="20" step="1" hide-details class="mt-3"/>
+       <v-slider v-if="barLayout==='double'" v-model="secondaryBarWidth" label="Sec Bar width" min="2" max="20" step="1" hide-details class="mt-3"/>
      </v-card-text>
     </template>
     <template #right>
-      <v-card class="mt-3 pa-3" variant="outlined">
-        <div class="text-caption mb-2">Template decor presets</div>
-        <div class="d-flex flex-wrap ga-2">
-          <v-btn
-            v-for="(preset, presetIndex) in templateDecorPresets"
-            :key="`preset-${presetIndex}`"
-            size="x-small"
-            variant="tonal"
-            @click="addDecorObjectFromPreset(preset)"
-          >
-            {{ preset.type }}
-          </v-btn>
-        </div>
-      </v-card>
       <v-btn class="mt-3" size="small" variant="outlined" @click="addDecorObject">Add decor</v-btn>
       <v-card v-for="(obj,i) in editableDecorObjects" :key="`obj-${i}`" class="mt-3 pa-2" variant="outlined">
         <AppSelect v-model="obj.type" :items="decorShapeOptions.map((s)=>({title:s,value:s}))" label="Shape" hide-details class="mt-3"/>
