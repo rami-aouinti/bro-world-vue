@@ -45,6 +45,7 @@ const signatureDialogOpen = ref(false)
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const photoInput = ref<HTMLInputElement | null>(null)
 const layoutMenuOpen = ref(false)
+const photoQuickMenuOpen = ref(false)
 
 watch(activeTemplate, (tpl) => { editableDecorObjects.value = JSON.parse(JSON.stringify(tpl?.decor?.objects || [])); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left' }, { immediate: true })
 function addDecorObject(){ editableDecorObjects.value.push({ type:'circle', x:'50%', y:'50%', size:'120', opacity:0.15 }) }
@@ -126,6 +127,23 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
         <div class="hero-row">
 
           <div class="mb-4 avatar-upload hero-avatar photo-shell" :style="{ width: `${imageSize}px`, height: `${imageSize}px`, borderRadius: imageShape === 'circle' ? '999px' : '12px' }" @click="openPhotoUpload">
+            <v-menu v-model="photoQuickMenuOpen" :close-on-content-click="false" location="bottom start" persistent>
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  icon="mdi-tune-variant"
+                  size="x-small"
+                  class="photo-quick-trigger"
+                  @click.stop
+                />
+              </template>
+              <v-card class="pa-3 photo-quick-menu" min-width="240" @click.stop>
+                <v-slider v-model="imageSize" label="Image size" min="48" max="180" step="1" hide-details class="mt-1"/>
+                <v-slider v-model="imageBorderWidth" label="Border width" min="0" max="8" step="1" hide-details class="mt-3"/>
+                <v-text-field v-model="imageBorderColor" type="color" label="Border color" hide-details class="mt-3"/>
+                <AppSelect v-model="imageShape" :items="[{ title: 'Circle', value: 'circle' }, { title: 'Square', value: 'square' }]" label="Image shape" hide-details class="mt-3"/>
+              </v-card>
+            </v-menu>
             <v-img :src="model.photoUrl" cover @click.stop="openPhotoUpload" class="photo-shell__img"/>
           </div>
           <HoverRichTextEditor v-model="model.fullName" />
@@ -165,7 +183,10 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
 .hero--photo-right{padding-top:8px}
 .hero--double::before{content:'';position:absolute;left:calc(var(--bar-primary-width) + 6px);top:0;bottom:0;width:var(--bar-secondary-width);background:var(--cp-secondary);border-radius:var(--bar-radius)}
 .avatar-upload{cursor:pointer;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px');overflow:hidden}
-.photo-shell{display:block}
+.photo-shell{display:block;position:relative}
+.photo-quick-trigger{position:absolute;top:6px;left:6px;z-index:6;opacity:0;transition:opacity .15s ease;background:#fff;border:1px solid rgba(15,23,42,.2)}
+.photo-shell:hover .photo-quick-trigger,.photo-shell:focus-within .photo-quick-trigger,.photo-quick-trigger:focus-visible{opacity:1}
+.photo-quick-menu{border:1px solid rgba(148,163,184,.4)}
 .photo-shell__img{width:100%;height:100%}
 .photo-shell__img :deep(.v-img__img)
 {
