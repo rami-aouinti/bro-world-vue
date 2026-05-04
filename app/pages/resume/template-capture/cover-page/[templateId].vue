@@ -4,7 +4,11 @@ import GENERATED_COVER_PAGE_TEMPLATES from '~/data/resume-templates/generated-20
 definePageMeta({ layout: false })
 
 const route = useRoute()
-const templateId = computed(() => String(route.params.templateId || 'cpage-001'))
+const templateId = computed(() => {
+  const fromParams = typeof route.params.templateId === 'string' ? route.params.templateId : ''
+  const fromQuery = typeof route.query.template === 'string' ? route.query.template : ''
+  return String(fromParams || fromQuery || 'cpage-001')
+})
 
 function resolveGeneratedTemplateId(rawTemplateId: string): string {
   const normalized = rawTemplateId.trim()
