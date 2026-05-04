@@ -2,8 +2,8 @@
 import { computed, watch } from 'vue'
 import { EditorContent, useEditor } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
-import TextStyle from '@tiptap/extension-text-style'
-import Color from '@tiptap/extension-color'
+import { TextStyle } from '@tiptap/extension-text-style'
+import { Color } from '@tiptap/extension-color'
 
 const props = withDefaults(
   defineProps<{ modelValue: string; label?: string; placeholder?: string }>(),
