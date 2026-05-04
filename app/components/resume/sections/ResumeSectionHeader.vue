@@ -319,7 +319,8 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 .header-contact {
-  flex: 1 1 340px;
+  padding-top: 30px;
+  flex: 1 1 500px;
   display: grid;
   grid-template-columns: repeat(2, minmax(140px, 1fr));
   gap: 8px 14px;
