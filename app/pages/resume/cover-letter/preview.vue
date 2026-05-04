@@ -8,9 +8,22 @@ const { coverLetterTemplates } = useResumeTemplates()
 const selectedTemplate = ref(coverLetterTemplates.value[0]?.id || GENERATED_COVER_LETTER_TEMPLATES[0]?.id || '')
 const photoOptions = ['/img/team-1.jpg', '/img/team-2.jpg', '/img/team-3.jpg', '/img/team-4.jpg']
 const decorShapeOptions = ['circle', 'ring', 'blob']
+const imageShape = ref<'circle' | 'square'>('circle')
+const imageSize = ref(84)
+const imageBorderWidth = ref(2)
+const imageBorderColor = ref('#0f172a')
+const selectedPalette = ref<'template' | 'sunset' | 'forest' | 'custom'>('template')
+const customPrimary = ref('#0F4C81')
 const model = reactive({ fullName:'Alex Martin', role:'Senior Full Stack Developer', summary:'Driven engineer delivering robust products with strong UX and clean architecture.', location:'Paris, France', email:'alex@example.com', phone:'+33 6 00 00 00 00', date:new Date().toLocaleDateString('en-US'), photoUrl:photoOptions[0], heading:'Cover Letter' })
 const activeTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
 const editableDecorObjects = ref<any[]>([])
+const activeColors = computed(() => {
+  const palette = activeTemplate.value.theme.palette
+  if (selectedPalette.value === 'sunset') return { ...palette, primary: '#C2410C', secondary: '#FDBA74' }
+  if (selectedPalette.value === 'forest') return { ...palette, primary: '#166534', secondary: '#86EFAC' }
+  if (selectedPalette.value === 'custom') return { ...palette, primary: customPrimary.value }
+  return palette
+})
 const signatureDataUrl = ref('')
 const signatureDialogOpen = ref(false)
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
@@ -33,6 +46,12 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
     <template #left>
       <AppSelect v-model="model.photoUrl" :items="photoOptions.map((value)=>({title:value,value}))" label="Photo" hide-details class="mt-3"/>
       <v-text-field v-model="model.date" label="Date" hide-details class="mt-3"/>
+      <v-slider v-model="imageSize" label="Image size" min="48" max="180" step="1" hide-details class="mt-3"/>
+      <AppSelect v-model="imageShape" :items="[{ title: 'Circle', value: 'circle' }, { title: 'Square', value: 'square' }]" label="Image shape" hide-details class="mt-3"/>
+      <v-slider v-model="imageBorderWidth" label="Border width" min="0" max="8" step="1" hide-details class="mt-3"/>
+      <v-text-field v-model="imageBorderColor" type="color" label="Border color" hide-details class="mt-3"/>
+      <v-menu><template #activator="{ props }"><v-btn v-bind="props" class="mt-3" variant="outlined" block>Palette</v-btn></template><v-list><v-list-item title="Template" @click="selectedPalette='template'"/><v-list-item title="Sunset" @click="selectedPalette='sunset'"/><v-list-item title="Forest" @click="selectedPalette='forest'"/><v-list-item title="Custom" @click="selectedPalette='custom'"/></v-list></v-menu>
+      <v-text-field v-if="selectedPalette==='custom'" v-model="customPrimary" label="Custom primary" hide-details class="mt-3"/>
     </template>
     <template #right>
       <AppSelect v-model="selectedTemplate" :items="coverLetterTemplates.map((t)=>({title:t.title,value:t.id}))" label="Template" hide-details class="mt-3"/>
@@ -54,7 +73,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
       <v-btn class="preview-toolbar-btn" size="small" variant="outlined" prepend-icon="mdi-file-pdf-box" @click="downloadPdf">PDF</v-btn>
       <v-menu v-model="layoutMenuOpen"><template #activator="{ props }"><v-btn class="preview-toolbar-btn" size="small" variant="outlined" prepend-icon="mdi-view-grid-outline" v-bind="props">Templates</v-btn></template><v-list density="compact"><v-list-item v-for="template in coverLetterTemplates" :key="template.id" :title="template.title" @click="applyPreviewTemplate(template.id)"/></v-list></v-menu>
     </div></div>
-    <div class="py-8 d-flex justify-center"><main class="capture-cover-letter" :style="{'--cp-primary':activeTemplate.theme.palette.primary,'--cp-secondary':activeTemplate.theme.palette.secondary,'--cp-text':activeTemplate.theme.palette.text,'--cp-muted':activeTemplate.theme.palette.muted,'--cp-bg':activeTemplate.theme.palette.pageBackground}">
+    <div class="py-8 d-flex justify-center"><main class="capture-cover-letter" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground}">
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="{left:obj.x,top:obj.y,width:`${obj.size}px`,height:`${obj.size}px`,opacity:obj.opacity}"/>
       <header class="hero"><v-avatar size="84" class="mb-4"><v-img :src="model.photoUrl" cover/></v-avatar>
         <h1 contenteditable="true" @input="model.fullName=($event.target as HTMLElement).innerText">{{ model.fullName }}</h1>
