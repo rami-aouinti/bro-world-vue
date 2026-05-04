@@ -4,22 +4,30 @@ import GENERATED_COVER_PAGE_TEMPLATES from '~/data/resume-templates/generated-20
 definePageMeta({ layout: false })
 
 const route = useRoute()
-const templateId = computed(() => String(route.params.templateId || 'cpage-001'))
+const templateId = computed(() => {
+  const fromParams = typeof route.params.templateId === 'string' ? route.params.templateId : ''
+  const fromQuery = typeof route.query.template === 'string' ? route.query.template : ''
+  return String(fromParams || fromQuery || 'cpage-001')
+})
 
 function resolveGeneratedTemplateId(rawTemplateId: string): string {
   const normalized = rawTemplateId.trim()
   if (!normalized) return ''
 
-  const exactGenerated = GENERATED_COVER_PAGE_TEMPLATES.find((template) => template.id === normalized)
+  const withoutTemplatePrefix = normalized.startsWith('template=')
+    ? normalized.slice('template='.length).trim()
+    : normalized
+
+  const exactGenerated = GENERATED_COVER_PAGE_TEMPLATES.find((template) => template.id === withoutTemplatePrefix)
   if (exactGenerated) return exactGenerated.id
 
-  const unprefixed = normalized.startsWith('cover-page-')
-    ? normalized.slice('cover-page-'.length)
-    : normalized
+  const unprefixed = withoutTemplatePrefix.startsWith('cover-page-')
+    ? withoutTemplatePrefix.slice('cover-page-'.length)
+    : withoutTemplatePrefix
   const prefixedGenerated = GENERATED_COVER_PAGE_TEMPLATES.find((template) => template.id === unprefixed)
   if (prefixedGenerated) return prefixedGenerated.id
 
-  const startsWithGenerated = GENERATED_COVER_PAGE_TEMPLATES.find((template) => template.id.startsWith(normalized))
+  const startsWithGenerated = GENERATED_COVER_PAGE_TEMPLATES.find((template) => template.id.startsWith(withoutTemplatePrefix))
   if (startsWithGenerated) return startsWithGenerated.id
 
   return ''
@@ -128,10 +136,6 @@ const decorObjects = computed(() =>
       :class="`decor-${object.type || 'circle'}`"
       :style="{ left: object.x, top: object.y, width: `${object.size}px`, height: `${object.size}px`, opacity: object.opacity ?? 0.08 }"
     />
-    <div class="meta-top-right">
-      <p class="date">May 3, 2026</p>
-      <p class="address">Paris, France</p>
-    </div>
     <header class="hero" :class="{ 'hero--double': resolvedStyles.barLayout === 'double' }">
       <img src="/img/team-1.jpg" alt="profile" class="capture-photo">
       <h1 :style="itemStyles.fullName">Alex Martin</h1>
@@ -150,9 +154,6 @@ const decorObjects = computed(() =>
 
 <style scoped>
 .capture-cover-page { position: relative; overflow: hidden; width: 850px; height: 1123px; padding: 80px; background: var(--cp-bg); color: var(--cp-text); border-radius: var(--cp-radius); box-shadow: var(--cp-shadow); }
-.meta-top-right { position: absolute; top: 80px; right: 80px; text-align: right; color: var(--cp-muted); display:flex; flex-direction:column; gap:6px; align-items:flex-end; }
-.date, .address { margin: 0; font-size: 18px; }
-.address { margin-top: 8px; color: var(--cp-text); }
 .hero { border-left: var(--cp-bar-width) solid var(--cp-primary); padding-left: 24px; margin-bottom: 48px; border-radius: var(--cp-bar-radius); min-height: 148px; position:relative; }
 .hero--double::before{content:'';position:absolute;left:calc(var(--cp-bar-width) + 6px);top:0;bottom:0;width:var(--cp-bar-secondary-width);background:var(--cp-secondary);border-radius:var(--cp-bar-radius)}
 h1 { font-size: 58px; margin: 0; }

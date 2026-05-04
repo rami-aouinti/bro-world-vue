@@ -4,22 +4,30 @@ import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-
 definePageMeta({ layout: false })
 
 const route = useRoute()
-const templateId = computed(() => String(route.params.templateId || 'cletter-001'))
+const templateId = computed(() => {
+  const fromParams = typeof route.params.templateId === 'string' ? route.params.templateId : ''
+  const fromQuery = typeof route.query.template === 'string' ? route.query.template : ''
+  return String(fromParams || fromQuery || 'cletter-001')
+})
 
 function resolveGeneratedTemplateId(rawTemplateId: string): string {
   const normalized = rawTemplateId.trim()
   if (!normalized) return ''
 
-  const exactGenerated = GENERATED_COVER_LETTER_TEMPLATES.find((template) => template.id === normalized)
+  const withoutTemplatePrefix = normalized.startsWith('template=')
+    ? normalized.slice('template='.length).trim()
+    : normalized
+
+  const exactGenerated = GENERATED_COVER_LETTER_TEMPLATES.find((template) => template.id === withoutTemplatePrefix)
   if (exactGenerated) return exactGenerated.id
 
-  const unprefixed = normalized.startsWith('cover-letter-')
-    ? normalized.slice('cover-letter-'.length)
-    : normalized
+  const unprefixed = withoutTemplatePrefix.startsWith('cover-letter-')
+    ? withoutTemplatePrefix.slice('cover-letter-'.length)
+    : withoutTemplatePrefix
   const prefixedGenerated = GENERATED_COVER_LETTER_TEMPLATES.find((template) => template.id === unprefixed)
   if (prefixedGenerated) return prefixedGenerated.id
 
-  const startsWithGenerated = GENERATED_COVER_LETTER_TEMPLATES.find((template) => template.id.startsWith(normalized))
+  const startsWithGenerated = GENERATED_COVER_LETTER_TEMPLATES.find((template) => template.id.startsWith(withoutTemplatePrefix))
   if (startsWithGenerated) return startsWithGenerated.id
 
   return ''
