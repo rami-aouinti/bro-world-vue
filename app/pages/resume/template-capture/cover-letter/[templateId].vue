@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-20-cover-letter.json'
-import { COVER_TEMPLATES_CATALOG } from '~/constants/resumeTemplates.catalog'
 
 definePageMeta({ layout: false })
 
@@ -13,13 +12,6 @@ function resolveGeneratedTemplateId(rawTemplateId: string): string {
 
   const exactGenerated = GENERATED_COVER_LETTER_TEMPLATES.find((template) => template.id === normalized)
   if (exactGenerated) return exactGenerated.id
-
-  const exactCatalog = COVER_TEMPLATES_CATALOG.find(
-    (template) =>
-      template.type === 'cover-letter' &&
-      (template.id === normalized || template.templateId === normalized),
-  )
-  if (exactCatalog?.templateId) return exactCatalog.templateId
 
   const unprefixed = normalized.startsWith('cover-letter-')
     ? normalized.slice('cover-letter-'.length)
