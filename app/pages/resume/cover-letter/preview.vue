@@ -7,7 +7,13 @@ definePageMeta({ title: 'Resume · Cover Letter Preview', layout: 'resume' })
 const route = useRoute()
 const { coverLetterTemplates } = useResumeTemplates()
 const selectedTemplate = ref(coverLetterTemplates.value[0]?.id || GENERATED_COVER_LETTER_TEMPLATES[0]?.id || '')
-const decorShapeOptions = ['circle', 'ring', 'blob']
+const photoOptions = ['/img/team-1.jpg', '/img/team-2.jpg', '/img/team-3.jpg', '/img/team-4.jpg']
+const decorShapeOptions = ['circle', 'ring', 'blob', 'square', 'diamond', 'star', 'triangle', 'pill', 'bar']
+const imageShape = ref<'circle' | 'square'>('circle')
+const imageSize = ref(84)
+const imageBorderWidth = ref(2)
+const imageBorderColor = ref('#0f172a')
+const photoPosition = ref<'left' | 'right'>('left')
 const selectedPalette = ref<'template' | 'sunset' | 'forest' | 'custom'>('template')
 const customPrimary = ref('#0F4C81')
 const customSecondary = ref('#5FA8D3')
@@ -53,6 +59,35 @@ function normalizeDecorObject(obj: any) {
     opacity: toNumber(obj?.opacity, 0.15),
   }
 }
+
+function decorObjectStyle(obj: any) {
+  const size = toNumber(obj?.size, 120)
+  const x = toPercentNumber(obj?.x, 50)
+  const y = toPercentNumber(obj?.y, 50)
+  const opacity = toNumber(obj?.opacity, 0.15)
+  const type = String(obj?.type ?? 'circle')
+
+  const base: Record<string, string | number> = {
+    left: `${x}%`,
+    top: `${y}%`,
+    opacity,
+    width: `${size}px`,
+    height: `${size}px`,
+  }
+
+  if (type === 'bar') {
+    base.width = `${Math.round(size * 1.8)}px`
+    base.height = `${Math.max(8, Math.round(size * 0.22))}px`
+  }
+
+  if (type === 'pill') {
+    base.width = `${Math.round(size * 1.8)}px`
+    base.height = `${Math.max(14, Math.round(size * 0.62))}px`
+  }
+
+  return base
+}
+
 const sectionDividerStyle = computed(() => {
   const showDivider = activeTemplate.value?.layoutOptions?.showDivider ?? true
   if (!showDivider) return 'none'
@@ -71,7 +106,7 @@ const signatureDialogOpen = ref(false)
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const layoutMenuOpen = ref(false)
 
-watch(activeTemplate, (tpl) => { editableDecorObjects.value = JSON.parse(JSON.stringify(tpl?.decor?.objects || [])); const items=(tpl as any)?.items||{}; for (const key of ['date','address']) { const b=items[key]?.size; if (b) letterElementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) letterElementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) letterElementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
+watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; for (const key of ['date','address']) { const b=items[key]?.size; if (b) letterElementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) letterElementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) letterElementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
 function addDecorObject(){ editableDecorObjects.value.push({ type:'circle', x:'50%', y:'50%', size:'120', opacity:0.15 }) }
 function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
 function goToCreateResume(){ navigateTo('/resume/preview') }
@@ -135,8 +170,9 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
       </v-menu>
     </div></div>
     <div class="py-8 d-flex justify-center"><main class="capture-cover-letter" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
-      <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="{left:`${obj.x}%`,top:`${obj.y}%`,width:`${obj.size}px`,height:`${obj.size}px`,opacity:obj.opacity}"/>
-      <div class="meta-top-right">
+      <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
+      <header class="hero" :class="{'hero--double': barLayout === 'double', 'hero--photo-right': photoPosition === 'right'}">
+        <div class="meta-top-right">
           <HoverRichTextEditor v-model="model.date" :font-size="`${letterElementStyles.date.size}px`" :color="letterElementStyles.date.color" :font-weight="letterElementStyles.date.weight" />
           <HoverRichTextEditor v-model="model.location" :font-size="`${letterElementStyles.address.size}px`" :color="letterElementStyles.address.color" :font-weight="letterElementStyles.address.weight" />
         </div>
@@ -156,8 +192,8 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
 </div>
 </template>
 <style scoped>
-.capture-cover-letter{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:80px;background:var(--cp-bg);color:var(--cp-text)}.meta-top-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;margin:0 0 52px auto;text-align:right;width:fit-content;max-width:100%}.letter-body{display:flex;flex-direction:column;align-items:flex-start;gap:16px}.letter-body :deep(p){margin:0;line-height:1.45}.letter-body :deep(p:first-child){font-size:56px;font-weight:700;color:var(--cp-primary);margin-bottom:8px}.letter-body :deep(p:nth-child(2)){font-size:48px;font-weight:700;color:var(--cp-text);margin-bottom:10px}.letter-body :deep(p:nth-child(3)),.letter-body :deep(p:nth-child(4)){max-width:92%;font-size:var(--body-size);color:var(--body-color)}.signature-rule{width:130px;height:3px;background:var(--cp-secondary);margin:14px 0 6px}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.preview-toolbar-wrap{position:sticky;top:76px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background: rgba(var(--v-theme-primary))}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}.template-menu-card{width:min(92vw,980px);max-height:min(76vh,760px);overflow:auto}.template-menu-grid{display:grid;gap:10px;grid-template-columns:repeat(4,minmax(0,1fr));padding:12px}.template-menu-item{cursor:pointer;border-radius:12px;overflow:hidden;border:1px solid rgba(15,23,42,.08)}.template-menu-item--active{border-color:rgb(var(--v-theme-primary));box-shadow:0 0 0 1px rgb(var(--v-theme-primary))}.template-menu-item :deep(.v-img){border-bottom:1px solid rgba(15,23,42,.08)}@media (max-width:1100px){.template-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-</style>
+.capture-cover-letter{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:80px;background:var(--cp-bg);color:var(--cp-text)}.hero{border-left:var(--bar-primary-width) solid var(--cp-primary);padding-left:24px;margin-bottom:48px;border-radius:var(--bar-radius);position:relative}.meta-top-right{position:absolute;top:0;right:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px;text-align:right}.hero-row{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding-top:52px}.hero-avatar{align-self:flex-start}.hero-avatar--right{align-self:flex-end}.hero--photo-right{padding-top:8px}.hero--double::before{content:'';position:absolute;left:calc(var(--bar-primary-width) + 6px);top:0;bottom:0;width:var(--bar-secondary-width);background:var(--cp-secondary);border-radius:var(--bar-radius)}.avatar-upload{cursor:pointer;position:relative;overflow:visible;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px')}.photo-shell{display:block;position:relative}.photo-quick-trigger{position:absolute;top:-10px;left:-10px;z-index:30;opacity:0;transition:opacity .15s ease;background:#fff;border:1px solid rgba(15,23,42,.2)}.photo-shell:hover .photo-quick-trigger,.photo-shell:focus-within .photo-quick-trigger,.photo-quick-trigger:focus-visible{opacity:1}.photo-quick-menu{border:1px solid rgba(148,163,184,.4)}h1{font-size:58px;margin:0}p{font-size:var(--body-size);color:var(--body-color)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:40px;margin:0 0 16px}section{border-top:3px var(--section-divider-style) var(--cp-secondary);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.decor-square{border-radius:10px}.decor-diamond{border-radius:8px;transform:translate(-50%,-50%) rotate(45deg)}.decor-star{-webkit-clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}.decor-triangle{-webkit-clip-path:polygon(50% 0%,0 100%,100% 100%);clip-path:polygon(50% 0%,0 100%,100% 100%)}.decor-pill{border-radius:999px}.decor-bar{border-radius:999px}.preview-toolbar-wrap{position:sticky;top:76px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background: rgba(var(--v-theme-primary))}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}</style>
+
 <style scoped>
 @media (prefers-color-scheme: dark) {
   .capture-cover-page,
