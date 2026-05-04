@@ -25,7 +25,7 @@ const primaryBarWidth = ref(10)
 const secondaryBarWidth = ref(5)
 const model = reactive({ fullName:'Alex Martin', location:'221B Baker Street, London, UK', date:new Date().toLocaleDateString('en-US'), heading:'Cover Letter', company:'Dear Hiring Manager,', companyParagraph:'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.', summary:'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.', email:'Sincerely,', phone:'Alex Martin' })
 const activeTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
-const letterItemConfig = computed(() => activeTemplate.value?.items || {})
+const _letterItemConfig = computed(() => activeTemplate.value?.items || {})
 const editableDecorObjects = ref<any[]>([])
 const defaultDecorPresets = [
   { type: 'circle', x: 8, y: 6, size: 80, opacity: 0.08 },
