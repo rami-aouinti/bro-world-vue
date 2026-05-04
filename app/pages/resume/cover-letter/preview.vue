@@ -15,8 +15,6 @@ const selectedPalette = ref<'template' | 'sunset' | 'forest' | 'custom'>('templa
 const customPrimary = ref('#0F4C81')
 const customSecondary = ref('#5FA8D3')
 const customPageBackground = ref('#F8FAFC')
-const textFontSize = ref(24)
-const textColor = ref('#475569')
 const barRadius = ref(0)
 const barLayout = ref<'single' | 'double'>('single')
 const letterElementStyles = reactive({ fullName:{size:58,color:'#0f172a',weight:'700'}, role:{size:30,color:'#475569',weight:'500'}, date:{size:18,color:'#475569',weight:'400'}, address:{size:18,color:'#334155',weight:'400'}, heading:{size:34,color:'#0f172a',weight:'700'}, greeting:{size:24,color:'#0f172a',weight:'600'}, paragraphOne:{size:22,color:'#334155',weight:'400'}, paragraphTwo:{size:22,color:'#334155',weight:'400'}, signoff:{size:24,color:'#0f172a',weight:'600'}, email:{size:24,color:'#0f172a',weight:'600'}, phone:{size:24,color:'#0f172a',weight:'500'} })
@@ -37,59 +35,35 @@ const templateDecorPresets = computed(() => {
   return fromTemplate.length ? fromTemplate : defaultDecorPresets.map((obj) => normalizeDecorObject(obj))
 })
 
-function toPercentNumber(value: unknown, fallback = 50): number {
-  if (typeof value === 'number' && Number.isFinite(value)) return Math.min(100, Math.max(0, value))
-  if (typeof value === 'string') {
-    const parsed = Number.parseFloat(value.replace('%', '').trim())
-    if (Number.isFinite(parsed)) return Math.min(100, Math.max(0, parsed))
-  }
-  return fallback
-}
+const model = reactive({
+  fullName: 'Alex Martin',
+  role: 'Senior Full Stack Developer',
+  date: new Date().toLocaleDateString('en-US'),
+  location: '221B Baker Street, London, UK',
+  heading: 'Cover Letter',
+  greeting: 'Dear Hiring Manager,',
+  paragraphOne: 'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.',
+  paragraphTwo: 'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.',
+  signoff: 'Sincerely,',
+  email: 'alex@example.com',
+  phone: '+33 6 00 00 00 00',
+})
 
-function toNumber(value: unknown, fallback: number): number {
-  const parsed = typeof value === 'number' ? value : Number.parseFloat(String(value ?? ''))
-  return Number.isFinite(parsed) ? parsed : fallback
-}
+const activeTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
+const fontWeightMap: Record<string, string> = { regular: '400', medium: '500', semibold: '600', bold: '700' }
 
 function normalizeDecorObject(obj: any) {
   const rawType = String(obj?.type ?? 'circle')
   const normalizedType = rawType === 'diamand' ? 'diamond' : rawType
-  return {
-    ...obj,
-    type: normalizedType,
-    x: toPercentNumber(obj?.x, 50),
-    y: toPercentNumber(obj?.y, 50),
-    size: toNumber(obj?.size, 120),
-    opacity: toNumber(obj?.opacity, 0.15),
-  }
+  return { ...obj, type: normalizedType, x: Number.parseFloat(String(obj?.x ?? 50)), y: Number.parseFloat(String(obj?.y ?? 50)), size: Number(obj?.size ?? 120), opacity: Number(obj?.opacity ?? 0.15) }
 }
 
 function decorObjectStyle(obj: any) {
-  const size = toNumber(obj?.size, 120)
-  const x = toPercentNumber(obj?.x, 50)
-  const y = toPercentNumber(obj?.y, 50)
-  const opacity = toNumber(obj?.opacity, 0.15)
-  const type = String(obj?.type ?? 'circle')
-
-  const base: Record<string, string | number> = {
-    left: `${x}%`,
-    top: `${y}%`,
-    opacity,
-    width: `${size}px`,
-    height: `${size}px`,
-  }
-
-  if (type === 'bar') {
-    base.width = `${Math.round(size * 1.8)}px`
-    base.height = `${Math.max(8, Math.round(size * 0.22))}px`
-  }
-
-  if (type === 'pill') {
-    base.width = `${Math.round(size * 1.8)}px`
-    base.height = `${Math.max(14, Math.round(size * 0.62))}px`
-  }
-
-  return base
+  const size = Number(obj?.size ?? 120)
+  const x = Number(obj?.x ?? 50)
+  const y = Number(obj?.y ?? 50)
+  const opacity = Number(obj?.opacity ?? 0.15)
+  return { left: `${x}%`, top: `${y}%`, opacity, width: `${size}px`, height: `${size}px` }
 }
 
 const sectionDividerStyle = computed(() => {
@@ -105,10 +79,6 @@ const activeColors = computed(() => {
   if (selectedPalette.value === 'custom') return { ...palette, primary: customPrimary.value, secondary: customSecondary.value, pageBackground: customPageBackground.value }
   return palette
 })
-const signatureDataUrl = ref('')
-const signatureDialogOpen = ref(false)
-const signatureCanvas = ref<HTMLCanvasElement | null>(null)
-const layoutMenuOpen = ref(false)
 
 watch(activeLetterTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); letterPhotoPosition.value = tpl?.hero?.letterPhotoPosition || tpl?.sections?.letterPhotoPosition || 'left'; const items=(tpl as any)?.items||{}; const aliases: Record<string, string[]> = { fullName:['fullName'], role:['role'], date:['date'], address:['location','address'], heading:['heading'], greeting:['greeting','company'], paragraphOne:['paragraphOne','companyParagraph'], paragraphTwo:['paragraphTwo','summary'], signoff:['signoff','email'], email:['email'], phone:['phone'] }; for (const key of Object.keys(aliases)) { const sourceKey = aliases[key].find((candidate)=>items[candidate]); const cfg = sourceKey ? items[sourceKey] : null; const b=cfg?.size; if (b) (letterElementStyles as any)[key].size=Math.round((b.min+b.max)/2); if (cfg?.colors?.[0]) (letterElementStyles as any)[key].color=cfg.colors[0]; if (cfg?.styles?.[0]) (letterElementStyles as any)[key].weight=letterFontWeightMap[cfg.styles[0]]||'400' } }, { immediate: true })
 function addDecorObject(){ editableDecorObjects.value.push(normalizeDecorObject({ type:'circle', x:50, y:50, size:120, opacity:0.15 })) }
@@ -122,73 +92,21 @@ function openSignatureDialog(){ signatureDialogOpen.value=true; nextTick(initCan
 function initCanvas(){ const c=signatureCanvas.value; if(!c) return; const ctx=c.getContext('2d'); if(!ctx) return; c.width=c.clientWidth||680; c.height=200; ctx.lineWidth=2; ctx.lineCap='round'; let draw=false; const p=(e:PointerEvent)=>{const r=c.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}; c.onpointerdown=(e)=>{draw=true;const x=p(e);ctx.beginPath();ctx.moveTo(x.x,x.y)}; c.onpointermove=(e)=>{if(!draw)return;const x=p(e);ctx.lineTo(x.x,x.y);ctx.stroke()}; c.onpointerup=()=>{draw=false;signatureDataUrl.value=c.toDataURL('image/png')} }
 onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query.template:''; if(q&&coverLetterTemplates.value.some((t)=>t.id===q)) selectedTemplate.value=q; try { const resumes = await listMyResumes(); const info = resumes?.[0]?.resumeInformation; if (info?.fullName) { letterModel.fullName = info.fullName; letterModel.phone = info.fullName } if (info?.title) letterModel.role = info.title; if (info?.profileText) letterModel.companyParagraph = info.profileText; } catch { /* noop */ } })
 </script>
+
 <template>
 <div>
   <AppPageDrawers>
     <template #left>
-     <v-card-text>
-       <v-menu><template #activator="{ props }"><v-btn v-bind="props" class="mt-3" variant="outlined" block>Palette</v-btn></template><v-list><v-list-item title="Template" @click="selectedPalette='template'"/><v-list-item title="Sunset" @click="selectedPalette='sunset'"/><v-list-item title="Forest" @click="selectedPalette='forest'"/><v-list-item title="Custom" @click="selectedPalette='custom'"/></v-list></v-menu>
-       <v-text-field v-if="selectedPalette==='custom'" v-model="customPrimary" label="Custom primary" hide-details class="mt-3"/>
-       <v-text-field v-if="selectedPalette==='custom'" v-model="customSecondary" label="Custom secondary" hide-details class="mt-3"/>
-       <v-text-field v-if="selectedPalette==='custom'" v-model="customPageBackground" label="Custom page background" hide-details class="mt-3"/>
-       <v-slider v-model="barRadius" label="Bar radius" min="0" max="30" step="1" hide-details class="mt-3"/>
-       <AppSelect v-model="barLayout" :items="[{ title: 'Single bar', value: 'single' }, { title: 'Double bars', value: 'double' }]" label="Bar layout" hide-details class="mt-3"/>
-       <v-slider v-model="primaryBarWidth" label="Bar width" min="4" max="24" step="1" hide-details class="mt-3"/>
-       <v-slider v-if="barLayout==='double'" v-model="secondaryBarWidth" label="Sec bar width" min="2" max="20" step="1" hide-details class="mt-3"/>
-     </v-card-text>
-    </template>
-    <template #right>
-      <v-card class="mt-3 pa-3" variant="outlined">
-        <div class="text-caption mb-2">Template decor presets</div>
-        <div class="d-flex flex-wrap ga-2">
-          <v-btn
-            v-for="(preset, presetIndex) in templateDecorPresets"
-            :key="`preset-${presetIndex}`"
-            size="x-small"
-            variant="tonal"
-            @click="addDecorObjectFromPreset(preset)"
-          >
-            {{ preset.type }}
-          </v-btn>
-        </div>
-      </v-card>
-      <v-btn class="mt-3" size="small" variant="outlined" @click="addDecorObject">Add decor</v-btn>
-      <v-card v-for="(obj,i) in editableDecorObjects" :key="`obj-${i}`" class="mt-3 pa-2" variant="outlined">
-        <AppSelect v-model="obj.type" :items="decorShapeOptions.map((s)=>({title:s,value:s}))" label="Shape" hide-details class="mt-3"/>
-        <v-slider v-model="obj.size" label="Size" min="20" max="420" step="1" hide-details class="mt-3"/>
-        <v-slider v-model="obj.opacity" label="Opacity" min="0.02" max="0.4" step="0.01" hide-details class="mt-3"/>
-        <v-slider v-model="obj.x" label="X (%)" min="0" max="100" step="1" hide-details class="mt-3"/>
-        <v-slider v-model="obj.y" label="Y (%)" min="0" max="100" step="1" hide-details class="mt-3"/>
-        <v-btn size="x-small" color="error" variant="text" @click="removeDecorObject(i)">remove</v-btn>
-      </v-card>
+      <v-card-text>
+        <v-menu><template #activator="{ props }"><v-btn v-bind="props" class="mt-3" variant="outlined" block>Palette</v-btn></template><v-list><v-list-item title="Template" @click="selectedPalette='template'"/><v-list-item title="Sunset" @click="selectedPalette='sunset'"/><v-list-item title="Forest" @click="selectedPalette='forest'"/><v-list-item title="Custom" @click="selectedPalette='custom'"/></v-list></v-menu>
+        <v-text-field v-if="selectedPalette==='custom'" v-model="customPrimary" label="Custom primary" hide-details class="mt-3"/>
+        <v-text-field v-if="selectedPalette==='custom'" v-model="customSecondary" label="Custom secondary" hide-details class="mt-3"/>
+        <v-text-field v-if="selectedPalette==='custom'" v-model="customPageBackground" label="Custom page background" hide-details class="mt-3"/>
+      </v-card-text>
     </template>
   </AppPageDrawers>
   <v-container fluid>
-    <div class="preview-toolbar-wrap"><div class="preview-toolbar-row">
-      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-content-save-cog-outline" @click="saveFromPreview">Save</v-btn>
-      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-robot-outline" @click="goToCreateResume">AI</v-btn>
-      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-signature-freehand" @click="openSignatureDialog">Signature</v-btn>
-      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-file-pdf-box" @click="downloadPdf">PDF</v-btn>
-      <v-menu v-model="layoutMenuOpen" location="bottom center" origin="top center">
-        <template #activator="{ props }"><v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-view-grid-outline" v-bind="props">Templates</v-btn></template>
-        <v-card class="template-menu-card">
-          <div class="template-menu-grid">
-            <v-card
-              v-for="template in coverLetterTemplates"
-              :key="`cover-letter-preview-${template.id}`"
-              class="template-menu-item"
-              :class="{ 'template-menu-item--active': selectedTemplate === template.id }"
-              variant="outlined"
-              @click="applyPreviewTemplate(template.id)"
-            >
-              <v-img :src="template.image" height="96" cover />
-              <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
-            </v-card>
-          </div>
-        </v-card>
-      </v-menu>
-    </div></div>
-    <div class="py-8 d-flex justify-center"><main class="capture-cover-letter" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
+    <div class="py-8 d-flex justify-center"><main class="capture-cover-letter" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
       <header class="hero" :class="{'hero--double': barLayout === 'double', 'hero--photo-right': letterPhotoPosition === 'right'}">
         <HoverRichTextEditor v-model="letterModel.fullName" :font-size="`${letterElementStyles.fullName.size}px`" :color="letterElementStyles.fullName.color" :font-weight="letterElementStyles.fullName.weight" />
@@ -207,41 +125,23 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
         <HoverRichTextEditor v-model="letterModel.email" :font-size="`${letterElementStyles.signoff.size}px`" :color="letterElementStyles.signoff.color" :font-weight="letterElementStyles.signoff.weight" />
         <HoverRichTextEditor v-model="letterModel.phone" :font-size="`${letterElementStyles.phone.size}px`" :color="letterElementStyles.phone.color" :font-weight="letterElementStyles.phone.weight" />
       </section>
-      <footer v-if="signatureDataUrl" class="signature-footer"><img :src="signatureDataUrl" alt="signature" class="signature-image"/></footer>
+      <div class="signature-rule"/>
     </main></div>
-    <v-dialog v-model="signatureDialogOpen" max-width="760"><v-card><v-card-title>Signature</v-card-title><v-card-text><canvas ref="signatureCanvas" style="width:100%;height:200px;border:1px solid rgba(0,0,0,.15);border-radius:10px"/></v-card-text></v-card></v-dialog>
+
+    <div class="d-flex flex-wrap ga-2 justify-center">
+      <v-btn v-for="template in coverLetterTemplates" :key="template.id" size="small" variant="outlined" @click="applyPreviewTemplate(template.id)">{{ template.title }}</v-btn>
+    </div>
   </v-container>
 </div>
 </template>
-<style scoped>
-.capture-cover-letter{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:80px;background:var(--cp-bg);color:var(--cp-text)}.hero{border-left:var(--bar-primary-width) solid var(--cp-primary);padding-left:24px;margin-bottom:48px;border-radius:var(--bar-radius);position:relative}.meta-top-right{position:absolute;top:0;right:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px;text-align:right}.hero-row{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding-top:52px}.hero-avatar{align-self:flex-start}.hero-avatar--right{align-self:flex-end}.hero--photo-right{padding-top:8px}.hero--double::before{content:'';position:absolute;left:calc(var(--bar-primary-width) + 6px);top:0;bottom:0;width:var(--bar-secondary-width);background:var(--cp-secondary);border-radius:var(--bar-radius)}.avatar-upload{cursor:pointer;position:relative;overflow:visible;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px')}.photo-shell{display:block;position:relative}.photo-quick-trigger{position:absolute;top:-10px;left:-10px;z-index:30;opacity:0;transition:opacity .15s ease;background:#fff;border:1px solid rgba(15,23,42,.2)}.photo-shell:hover .photo-quick-trigger,.photo-shell:focus-within .photo-quick-trigger,.photo-quick-trigger:focus-visible{opacity:1}.photo-quick-menu{border:1px solid rgba(148,163,184,.4)}h1{font-size:58px;margin:0}p{font-size:var(--body-size);color:var(--body-color)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:40px;margin:0 0 16px}section{border-top:3px var(--section-divider-style) var(--cp-secondary);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.decor-square{border-radius:10px}.decor-diamond{border-radius:8px;transform:translate(-50%,-50%) rotate(45deg)}.decor-star{-webkit-clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}.decor-triangle{-webkit-clip-path:polygon(50% 0%,0 100%,100% 100%);clip-path:polygon(50% 0%,0 100%,100% 100%)}.decor-pill{border-radius:999px}.decor-bar{border-radius:999px}.preview-toolbar-wrap{position:sticky;top:76px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background: rgba(var(--v-theme-primary))}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}</style>
 
 <style scoped>
-@media (prefers-color-scheme: dark) {
-  .capture-cover-page,
-  .capture-cover-letter { box-shadow: 0 10px 30px rgba(0,0,0,.45); }
-}
-</style>
-
-<style scoped>
-.template-menu-card {
-  margin-top: 8px;
-  padding: 12px;
-}
-
-.template-menu-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.template-menu-item {
-  margin: 0;
-}
-
-@media (max-width: 1100px) {
-  .template-menu-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
+.capture-cover-letter{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:80px;background:var(--cp-bg);color:var(--cp-text)}
+.hero{border-left:var(--bar-primary-width) solid var(--cp-primary);padding-left:24px;margin-bottom:48px;border-radius:var(--bar-radius);position:relative}
+.hero--double::before{content:'';position:absolute;left:calc(var(--bar-primary-width) + 6px);top:0;bottom:0;width:var(--bar-secondary-width);background:var(--cp-secondary);border-radius:var(--bar-radius)}
+.meta-top-right{position:absolute;top:80px;right:80px;display:flex;flex-direction:column;align-items:flex-end;gap:6px;text-align:right}
+section{border-top:3px var(--section-divider-style) var(--cp-secondary);padding-top:24px;margin-top:24px}
+.signature-rule{margin-top:32px;border-top:2px var(--section-divider-style) var(--cp-secondary);width:180px}
+.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}
+.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.decor-square{border-radius:10px}.decor-diamond{border-radius:8px;transform:translate(-50%,-50%) rotate(45deg)}.decor-star{-webkit-clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}.decor-triangle{-webkit-clip-path:polygon(50% 0%,0 100%,100% 100%);clip-path:polygon(50% 0%,0 100%,100% 100%)}.decor-pill{border-radius:999px}.decor-bar{border-radius:999px}
 </style>
