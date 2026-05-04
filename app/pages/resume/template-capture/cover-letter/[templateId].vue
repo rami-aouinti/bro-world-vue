@@ -76,33 +76,40 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
       <p class="address" :style="itemStyles.address">Paris, France</p>
     </div>
     <header class="hero">
-      <img src="/img/team-1.jpg" alt="profile" class="capture-photo">
-      <h1>Alex Martin</h1>
-      <p class="role">Senior Full Stack Developer</p>
+      <div class="hero-row">
+        <img src="/img/team-1.jpg" alt="profile" class="capture-photo">
+        <h1>Alex Martin</h1>
+        <p class="role">Senior Full Stack Developer</p>
+      </div>
     </header>
-    <p class="intro">Dear Hiring Manager,</p>
-    <p>
-      I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture,
-      and cross-functional collaboration.
-    </p>
-    <p>
-      I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.
-    </p>
-    <p class="signature">Sincerely,<br>Alex Martin</p>
+    <section>
+      <p class="intro">Dear Hiring Manager,</p>
+      <p>
+        I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture,
+        and cross-functional collaboration.
+      </p>
+      <p>
+        I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.
+      </p>
+      <p class="signature-label">Sincerely,</p>
+      <p>Alex Martin</p>
+    </section>
   </main>
 </template>
 
 <style scoped>
-.capture-cover-letter { position: relative; overflow: hidden; width: 850px; height: 1123px; padding: 72px; background: var(--cl-bg); color: var(--cl-text); border-radius: var(--cl-radius); box-shadow: var(--cl-shadow); }
-.meta-top-right { position: absolute; top: 72px; right: 72px; text-align: right; }
+.capture-cover-letter { position: relative; overflow: hidden; width: 850px; height: 1123px; padding: 64px 72px; background: var(--cl-bg); color: var(--cl-text); border-radius: var(--cl-radius); box-shadow: var(--cl-shadow); }
+.meta-top-right { position: absolute; top: 64px; right: 72px; text-align: right; display: flex; flex-direction: column; gap: 2px; align-items: flex-end; }
 .date { color: var(--cl-muted); margin: 0; }
-.address { margin-top: 8px; }
-.hero { border-left: var(--cl-bar-primary-width) solid var(--cl-primary); padding-left: 24px; margin-bottom: 48px; }
-h1 { color: var(--cl-text); margin: 0; }
-.role { color: var(--cl-muted); margin-top: 8px; font-size: 24px; }
-p { font-size: 24px; line-height: 1.5; margin: var(--paragraph-spacing) 0; }
-.intro { font-weight: 700; }
-.signature { margin-top: 60px; border-top: 2px var(--section-divider-style) var(--cl-secondary); padding-top: 24px; width: fit-content; }
+.address { margin: 0; }
+.hero { border-left: var(--cl-bar-primary-width) solid var(--cl-primary); padding-left: 24px; padding-top: 6px; margin-bottom: 42px; min-height: 140px; }
+.hero-row { display: flex; flex-direction: column; gap: 6px; }
+h1 { color: var(--cl-text); margin: 0; font-size: 44px; line-height: 1.05; }
+.role { color: var(--cl-muted); margin: 0; font-size: 24px; }
+p { font-size: 24px; line-height: 1.55; margin: 0 0 18px; color: color-mix(in srgb,var(--cl-text) 78%, #475569); }
+section { border-top: 2px var(--section-divider-style) color-mix(in srgb,var(--cl-secondary) 45%, transparent); padding-top: 24px; margin-top: 24px; }
+.intro { font-weight: 700; color: var(--cl-text); margin-bottom: 24px; }
+.signature-label { margin-top: 24px; }
 .decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cl-primary) 35%,transparent)}
 .decor-circle{border-radius:999px}
 .decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cl-secondary) 55%,transparent)}
@@ -116,5 +123,5 @@ p { font-size: 24px; line-height: 1.5; margin: var(--paragraph-spacing) 0; }
 </style>
 
 <style scoped>
-.capture-photo{width:92px;height:92px;border-radius:999px;object-fit:cover;margin-bottom:16px}
+.capture-photo{width:84px;height:84px;border-radius:999px;object-fit:cover;margin-bottom:8px;border:2px solid #0f172a}
 </style>

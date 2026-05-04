@@ -96,10 +96,10 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
 
 <style scoped>
 .capture-cover-page { position: relative; overflow: hidden; width: 850px; height: 1123px; padding: 80px; background: var(--cp-bg); color: var(--cp-text); border-radius: var(--cp-radius); box-shadow: var(--cp-shadow); }
-.meta-top-right { position: absolute; top: 80px; right: 80px; text-align: right; color: var(--cp-muted); }
+.meta-top-right { position: absolute; top: 80px; right: 80px; text-align: right; color: var(--cp-muted); display:flex; flex-direction:column; gap:6px; align-items:flex-end; }
 .date, .address { margin: 0; font-size: 18px; }
 .address { margin-top: 8px; color: var(--cp-text); }
-.hero { border-left: var(--cp-bar-width) solid var(--cp-primary); padding-left: 24px; margin-bottom: 48px; }
+.hero { border-left: var(--cp-bar-width) solid var(--cp-primary); padding-left: 24px; margin-bottom: 48px; border-radius: 0; min-height: 148px; }
 h1 { font-size: 58px; margin: 0; }
 p { font-size: 24px; color: var(--cp-muted); }
 .role { margin-top: 8px; }
@@ -119,5 +119,5 @@ section { border-top: 3px var(--section-divider-style) var(--cp-secondary); padd
 </style>
 
 <style scoped>
-.capture-photo{width:92px;height:92px;border-radius:999px;object-fit:cover;margin-bottom:16px}
+.capture-photo{width:84px;height:84px;border-radius:999px;object-fit:cover;margin-bottom:8px;border:2px solid #0f172a}
 </style>
