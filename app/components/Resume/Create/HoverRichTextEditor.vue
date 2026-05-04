@@ -63,6 +63,11 @@ const isEmpty = computed(() => !props.modelValue)
         <option value="24px">24</option>
         <option value="28px">28</option>
         <option value="32px">32</option>
+        <option value="40px">40</option>
+        <option value="48px">48</option>
+        <option value="64px">64</option>
+        <option value="96px">96</option>
+        <option value="128px">128</option>
       </select>
       <v-btn
         size="x-small"
@@ -115,6 +120,7 @@ const isEmpty = computed(() => !props.modelValue)
     <div
       class="hover-editor__surface"
       :class="{ 'hover-editor__surface--empty': isEmpty }"
+      :style="{ '--editor-font-size': selectedSize, '--editor-color': selectedColor }"
     >
       <EditorContent :editor="editor" />
       <span v-if="isEmpty" class="hover-editor__placeholder">{{
@@ -155,5 +161,7 @@ const isEmpty = computed(() => !props.modelValue)
 :deep(.hover-editor__content) {
   min-height: 78px;
   outline: none;
+  color: var(--editor-color);
+  font-size: var(--editor-font-size);
 }
 </style>
