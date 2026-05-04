@@ -21,8 +21,9 @@ const letterElementStyles = reactive({ fullName:{size:58,color:'#0f172a',weight:
 const letterFontWeightMap: Record<string, string> = { regular: '400', medium: '500', semibold: '600', bold: '700' }
 const primaryBarWidth = ref(10)
 const secondaryBarWidth = ref(5)
-const letterModel = reactive({ fullName:'Alex Martin', role:'Senior Full Stack Developer', location:'221B Baker Street, London, UK', date:new Date().toLocaleDateString('en-US'), heading:'Cover Letter', company:'Dear Hiring Manager,', companyParagraph:'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.', summary:'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.', email:'Sincerely,', phone:'Alex Martin' })
-const activeLetterTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
+const model = reactive({ fullName:'Alex Martin', location:'221B Baker Street, London, UK', date:new Date().toLocaleDateString('en-US'), heading:'Cover Letter', company:'Dear Hiring Manager,', companyParagraph:'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.', summary:'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.', email:'Sincerely,', phone:'Alex Martin' })
+const activeTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
+const _letterItemConfig = computed(() => activeTemplate.value?.items || {})
 const editableDecorObjects = ref<any[]>([])
 const defaultDecorPresets = [
   { type: 'circle', x: 8, y: 6, size: 80, opacity: 0.08 },
