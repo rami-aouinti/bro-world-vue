@@ -193,8 +193,6 @@ watch(() => props.fontWeight, (value) => {
   position: relative;
   border: 1px solid transparent;
   border-radius: 10px;
-  min-height: 100px;
-  padding: 10px;
   transition: border-color .15s ease;
 }
 .hover-editor:hover .hover-editor__surface,
@@ -209,7 +207,6 @@ watch(() => props.fontWeight, (value) => {
   pointer-events: none;
 }
 :deep(.hover-editor__content) {
-  min-height: 78px;
   outline: none;
   color: var(--editor-color);
   font-size: var(--editor-font-size);

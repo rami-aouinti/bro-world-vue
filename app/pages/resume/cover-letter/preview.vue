@@ -93,28 +93,18 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
 <div>
   <AppPageDrawers>
     <template #left>
-      <AppSelect v-model="model.photoUrl" :items="photoOptions.map((value)=>({title:value,value}))" label="Photo" hide-details class="mt-3"/>
-      <input ref="photoInput" type="file" accept="image/*" class="d-none" @change="onPhotoUpload">
-      <v-text-field v-model="model.date" label="Date" hide-details class="mt-3"/>
-      <v-slider v-model="imageSize" label="Image size" min="48" max="180" step="1" hide-details class="mt-3"/>
-      <AppSelect v-model="imageShape" :items="[{ title: 'Circle', value: 'circle' }, { title: 'Square', value: 'square' }]" label="Image shape" hide-details class="mt-3"/>
-      <v-slider v-model="imageBorderWidth" label="Border width" min="0" max="8" step="1" hide-details class="mt-3"/>
-      <AppSelect v-model="photoPosition" :items="[{ title: 'Left', value: 'left' }, { title: 'Right', value: 'right' }]" label="Photo position" hide-details class="mt-3"/>
-      <v-text-field v-model="imageBorderColor" type="color" label="Border color" hide-details class="mt-3"/>
-      <v-menu><template #activator="{ props }"><v-btn v-bind="props" class="mt-3" variant="outlined" block>Palette</v-btn></template><v-list><v-list-item title="Template" @click="selectedPalette='template'"/><v-list-item title="Sunset" @click="selectedPalette='sunset'"/><v-list-item title="Forest" @click="selectedPalette='forest'"/><v-list-item title="Custom" @click="selectedPalette='custom'"/></v-list></v-menu>
-      <v-text-field v-if="selectedPalette==='custom'" v-model="customPrimary" label="Custom primary" hide-details class="mt-3"/>
-      <v-text-field v-if="selectedPalette==='custom'" v-model="customSecondary" label="Custom secondary" hide-details class="mt-3"/>
-      <v-text-field v-if="selectedPalette==='custom'" v-model="customPageBackground" label="Custom page background" hide-details class="mt-3"/>
-      <v-slider v-model="textFontSize" label="Text size" min="16" max="36" step="1" hide-details class="mt-3"/>
-      <v-text-field v-model="textColor" type="color" label="Text color" hide-details class="mt-3"/>
-      <v-slider v-model="barRadius" label="Bar radius" min="0" max="30" step="1" hide-details class="mt-3"/>
-      <AppSelect v-model="barLayout" :items="[{ title: 'Single bar', value: 'single' }, { title: 'Double bars', value: 'double' }]" label="Bar layout" hide-details class="mt-3"/>
-      <v-slider v-model="primaryBarWidth" label="Primary bar width" min="4" max="24" step="1" hide-details class="mt-3"/>
-      <v-slider v-if="barLayout==='double'" v-model="secondaryBarWidth" label="Secondary bar width" min="2" max="20" step="1" hide-details class="mt-3"/>
+     <v-card-text>
+       <v-menu><template #activator="{ props }"><v-btn v-bind="props" class="mt-3" variant="outlined" block>Palette</v-btn></template><v-list><v-list-item title="Template" @click="selectedPalette='template'"/><v-list-item title="Sunset" @click="selectedPalette='sunset'"/><v-list-item title="Forest" @click="selectedPalette='forest'"/><v-list-item title="Custom" @click="selectedPalette='custom'"/></v-list></v-menu>
+       <v-text-field v-if="selectedPalette==='custom'" v-model="customPrimary" label="Custom primary" hide-details class="mt-3"/>
+       <v-text-field v-if="selectedPalette==='custom'" v-model="customSecondary" label="Custom secondary" hide-details class="mt-3"/>
+       <v-text-field v-if="selectedPalette==='custom'" v-model="customPageBackground" label="Custom page background" hide-details class="mt-3"/>
+       <v-slider v-model="barRadius" label="Bar radius" min="0" max="30" step="1" hide-details class="mt-3"/>
+       <AppSelect v-model="barLayout" :items="[{ title: 'Single bar', value: 'single' }, { title: 'Double bars', value: 'double' }]" label="Bar layout" hide-details class="mt-3"/>
+       <v-slider v-model="primaryBarWidth" label="Bar width" min="4" max="24" step="1" hide-details class="mt-3"/>
+       <v-slider v-if="barLayout==='double'" v-model="secondaryBarWidth" label="Sec bar width" min="2" max="20" step="1" hide-details class="mt-3"/>
+     </v-card-text>
     </template>
     <template #right>
-      <AppSelect v-model="selectedTemplate" :items="coverLetterTemplates.map((t)=>({title:t.title,value:t.id}))" label="Template" hide-details class="mt-3"/>
-      <v-divider class="my-3"/><v-card class="pa-2" variant="outlined"><p class="text-caption mb-2">Date</p><v-slider v-model="letterElementStyles.date.size"  :min="letterSizeBoundsFor('date').min" :max="letterSizeBoundsFor('date').max" step="1" hide-details/><v-text-field v-model="letterElementStyles.date.color" type="color" hide-details class="mt-2"/><AppSelect v-model="letterElementStyles.date.weight" :items="letterStyleOptionsFor('date')" hide-details class="mt-2"/><p class="text-caption my-2">Address</p><v-slider v-model="letterElementStyles.address.size"  :min="letterSizeBoundsFor('address').min" :max="letterSizeBoundsFor('address').max" step="1" hide-details/><v-text-field v-model="letterElementStyles.address.color" type="color" hide-details class="mt-2"/><AppSelect v-model="letterElementStyles.address.weight" :items="letterStyleOptionsFor('address')" hide-details class="mt-2"/></v-card>
       <v-btn class="mt-3" size="small" variant="outlined" @click="addDecorObject">Add decor</v-btn>
       <v-card v-for="(obj,i) in editableDecorObjects" :key="`obj-${i}`" class="mt-3 pa-2" variant="outlined">
         <AppSelect v-model="obj.type" :items="decorShapeOptions.map((s)=>({title:s,value:s}))" label="Shape" hide-details class="mt-3"/>
