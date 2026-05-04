@@ -15,6 +15,8 @@ const imageBorderWidth = ref(2)
 const imageBorderColor = ref('#0f172a')
 const selectedPalette = ref<'template' | 'sunset' | 'forest' | 'custom'>('template')
 const customPrimary = ref('#0F4C81')
+const customSecondary = ref('#5FA8D3')
+const customPageBackground = ref('#F8FAFC')
 const model = reactive({ fullName:'Alex Martin', role:'Senior Full Stack Developer', summary:'Driven engineer delivering robust products with strong UX and clean architecture.', location:'Paris, France', email:'alex@example.com', phone:'+33 6 00 00 00 00', date:new Date().toLocaleDateString('en-US'), photoUrl:photoOptions[0], heading:'Application Pack' })
 const activeTemplate = computed(() => GENERATED_COVER_PAGE_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_PAGE_TEMPLATES[0])
 const editableDecorObjects = ref<any[]>([])
@@ -26,9 +28,9 @@ const sectionDividerStyle = computed(() => {
 const sectionSpacing = computed(() => activeTemplate.value?.layoutOptions?.sectionSpacing === 'wide' ? '40px' : '24px')
 const activeColors = computed(() => {
   const palette = activeTemplate.value.theme.palette
-  if (selectedPalette.value === 'sunset') return { ...palette, primary: '#C2410C', secondary: '#FDBA74' }
-  if (selectedPalette.value === 'forest') return { ...palette, primary: '#166534', secondary: '#86EFAC' }
-  if (selectedPalette.value === 'custom') return { ...palette, primary: customPrimary.value }
+  if (selectedPalette.value === 'sunset') return { ...palette, primary: '#C2410C', secondary: '#FDBA74', pageBackground: '#FFF7ED' }
+  if (selectedPalette.value === 'forest') return { ...palette, primary: '#166534', secondary: '#86EFAC', pageBackground: '#F0FDF4' }
+  if (selectedPalette.value === 'custom') return { ...palette, primary: customPrimary.value, secondary: customSecondary.value, pageBackground: customPageBackground.value }
   return palette
 })
 const signatureDataUrl = ref('')
@@ -81,6 +83,8 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
       <v-text-field v-model="imageBorderColor" type="color" label="Border color" hide-details class="mt-3"/>
       <v-menu><template #activator="{ props }"><v-btn v-bind="props" class="mt-3" variant="outlined" block>Palette</v-btn></template><v-list><v-list-item title="Template" @click="selectedPalette='template'"/><v-list-item title="Sunset" @click="selectedPalette='sunset'"/><v-list-item title="Forest" @click="selectedPalette='forest'"/><v-list-item title="Custom" @click="selectedPalette='custom'"/></v-list></v-menu>
       <v-text-field v-if="selectedPalette==='custom'" v-model="customPrimary" label="Custom primary" hide-details class="mt-3"/>
+      <v-text-field v-if="selectedPalette==='custom'" v-model="customSecondary" label="Custom secondary" hide-details class="mt-3"/>
+      <v-text-field v-if="selectedPalette==='custom'" v-model="customPageBackground" label="Custom page background" hide-details class="mt-3"/>
     </template>
     <template #right>
       <AppSelect v-model="selectedTemplate" :items="coverPageTemplates.map((t)=>({title:t.title,value:t.id}))" label="Template" hide-details class="mt-3"/>
