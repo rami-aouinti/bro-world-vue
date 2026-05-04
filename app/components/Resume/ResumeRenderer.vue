@@ -37,7 +37,7 @@ type TemplateConfig = {
     enabled?: boolean;
     zIndex?: number;
     elements?: Array<{
-      type: "circle" | "square" | "line" | "blob";
+      type: "circle" | "square" | "line" | "blob" | "ring" | "diamond" | "star" | "triangle" | "bar" | "pill" | "diamand";
       size: string | number;
       color: string;
       x: string | number;
