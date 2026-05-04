@@ -37,6 +37,18 @@ const secondaryBarWidth = ref(5)
 const model = reactive({ fullName:'Alex Martin', role:'Senior Full Stack Developer', summary:'Driven engineer delivering robust products with strong UX and clean architecture.', location:'Paris, France', email:'alex@example.com', phone:'+33 6 00 00 00 00', date:new Date().toLocaleDateString('en-US'), photoUrl:photoOptions[0], heading:'About Me' })
 const activeTemplate = computed(() => GENERATED_COVER_PAGE_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_PAGE_TEMPLATES[0])
 const templateItemConfig = computed(() => activeTemplate.value?.items || {})
+const defaultBarDesignConfig = {
+  barRadius: { min: 0, max: 30 },
+  barLayout: ['single', 'double'],
+  barWidth: { min: 4, max: 24 },
+  secondaryBarWidth: { min: 2, max: 20 },
+}
+const activeBarDesignConfig = computed(() => {
+  const firstItem = Object.values((templateItemConfig.value as any) || {})[0] as
+    | { designConfig?: typeof defaultBarDesignConfig }
+    | undefined
+  return firstItem?.designConfig || defaultBarDesignConfig
+})
 const styleOptionsFor = (key: string) => ((templateItemConfig.value as any)?.[key]?.styles || ['regular','medium','semibold','bold']).map((v:string)=>({title:v,value:fontWeightMap[v]||'400'}))
 const sizeBoundsFor = (key: string, fallbackMin: number, fallbackMax: number) => ({ min: (templateItemConfig.value as any)?.[key]?.size?.min ?? fallbackMin, max: (templateItemConfig.value as any)?.[key]?.size?.max ?? fallbackMax })
 const editableDecorObjects = ref<any[]>([])
@@ -116,7 +128,7 @@ const photoInput = ref<HTMLInputElement | null>(null)
 const layoutMenuOpen = ref(false)
 const photoQuickMenuOpen = ref(false)
 
-watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; for (const key of ['fullName','role','heading','summary','email','phone']) { const b=items[key]?.size; if (b) elementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) elementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) elementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
+watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; const firstItem = Object.values(items || {})[0] as any; const designConfig = firstItem?.designConfig || defaultBarDesignConfig; barRadius.value = designConfig?.barRadius?.min ?? defaultBarDesignConfig.barRadius.min; primaryBarWidth.value = designConfig?.barWidth?.min ?? defaultBarDesignConfig.barWidth.min; secondaryBarWidth.value = designConfig?.secondaryBarWidth?.min ?? defaultBarDesignConfig.secondaryBarWidth.min; barLayout.value = Array.isArray(designConfig?.barLayout) && designConfig.barLayout.includes('double') ? 'double' : 'single'; for (const key of ['fullName','role','heading','summary','email','phone']) { const b=items[key]?.size; if (b) elementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) elementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) elementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
 function addDecorObject(){ editableDecorObjects.value.push({ type:'circle', x:'50%', y:'50%', size:'120', opacity:0.15 }) }
 function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
 function goToCreateResume(){ navigateTo('/resume/preview') }
@@ -156,10 +168,10 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
        <v-text-field v-if="selectedPalette==='custom'" v-model="customPrimary" label="Custom primary" hide-details class="mt-3"/>
        <v-text-field v-if="selectedPalette==='custom'" v-model="customSecondary" label="Custom secondary" hide-details class="mt-3"/>
        <v-text-field v-if="selectedPalette==='custom'" v-model="customPageBackground" label="Custom page background" hide-details class="mt-3"/>
-       <v-slider v-model="barRadius" label="Bar radius" min="0" max="30" step="1" hide-details class="mt-3"/>
+       <v-slider v-model="barRadius" label="Bar radius" :min="activeBarDesignConfig.barRadius.min" :max="activeBarDesignConfig.barRadius.max" step="1" hide-details class="mt-3"/>
        <AppSelect v-model="barLayout" :items="[{ title: 'Single bar', value: 'single' }, { title: 'Double bars', value: 'double' }]" label="Bar layout" hide-details class="mt-3"/>
-       <v-slider v-model="primaryBarWidth" label="Bar width" min="4" max="24" step="1" hide-details class="mt-3"/>
-       <v-slider v-if="barLayout==='double'" v-model="secondaryBarWidth" label="Sec Bar width" min="2" max="20" step="1" hide-details class="mt-3"/>
+       <v-slider v-model="primaryBarWidth" label="Bar width" :min="activeBarDesignConfig.barWidth.min" :max="activeBarDesignConfig.barWidth.max" step="1" hide-details class="mt-3"/>
+       <v-slider v-if="barLayout==='double'" v-model="secondaryBarWidth" label="Sec Bar width" :min="activeBarDesignConfig.secondaryBarWidth.min" :max="activeBarDesignConfig.secondaryBarWidth.max" step="1" hide-details class="mt-3"/>
      </v-card-text>
     </template>
     <template #right>

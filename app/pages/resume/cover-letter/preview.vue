@@ -25,6 +25,18 @@ const primaryBarWidth = ref(10)
 const secondaryBarWidth = ref(5)
 const model = reactive({ fullName:'Alex Martin', role:'Senior Full Stack Developer', location:'Paris, France', date:new Date().toLocaleDateString('en-US'), heading:'Dear Hiring Manager,', company:'', companyParagraph:'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.', summary:'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.', email:'Sincerely,', phone:'Alex Martin' })
 const activeTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
+const defaultBarDesignConfig = {
+  barRadius: { min: 0, max: 30 },
+  barLayout: ['single', 'double'],
+  barWidth: { min: 4, max: 24 },
+  secondaryBarWidth: { min: 2, max: 20 },
+}
+const activeBarDesignConfig = computed(() => {
+  const firstItem = Object.values((activeTemplate.value?.items as any) || {})[0] as
+    | { designConfig?: typeof defaultBarDesignConfig }
+    | undefined
+  return firstItem?.designConfig || defaultBarDesignConfig
+})
 const editableDecorObjects = ref<any[]>([])
 const defaultDecorPresets = [
   { type: 'circle', x: 8, y: 6, size: 80, opacity: 0.08 },
@@ -110,7 +122,7 @@ const signatureDialogOpen = ref(false)
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const layoutMenuOpen = ref(false)
 
-watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; for (const key of ['date','address']) { const b=items[key]?.size; if (b) letterElementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) letterElementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) letterElementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
+watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; const firstItem = Object.values(items || {})[0] as any; const designConfig = firstItem?.designConfig || defaultBarDesignConfig; barRadius.value = designConfig?.barRadius?.min ?? defaultBarDesignConfig.barRadius.min; primaryBarWidth.value = designConfig?.barWidth?.min ?? defaultBarDesignConfig.barWidth.min; secondaryBarWidth.value = designConfig?.secondaryBarWidth?.min ?? defaultBarDesignConfig.secondaryBarWidth.min; barLayout.value = Array.isArray(designConfig?.barLayout) && designConfig.barLayout.includes('double') ? 'double' : 'single'; for (const key of ['date','address']) { const b=items[key]?.size; if (b) letterElementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) letterElementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) letterElementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
 function addDecorObject(){ editableDecorObjects.value.push(normalizeDecorObject({ type:'circle', x:50, y:50, size:120, opacity:0.15 })) }
 function addDecorObjectFromPreset(preset:any){ editableDecorObjects.value.push(normalizeDecorObject({ ...preset })) }
 function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
@@ -131,10 +143,10 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
        <v-text-field v-if="selectedPalette==='custom'" v-model="customPrimary" label="Custom primary" hide-details class="mt-3"/>
        <v-text-field v-if="selectedPalette==='custom'" v-model="customSecondary" label="Custom secondary" hide-details class="mt-3"/>
        <v-text-field v-if="selectedPalette==='custom'" v-model="customPageBackground" label="Custom page background" hide-details class="mt-3"/>
-       <v-slider v-model="barRadius" label="Bar radius" min="0" max="30" step="1" hide-details class="mt-3"/>
+       <v-slider v-model="barRadius" label="Bar radius" :min="activeBarDesignConfig.barRadius.min" :max="activeBarDesignConfig.barRadius.max" step="1" hide-details class="mt-3"/>
        <AppSelect v-model="barLayout" :items="[{ title: 'Single bar', value: 'single' }, { title: 'Double bars', value: 'double' }]" label="Bar layout" hide-details class="mt-3"/>
-       <v-slider v-model="primaryBarWidth" label="Bar width" min="4" max="24" step="1" hide-details class="mt-3"/>
-       <v-slider v-if="barLayout==='double'" v-model="secondaryBarWidth" label="Sec bar width" min="2" max="20" step="1" hide-details class="mt-3"/>
+       <v-slider v-model="primaryBarWidth" label="Bar width" :min="activeBarDesignConfig.barWidth.min" :max="activeBarDesignConfig.barWidth.max" step="1" hide-details class="mt-3"/>
+       <v-slider v-if="barLayout==='double'" v-model="secondaryBarWidth" label="Sec bar width" :min="activeBarDesignConfig.secondaryBarWidth.min" :max="activeBarDesignConfig.secondaryBarWidth.max" step="1" hide-details class="mt-3"/>
      </v-card-text>
     </template>
     <template #right>
