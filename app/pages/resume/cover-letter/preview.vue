@@ -45,6 +45,7 @@ const signatureDialogOpen = ref(false)
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const photoInput = ref<HTMLInputElement | null>(null)
 const layoutMenuOpen = ref(false)
+const photoQuickMenuOpen = ref(false)
 
 watch(activeTemplate, (tpl) => { editableDecorObjects.value = JSON.parse(JSON.stringify(tpl?.decor?.objects || [])); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left' }, { immediate: true })
 function addDecorObject(){ editableDecorObjects.value.push({ type:'circle', x:'50%', y:'50%', size:'120', opacity:0.15 }) }
@@ -108,6 +109,23 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
         <div class="hero-row">
 
           <div class="mb-4 avatar-upload hero-avatar photo-shell" :style="{ width: `${imageSize}px`, height: `${imageSize}px`, borderRadius: imageShape === 'circle' ? '999px' : '12px' }" @click="openPhotoUpload">
+            <v-menu v-model="photoQuickMenuOpen" location="bottom start">
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  icon="mdi-tune-variant"
+                  size="x-small"
+                  class="photo-quick-trigger"
+                  @click.stop
+                />
+              </template>
+              <v-card class="pa-3 photo-quick-menu" min-width="240" @click.stop>
+                <v-slider v-model="imageSize" label="Image size" min="48" max="180" step="1" hide-details class="mt-1"/>
+                <v-slider v-model="imageBorderWidth" label="Border width" min="0" max="8" step="1" hide-details class="mt-3"/>
+                <v-text-field v-model="imageBorderColor" type="color" label="Border color" hide-details class="mt-3"/>
+                <AppSelect v-model="imageShape" :items="[{ title: 'Circle', value: 'circle' }, { title: 'Square', value: 'square' }]" label="Image shape" hide-details class="mt-3"/>
+              </v-card>
+            </v-menu>
             <v-img :src="model.photoUrl" cover @click.stop="openPhotoUpload" class="photo-shell__img"/>
             <div class="avatar-overlay">Change</div>
           </div>
@@ -130,7 +148,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
 </div>
 </template>
 <style scoped>
-.capture-cover-letter{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:80px;background:var(--cp-bg);color:var(--cp-text)}.hero{border-left:var(--bar-primary-width) solid var(--cp-primary);padding-left:24px;margin-bottom:48px;border-radius:var(--bar-radius);position:relative}.hero-row{display:flex;flex-direction:column;align-items:flex-start;gap:8px}.hero-avatar{align-self:flex-start}.hero-avatar--right{align-self:flex-end}.hero--photo-right{padding-top:8px}.hero--double::before{content:'';position:absolute;left:calc(var(--bar-primary-width) + 6px);top:0;bottom:0;width:var(--bar-secondary-width);background:var(--cp-secondary);border-radius:var(--bar-radius)}.avatar-upload{cursor:pointer;position:relative;overflow:hidden;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px')} .avatar-overlay{position:absolute;inset:auto 0 0 0;padding:2px 0;background:rgba(15,23,42,.55);color:#fff;font-size:10px;text-align:center}h1{font-size:58px;margin:0}p{font-size:var(--body-size);color:var(--body-color)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:40px;margin:0 0 16px}section{border-top:3px var(--section-divider-style) var(--cp-secondary);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.preview-toolbar-wrap{position:sticky;top:76px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background: rgba(var(--v-theme-primary))}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}</style>
+.capture-cover-letter{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:80px;background:var(--cp-bg);color:var(--cp-text)}.hero{border-left:var(--bar-primary-width) solid var(--cp-primary);padding-left:24px;margin-bottom:48px;border-radius:var(--bar-radius);position:relative}.hero-row{display:flex;flex-direction:column;align-items:flex-start;gap:8px}.hero-avatar{align-self:flex-start}.hero-avatar--right{align-self:flex-end}.hero--photo-right{padding-top:8px}.hero--double::before{content:'';position:absolute;left:calc(var(--bar-primary-width) + 6px);top:0;bottom:0;width:var(--bar-secondary-width);background:var(--cp-secondary);border-radius:var(--bar-radius)}.avatar-upload{cursor:pointer;position:relative;overflow:visible;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px')}.photo-shell{display:block;position:relative}.photo-quick-trigger{position:absolute;top:-10px;left:-10px;z-index:30;opacity:0;transition:opacity .15s ease;background:#fff;border:1px solid rgba(15,23,42,.2)}.photo-shell:hover .photo-quick-trigger,.photo-shell:focus-within .photo-quick-trigger,.photo-quick-trigger:focus-visible{opacity:1}.photo-quick-menu{border:1px solid rgba(148,163,184,.4)} .avatar-overlay{position:absolute;inset:auto 0 0 0;padding:2px 0;background:rgba(15,23,42,.55);color:#fff;font-size:10px;text-align:center}h1{font-size:58px;margin:0}p{font-size:var(--body-size);color:var(--body-color)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:40px;margin:0 0 16px}section{border-top:3px var(--section-divider-style) var(--cp-secondary);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.preview-toolbar-wrap{position:sticky;top:76px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background: rgba(var(--v-theme-primary))}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}</style>
 
 <style scoped>
 @media (prefers-color-scheme: dark) {
