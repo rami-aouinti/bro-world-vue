@@ -9,6 +9,7 @@ import ResumeLayoutAsideFullRight from '~/components/resume/layouts/ResumeLayout
 import ResumeLayoutBarLeft from '~/components/resume/layouts/ResumeLayoutBarLeft.vue'
 import ResumeLayoutBarRight from '~/components/resume/layouts/ResumeLayoutBarRight.vue'
 import ResumeTemplateDecor from '~/components/Resume/ResumeTemplateDecor.vue'
+import { RESUME_TEMPLATES_CATALOG } from '~/constants/resumeTemplates.catalog'
 import type { ResumeApiItem } from '~/services/resumeApi'
 
 definePageMeta({ layout: false })
@@ -17,8 +18,31 @@ const route = useRoute()
 
 const templateId = computed(() => String(route.params.templateId || 'tpl-001'))
 
+function resolveGeneratedTemplateId(rawTemplateId: string): string {
+  const normalized = rawTemplateId.trim()
+  if (!normalized) return ''
+
+  const exactGenerated = GENERATED_RESUME_TEMPLATES.find((template) => template.id === normalized)
+  if (exactGenerated) return exactGenerated.id
+
+  const exactCatalog = RESUME_TEMPLATES_CATALOG.find(
+    (template) => template.id === normalized || template.templateId === normalized,
+  )
+  if (exactCatalog?.templateId) return exactCatalog.templateId
+
+  const unprefixed = normalized.startsWith('resume-') ? normalized.slice('resume-'.length) : normalized
+  const prefixedGenerated = GENERATED_RESUME_TEMPLATES.find((template) => template.id === unprefixed)
+  if (prefixedGenerated) return prefixedGenerated.id
+
+  const startsWithGenerated = GENERATED_RESUME_TEMPLATES.find((template) => template.id.startsWith(normalized))
+  if (startsWithGenerated) return startsWithGenerated.id
+
+  return ''
+}
+
 const selectedTemplate = computed(() => {
-  return GENERATED_RESUME_TEMPLATES.find((tpl) => tpl.id === templateId.value) || GENERATED_RESUME_TEMPLATES[0]
+  const resolvedTemplateId = resolveGeneratedTemplateId(templateId.value)
+  return GENERATED_RESUME_TEMPLATES.find((tpl) => tpl.id === resolvedTemplateId) || GENERATED_RESUME_TEMPLATES[0]
 })
 
 const randomItem = <T,>(items: T[]): T => {

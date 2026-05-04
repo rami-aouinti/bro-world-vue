@@ -1,13 +1,41 @@
 <script setup lang="ts">
 import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-20-cover-letter.json'
+import { COVER_TEMPLATES_CATALOG } from '~/constants/resumeTemplates.catalog'
 
 definePageMeta({ layout: false })
 
 const route = useRoute()
 const templateId = computed(() => String(route.params.templateId || 'cletter-001'))
 
+function resolveGeneratedTemplateId(rawTemplateId: string): string {
+  const normalized = rawTemplateId.trim()
+  if (!normalized) return ''
+
+  const exactGenerated = GENERATED_COVER_LETTER_TEMPLATES.find((template) => template.id === normalized)
+  if (exactGenerated) return exactGenerated.id
+
+  const exactCatalog = COVER_TEMPLATES_CATALOG.find(
+    (template) =>
+      template.type === 'cover-letter' &&
+      (template.id === normalized || template.templateId === normalized),
+  )
+  if (exactCatalog?.templateId) return exactCatalog.templateId
+
+  const unprefixed = normalized.startsWith('cover-letter-')
+    ? normalized.slice('cover-letter-'.length)
+    : normalized
+  const prefixedGenerated = GENERATED_COVER_LETTER_TEMPLATES.find((template) => template.id === unprefixed)
+  if (prefixedGenerated) return prefixedGenerated.id
+
+  const startsWithGenerated = GENERATED_COVER_LETTER_TEMPLATES.find((template) => template.id.startsWith(normalized))
+  if (startsWithGenerated) return startsWithGenerated.id
+
+  return ''
+}
+
 const selectedTemplate = computed(() => {
-  return GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === templateId.value) || GENERATED_COVER_LETTER_TEMPLATES[0]
+  const resolvedTemplateId = resolveGeneratedTemplateId(templateId.value)
+  return GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === resolvedTemplateId) || GENERATED_COVER_LETTER_TEMPLATES[0]
 })
 
 const dividerStyleMap: Record<string, string> = { solid: 'solid', dashed: 'dashed', dotted: 'dotted' }
