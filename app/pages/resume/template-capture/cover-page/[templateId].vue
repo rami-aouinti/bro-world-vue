@@ -10,6 +10,22 @@ const selectedTemplate = computed(() => {
   return GENERATED_COVER_PAGE_TEMPLATES.find((tpl) => tpl.id === templateId.value) || GENERATED_COVER_PAGE_TEMPLATES[0]
 })
 
+const dividerStyleMap: Record<string, string> = { solid: 'solid', dashed: 'dashed', dotted: 'dotted' }
+const spacingMap: Record<string, number> = { compact: 20, normal: 30, relaxed: 42 }
+const radiusMap: Record<string, number> = { none: 0, sm: 8, md: 16, lg: 24, xl: 32 }
+const barIntensityMap: Record<string, number> = { low: 6, medium: 10, high: 14 }
+
+const resolvedStyles = computed(() => {
+  const tpl = selectedTemplate.value as any
+  return {
+    sectionDividerStyle: dividerStyleMap[tpl?.decor?.divider] || 'solid',
+    sectionSpacing: spacingMap[tpl?.layoutOptions?.sectionSpacing] || 30,
+    radius: radiusMap[tpl?.designTokens?.borderRadius] || 8,
+    barWidth: barIntensityMap[tpl?.hero?.accentIntensity] || 10,
+    shadow: tpl?.designTokens?.shadowDepth === 'none' ? 'none' : '0 10px 30px rgba(15,23,42,.18)',
+  }
+})
+
 const itemStyles = computed(() => {
   const items = (selectedTemplate.value as any)?.items || {}
   const build = (key: string, fallbackSize: number) => {
@@ -31,6 +47,8 @@ const itemStyles = computed(() => {
     phone: build('phone', 16),
   }
 })
+
+const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.objects || []) as Array<Record<string, any>>)
 </script>
 
 <template>
@@ -42,8 +60,20 @@ const itemStyles = computed(() => {
       '--cp-text': selectedTemplate.theme.palette.text,
       '--cp-muted': selectedTemplate.theme.palette.muted,
       '--cp-bg': selectedTemplate.theme.palette.pageBackground,
+      '--section-divider-style': resolvedStyles.sectionDividerStyle,
+      '--section-spacing': `${resolvedStyles.sectionSpacing}px`,
+      '--cp-radius': `${resolvedStyles.radius}px`,
+      '--cp-bar-width': `${resolvedStyles.barWidth}px`,
+      '--cp-shadow': resolvedStyles.shadow,
     }"
   >
+    <div
+      v-for="(object, index) in decorObjects"
+      :key="`cover-page-decor-${index}`"
+      class="decor-object"
+      :class="`decor-${object.type || 'circle'}`"
+      :style="{ left: object.x, top: object.y, width: `${object.size}px`, height: `${object.size}px`, opacity: object.opacity ?? 0.08 }"
+    />
     <div class="meta-top-right">
       <p class="date">May 3, 2026</p>
       <p class="address">Paris, France</p>
@@ -65,17 +95,27 @@ const itemStyles = computed(() => {
 </template>
 
 <style scoped>
-.capture-cover-page { position: relative; width: 850px; height: 1123px; padding: 80px; background: var(--cp-bg); color: var(--cp-text); }
+.capture-cover-page { position: relative; overflow: hidden; width: 850px; height: 1123px; padding: 80px; background: var(--cp-bg); color: var(--cp-text); border-radius: var(--cp-radius); box-shadow: var(--cp-shadow); }
 .meta-top-right { position: absolute; top: 80px; right: 80px; text-align: right; color: var(--cp-muted); }
 .date, .address { margin: 0; font-size: 18px; }
 .address { margin-top: 8px; color: var(--cp-text); }
-.hero { border-left: 10px solid var(--cp-primary); padding-left: 24px; margin-bottom: 48px; }
+.hero { border-left: var(--cp-bar-width) solid var(--cp-primary); padding-left: 24px; margin-bottom: 48px; }
 h1 { font-size: 58px; margin: 0; }
 p { font-size: 24px; color: var(--cp-muted); }
 .role { margin-top: 8px; }
 h2 { color: var(--cp-primary); font-size: 40px; margin: 0 0 16px; }
-section { border-top: 3px solid var(--cp-secondary); padding-top: 24px; }
+section { border-top: 3px var(--section-divider-style) var(--cp-secondary); padding-top: 24px; margin-top: var(--section-spacing); }
 .contact-row { display: flex; gap: 24px; margin-top: 20px; flex-wrap: wrap; }
+.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}
+.decor-circle{border-radius:999px}
+.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}
+.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}
+.decor-square{border-radius:10px}
+.decor-diamond{border-radius:8px;transform:translate(-50%,-50%) rotate(45deg)}
+.decor-star{-webkit-clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.decor-triangle{-webkit-clip-path:polygon(50% 0%,0 100%,100% 100%);clip-path:polygon(50% 0%,0 100%,100% 100%)}
+.decor-pill{border-radius:999px}
+.decor-bar{border-radius:999px}
 </style>
 
 <style scoped>
