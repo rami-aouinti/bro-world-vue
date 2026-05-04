@@ -22,6 +22,8 @@ const resolvedStyles = computed(() => {
     sectionSpacing: spacingMap[tpl?.layoutOptions?.sectionSpacing] || 30,
     radius: radiusMap[tpl?.designTokens?.borderRadius] || 8,
     barWidth: barIntensityMap[tpl?.hero?.accentIntensity] || 10,
+    barSecondaryWidth: 5,
+    barLayout: tpl?.hero?.accent === 'bar' && tpl?.decor?.headerStyle === 'band' ? 'double' : 'single',
     shadow: tpl?.designTokens?.shadowDepth === 'none' ? 'none' : '0 10px 30px rgba(15,23,42,.18)',
   }
 })
@@ -64,6 +66,7 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
       '--section-spacing': `${resolvedStyles.sectionSpacing}px`,
       '--cp-radius': `${resolvedStyles.radius}px`,
       '--cp-bar-width': `${resolvedStyles.barWidth}px`,
+      '--cp-bar-secondary-width': `${resolvedStyles.barSecondaryWidth}px`,
       '--cp-shadow': resolvedStyles.shadow,
     }"
   >
@@ -78,7 +81,7 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
       <p class="date">May 3, 2026</p>
       <p class="address">Paris, France</p>
     </div>
-    <header class="hero">
+    <header class="hero" :class="{ 'hero--double': resolvedStyles.barLayout === 'double' }">
       <img src="/img/team-1.jpg" alt="profile" class="capture-photo">
       <h1 :style="itemStyles.fullName">Alex Martin</h1>
       <p class="role" :style="itemStyles.role">Senior Full Stack Developer</p>
@@ -96,10 +99,11 @@ const decorObjects = computed(() => ((selectedTemplate.value as any)?.decor?.obj
 
 <style scoped>
 .capture-cover-page { position: relative; overflow: hidden; width: 850px; height: 1123px; padding: 80px; background: var(--cp-bg); color: var(--cp-text); border-radius: var(--cp-radius); box-shadow: var(--cp-shadow); }
-.meta-top-right { position: absolute; top: 80px; right: 80px; text-align: right; color: var(--cp-muted); }
+.meta-top-right { position: absolute; top: 80px; right: 80px; text-align: right; color: var(--cp-muted); display:flex; flex-direction:column; gap:6px; align-items:flex-end; }
 .date, .address { margin: 0; font-size: 18px; }
 .address { margin-top: 8px; color: var(--cp-text); }
-.hero { border-left: var(--cp-bar-width) solid var(--cp-primary); padding-left: 24px; margin-bottom: 48px; }
+.hero { border-left: var(--cp-bar-width) solid var(--cp-primary); padding-left: 24px; margin-bottom: 48px; border-radius: 0; min-height: 148px; position:relative; }
+.hero--double::before{content:'';position:absolute;left:calc(var(--cp-bar-width) + 6px);top:0;bottom:0;width:var(--cp-bar-secondary-width);background:var(--cp-secondary);border-radius:0}
 h1 { font-size: 58px; margin: 0; }
 p { font-size: 24px; color: var(--cp-muted); }
 .role { margin-top: 8px; }
@@ -119,5 +123,5 @@ section { border-top: 3px var(--section-divider-style) var(--cp-secondary); padd
 </style>
 
 <style scoped>
-.capture-photo{width:92px;height:92px;border-radius:999px;object-fit:cover;margin-bottom:16px}
+.capture-photo{width:84px;height:84px;border-radius:999px;object-fit:cover;margin-bottom:8px;border:2px solid #0f172a}
 </style>
