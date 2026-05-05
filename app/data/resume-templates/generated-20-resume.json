@@ -143,10 +143,10 @@
   },
   {
     "id": "tpl-003",
-    "name": "aside-structure-3",
+    "name": "no-aside-structure-2",
     "version": 1,
-    "layout": "aside",
-    "structure": "structure-3",
+    "layout": "no-aside",
+    "structure": "structure-2",
     "sections": {
       "experience": "timeline",
       "education": "timeline",
@@ -231,10 +231,10 @@
   },
   {
     "id": "tpl-004",
-    "name": "no-aside-structure-2",
+    "name": "no-aside-structure-1",
     "version": 1,
     "layout": "no-aside",
-    "structure": "structure-2",
+    "structure": "structure-1",
     "sections": {
       "experience": "cards",
       "education": "timeline",
