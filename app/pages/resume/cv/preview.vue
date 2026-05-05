@@ -42,6 +42,21 @@ const structureAsideTwoSections = ['Profile', 'Languages', 'Certifications', 'Re
 const structureContentBaseSections = ['Experience', 'Education', 'Projects']
 const isSideContentLayout = computed(() => ['aside-left', 'aside-right', 'aside-full-left', 'aside-full-right'].includes(String(activeTemplate.value?.layout || '')))
 
+const sectionVariantMap = computed(() => {
+  const sections = (activeTemplate.value as any)?.sections || {}
+  return {
+    profile: sections.profile || 'classic',
+    experience: sections.experience || 'classic',
+    education: sections.education || 'classic',
+    skills: sections.skills || 'classic',
+    projects: sections.projects || 'classic',
+    languages: sections.languages || 'classic',
+    certification: sections.certifications || 'classic',
+    references: sections.references || 'classic',
+    hobby: sections.interests || 'classic',
+  }
+})
+
 const headerType = computed(() => String(activeTemplate.value?.headerType || 'header-left'))
 const headerProfile = computed(() => {
   const fake = (activeTemplate.value as any)?.fakeData || {}
@@ -218,39 +233,39 @@ onMounted(() => {
           </template>
           <template #aside>
             <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" :class="['cv-aside-sections', { 'cv-aside-sections--full': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
-              <div v-for="section in structureAsideOneSections" :key="`aside-s1-${section}`" class="cv-aside-section-item">{{ section }}</div>
+              <div v-for="section in structureAsideOneSections" :key="`aside-s1-${section}`" class="cv-aside-section-item">{{ section }} · {{ sectionVariantMap[section.toLowerCase() as keyof typeof sectionVariantMap] || "classic" }}</div>
             </div>
             <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" :class="['cv-aside-sections', { 'cv-aside-sections--full': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
-              <div v-for="section in structureAsideTwoSections" :key="`aside-s2-${section}`" class="cv-aside-section-item">{{ section }}</div>
+              <div v-for="section in structureAsideTwoSections" :key="`aside-s2-${section}`" class="cv-aside-section-item">{{ section }} · {{ sectionVariantMap[section.toLowerCase() as keyof typeof sectionVariantMap] || "classic" }}</div>
             </div>
           </template>
 
           <template #content>
             <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
-              <div v-for="section in structureContentBaseSections" :key="`side-content-s1-${section}`" class="cv-section-row">{{ section }}</div>
+              <div v-for="section in structureContentBaseSections" :key="`side-content-s1-${section}`" class="cv-section-row">{{ section }} · {{ sectionVariantMap[section.toLowerCase() as keyof typeof sectionVariantMap] || "classic" }}</div>
             </div>
             <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
-              <div v-for="section in structureContentBaseSections" :key="`side-content-s2-${section}`" class="cv-section-row">{{ section }}</div>
+              <div v-for="section in structureContentBaseSections" :key="`side-content-s2-${section}`" class="cv-section-row">{{ section }} · {{ sectionVariantMap[section.toLowerCase() as keyof typeof sectionVariantMap] || "classic" }}</div>
               <v-row class="mt-1" dense>
                 <v-col cols="6">
-                  <div class="cv-section-row">Skills · Column 1</div>
+                  <div class="cv-section-row">Skills · {{ sectionVariantMap.skills || "classic" }} · Column 1</div>
                 </v-col>
                 <v-col cols="6">
-                  <div class="cv-section-row">Skills · Column 2</div>
+                  <div class="cv-section-row">Skills · {{ sectionVariantMap.skills || "classic" }} · Column 2</div>
                 </v-col>
               </v-row>
             </div>
             <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
-              <div v-for="section in structureOneSections" :key="`s1-${section}`" class="cv-section-row">{{ section }}</div>
+              <div v-for="section in structureOneSections" :key="`s1-${section}`" class="cv-section-row">{{ section }} · {{ sectionVariantMap[section.toLowerCase() as keyof typeof sectionVariantMap] || "classic" }}</div>
             </div>
             <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
-              <div v-for="section in structureTwoTopSections" :key="`s2-top-${section}`" class="cv-section-row">{{ section }}</div>
+              <div v-for="section in structureTwoTopSections" :key="`s2-top-${section}`" class="cv-section-row">{{ section }} · {{ sectionVariantMap[section.toLowerCase() as keyof typeof sectionVariantMap] || "classic" }}</div>
               <v-row class="mt-1" dense>
                 <v-col cols="6">
-                  <div v-for="section in structureTwoLeftSections" :key="`s2-left-${section}`" class="cv-section-row">{{ section }}</div>
+                  <div v-for="section in structureTwoLeftSections" :key="`s2-left-${section}`" class="cv-section-row">{{ section }} · {{ sectionVariantMap[section.toLowerCase() as keyof typeof sectionVariantMap] || "classic" }}</div>
                 </v-col>
                 <v-col cols="6">
-                  <div v-for="section in structureTwoRightSections" :key="`s2-right-${section}`" class="cv-section-row">{{ section }}</div>
+                  <div v-for="section in structureTwoRightSections" :key="`s2-right-${section}`" class="cv-section-row">{{ section }} · {{ sectionVariantMap[section.toLowerCase() as keyof typeof sectionVariantMap] || "classic" }}</div>
                 </v-col>
               </v-row>
             </div>
@@ -270,7 +285,7 @@ onMounted(() => {
 .cv-header-layout { display: grid; gap: 12px; align-items: center; }
 .cv-header-layout--header-left { grid-template-columns: 2fr 1fr; }
 .cv-header-layout--header-right { grid-template-columns: 1fr 2fr; }
-.cv-header-layout--header-split { grid-template-columns: 1fr 1fr; }
+.cv-header-layout--header-split { grid-template-columns: 5fr 7fr; }
 .cv-header-split-left { display: grid; grid-template-columns: auto 1fr; gap: 6px; align-items: center; justify-content: start; }
 .cv-header-contact { display:flex; flex-direction:column; justify-content:center; align-items:stretch; text-align:start; }
 .cv-header-contact-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 10px; width:100%; text-align:start; }
