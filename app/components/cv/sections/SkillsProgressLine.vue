@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{ items?: string[] }>()
-function splitItem(raw:string){ const m=String(raw||'').match(/^(.*)\s\((\d+%)\)$/); return m?{label:m[1],value:m[2]}:{label:String(raw||''),value:''} }
+function splitItem(raw:string){ const m=String(raw||'').match(/^(.*)\s\((\d+)%\)$/); return m?{label:m[1],value:Number(m[2])}:{label:String(raw||''),value:20} }
 </script>
-<template><div class="cv-sec"><div v-for="(item,idx) in (items||[])" :key="idx" class="cv-item-row"><span class="label">{{ splitItem(item).label }}</span><span class="value">▮</span></div></div></template>
-<style scoped>.cv-item-row{display:flex;justify-content:space-between;gap:8px;margin-bottom:6px}.label{text-align:start}.value{text-align:end;color:#6366f1;font-weight:700}</style>
+<template><div><div v-for="(item,idx) in (items||[])" :key="idx" class="row"><span>{{ splitItem(item).label }}</span><span class="pct">{{ splitItem(item).value }}%</span><span class="bar"><i :style="{width: splitItem(item).value + '%'}"/></span></div></div></template>
+<style scoped>.row{display:grid;grid-template-columns:1fr 46px 120px;gap:8px;align-items:center;margin-bottom:8px}.pct{text-align:end}.bar{height:10px;background:rgba(148,163,184,.35);border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;background:#94a3b8}</style>
