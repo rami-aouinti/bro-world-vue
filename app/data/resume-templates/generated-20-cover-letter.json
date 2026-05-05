@@ -39,7 +39,7 @@
     "decor": {
       "headerStyle": "band",
       "footerStyle": "line",
-      "divider": "dashed",
+      "divider": "gradient",
       "iconStyle": "rounded",
       "objects": [
         {
