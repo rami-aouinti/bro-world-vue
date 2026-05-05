@@ -143,10 +143,10 @@ onMounted(() => {
             </div>
           </template>
           <template #aside>
-            <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" :class="['cv-aside-sections', { 'cv-aside-sections--light': ['aside-left', 'aside-right'].includes(String(activeTemplate?.layout || "")) }]">
+            <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" :class="['cv-aside-sections', { 'cv-aside-sections--light': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
               <div v-for="section in structureAsideOneSections" :key="`aside-s1-${section}`" class="cv-aside-section-item">{{ section }}</div>
             </div>
-            <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" :class="['cv-aside-sections', { 'cv-aside-sections--light': ['aside-left', 'aside-right'].includes(String(activeTemplate?.layout || "")) }]">
+            <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" :class="['cv-aside-sections', { 'cv-aside-sections--light': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
               <div v-for="section in structureAsideTwoSections" :key="`aside-s2-${section}`" class="cv-aside-section-item">{{ section }}</div>
             </div>
           </template>
