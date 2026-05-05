@@ -361,7 +361,7 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
 
 .template-menu-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 180px));
+  grid-template-columns: repeat(4, 168px);
   justify-content: center;
   gap: 12px;
 }
@@ -376,7 +376,7 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
 
 @media (max-width: 1100px) {
   .template-menu-grid {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 160px));
+    grid-template-columns: repeat(2, 148px);
   }
 
   .template-menu-thumb {
