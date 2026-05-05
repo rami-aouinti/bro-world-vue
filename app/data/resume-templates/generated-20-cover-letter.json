@@ -271,6 +271,16 @@
       },
       "photoType": "square",
       "photoSize": 120
+    },
+    "defaultValues": {
+      "fullName": "Lina Ben Salah",
+      "role": "Product Designer",
+      "image": "/img/team-1.jpg",
+      "date": "May 01, 2026",
+      "location": "Tunis, Tunisia",
+      "heading": "Application for Senior Role",
+      "companyParagraph": "I am excited to apply to NovaTech as Product Designer. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
+      "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support NovaTech's goals."
     }
   },
   {
@@ -520,6 +530,16 @@
       },
       "photoType": "circle",
       "photoSize": 84
+    },
+    "defaultValues": {
+      "fullName": "Karim Ben Ali",
+      "role": "Full Stack Developer",
+      "image": "/img/team-2.jpg",
+      "date": "May 02, 2026",
+      "location": "Sfax, Tunisia",
+      "heading": "Motivation Letter",
+      "companyParagraph": "I am excited to apply to Blue Orbit as Full Stack Developer. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
+      "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support Blue Orbit's goals."
     }
   },
   {
@@ -764,6 +784,16 @@
       },
       "photoType": "square",
       "photoSize": 84
+    },
+    "defaultValues": {
+      "fullName": "Lina Ben Salah",
+      "role": "Marketing Manager",
+      "image": "/img/team-3.jpg",
+      "date": "May 03, 2026",
+      "location": "Sousse, Tunisia",
+      "heading": "Application for Open Position",
+      "companyParagraph": "I am excited to apply to PixelForge as Marketing Manager. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
+      "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support PixelForge's goals."
     }
   },
   {
@@ -1013,6 +1043,16 @@
       },
       "photoType": "circle",
       "photoSize": 84
+    },
+    "defaultValues": {
+      "fullName": "Karim Ben Ali",
+      "role": "Data Analyst",
+      "image": "/img/team-4.jpg",
+      "date": "May 04, 2026",
+      "location": "Nabeul, Tunisia",
+      "heading": "Cover Letter",
+      "companyParagraph": "I am excited to apply to Greenline Labs as Data Analyst. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
+      "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support Greenline Labs's goals."
     }
   },
   {
@@ -1257,6 +1297,16 @@
       },
       "photoType": "square",
       "photoSize": 84
+    },
+    "defaultValues": {
+      "fullName": "Lina Ben Salah",
+      "role": "HR Specialist",
+      "image": "/img/team-5.jpg",
+      "date": "May 05, 2026",
+      "location": "Monastir, Tunisia",
+      "heading": "Professional Application",
+      "companyParagraph": "I am excited to apply to Atlas Digital as HR Specialist. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
+      "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support Atlas Digital's goals."
     }
   },
   {
@@ -1506,6 +1556,16 @@
       },
       "photoType": "circle",
       "photoSize": 144
+    },
+    "defaultValues": {
+      "fullName": "Karim Ben Ali",
+      "role": "Project Manager",
+      "image": "/img/team-9.jpeg",
+      "date": "May 06, 2026",
+      "location": "Bizerte, Tunisia",
+      "heading": "Role Application",
+      "companyParagraph": "I am excited to apply to BrightPath as Project Manager. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
+      "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support BrightPath's goals."
     }
   },
   {
@@ -1755,6 +1815,16 @@
       },
       "photoType": "square",
       "photoSize": 84
+    },
+    "defaultValues": {
+      "fullName": "Ines Trabelsi",
+      "role": "UX Researcher",
+      "image": "/img/team-1.jpg",
+      "date": "May 07, 2026",
+      "location": "Tunis, Tunisia",
+      "heading": "Job Application",
+      "companyParagraph": "I am excited to apply to Urban Shift as UX Researcher. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
+      "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support Urban Shift's goals."
     }
   },
   {
@@ -2004,6 +2074,16 @@
       },
       "photoType": "circle",
       "photoSize": 94
+    },
+    "defaultValues": {
+      "fullName": "Anis Jlassi",
+      "role": "DevOps Engineer",
+      "image": "/img/team-2.jpg",
+      "date": "May 08, 2026",
+      "location": "Sfax, Tunisia",
+      "heading": "Application Letter",
+      "companyParagraph": "I am excited to apply to CloudSpring as DevOps Engineer. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
+      "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support CloudSpring's goals."
     }
   },
   {
@@ -2253,6 +2333,16 @@
       },
       "photoType": "square",
       "photoSize": 100
+    },
+    "defaultValues": {
+      "fullName": "Ines Trabelsi",
+      "role": "Business Consultant",
+      "image": "/img/team-3.jpg",
+      "date": "May 09, 2026",
+      "location": "Sousse, Tunisia",
+      "heading": "Career Opportunity Application",
+      "companyParagraph": "I am excited to apply to NextHive as Business Consultant. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
+      "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support NextHive's goals."
     }
   },
   {
@@ -2502,6 +2592,16 @@
       },
       "photoType": "circle",
       "photoSize": 84
+    },
+    "defaultValues": {
+      "fullName": "Anis Jlassi",
+      "role": "Mobile Developer",
+      "image": "/img/team-4.jpg",
+      "date": "May 10, 2026",
+      "location": "Nabeul, Tunisia",
+      "heading": "Position Application",
+      "companyParagraph": "I am excited to apply to CoreScale as Mobile Developer. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
+      "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support CoreScale's goals."
     }
   },
   {
@@ -2774,6 +2874,16 @@
       },
       "photoType": "square",
       "photoSize": 120
+    },
+    "defaultValues": {
+      "fullName": "Ines Trabelsi",
+      "role": "Content Strategist",
+      "image": "/img/team-5.jpg",
+      "date": "May 11, 2026",
+      "location": "Monastir, Tunisia",
+      "heading": "Team Contribution Proposal",
+      "companyParagraph": "I am excited to apply to Visionary Works as Content Strategist. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
+      "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support Visionary Works's goals."
     }
   },
   {
@@ -3046,6 +3156,16 @@
       },
       "photoType": "square",
       "photoSize": 120
+    },
+    "defaultValues": {
+      "fullName": "Anis Jlassi",
+      "role": "Operations Lead",
+      "image": "/img/team-9.jpeg",
+      "date": "May 12, 2026",
+      "location": "Bizerte, Tunisia",
+      "heading": "Application for Your Team",
+      "companyParagraph": "I am excited to apply to Peak Horizon as Operations Lead. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
+      "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support Peak Horizon's goals."
     }
   }
 ]

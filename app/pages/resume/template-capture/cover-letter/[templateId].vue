@@ -109,6 +109,20 @@ const decorObjects = computed(() =>
     opacity: toNumber(object?.opacity, 0.08),
   })),
 )
+const defaultValues = computed(() => {
+  const defaults = (selectedTemplate.value as any)?.defaultValues || {}
+  return {
+    fullName: String(defaults.fullName || 'Alex Martin'),
+    role: String(defaults.role || 'Senior Full Stack Developer'),
+    image: String(defaults.image || '/img/team-1.jpg'),
+    date: String(defaults.date || 'May 3, 2026'),
+    location: String(defaults.location || 'Paris, France'),
+    heading: String(defaults.heading || 'Dear Hiring Manager,'),
+    companyParagraph: String(defaults.companyParagraph || 'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.'),
+    summary: String(defaults.summary || 'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.'),
+  }
+})
+
 const isLayoutRight = computed(() => selectedTemplate.value.layout === 'layout-right')
 </script>
 
@@ -138,27 +152,26 @@ const isLayoutRight = computed(() => selectedTemplate.value.layout === 'layout-r
       :style="{ left: object.x, top: object.y, width: `${object.size}px`, height: `${object.size}px`, opacity: object.opacity ?? 0.08 }"
     />
     <div class="meta-top-right" :class="{ 'meta-top-right--layout-right': isLayoutRight }">
-      <p class="date" :style="itemStyles.date">May 3, 2026</p>
-      <p class="address" :style="itemStyles.address">Paris, France</p>
+      <p class="date" :style="itemStyles.date">{{ defaultValues.date }}</p>
+      <p class="address" :style="itemStyles.address">{{ defaultValues.location }}</p>
     </div>
     <header class="hero" :class="{ 'hero--no-bar': resolvedStyles.barLayout === 'none', 'hero--double': resolvedStyles.barLayout === 'double', 'hero--ribbon': resolvedStyles.headerStyle === 'ribbon', 'hero--layout-right': isLayoutRight }" :style="{ background: resolvedStyles.heroGradient }">
       <div class="hero-row" :class="{ 'hero-row--layout-right': isLayoutRight }">
-        <img src="/img/team-1.jpg" alt="profile" class="capture-photo" :class="{ 'capture-photo--square': resolvedStyles.photoType === 'square' }" :style="{ width: `${resolvedStyles.photoSize}px`, height: `${resolvedStyles.photoSize}px` }">
-        <h1>Alex Martin</h1>
-        <p class="role">Senior Full Stack Developer</p>
+        <img :src="defaultValues.image" alt="profile" class="capture-photo" :class="{ 'capture-photo--square': resolvedStyles.photoType === 'square' }" :style="{ width: `${resolvedStyles.photoSize}px`, height: `${resolvedStyles.photoSize}px` }">
+        <h1>{{ defaultValues.fullName }}</h1>
+        <p class="role">{{ defaultValues.role }}</p>
       </div>
     </header>
     <section>
-      <p class="intro">Dear Hiring Manager,</p>
+      <p class="intro">{{ defaultValues.heading }}</p>
       <p>
-        I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture,
-        and cross-functional collaboration.
+        {{ defaultValues.companyParagraph }}
       </p>
       <p>
-        I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.
+        {{ defaultValues.summary }}
       </p>
       <p class="signature-label">Sincerely,</p>
-      <p>Alex Martin</p>
+      <p>{{ defaultValues.fullName }}</p>
     </section>
   </main>
 </template>

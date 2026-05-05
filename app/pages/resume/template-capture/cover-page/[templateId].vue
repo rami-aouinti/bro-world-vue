@@ -114,6 +114,16 @@ const decorObjects = computed(() =>
   })),
 )
 
+const defaultValues = computed(() => {
+  const defaults = (selectedTemplate.value as any)?.defaultValues || {}
+  return {
+    fullName: String(defaults.fullName || 'Alex Martin'),
+    role: String(defaults.role || 'Senior Full Stack Developer'),
+    image: String(defaults.image || '/img/team-1.jpg'),
+    description: String(defaults.description || 'Driven engineer delivering robust products with strong UX and clean architecture.'),
+  }
+})
+
 const isLayoutRight = computed(() => selectedTemplate.value.layout === 'layout-right')
 </script>
 
@@ -144,13 +154,13 @@ const isLayoutRight = computed(() => selectedTemplate.value.layout === 'layout-r
       :style="{ left: object.x, top: object.y, width: `${object.size}px`, height: `${object.size}px`, opacity: object.opacity ?? 0.08 }"
     />
     <header class="hero" :class="{ 'hero--no-bar': resolvedStyles.barLayout === 'none', 'hero--double': resolvedStyles.barLayout === 'double', 'hero--ribbon': resolvedStyles.headerStyle === 'ribbon', 'hero--layout-right': isLayoutRight }" :style="{ background: resolvedStyles.heroGradient }">
-      <img src="/img/team-1.jpg" alt="profile" class="capture-photo" :class="{ 'capture-photo--square': resolvedStyles.photoType === 'square' }" :style="{ width: `${resolvedStyles.photoSize}px`, height: `${resolvedStyles.photoSize}px` }">
-      <h1 :style="itemStyles.fullName">Alex Martin</h1>
-      <p class="role" :style="itemStyles.role">Senior Full Stack Developer</p>
+      <img :src="defaultValues.image" alt="profile" class="capture-photo" :class="{ 'capture-photo--square': resolvedStyles.photoType === 'square' }" :style="{ width: `${resolvedStyles.photoSize}px`, height: `${resolvedStyles.photoSize}px` }">
+      <h1 :style="itemStyles.fullName">{{ defaultValues.fullName }}</h1>
+      <p class="role" :style="itemStyles.role">{{ defaultValues.role }}</p>
     </header>
     <section>
       <h2 :style="itemStyles.heading">About Me</h2>
-      <p :style="itemStyles.summary">Driven engineer delivering robust products with strong UX and clean architecture.</p>
+      <p :style="itemStyles.summary">{{ defaultValues.description }}</p>
       <div class="contact-row">
         <span :style="itemStyles.email">alex@example.com</span>
         <span :style="itemStyles.phone">+33 6 00 00 00 00</span>
