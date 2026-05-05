@@ -70,20 +70,15 @@
         ],
         "designConfig": {
           "barRadius": {
-            "min": 0,
-            "max": 30
+            "min": 4,
+            "max": 18
           },
           "barLayout": [
-            "single",
-            "double"
+            "single"
           ],
           "barWidth": {
-            "min": 4,
-            "max": 24
-          },
-          "secondaryBarWidth": {
-            "min": 2,
-            "max": 20
+            "min": 6,
+            "max": 18
           }
         }
       },
@@ -561,20 +556,20 @@
         ],
         "designConfig": {
           "barRadius": {
-            "min": 0,
-            "max": 30
+            "min": 12,
+            "max": 28
           },
           "barLayout": [
             "single",
             "double"
           ],
           "barWidth": {
-            "min": 4,
+            "min": 8,
             "max": 24
           },
           "secondaryBarWidth": {
-            "min": 2,
-            "max": 20
+            "min": 3,
+            "max": 10
           }
         }
       },
@@ -953,19 +948,14 @@
         "designConfig": {
           "barRadius": {
             "min": 0,
-            "max": 30
+            "max": 12
           },
           "barLayout": [
-            "single",
-            "double"
+            "single"
           ],
           "barWidth": {
             "min": 4,
-            "max": 24
-          },
-          "secondaryBarWidth": {
-            "min": 2,
-            "max": 20
+            "max": 12
           }
         }
       },
@@ -1338,7 +1328,7 @@
         ],
         "designConfig": {
           "barRadius": {
-            "min": 0,
+            "min": 16,
             "max": 30
           },
           "barLayout": [
@@ -1346,12 +1336,12 @@
             "double"
           ],
           "barWidth": {
-            "min": 4,
-            "max": 24
+            "min": 10,
+            "max": 22
           },
           "secondaryBarWidth": {
-            "min": 2,
-            "max": 20
+            "min": 6,
+            "max": 14
           }
         }
       },
@@ -1729,19 +1719,14 @@
         ],
         "designConfig": {
           "barRadius": {
-            "min": 0,
-            "max": 30
+            "min": 8,
+            "max": 20
           },
           "barLayout": [
-            "single",
-            "double"
+            "single"
           ],
           "barWidth": {
-            "min": 4,
-            "max": 24
-          },
-          "secondaryBarWidth": {
-            "min": 2,
+            "min": 12,
             "max": 20
           }
         }
