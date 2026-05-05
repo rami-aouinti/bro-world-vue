@@ -168,10 +168,10 @@
       "photoSize": 124
     },
     "defaultValues": {
-      "fullName": "Lina Ben Salah",
+      "fullName": "Alex Martin",
       "role": "Product Designer",
       "image": "/img/team-1.jpg",
-      "description": "Lina Ben Salah is a product designer focused on impact, collaboration, and measurable results."
+      "description": "Alex Martin is a product designer focused on impact, collaboration, and measurable results."
     }
   },
   {
@@ -369,10 +369,10 @@
       "photoSize": 100
     },
     "defaultValues": {
-      "fullName": "Karim Ben Ali",
+      "fullName": "Jordan Lee",
       "role": "Full Stack Developer",
       "image": "/img/team-2.jpg",
-      "description": "Karim Ben Ali is a full stack developer focused on impact, collaboration, and measurable results."
+      "description": "Jordan Lee is a full stack developer focused on impact, collaboration, and measurable results."
     }
   },
   {
@@ -565,10 +565,10 @@
       "photoSize": 84
     },
     "defaultValues": {
-      "fullName": "Lina Ben Salah",
+      "fullName": "Alex Martin",
       "role": "Marketing Manager",
       "image": "/img/team-3.jpg",
-      "description": "Lina Ben Salah is a marketing manager focused on impact, collaboration, and measurable results."
+      "description": "Alex Martin is a marketing manager focused on impact, collaboration, and measurable results."
     }
   },
   {
@@ -766,10 +766,10 @@
       "photoSize": 92
     },
     "defaultValues": {
-      "fullName": "Karim Ben Ali",
+      "fullName": "Jordan Lee",
       "role": "Data Analyst",
       "image": "/img/team-4.jpg",
-      "description": "Karim Ben Ali is a data analyst focused on impact, collaboration, and measurable results."
+      "description": "Jordan Lee is a data analyst focused on impact, collaboration, and measurable results."
     }
   },
   {
@@ -962,10 +962,10 @@
       "photoSize": 110
     },
     "defaultValues": {
-      "fullName": "Lina Ben Salah",
+      "fullName": "Alex Martin",
       "role": "HR Specialist",
       "image": "/img/team-5.jpg",
-      "description": "Lina Ben Salah is a hr specialist focused on impact, collaboration, and measurable results."
+      "description": "Alex Martin is a hr specialist focused on impact, collaboration, and measurable results."
     }
   },
   {
@@ -1163,10 +1163,10 @@
       "photoSize": 105
     },
     "defaultValues": {
-      "fullName": "Karim Ben Ali",
+      "fullName": "Jordan Lee",
       "role": "Project Manager",
       "image": "/img/team-9.jpeg",
-      "description": "Karim Ben Ali is a project manager focused on impact, collaboration, and measurable results."
+      "description": "Jordan Lee is a project manager focused on impact, collaboration, and measurable results."
     }
   },
   {
@@ -1359,10 +1359,10 @@
       "photoSize": 84
     },
     "defaultValues": {
-      "fullName": "Ines Trabelsi",
+      "fullName": "Emma Wilson",
       "role": "UX Researcher",
       "image": "/img/team-1.jpg",
-      "description": "Ines Trabelsi is a ux researcher focused on impact, collaboration, and measurable results."
+      "description": "Emma Wilson is a ux researcher focused on impact, collaboration, and measurable results."
     }
   },
   {
@@ -1560,10 +1560,10 @@
       "photoSize": 84
     },
     "defaultValues": {
-      "fullName": "Anis Jlassi",
+      "fullName": "Noah Turner",
       "role": "DevOps Engineer",
       "image": "/img/team-2.jpg",
-      "description": "Anis Jlassi is a devops engineer focused on impact, collaboration, and measurable results."
+      "description": "Noah Turner is a devops engineer focused on impact, collaboration, and measurable results."
     }
   },
   {
@@ -1756,10 +1756,10 @@
       "photoSize": 84
     },
     "defaultValues": {
-      "fullName": "Ines Trabelsi",
+      "fullName": "Emma Wilson",
       "role": "Business Consultant",
       "image": "/img/team-3.jpg",
-      "description": "Ines Trabelsi is a business consultant focused on impact, collaboration, and measurable results."
+      "description": "Emma Wilson is a business consultant focused on impact, collaboration, and measurable results."
     }
   },
   {
@@ -1957,10 +1957,10 @@
       "photoSize": 124
     },
     "defaultValues": {
-      "fullName": "Anis Jlassi",
+      "fullName": "Noah Turner",
       "role": "Mobile Developer",
       "image": "/img/team-4.jpg",
-      "description": "Anis Jlassi is a mobile developer focused on impact, collaboration, and measurable results."
+      "description": "Noah Turner is a mobile developer focused on impact, collaboration, and measurable results."
     }
   },
   {
@@ -2130,10 +2130,10 @@
       "photoSize": 124
     },
     "defaultValues": {
-      "fullName": "Ines Trabelsi",
+      "fullName": "Emma Wilson",
       "role": "Content Strategist",
       "image": "/img/team-5.jpg",
-      "description": "Ines Trabelsi is a content strategist focused on impact, collaboration, and measurable results."
+      "description": "Emma Wilson is a content strategist focused on impact, collaboration, and measurable results."
     }
   },
   {
@@ -2303,10 +2303,10 @@
       "photoSize": 124
     },
     "defaultValues": {
-      "fullName": "Anis Jlassi",
+      "fullName": "Noah Turner",
       "role": "Operations Lead",
       "image": "/img/team-9.jpeg",
-      "description": "Anis Jlassi is a operations lead focused on impact, collaboration, and measurable results."
+      "description": "Noah Turner is a operations lead focused on impact, collaboration, and measurable results."
     }
   }
 ]
