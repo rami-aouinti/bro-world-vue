@@ -402,7 +402,7 @@ onMounted(() => {
 
 .cv-aside-sections--full .cv-aside-section-item :deep(.cv-item){font-size:12px;margin-bottom:4px}
 .cv-aside-section-item :deep(.cv-sec){padding:4px 0}
-.cv-aside-section-item {
+.cv-aside-sections--full .cv-aside-section-item {
   background: rgba(255,255,255,.16);
   color: #fff;
   border: none;
