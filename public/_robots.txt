@@ -1,7 +1,22 @@
 User-Agent: *
-Disallow:
+Allow: /world/crm
+Allow: /world/learning
+Allow: /world/jobs
+Allow: /world/shop
 Allow: /resume
-Allow: /resume/
-Allow: /resume/preview
+Allow: /service
+Allow: /about
+Allow: /contact
+Allow: /faq
+Allow: /applications/quiz
+Allow: /games
+Allow: /platform
+Allow: /applications/sports
 
-Sitemap: https://bro-world.com/sitemap.xml
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /login
+Disallow: /register
+Disallow: /resume/preview
+
+Sitemap: https://bro-world-space.com/sitemap.xml
