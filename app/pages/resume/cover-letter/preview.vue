@@ -14,12 +14,24 @@ const imageSize = ref(84)
 const imageBorderWidth = ref(2)
 const imageBorderColor = ref('#0f172a')
 const photoPosition = ref<'left' | 'right'>('left')
-const selectedPalette = ref<'template' | 'sunset' | 'forest'>('template')
+const selectedPalette = ref<string>('template')
 const paletteMenuOpen = ref(false)
 const palettePresetOptions = computed(() => [
   { title: 'Template', value: 'template', primary: activeTemplate.value.theme.palette.primary, dark: activeTemplate.value.theme.palette.secondary, light: activeTemplate.value.theme.palette.pageBackground },
-  { title: 'Sunset', value: 'sunset', primary: '#C2410C', dark: '#FDBA74', light: '#FFF7ED' },
-  { title: 'Forest', value: 'forest', primary: '#166534', dark: '#86EFAC', light: '#F0FDF4' },
+  { title: 'Ocean', value: 'ocean', primary: '#2563EB', dark: '#1D4ED8', light: '#EFF6FF' },
+  { title: 'Indigo', value: 'indigo', primary: '#4F46E5', dark: '#3730A3', light: '#EEF2FF' },
+  { title: 'Violet', value: 'violet', primary: '#7C3AED', dark: '#5B21B6', light: '#F5F3FF' },
+  { title: 'Slate', value: 'slate', primary: '#334155', dark: '#1E293B', light: '#F8FAFC' },
+  { title: 'Olive', value: 'olive', primary: '#A3A86C', dark: '#7E8A5B', light: '#F7F8EE' },
+  { title: 'Sage', value: 'sage', primary: '#8AA07A', dark: '#647860', light: '#F3F7F1' },
+  { title: 'Emerald', value: 'emerald', primary: '#059669', dark: '#047857', light: '#ECFDF5' },
+  { title: 'Rose', value: 'rose', primary: '#E11D48', dark: '#BE123C', light: '#FFF1F2' },
+  { title: 'Sky', value: 'sky', primary: '#0EA5E9', dark: '#0284C7', light: '#F0F9FF' },
+  { title: 'Sunset', value: 'sunset', primary: '#C2410C', dark: '#9A3412', light: '#FFF7ED' },
+  { title: 'Amber', value: 'amber', primary: '#D97706', dark: '#B45309', light: '#FFFBEB' },
+  { title: 'Charcoal', value: 'charcoal', primary: '#3F3F46', dark: '#27272A', light: '#FAFAFA' },
+  { title: 'Plum', value: 'plum', primary: '#7E3F8F', dark: '#5B2C6F', light: '#FAF5FF' },
+  { title: 'Teal', value: 'teal', primary: '#0F766E', dark: '#115E59', light: '#F0FDFA' },
 ])
 const borderColorOptions = ['#0f172a', '#0F4C81', '#166534', '#C2410C', '#7C3AED', '#1D4ED8', '#DC2626']
 const dividerTypeOptions = [
@@ -131,8 +143,8 @@ const sectionDividerColor = computed(() => selectedDividerType.value === 'gradie
 const sectionSpacing = computed(() => activeTemplate.value?.layoutOptions?.sectionSpacing === 'wide' ? '40px' : '24px')
 const activeColors = computed(() => {
   const palette = activeTemplate.value.theme.palette
-  if (selectedPalette.value === 'sunset') return { ...palette, primary: '#C2410C', secondary: '#FDBA74', pageBackground: '#FFF7ED' }
-  if (selectedPalette.value === 'forest') return { ...palette, primary: '#166534', secondary: '#86EFAC', pageBackground: '#F0FDF4' }
+  const selected = palettePresetOptions.value.find((option) => option.value === selectedPalette.value)
+  if (selected && selected.value !== 'template') return { ...palette, primary: selected.primary, secondary: selected.dark, pageBackground: selected.light }
   return palette
 })
 const signatureDataUrl = ref('')
@@ -355,7 +367,7 @@ class="hero" :class="{'hero--double': barLayout === 'double', 'hero--photo-right
 
 <style scoped>
 .palette-dot { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgb(var(--v-theme-on-surface), 0.2); }
-.palette-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.palette-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
 .palette-swatch-btn { border: 1px solid rgba(148, 163, 184, 0.35); border-radius: 12px; background: transparent; padding: 8px; }
 .palette-swatch-btn--active { border-color: rgb(var(--v-theme-primary)); }
 </style>
