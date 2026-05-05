@@ -50,12 +50,12 @@ const headerProfile = computed(() => {
     role: String(fake.role || 'Senior Developer'),
     image: String(fake.image || '/img/default_avatar.svg'),
     contact: [
-      String(fake.email || 'john.doe@email.com'),
-      String(fake.phone || '+1 (555) 000-1234'),
-      String(fake.birthday || '1992-05-12'),
-      String(fake.location || 'Paris, France'),
-      String(fake.homepage || 'https://portfolio.example.com'),
-      String(fake.repositoryPage || 'https://github.com/john-doe'),
+      { icon: 'mdi-email-outline', type: 'text', label: '', value: String(fake.email || 'john.doe@email.com') },
+      { icon: 'mdi-phone-outline', type: 'text', label: '', value: String(fake.phone || '+1 (555) 000-1234') },
+      { icon: 'mdi-cake-variant-outline', type: 'text', label: '', value: String(fake.birthday || '1992-05-12') },
+      { icon: 'mdi-map-marker-outline', type: 'text', label: '', value: String(fake.location || 'Paris, France') },
+      { icon: 'mdi-home-outline', type: 'link', label: 'Home Page', value: String(fake.homepage || 'https://portfolio.example.com') },
+      { icon: 'mdi-github', type: 'link', label: 'Repository Profile', value: String(fake.repositoryPage || 'https://github.com/john-doe') },
     ],
   }
 })
@@ -159,7 +159,13 @@ onMounted(() => {
               <template v-if="headerType === 'header-left'">
                 <div class="cv-header-contact cv-col-8">
                   <div class="cv-header-contact-grid">
-                    <p v-for="line in headerProfile.contact" :key="`left-${line}`">{{ line }}</p>
+                    <div v-for="(item, idx) in headerProfile.contact" :key="`left-${idx}`" class="cv-contact-item">
+                      <v-icon :icon="item.icon" size="16" />
+                      <template v-if="item.type === 'link'">
+                        <a :href="item.value" target="_blank" rel="noopener" class="cv-contact-link">{{ item.label }}</a>
+                      </template>
+                      <template v-else>{{ item.value }}</template>
+                    </div>
                   </div>
                 </div>
                 <div class="cv-header-identity cv-col-4">
@@ -176,7 +182,13 @@ onMounted(() => {
                 </div>
                 <div class="cv-header-contact cv-col-8">
                   <div class="cv-header-contact-grid">
-                    <p v-for="line in headerProfile.contact" :key="`right-${line}`">{{ line }}</p>
+                    <div v-for="(item, idx) in headerProfile.contact" :key="`right-${idx}`" class="cv-contact-item">
+                      <v-icon :icon="item.icon" size="16" />
+                      <template v-if="item.type === 'link'">
+                        <a :href="item.value" target="_blank" rel="noopener" class="cv-contact-link">{{ item.label }}</a>
+                      </template>
+                      <template v-else>{{ item.value }}</template>
+                    </div>
                   </div>
                 </div>
               </template>
@@ -185,14 +197,20 @@ onMounted(() => {
                   <div class="cv-col-3">
                     <img :src="headerProfile.image" alt="profile" class="cv-header-avatar">
                   </div>
-                  <div class="cv-col-3 cv-header-identity">
+                  <div class="cv-col-3 cv-header-identity cv-header-identity--split">
                     <strong>{{ headerProfile.fullName }}</strong>
                     <span>{{ headerProfile.role }}</span>
                   </div>
                 </div>
                 <div class="cv-col-6 cv-header-contact">
                   <div class="cv-header-contact-grid">
-                    <p v-for="line in headerProfile.contact" :key="`split-${line}`">{{ line }}</p>
+                    <div v-for="(item, idx) in headerProfile.contact" :key="`split-${idx}`" class="cv-contact-item">
+                      <v-icon :icon="item.icon" size="16" />
+                      <template v-if="item.type === 'link'">
+                        <a :href="item.value" target="_blank" rel="noopener" class="cv-contact-link">{{ item.label }}</a>
+                      </template>
+                      <template v-else>{{ item.value }}</template>
+                    </div>
                   </div>
                 </div>
               </template>
@@ -254,10 +272,13 @@ onMounted(() => {
 .cv-header-layout--header-right { grid-template-columns: 1fr 2fr; }
 .cv-header-layout--header-split { grid-template-columns: 1fr 1fr; }
 .cv-header-split-left { display: grid; grid-template-columns: auto 1fr; gap: 6px; align-items: center; justify-content: start; }
-.cv-header-contact { display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; }
-.cv-header-contact-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 10px; width:100%; }
-.cv-header-contact-grid p { margin: 0; font-size: 13px; }
+.cv-header-contact { display:flex; flex-direction:column; justify-content:center; align-items:stretch; text-align:start; }
+.cv-header-contact-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 10px; width:100%; text-align:start; }
+.cv-contact-item { display:flex; align-items:center; gap:6px; font-size:13px; }
+.cv-contact-link { color: inherit; text-decoration: none; font-weight: 500; }
+.cv-contact-link:hover { text-decoration: none; color: inherit; }
 .cv-header-identity { display: flex; flex-direction: column; gap: 4px; justify-content:center; align-items:center; text-align:center; }
+.cv-header-identity--split { align-items:flex-start; text-align:start; }
 .cv-header-avatar { width: 52px; height: 52px; object-fit: cover; border-radius: 999px; }
 
 .empty-state {
