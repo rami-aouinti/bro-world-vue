@@ -42,7 +42,7 @@ const spacingMap: Record<string, number> = { compact: 24, normal: 30, wide: 40, 
 const radiusMap: Record<string, number> = { none: 0, sm: 8, md: 16, lg: 24, xl: 32 }
 const defaultBarDesignConfig = {
   barRadius: { min: 0, max: 30 },
-  barLayout: ['single', 'double'],
+  barLayout: ['', 'single', 'double'],
   barWidth: { min: 4, max: 24 },
   secondaryBarWidth: { min: 2, max: 20 },
 }
@@ -74,7 +74,7 @@ const resolvedStyles = computed(() => {
     radius: radiusMap[tpl?.designTokens?.borderRadius] || 8,
     barPrimaryWidth: Number(designConfig?.barWidth?.min ?? defaultBarDesignConfig.barWidth.min),
     barSecondaryWidth: Number(designConfig?.secondaryBarWidth?.min ?? defaultBarDesignConfig.secondaryBarWidth.min),
-    barLayout: Array.isArray(designConfig?.barLayout) && designConfig.barLayout.includes('double') ? 'double' : 'single',
+    barLayout: Array.isArray(designConfig?.barLayout) && designConfig.barLayout.includes('double') ? 'double' : (designConfig.barLayout.includes('single') ? 'single' : 'none'),
     barRadius: Number(designConfig?.barRadius?.min ?? defaultBarDesignConfig.barRadius.min),
     shadow: tpl?.designTokens?.shadowDepth === 'none' ? 'none' : '0 10px 30px rgba(15,23,42,.18)',
   }
@@ -139,7 +139,7 @@ const isLayoutRight = computed(() => selectedTemplate.value.layout === 'layout-r
       <p class="date" :style="itemStyles.date">May 3, 2026</p>
       <p class="address" :style="itemStyles.address">Paris, France</p>
     </div>
-    <header class="hero" :class="{ 'hero--double': resolvedStyles.barLayout === 'double', 'hero--ribbon': resolvedStyles.headerStyle === 'ribbon', 'hero--layout-right': isLayoutRight }" :style="{ background: resolvedStyles.heroGradient }">
+    <header class="hero" :class="{ 'hero--no-bar': resolvedStyles.barLayout === 'none', 'hero--double': resolvedStyles.barLayout === 'double', 'hero--ribbon': resolvedStyles.headerStyle === 'ribbon', 'hero--layout-right': isLayoutRight }" :style="{ background: resolvedStyles.heroGradient }">
       <div class="hero-row" :class="{ 'hero-row--layout-right': isLayoutRight }">
         <img src="/img/team-1.jpg" alt="profile" class="capture-photo">
         <h1>Alex Martin</h1>
@@ -168,7 +168,8 @@ const isLayoutRight = computed(() => selectedTemplate.value.layout === 'layout-r
 .date { color: var(--cl-muted); margin: 0; }
 .address { margin: 0; }
 .hero { border-left: var(--cl-bar-primary-width) solid var(--cl-primary); padding-left: 24px; padding-top: 6px; margin-bottom: 42px; min-height: 140px; position: relative; border-radius: var(--cl-bar-radius); }
-.hero--ribbon{padding-top:16px;padding-bottom:12px}.hero--double::before{content:'';position:absolute;left:calc(var(--cl-bar-primary-width) + 6px);top:0;bottom:0;width:var(--cl-bar-secondary-width);background:var(--cl-secondary);border-radius:var(--cl-bar-radius)}
+.hero--ribbon{padding-top:16px;padding-bottom:12px}
+.hero--no-bar{border-left:0!important;border-right:0!important;padding-left:0;padding-right:0}.hero--double::before{content:'';position:absolute;left:calc(var(--cl-bar-primary-width) + 6px);top:0;bottom:0;width:var(--cl-bar-secondary-width);background:var(--cl-secondary);border-radius:var(--cl-bar-radius)}
 .hero-row { display: flex; flex-direction: column; gap: 6px; }
 .hero--layout-right { border-left: 0; border-right: var(--cl-bar-primary-width) solid var(--cl-primary); padding-left: 0; padding-right: 24px; text-align: right; }
 .hero--layout-right.hero--double::before { left: auto; right: calc(var(--cl-bar-primary-width) + 6px); }
