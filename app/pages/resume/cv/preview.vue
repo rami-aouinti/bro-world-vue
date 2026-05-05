@@ -135,11 +135,11 @@ function toSectionKey(section: string) {
 function getSectionItems(rawSection: string): string[] {
   const key = normalizeSectionKey(rawSection)
   const data: any = fakeData.value || {}
-  if (key === 'experience') return (data.experiences || []).map((item: any) => `${item.title || 'Role'} · ${item.company || ''}`)
-  if (key === 'education') return (data.educations || []).map((item: any) => `${item.title || 'Degree'} · ${item.school || ''}`)
+  if (key === 'experience') return (data.experiences || []).map((item: any) => { const from = item.startDate ? String(item.startDate).slice(0,10) : ''; const to = item.endDate ? String(item.endDate).slice(0,10) : 'Present'; return `${item.title || 'Role'} · ${item.company || ''}${from ? ` (${from} - ${to})` : ''}` })
+  if (key === 'education') return (data.educations || []).map((item: any) => { const from = item.startDate ? String(item.startDate).slice(0,10) : ''; const to = item.endDate ? String(item.endDate).slice(0,10) : ''; return `${item.title || 'Degree'} · ${item.school || ''}${from ? ` (${from}${to ? ` - ${to}` : ''})` : ''}` })
   if (key === 'projects') return (data.projects || []).map((item: any) => `${item.title || 'Project'}${item.description ? ` · ${item.description}` : ''}`)
-  if (key === 'skills') return (data.skills || []).map((item: any) => typeof item === 'string' ? item : item.title).filter(Boolean)
-  if (key === 'languages') return (data.languages || []).map((item: any) => typeof item === 'string' ? item : `${item.title || item}`)
+  if (key === 'skills') return (data.skills || []).map((item: any) => typeof item === 'string' ? item : `${item.name || item.title || 'Skill'}${item.level ? ` (${item.level}%)` : ''}`).filter(Boolean)
+  if (key === 'languages') return (data.languages || []).map((item: any) => typeof item === 'string' ? item : `${item.name || item.title || 'Language'}${item.level ? ` (${item.level}%)` : ''}`)
   if (key === 'certifications') return (data.certifications || []).map((item: any) => typeof item === 'string' ? item : item.title).filter(Boolean)
   if (key === 'references') return (data.references || []).map((item: any) => typeof item === 'string' ? item : item.title).filter(Boolean)
   if (key === 'hobbies') return (data.hobbies || []).map((item: any) => typeof item === 'string' ? item : item.title).filter(Boolean)
