@@ -31,6 +31,12 @@ const cvLayoutComponentMap = {
 
 const activeLayoutComponent = computed(() => cvLayoutComponentMap[activeTemplate.value?.layout as keyof typeof cvLayoutComponentMap] || CvLayoutNoAside)
 
+const asideDesign = computed(() => ({
+  width: String(activeTemplate.value?.aside?.width || '100%'),
+  height: String(activeTemplate.value?.aside?.height || '180px'),
+  radius: String(activeTemplate.value?.aside?.radius || '24px'),
+}))
+
 function applyPreviewTemplate(templateId: string) {
   selectedTemplate.value = templateId
   layoutMenuOpen.value = false
@@ -71,7 +77,10 @@ onMounted(() => {
         <v-card-text>
           <h3 class="text-subtitle-2 font-weight-bold mb-2">Template actif</h3>
           <p class="text-body-2 mb-1">{{ activeTemplate?.name }}</p>
-          <p class="text-caption text-medium-emphasis mb-0">{{ activeTemplate?.id }} · {{ activeTemplate?.layout }}</p>
+          <p class="text-caption text-medium-emphasis mb-3">{{ activeTemplate?.id }} · {{ activeTemplate?.layout }}</p>
+          <v-text-field  :model-value="asideDesign.width" label="Aside width" density="compact" variant="outlined" readonly class="mb-2"/>
+          <v-text-field  :model-value="asideDesign.height" label="Aside height" density="compact" variant="outlined" readonly class="mb-2"/>
+          <v-text-field  :model-value="asideDesign.radius" label="Aside radius" density="compact" variant="outlined" readonly/>
         </v-card-text>
       </template>
     </AppPageDrawers>
@@ -105,7 +114,7 @@ onMounted(() => {
       </div>
 
       <div class="py-8 d-flex justify-center">
-        <component :is="activeLayoutComponent" class="capture-cv-empty" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8' }">
+        <component :is="activeLayoutComponent" class="capture-cv-empty" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-aside-width': asideDesign.width, '--cv-aside-height': asideDesign.height, '--cv-aside-radius': asideDesign.radius }">
           <template #header>
             <div class="empty-state">
               <h2>{{ activeTemplate?.name }}</h2>
