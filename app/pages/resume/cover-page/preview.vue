@@ -245,6 +245,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
       </section>
       <footer v-if="signatureDataUrl" class="signature-footer"><img :src="signatureDataUrl" alt="signature" class="signature-image"/></footer>
     </main></div>
+    <input ref="photoInput" type="file" accept="image/*" class="d-none" @change="onPhotoUpload">
     <v-dialog v-model="signatureDialogOpen" max-width="760"><v-card><v-card-title>Signature</v-card-title><v-card-text><canvas ref="signatureCanvas" style="width:100%;height:200px;border:1px solid rgba(0,0,0,.15);border-radius:10px"/></v-card-text></v-card></v-dialog>
   </v-container>
 </div>

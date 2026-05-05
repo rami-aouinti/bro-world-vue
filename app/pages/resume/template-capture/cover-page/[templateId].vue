@@ -142,7 +142,7 @@ const decorObjects = computed(() =>
       <p class="role" :style="itemStyles.role">Senior Full Stack Developer</p>
     </header>
     <section>
-      <h2 :style="itemStyles.heading">Application Pack</h2>
+      <h2 :style="itemStyles.heading">About Me</h2>
       <p :style="itemStyles.summary">Driven engineer delivering robust products with strong UX and clean architecture.</p>
       <div class="contact-row">
         <span :style="itemStyles.email">alex@example.com</span>
