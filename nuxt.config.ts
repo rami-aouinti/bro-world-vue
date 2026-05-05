@@ -2,6 +2,12 @@ import { aliases } from 'vuetify/iconsets/mdi'
 import { defineNuxtConfig } from 'nuxt/config'
 
 const shouldSplitCss = process.env.NUXT_CSS_CODE_SPLIT === 'true'
+const defaultSiteUrl = 'https://bro-world-space.com'
+const configuredSiteUrl = process.env.NUXT_PUBLIC_SITE_URL?.trim()
+const resolvedSiteUrl =
+  configuredSiteUrl && !configuredSiteUrl.includes('.vercel.app')
+    ? configuredSiteUrl
+    : defaultSiteUrl
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -42,11 +48,30 @@ export default defineNuxtConfig({
     'nuxt-schema-org',
   ],
   sitemap: {
-    siteUrl: 'https://bro-world-space.com',
-    // Rely on Nuxt page discovery so all public pages are present in sitemap.
+    siteUrl: resolvedSiteUrl,
+    urls: [
+      '/',
+      '/world/crm',
+      '/world/learning',
+      '/world/jobs',
+      '/world/shop',
+      '/resume',
+      '/service',
+      '/about',
+      '/contact',
+      '/faq',
+      '/applications/quiz',
+      '/games',
+      '/platform',
+      '/applications/sports',
+    ],
+    defaults: {
+      changefreq: 'daily',
+      priority: 0.7,
+    },
   },
   robots: {
-    sitemap: 'https://bro-world-space.com/sitemap.xml',
+    sitemap: `${resolvedSiteUrl}/sitemap.xml`,
     groups: [
       {
         userAgent: '*',
@@ -152,7 +177,7 @@ export default defineNuxtConfig({
         redirectURL:
           process.env.AZURE_REDIRECT_URI ||
           process.env.NUXT_OAUTH_MICROSOFT_REDIRECT_URL ||
-          `${process.env.NUXT_PUBLIC_SITE_URL || 'https://bro-world-space.com'}/api/auth/callback/azure-ad`,
+          `${resolvedSiteUrl}/api/auth/callback/azure-ad`,
       },
     },
     databaseUrl: process.env.DATABASE_URL || '',
