@@ -43,7 +43,7 @@ const activeLayoutComponent = computed(() => cvLayoutComponentMap[selectedTempla
 
 const asideDesign = computed(() => ({
   width: String(selectedTemplate.value?.aside?.width || '100%'),
-  height: String(selectedTemplate.value?.aside?.height || '180px'),
+  height: String(selectedTemplate.value?.aside?.height || '1100px'),
   radius: String(selectedTemplate.value?.aside?.radius || '24px'),
 }))
 </script>

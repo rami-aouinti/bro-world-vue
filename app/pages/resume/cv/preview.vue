@@ -32,7 +32,7 @@ const cvLayoutComponentMap = {
 const activeLayoutComponent = computed(() => cvLayoutComponentMap[activeTemplate.value?.layout as keyof typeof cvLayoutComponentMap] || CvLayoutNoAside)
 
 const asideWidth = ref(850)
-const asideHeight = ref(180)
+const asideHeight = ref(1100)
 const asideRadius = ref(0)
 
 
@@ -43,7 +43,7 @@ function parsePx(value: unknown, fallback: number) {
 
 watch(activeTemplate, (template) => {
   asideWidth.value = parsePx(template?.aside?.width, 850)
-  asideHeight.value = parsePx(template?.aside?.height, 180)
+  asideHeight.value = parsePx(template?.aside?.height, 1100)
   asideRadius.value = parsePx(template?.aside?.radius, 0)
 }, { immediate: true })
 
