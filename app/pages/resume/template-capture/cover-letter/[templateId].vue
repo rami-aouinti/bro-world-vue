@@ -64,8 +64,7 @@ function toNumber(value: unknown, fallback: number): number {
 const resolvedStyles = computed(() => {
   const tpl = selectedTemplate.value as any
   const items = tpl?.items || {}
-  const firstItem = Object.values(items || {})[0] as { designConfig?: typeof defaultBarDesignConfig } | undefined
-  const designConfig = firstItem?.designConfig || defaultBarDesignConfig
+  const designConfig = tpl?.designConfig || defaultBarDesignConfig
   return {
     sectionDividerStyle: tpl?.decor?.divider === 'none' ? 'none' : tpl?.decor?.divider === 'dashed' ? 'dashed' : 'solid',
     sectionDividerColor: tpl?.decor?.divider === 'gradient' ? 'color-mix(in srgb,var(--cl-primary) 55%, var(--cl-secondary) 45%)' : 'var(--cl-secondary)',
