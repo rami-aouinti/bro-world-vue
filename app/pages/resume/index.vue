@@ -148,23 +148,18 @@ onUnmounted(() => {
       <template #left>
         <h3>{{ t('resumeBuilder.index.heroTitle') }}</h3>
         <p class="hero-subtitle">{{ t('resumeBuilder.index.heroSubtitle') }}</p>
-        <v-btn color="primary" size="large" to="/resume/preview" class="mt-3">
+        <v-btn color="primary" variant="tonal" size="large" to="/resume/preview" class="mt-3">
           {{ t('resumeBuilder.index.journey.steps.template.cta') }}
         </v-btn>
       </template>
       <template #right>
-        <h3>{{ t('resumeBuilder.index.heroTitle') }}</h3>
+        <h3>{{ t('coverBuilder.index.heroTitle') }}</h3>
         <p class="hero-subtitle">{{ t('resumeBuilder.index.heroSubtitle') }}</p>
-        <AppSelect
-          v-model="selectedLayoutFilter"
-          :items="layoutFilterOptions"
-          label="Filter by layout"
-          clearable
-          hide-details
-          class="mt-3"
-        />
-        <v-btn color="primary" size="large" to="/resume/preview" class="mt-3">
-          {{ t('resumeBuilder.index.journey.steps.template.cta') }}
+        <v-btn color="primary" variant="tonal" size="large" to="/resume/cover-page/preview" class="mt-3">
+          {{ t('resumeBuilder.index.journey.steps.template.cta-page') }}
+        </v-btn>
+        <v-btn color="primary" variant="tonal" size="large" to="/resume/cover-letter/preview" class="mt-3">
+          {{ t('resumeBuilder.index.journey.steps.template.cta-letter') }}
         </v-btn>
       </template>
     </AppPageDrawers>

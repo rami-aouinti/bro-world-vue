@@ -3052,7 +3052,9 @@
           "template": {
             "title": "Des modèles adaptés à votre style",
             "description": "Moderne ou classique : choisissez la mise en page qui vous correspond.",
-            "cta": "Créer mon CV"
+            "cta": "Créer mon CV",
+            "cta-page": "Create my cover page",
+            "cta-letter": "Create my cover letter"
           },
           "fill": {
             "title": "Remplissez-le, personnalisez-le",

@@ -2831,7 +2831,9 @@
           "template": {
             "title": "Vorlagen, die zu dir passen",
             "description": "Modern oder klassisch: Wähle das Design, das zu deinem Profil passt.",
-            "cta": "Lebenslauf erstellen"
+            "cta": "Lebenslauf erstellen",
+            "cta-page": "Create my cover page",
+            "cta-letter": "Create my cover letter"
           },
           "fill": {
             "title": "Ausfüllen und personalisieren",

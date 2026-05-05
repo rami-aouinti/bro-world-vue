@@ -3023,6 +3023,12 @@
       "fallbackUser": "User #{index}"
     }
   },
+  "coverBuilder": {
+    "index": {
+      "heroTitle": "Build a standout cover letter and cover page in minutes",
+      "heroSubtitle": "Create a polished application package with professional templates, smart editing, and instant export."
+    }
+  },
   "resumeBuilder": {
     "index": {
       "heroTitle": "Build a professional resume in minutes",
@@ -3064,7 +3070,9 @@
           "template": {
             "title": "Templates that fit your style",
             "description": "From modern to classic layouts, choose the design that matches your profile.",
-            "cta": "Create my resume"
+            "cta": "Create my resume",
+            "cta-page": "Create my cover page",
+            "cta-letter": "Create my cover letter"
           },
           "fill": {
             "title": "Fill it in. Make it yours.",
