@@ -47,6 +47,10 @@ export default defineNuxtConfig({
     '@nuxtjs/robots',
     'nuxt-schema-org',
   ],
+  site: {
+    url: resolvedSiteUrl,
+    name: 'Bro World Space',
+  },
   sitemap: {
     siteUrl: resolvedSiteUrl,
     urls: [
@@ -188,8 +192,7 @@ export default defineNuxtConfig({
       url: '',
     },
     public: {
-      siteUrl:
-        process.env.NUXT_PUBLIC_SITE_URL || 'https://bro-world-space.com',
+      siteUrl: resolvedSiteUrl,
       apiBaseUrl: 'https://bro-world.org/api/v1',
       mercurePublicUrl:
         process.env.NUXT_PUBLIC_MERCURE_PUBLIC_URL ||
