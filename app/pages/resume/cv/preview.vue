@@ -429,6 +429,8 @@ onMounted(() => {
   color: #fff;
   border: none;
 }
+.cv-aside-sections--full .cv-aside-section-item :deep(.cv-sec){ color:#fff; }
+.cv-aside-sections--full .cv-aside-section-item :deep(p){ color:#fff; }
 
 .cv-section-row small { font-weight: 400; opacity: .8; }
 .cv-section-row--timeline{border-left:4px solid #6366f1;padding-left:10px}
