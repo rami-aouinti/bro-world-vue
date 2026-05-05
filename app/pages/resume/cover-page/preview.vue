@@ -15,11 +15,12 @@ const imageBorderWidth = ref(2)
 const imageBorderColor = ref('#0f172a')
 const photoPosition = ref<'left' | 'right'>('left')
 const selectedPalette = ref<'template' | 'sunset' | 'forest'>('template')
-const paletteOptions = [
-  { title: 'Template', value: 'template' },
-  { title: 'Sunset', value: 'sunset' },
-  { title: 'Forest', value: 'forest' },
-]
+const paletteMenuOpen = ref(false)
+const palettePresetOptions = computed(() => [
+  { title: 'Template', value: 'template', primary: activeTemplate.value.theme.palette.primary, dark: activeTemplate.value.theme.palette.secondary, light: activeTemplate.value.theme.palette.pageBackground },
+  { title: 'Sunset', value: 'sunset', primary: '#C2410C', dark: '#FDBA74', light: '#FFF7ED' },
+  { title: 'Forest', value: 'forest', primary: '#166534', dark: '#86EFAC', light: '#F0FDF4' },
+])
 const borderColorOptions = ['#0f172a', '#0F4C81', '#166534', '#C2410C', '#7C3AED', '#1D4ED8', '#DC2626']
 const dividerTypeOptions = [
   { title: 'Line', value: 'line' },
@@ -175,10 +176,35 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
     <template #left>
      <v-card-text>
        <div class="mt-3">
-         <div class="text-caption mb-2">Palette</div>
-         <v-btn-toggle v-model="selectedPalette" mandatory divided density="comfortable" class="w-100">
-           <v-btn v-for="option in paletteOptions" :key="option.value" :value="option.value" size="small">{{ option.title }}</v-btn>
-         </v-btn-toggle>
+         <v-menu v-model="paletteMenuOpen" :close-on-content-click="true">
+           <template #activator="{ props }">
+             <v-btn v-bind="props" variant="outlined" block justify="space-between" prepend-icon="mdi-palette">
+               Palette
+               <v-icon icon="mdi-chevron-down" />
+             </v-btn>
+           </template>
+           <v-list min-width="320">
+             <v-list-item title="Template palette" />
+             <v-list-item>
+               <div class="palette-grid">
+                 <button
+                   v-for="option in palettePresetOptions"
+                   :key="option.value"
+                   type="button"
+                   class="palette-swatch-btn"
+                   :class="{ 'palette-swatch-btn--active': selectedPalette === option.value }"
+                   @click="selectedPalette = option.value"
+                 >
+                   <div class="d-flex ga-1">
+                     <span class="palette-dot" :style="{ backgroundColor: option.primary }" />
+                     <span class="palette-dot" :style="{ backgroundColor: option.dark }" />
+                     <span class="palette-dot" :style="{ backgroundColor: option.light }" />
+                   </div>
+                 </button>
+               </div>
+             </v-list-item>
+           </v-list>
+         </v-menu>
        </div>
        <AppSelect v-model="selectedDividerType" :items="dividerTypeOptions" label="Divider type" hide-details class="mt-3"/>
        <v-slider v-model="barRadius" label="Bar radius" :min="activeBarDesignConfig.barRadius.min" :max="activeBarDesignConfig.barRadius.max" step="1" hide-details class="mt-3"/>
@@ -343,4 +369,12 @@ class="hero" :class="{'hero--double': barLayout === 'double', 'hero--photo-right
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+</style>
+
+
+<style scoped>
+.palette-dot { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgb(var(--v-theme-on-surface), 0.2); }
+.palette-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.palette-swatch-btn { border: 1px solid rgba(148, 163, 184, 0.35); border-radius: 12px; background: transparent; padding: 8px; }
+.palette-swatch-btn--active { border-color: rgb(var(--v-theme-primary)); }
 </style>
