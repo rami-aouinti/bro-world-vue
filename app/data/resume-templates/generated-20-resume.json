@@ -1,7 +1,7 @@
 [
   {
     "id": "tpl-001",
-    "name": "aside-variant-1",
+    "name": "aside-structure-1",
     "version": 1,
     "layout": "aside",
     "structure": "structure-1",
@@ -72,7 +72,7 @@
   },
   {
     "id": "tpl-002",
-    "name": "aside-variant-2",
+    "name": "aside-structure-2",
     "version": 1,
     "layout": "aside",
     "structure": "structure-2",
@@ -143,9 +143,9 @@
   },
   {
     "id": "tpl-003",
-    "name": "aside-left-variant-1",
+    "name": "no-aside-structure-1",
     "version": 1,
-    "layout": "aside-left",
+    "layout": "no-aside",
     "structure": "structure-1",
     "sections": {
       "experience": "timeline",
@@ -230,9 +230,9 @@
   },
   {
     "id": "tpl-004",
-    "name": "aside-left-variant-2",
+    "name": "no-aside-structure-2",
     "version": 1,
-    "layout": "aside-left",
+    "layout": "no-aside",
     "structure": "structure-2",
     "sections": {
       "experience": "cards",
@@ -317,10 +317,10 @@
   },
   {
     "id": "tpl-005",
-    "name": "aside-right-variant-1",
+    "name": "aside-left-structure-1",
     "version": 1,
-    "layout": "aside-right",
-    "structure": "structure-2",
+    "layout": "aside-left",
+    "structure": "structure-1",
     "sections": {
       "experience": "timeline",
       "education": "timeline",
@@ -404,10 +404,10 @@
   },
   {
     "id": "tpl-006",
-    "name": "aside-right-variant-2",
+    "name": "aside-left-structure-2",
     "version": 1,
-    "layout": "aside-right",
-    "structure": "structure-3",
+    "layout": "aside-left",
+    "structure": "structure-2",
     "sections": {
       "experience": "cards",
       "education": "timeline",
@@ -491,10 +491,10 @@
   },
   {
     "id": "tpl-007",
-    "name": "bar-left-variant-1",
+    "name": "aside-right-structure-1",
     "version": 1,
-    "layout": "aside-left",
-    "structure": "structure-3",
+    "layout": "aside-right",
+    "structure": "structure-1",
     "sections": {
       "experience": "timeline",
       "education": "timeline",
@@ -578,10 +578,10 @@
   },
   {
     "id": "tpl-008",
-    "name": "bar-left-variant-2",
+    "name": "aside-right-structure-2",
     "version": 1,
-    "layout": "aside-left",
-    "structure": "structure-1",
+    "layout": "aside-right",
+    "structure": "structure-2",
     "sections": {
       "experience": "cards",
       "education": "timeline",
@@ -665,9 +665,9 @@
   },
   {
     "id": "tpl-009",
-    "name": "bar-light-variant-1",
+    "name": "aside-full-left-structure-1",
     "version": 1,
-    "layout": "no-aside",
+    "layout": "aside-full-left",
     "structure": "structure-1",
     "sections": {
       "experience": "timeline",
@@ -752,9 +752,9 @@
   },
   {
     "id": "tpl-010",
-    "name": "bar-light-variant-2",
+    "name": "aside-full-left-structure-2",
     "version": 1,
-    "layout": "no-aside",
+    "layout": "aside-full-left",
     "structure": "structure-2",
     "sections": {
       "experience": "cards",
@@ -839,10 +839,10 @@
   },
   {
     "id": "tpl-011",
-    "name": "no-aside-variant-1",
+    "name": "aside-full-right-structure-1",
     "version": 1,
-    "layout": "no-aside",
-    "structure": "structure-2",
+    "layout": "aside-full-right",
+    "structure": "structure-1",
     "sections": {
       "experience": "timeline",
       "education": "list",
@@ -906,10 +906,10 @@
   },
   {
     "id": "tpl-012",
-    "name": "no-aside-variant-2",
+    "name": "aside-full-right-structure-2",
     "version": 1,
-    "layout": "no-aside",
-    "structure": "structure-3",
+    "layout": "aside-full-right",
+    "structure": "structure-2",
     "sections": {
       "experience": "cards",
       "education": "list",
@@ -920,282 +920,6 @@
       "references": "list",
       "projects": "timeline",
       "interests": "classic",
-      "contact": "icons"
-    },
-    "theme": {
-      "palette": {
-        "primary": "#7C3AED",
-        "secondary": "#C4B5FD",
-        "text": "#1F2937",
-        "muted": "#6B7280",
-        "pageBackground": "#FAF5FF"
-      },
-      "line": "strong",
-      "density": "compact",
-      "textStyle": "mono",
-      "showIcon": false
-    },
-    "aside": {
-      "width": "240px",
-      "height": "100%"
-    },
-    "photo": {
-      "position": "left",
-      "size": "84px",
-      "shape": "square",
-      "border": "2px solid #0F4C81"
-    },
-    "decor": {
-      "corners": [
-        {
-          "shape": "triangle",
-          "size": "280px",
-          "color": "#C4B5FD",
-          "x": "top-right",
-          "y": "0"
-        },
-        {
-          "shape": "diamond",
-          "size": "220px",
-          "color": "#7C3AED",
-          "x": "bottom-left",
-          "y": "0"
-        }
-      ]
-    },
-    "decorOptions": {
-      "enabled": true,
-      "preset": "abstract-duo"
-    },
-    "sectionTitleStyle": {
-      "underline": "thick"
-    }
-  },
-  {
-    "id": "tpl-013",
-    "name": "aside-split-variant-1",
-    "version": 1,
-    "layout": "aside",
-    "structure": "structure-1",
-    "sections": {
-      "experience": "timeline",
-      "education": "timeline",
-      "skills": "two-columns",
-      "languages": "two-columns",
-      "languagesLabel": "cards",
-      "certifications": "two-columns",
-      "references": "two-columns",
-      "projects": "two-columns",
-      "interests": "two-columns",
-      "contact": "icons"
-    },
-    "theme": {
-      "palette": {
-        "primary": "#1D4ED8",
-        "secondary": "#93C5FD",
-        "text": "#0F172A",
-        "muted": "#64748B",
-        "pageBackground": "#F8FAFC"
-      },
-      "line": "soft",
-      "density": "comfortable",
-      "textStyle": "roman",
-      "showIcon": true
-    },
-    "aside": {
-      "width": "900px",
-      "height": "220px",
-      "radius": "18px"
-    },
-    "photo": {
-      "position": "left",
-      "size": "92px",
-      "shape": "circle",
-      "border": "2px solid #1F2937"
-    },
-    "decor": {
-      "corners": [
-        {
-          "shape": "circle",
-          "size": "280px",
-          "color": "#93C5FD",
-          "x": "top-right",
-          "y": "0"
-        },
-        {
-          "shape": "square",
-          "size": "220px",
-          "color": "#1D4ED8",
-          "x": "bottom-left",
-          "y": "0"
-        }
-      ]
-    },
-    "layoutOptions": {
-      "asideStartsAtTop": true
-    },
-    "decorOptions": {
-      "enabled": true,
-      "preset": "geo-duo"
-    },
-    "sectionTitleStyle": {
-      "underline": "thin"
-    }
-  },
-  {
-    "id": "tpl-014",
-    "name": "aside-split-variant-2",
-    "version": 1,
-    "layout": "aside",
-    "structure": "structure-2",
-    "sections": {
-      "experience": "cards",
-      "education": "timeline",
-      "skills": "two-columns",
-      "languages": "two-columns",
-      "languagesLabel": "cards",
-      "certifications": "two-columns",
-      "references": "two-columns",
-      "projects": "two-columns",
-      "interests": "two-columns",
-      "contact": "icons"
-    },
-    "theme": {
-      "palette": {
-        "primary": "#7C3AED",
-        "secondary": "#C4B5FD",
-        "text": "#1F2937",
-        "muted": "#6B7280",
-        "pageBackground": "#FAF5FF"
-      },
-      "line": "strong",
-      "density": "compact",
-      "textStyle": "roman",
-      "showIcon": true
-    },
-    "aside": {
-      "width": "900px",
-      "height": "220px",
-      "radius": "18px"
-    },
-    "photo": {
-      "position": "left",
-      "size": "92px",
-      "shape": "circle",
-      "border": "2px solid #1F2937"
-    },
-    "decor": {
-      "corners": [
-        {
-          "shape": "triangle",
-          "size": "280px",
-          "color": "#C4B5FD",
-          "x": "top-right",
-          "y": "0"
-        },
-        {
-          "shape": "diamond",
-          "size": "220px",
-          "color": "#7C3AED",
-          "x": "bottom-left",
-          "y": "0"
-        }
-      ]
-    },
-    "layoutOptions": {
-      "asideStartsAtTop": true
-    },
-    "decorOptions": {
-      "enabled": true,
-      "preset": "abstract-duo"
-    },
-    "sectionTitleStyle": {
-      "underline": "thick"
-    }
-  },
-  {
-    "id": "tpl-015",
-    "name": "no-aside-split-variant-1",
-    "version": 1,
-    "layout": "no-aside",
-    "structure": "structure-2",
-    "sections": {
-      "experience": "timeline",
-      "education": "list",
-      "skills": "two-columns",
-      "languages": "two-columns",
-      "languagesLabel": "classic",
-      "certifications": "two-columns",
-      "references": "two-columns",
-      "projects": "two-columns",
-      "interests": "two-columns",
-      "contact": "icons"
-    },
-    "theme": {
-      "palette": {
-        "primary": "#1D4ED8",
-        "secondary": "#93C5FD",
-        "text": "#0F172A",
-        "muted": "#64748B",
-        "pageBackground": "#F8FAFC"
-      },
-      "line": "soft",
-      "density": "comfortable",
-      "textStyle": "mono",
-      "showIcon": false
-    },
-    "aside": {
-      "width": "240px",
-      "height": "100%"
-    },
-    "photo": {
-      "position": "left",
-      "size": "84px",
-      "shape": "square",
-      "border": "2px solid #0F4C81"
-    },
-    "decor": {
-      "corners": [
-        {
-          "shape": "circle",
-          "size": "280px",
-          "color": "#93C5FD",
-          "x": "top-right",
-          "y": "0"
-        },
-        {
-          "shape": "square",
-          "size": "220px",
-          "color": "#1D4ED8",
-          "x": "bottom-left",
-          "y": "0"
-        }
-      ]
-    },
-    "decorOptions": {
-      "enabled": true,
-      "preset": "geo-duo"
-    },
-    "sectionTitleStyle": {
-      "underline": "thin"
-    }
-  },
-  {
-    "id": "tpl-016",
-    "name": "no-aside-split-variant-2",
-    "version": 1,
-    "layout": "no-aside",
-    "structure": "structure-3",
-    "sections": {
-      "experience": "cards",
-      "education": "list",
-      "skills": "two-columns",
-      "languages": "two-columns",
-      "languagesLabel": "classic",
-      "certifications": "two-columns",
-      "references": "two-columns",
-      "projects": "two-columns",
-      "interests": "two-columns",
       "contact": "icons"
     },
     "theme": {
