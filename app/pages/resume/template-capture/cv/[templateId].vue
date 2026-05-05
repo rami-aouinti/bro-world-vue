@@ -43,8 +43,8 @@ const activeLayoutComponent = computed(() => cvLayoutComponentMap[selectedTempla
 </script>
 
 <template>
-  <main class="capture-cv-page">
-    <component :is="activeLayoutComponent">
+  <main class="capture-cv-page" :style="{ background: selectedTemplate?.theme?.palette?.pageBackground || '#eef2ff' }">
+    <component :is="activeLayoutComponent" :style="{ background: selectedTemplate?.theme?.palette?.pageBackground || '#ffffff' }">
       <div class="capture-empty-state">
         <h2>{{ selectedTemplate.name }}</h2>
         <p>{{ selectedTemplate.id }} · {{ selectedTemplate.layout }}</p>

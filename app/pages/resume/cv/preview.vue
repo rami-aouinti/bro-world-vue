@@ -76,7 +76,7 @@ onMounted(() => {
       </template>
     </AppPageDrawers>
 
-    <v-container fluid>
+    <v-container fluid :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#eef2ff' }">
       <div class="preview-toolbar-wrap">
         <div class="preview-toolbar-row">
           <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-content-save-cog-outline" @click="saveFromPreview">Save</v-btn>
@@ -105,7 +105,7 @@ onMounted(() => {
       </div>
 
       <div class="py-8 d-flex justify-center">
-        <component :is="activeLayoutComponent" class="capture-cv-empty">
+        <component :is="activeLayoutComponent" class="capture-cv-empty" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff' }">
           <div class="empty-state">
             <h2>{{ activeTemplate?.name }}</h2>
             <p>{{ activeTemplate?.id }} · {{ activeTemplate?.layout }}</p>
