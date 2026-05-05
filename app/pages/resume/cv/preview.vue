@@ -49,7 +49,14 @@ const headerProfile = computed(() => {
     fullName: String(fake.fullName || 'John Doe'),
     role: String(fake.role || 'Senior Developer'),
     image: String(fake.image || '/img/default_avatar.svg'),
-    contact: [String(fake.email || 'john.doe@email.com'), String(fake.phone || '+1 (555) 000-1234'), String(fake.location || 'Paris, France')],
+    contact: [
+      String(fake.email || 'john.doe@email.com'),
+      String(fake.phone || '+1 (555) 000-1234'),
+      String(fake.birthday || '1992-05-12'),
+      String(fake.location || 'Paris, France'),
+      String(fake.homepage || 'https://portfolio.example.com'),
+      String(fake.repositoryPage || 'https://github.com/john-doe'),
+    ],
   }
 })
 
@@ -151,8 +158,9 @@ onMounted(() => {
             <div class="cv-header-layout" :class="`cv-header-layout--${headerType}`">
               <template v-if="headerType === 'header-left'">
                 <div class="cv-header-contact cv-col-8">
-                  <h3>Contact</h3>
-                  <p v-for="line in headerProfile.contact" :key="`left-${line}`">{{ line }}</p>
+                  <div class="cv-header-contact-grid">
+                    <p v-for="line in headerProfile.contact" :key="`left-${line}`">{{ line }}</p>
+                  </div>
                 </div>
                 <div class="cv-header-identity cv-col-4">
                   <img :src="headerProfile.image" alt="profile" class="cv-header-avatar">
@@ -167,8 +175,9 @@ onMounted(() => {
                   <span>{{ headerProfile.role }}</span>
                 </div>
                 <div class="cv-header-contact cv-col-8">
-                  <h3>Contact</h3>
-                  <p v-for="line in headerProfile.contact" :key="`right-${line}`">{{ line }}</p>
+                  <div class="cv-header-contact-grid">
+                    <p v-for="line in headerProfile.contact" :key="`right-${line}`">{{ line }}</p>
+                  </div>
                 </div>
               </template>
               <template v-else>
@@ -182,8 +191,9 @@ onMounted(() => {
                   </div>
                 </div>
                 <div class="cv-col-6 cv-header-contact">
-                  <h3>Contact</h3>
-                  <p v-for="line in headerProfile.contact" :key="`split-${line}`">{{ line }}</p>
+                  <div class="cv-header-contact-grid">
+                    <p v-for="line in headerProfile.contact" :key="`split-${line}`">{{ line }}</p>
+                  </div>
                 </div>
               </template>
             </div>
@@ -243,10 +253,10 @@ onMounted(() => {
 .cv-header-layout--header-left { grid-template-columns: 2fr 1fr; }
 .cv-header-layout--header-right { grid-template-columns: 1fr 2fr; }
 .cv-header-layout--header-split { grid-template-columns: 1fr 1fr; }
-.cv-header-split-left { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; }
+.cv-header-split-left { display: grid; grid-template-columns: auto 1fr; gap: 6px; align-items: center; justify-content: start; }
 .cv-header-contact { display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; }
-.cv-header-contact h3 { margin: 0 0 6px; font-size: 16px; }
-.cv-header-contact p { margin: 0 0 4px; font-size: 13px; }
+.cv-header-contact-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 10px; width:100%; }
+.cv-header-contact-grid p { margin: 0; font-size: 13px; }
 .cv-header-identity { display: flex; flex-direction: column; gap: 4px; justify-content:center; align-items:center; text-align:center; }
 .cv-header-avatar { width: 52px; height: 52px; object-fit: cover; border-radius: 999px; }
 
