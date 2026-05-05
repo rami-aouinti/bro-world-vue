@@ -1,17 +1,5 @@
 User-Agent: *
-Allow: /world/crm
-Allow: /world/learning
-Allow: /world/jobs
-Allow: /world/shop
-Allow: /resume
-Allow: /service
-Allow: /about
-Allow: /contact
-Allow: /faq
-Allow: /applications/quiz
-Allow: /games
-Allow: /platform
-Allow: /applications/sports
+Allow: /
 
 Disallow: /admin
 Disallow: /dashboard
