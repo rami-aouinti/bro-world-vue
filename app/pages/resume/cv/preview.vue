@@ -143,22 +143,23 @@ function getSectionItems(rawSection: string): string[] {
   if (key === 'certifications') return (data.certifications || []).map((item: any) => typeof item === 'string' ? item : item.title).filter(Boolean)
   if (key === 'references') return (data.references || []).map((item: any) => typeof item === 'string' ? item : item.title).filter(Boolean)
   if (key === 'hobbies') return (data.hobbies || []).map((item: any) => typeof item === 'string' ? item : item.title).filter(Boolean)
-  if (key === 'profile') return [String(data.profileDescription || '')].filter(Boolean)
+  if (key === 'profile') return [String(data.resumeInformation?.profileText || data.profileDescription || '')].filter(Boolean)
   return []
 }
 const headerProfile = computed(() => {
-  const fake = (activeTemplate.value as any)?.fakeData || {}
+  const fake: any = (activeTemplate.value as any)?.fakeData || {}
+  const info = fake.resumeInformation || {}
   return {
-    fullName: String(fake.fullName || 'John Doe'),
-    role: String(fake.role || 'Senior Developer'),
-    image: String(fake.image || '/img/default_avatar.svg'),
+    fullName: String(info.fullName || fake.fullName || 'John Doe'),
+    role: String(info.title || fake.role || 'Senior Developer'),
+    image: String(info.photo || fake.image || '/img/default_avatar.svg'),
     contact: [
-      { icon: 'mdi-email-outline', type: 'text', label: '', value: String(fake.email || 'john.doe@email.com') },
-      { icon: 'mdi-phone-outline', type: 'text', label: '', value: String(fake.phone || '+1 (555) 000-1234') },
-      { icon: 'mdi-cake-variant-outline', type: 'text', label: '', value: String(fake.birthday || '1992-05-12') },
-      { icon: 'mdi-map-marker-outline', type: 'text', label: '', value: String(fake.location || 'Paris, France') },
-      { icon: 'mdi-home-outline', type: 'link', label: 'Home Page', value: String(fake.homepage || 'https://portfolio.example.com') },
-      { icon: 'mdi-github', type: 'link', label: 'Repository Profile', value: String(fake.repositoryPage || 'https://github.com/john-doe') },
+      { icon: 'mdi-email-outline', type: 'text', label: '', value: String(info.email || fake.email || 'john.doe@email.com') },
+      { icon: 'mdi-phone-outline', type: 'text', label: '', value: String(info.phone || fake.phone || '+1 (555) 000-1234') },
+      { icon: 'mdi-cake-variant-outline', type: 'text', label: '', value: String(info.birthDate || fake.birthday || '1992-05-12') },
+      { icon: 'mdi-map-marker-outline', type: 'text', label: '', value: String(info.adresse || fake.location || 'Paris, France') },
+      { icon: 'mdi-home-outline', type: 'link', label: 'Home Page', value: String(info.homepage || fake.homepage || 'https://portfolio.example.com') },
+      { icon: 'mdi-github', type: 'link', label: 'Repository Profile', value: String(info.repo_profile || fake.repositoryPage || 'https://github.com/john-doe') },
     ],
   }
 })
@@ -410,27 +411,27 @@ onMounted(() => {
   gap: 8px;
 }
 
-.cv-aside-section-item :deep(.cv-item){font-size:12px;margin-bottom:4px}
-.cv-aside-section-item :deep(.cv-sec){padding:4px 0}
 .cv-aside-section-item {
   padding: 8px 10px;
   border-radius: 8px;
-  background: rgba(241, 245, 249, 0.9);
+  background: transparent;
   color: #1e293b;
-  border: 1px dashed rgba(100, 116, 139, 0.35);
+  border: 0;
   font-weight: 600;
   font-size: 13px;
 }
 
-.cv-aside-sections--full .cv-aside-section-item :deep(.cv-item){font-size:12px;margin-bottom:4px}
-.cv-aside-section-item :deep(.cv-sec){padding:4px 0}
+.cv-aside-section-item :deep(.cv-sec) { padding: 4px 0; }
+.cv-aside-section-item :deep(.cv-item) { font-size: 12px; margin-bottom: 4px; }
+
 .cv-aside-sections--full .cv-aside-section-item {
-  background: rgba(255,255,255,.16);
   color: #fff;
-  border: none;
 }
-.cv-aside-sections--full .cv-aside-section-item :deep(.cv-sec){ color:#fff; }
-.cv-aside-sections--full .cv-aside-section-item :deep(p){ color:#fff; }
+.cv-aside-sections--full .cv-aside-section-item :deep(.cv-sec),
+.cv-aside-sections--full .cv-aside-section-item :deep(.cv-item),
+.cv-aside-sections--full .cv-aside-section-item :deep(p) {
+  color: #fff;
+}
 
 .cv-section-row small { font-weight: 400; opacity: .8; }
 .cv-section-row--timeline{border-left:4px solid #6366f1;padding-left:10px}
@@ -442,13 +443,13 @@ onMounted(() => {
 .cv-row-items { margin: 6px 0 0; padding-left: 16px; }
 .cv-row-items li { font-size: 12px; line-height: 1.35; }
 .cv-section-row {
-  border: 1px dashed rgba(100, 116, 139, 0.45);
-  border-radius: 10px;
-  padding: 10px 12px;
-  margin-bottom: 10px;
+  border: 0;
+  border-radius: 0;
+  padding: 8px 4px;
+  margin-bottom: 8px;
   font-weight: 600;
   color: #334155;
-  background: rgba(248, 250, 252, 0.7);
+  background: transparent;
 }
 
 .template-menu-card {

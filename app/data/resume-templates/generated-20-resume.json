@@ -72,77 +72,156 @@
     },
     "headerType": "header-left",
     "fakeData": {
-      "fullName": "Alex Martin",
-      "role": "Senior Full Stack Developer",
-      "image": "/img/team-1.jpg",
-      "profileDescription": "Alex Martin is a results-driven senior full stack developer focused on product quality, scalability, and collaboration.",
-      "email": "alex.martin@example.com",
-      "phone": "+33 6 12 34 50 35",
-      "birthday": "1990-01-10",
-      "location": "Paris, France",
-      "homepage": "https://portfolio-1.example.com",
-      "repositoryPage": "https://github.com/profile-1",
+      "id": "4472c3f0-00e2-4e88-91aa-cfa102183685",
+      "documentUrl": null,
+      "resumeInformation": {
+        "fullName": "Alex Martin",
+        "email": "alex.martin@example.com",
+        "phone": "+33 6 12 34 50 35",
+        "homepage": "https://portfolio-1.example.com",
+        "repo_profile": "https://github.com/profile-1",
+        "adresse": "Paris, France",
+        "birthDate": "1990-01-10",
+        "birthPlace": "Tunisia",
+        "profileText": "Alex Martin is a results-driven senior full stack developer focused on product quality, scalability, and collaboration.",
+        "title": "Senior Full Stack Developer",
+        "photo": "/img/team-1.jpg"
+      },
       "experiences": [
         {
+          "id": "ac3cd716-7769-4319-b2a0-523900243361",
           "title": "Senior Full Stack Developer",
+          "description": "Led product delivery and built maintainable architecture.",
           "company": "Bro Labs",
           "startDate": "2021-01-01",
-          "endDate": null,
-          "description": "Led product delivery and built maintainable architecture."
+          "endDate": null
         },
         {
+          "id": "1c51acea-dadd-4171-ab07-515ab1a579aa",
           "title": "Engineer",
+          "description": "Implemented features with strong UX focus.",
           "company": "Nova Digital",
           "startDate": "2018-06-01",
-          "endDate": "2020-12-31",
-          "description": "Implemented features with strong UX focus."
+          "endDate": "2020-12-31"
         }
       ],
       "educations": [
         {
+          "id": "a70e3cfe-95e9-482a-95d0-d88b1872573e",
           "title": "Master in Computer Science",
+          "description": "",
           "school": "University of Lyon",
           "startDate": "2016-09-01",
-          "endDate": "2018-06-30"
+          "endDate": "2018-06-30",
+          "location": "Paris, France"
         },
         {
+          "id": "572a6d22-daac-4d91-ba23-038279d4d40a",
           "title": "Bachelor in Software Engineering",
+          "description": "",
           "school": "Université Grenoble Alpes",
           "startDate": "2013-09-01",
-          "endDate": "2016-06-30"
+          "endDate": "2016-06-30",
+          "location": "Paris, France"
         }
       ],
       "skills": [
-        "Vue.js",
-        "TypeScript",
-        "Node.js",
-        "Nuxt",
-        "PostgreSQL",
-        "Docker"
-      ],
-      "projects": [
         {
-          "title": "Recruitment Analytics",
-          "description": "Dashboard and reporting platform."
+          "name": "Vue.js",
+          "level": 80
+        },
+        {
+          "name": "TypeScript",
+          "level": 80
+        },
+        {
+          "name": "Node.js",
+          "level": 80
+        },
+        {
+          "name": "Nuxt",
+          "level": 80
+        },
+        {
+          "name": "PostgreSQL",
+          "level": 80
+        },
+        {
+          "name": "Docker",
+          "level": 80
         }
       ],
       "languages": [
-        "French",
-        "English",
-        "Spanish"
+        {
+          "name": "French",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "English",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "Spanish",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        }
       ],
       "certifications": [
-        "AWS Certified Developer",
-        "Scrum Master"
+        {
+          "id": "f2264f4e-ee68-489a-b624-ad3b22781c72",
+          "title": "AWS Certified Developer",
+          "description": "",
+          "attachments": []
+        },
+        {
+          "id": "b6af9445-9fec-4c52-a51f-0751e4520068",
+          "title": "Scrum Master",
+          "description": "",
+          "attachments": []
+        }
+      ],
+      "projects": [
+        {
+          "id": "5010b7b0-1ba8-4d8c-8b7d-3ccbd76ba67a",
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform.",
+          "attachments": [],
+          "home_page": "https://portfolio-1.example.com"
+        }
       ],
       "references": [
-        "Sophie Bernard · Engineering Manager",
-        "Julien Roche · Product Director"
+        {
+          "id": "96f61721-aec3-4390-8050-71267791083c",
+          "title": "Sophie Bernard · Engineering Manager",
+          "description": ""
+        },
+        {
+          "id": "657ee6b6-b3c9-4d4d-8fcc-c0355d6ce69a",
+          "title": "Julien Roche · Product Director",
+          "description": ""
+        }
       ],
       "hobbies": [
-        "Open-source",
-        "Running",
-        "Photography"
+        {
+          "id": "6ce201e5-e06b-4f99-aed0-69e76fe9a8ae",
+          "title": "Open-source",
+          "description": ""
+        },
+        {
+          "id": "4cd7c2c1-5aa0-4a0e-9716-2d23ac50314c",
+          "title": "Running",
+          "description": ""
+        },
+        {
+          "id": "da67edb6-1424-4415-9915-70efe53ab5a0",
+          "title": "Photography",
+          "description": ""
+        }
       ]
     }
   },
@@ -219,77 +298,156 @@
     },
     "headerType": "header-right",
     "fakeData": {
-      "fullName": "Sofia Nguyen",
-      "role": "Product Designer",
-      "image": "/img/team-2.jpg",
-      "profileDescription": "Sofia Nguyen is a results-driven product designer focused on product quality, scalability, and collaboration.",
-      "email": "sofia.nguyen@example.com",
-      "phone": "+33 6 12 34 51 46",
-      "birthday": "1991-02-11",
-      "location": "Lyon, France",
-      "homepage": "https://portfolio-2.example.com",
-      "repositoryPage": "https://github.com/profile-2",
+      "id": "1bce2be4-def0-4e9a-aee0-b7c9dc3c1269",
+      "documentUrl": null,
+      "resumeInformation": {
+        "fullName": "Sofia Nguyen",
+        "email": "sofia.nguyen@example.com",
+        "phone": "+33 6 12 34 51 46",
+        "homepage": "https://portfolio-2.example.com",
+        "repo_profile": "https://github.com/profile-2",
+        "adresse": "Lyon, France",
+        "birthDate": "1991-02-11",
+        "birthPlace": "Tunisia",
+        "profileText": "Sofia Nguyen is a results-driven product designer focused on product quality, scalability, and collaboration.",
+        "title": "Product Designer",
+        "photo": "/img/team-2.jpg"
+      },
       "experiences": [
         {
+          "id": "152db174-51a1-402d-8da8-d37d6a447cb1",
           "title": "Product Designer",
+          "description": "Led product delivery and built maintainable architecture.",
           "company": "Bro Labs",
           "startDate": "2021-01-01",
-          "endDate": null,
-          "description": "Led product delivery and built maintainable architecture."
+          "endDate": null
         },
         {
+          "id": "2c2fafd5-c386-4656-babd-211548eb9fdc",
           "title": "Engineer",
+          "description": "Implemented features with strong UX focus.",
           "company": "Nova Digital",
           "startDate": "2018-06-01",
-          "endDate": "2020-12-31",
-          "description": "Implemented features with strong UX focus."
+          "endDate": "2020-12-31"
         }
       ],
       "educations": [
         {
+          "id": "ce66b118-364b-4402-9cda-22ae1c230111",
           "title": "Master in Computer Science",
+          "description": "",
           "school": "University of Lyon",
           "startDate": "2016-09-01",
-          "endDate": "2018-06-30"
+          "endDate": "2018-06-30",
+          "location": "Lyon, France"
         },
         {
+          "id": "e7213e60-2b9f-4955-a731-81cc06706abb",
           "title": "Bachelor in Software Engineering",
+          "description": "",
           "school": "Université Grenoble Alpes",
           "startDate": "2013-09-01",
-          "endDate": "2016-06-30"
+          "endDate": "2016-06-30",
+          "location": "Lyon, France"
         }
       ],
       "skills": [
-        "Vue.js",
-        "TypeScript",
-        "Node.js",
-        "Nuxt",
-        "PostgreSQL",
-        "Docker"
-      ],
-      "projects": [
         {
-          "title": "Recruitment Analytics",
-          "description": "Dashboard and reporting platform."
+          "name": "Vue.js",
+          "level": 80
+        },
+        {
+          "name": "TypeScript",
+          "level": 80
+        },
+        {
+          "name": "Node.js",
+          "level": 80
+        },
+        {
+          "name": "Nuxt",
+          "level": 80
+        },
+        {
+          "name": "PostgreSQL",
+          "level": 80
+        },
+        {
+          "name": "Docker",
+          "level": 80
         }
       ],
       "languages": [
-        "French",
-        "English",
-        "Spanish"
+        {
+          "name": "French",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "English",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "Spanish",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        }
       ],
       "certifications": [
-        "AWS Certified Developer",
-        "Scrum Master"
+        {
+          "id": "2dda43ec-2279-427a-98c4-990455b222f7",
+          "title": "AWS Certified Developer",
+          "description": "",
+          "attachments": []
+        },
+        {
+          "id": "aa4b81e8-8ef6-48b3-b48b-7feb78b53672",
+          "title": "Scrum Master",
+          "description": "",
+          "attachments": []
+        }
+      ],
+      "projects": [
+        {
+          "id": "220e6930-0db1-4b3c-b1df-19d00f2c140b",
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform.",
+          "attachments": [],
+          "home_page": "https://portfolio-2.example.com"
+        }
       ],
       "references": [
-        "Sophie Bernard · Engineering Manager",
-        "Julien Roche · Product Director"
+        {
+          "id": "fb3c625f-a867-4e8d-aebf-fef3bdeabe94",
+          "title": "Sophie Bernard · Engineering Manager",
+          "description": ""
+        },
+        {
+          "id": "52577f2f-a026-42ab-a5a4-66b484539e5b",
+          "title": "Julien Roche · Product Director",
+          "description": ""
+        }
       ],
       "hobbies": [
-        "Open-source",
-        "Running",
-        "Photography"
+        {
+          "id": "a1d94c82-441f-454a-a437-6db2429639a9",
+          "title": "Open-source",
+          "description": ""
+        },
+        {
+          "id": "ff12f14d-f76b-4020-871f-e16fd4409cf3",
+          "title": "Running",
+          "description": ""
+        },
+        {
+          "id": "439cb96b-43ba-4182-af1c-adb2c89f7003",
+          "title": "Photography",
+          "description": ""
+        }
       ]
     }
   },
@@ -383,77 +541,156 @@
     },
     "headerType": "header-split",
     "fakeData": {
-      "fullName": "Liam Carter",
-      "role": "Backend Engineer",
-      "image": "/img/team-3.jpg",
-      "profileDescription": "Liam Carter is a results-driven backend engineer focused on product quality, scalability, and collaboration.",
-      "email": "liam.carter@example.com",
-      "phone": "+33 6 12 34 52 57",
-      "birthday": "1992-03-12",
-      "location": "Berlin, Germany",
-      "homepage": "https://portfolio-3.example.com",
-      "repositoryPage": "https://github.com/profile-3",
+      "id": "9f3fa285-a454-43f9-aad8-c82d122160be",
+      "documentUrl": null,
+      "resumeInformation": {
+        "fullName": "Liam Carter",
+        "email": "liam.carter@example.com",
+        "phone": "+33 6 12 34 52 57",
+        "homepage": "https://portfolio-3.example.com",
+        "repo_profile": "https://github.com/profile-3",
+        "adresse": "Berlin, Germany",
+        "birthDate": "1992-03-12",
+        "birthPlace": "Tunisia",
+        "profileText": "Liam Carter is a results-driven backend engineer focused on product quality, scalability, and collaboration.",
+        "title": "Backend Engineer",
+        "photo": "/img/team-3.jpg"
+      },
       "experiences": [
         {
+          "id": "cf98684a-6e65-4ac1-b28c-9075505f193c",
           "title": "Backend Engineer",
+          "description": "Led product delivery and built maintainable architecture.",
           "company": "Bro Labs",
           "startDate": "2021-01-01",
-          "endDate": null,
-          "description": "Led product delivery and built maintainable architecture."
+          "endDate": null
         },
         {
+          "id": "a7f61ed4-b48e-498f-9c9b-72f84da51f64",
           "title": "Engineer",
+          "description": "Implemented features with strong UX focus.",
           "company": "Nova Digital",
           "startDate": "2018-06-01",
-          "endDate": "2020-12-31",
-          "description": "Implemented features with strong UX focus."
+          "endDate": "2020-12-31"
         }
       ],
       "educations": [
         {
+          "id": "4130dbdd-2bbf-4c49-af65-c678939ad40a",
           "title": "Master in Computer Science",
+          "description": "",
           "school": "University of Lyon",
           "startDate": "2016-09-01",
-          "endDate": "2018-06-30"
+          "endDate": "2018-06-30",
+          "location": "Berlin, Germany"
         },
         {
+          "id": "28af0d0e-7516-47a2-a4d4-b1addc4b421b",
           "title": "Bachelor in Software Engineering",
+          "description": "",
           "school": "Université Grenoble Alpes",
           "startDate": "2013-09-01",
-          "endDate": "2016-06-30"
+          "endDate": "2016-06-30",
+          "location": "Berlin, Germany"
         }
       ],
       "skills": [
-        "Vue.js",
-        "TypeScript",
-        "Node.js",
-        "Nuxt",
-        "PostgreSQL",
-        "Docker"
-      ],
-      "projects": [
         {
-          "title": "Recruitment Analytics",
-          "description": "Dashboard and reporting platform."
+          "name": "Vue.js",
+          "level": 80
+        },
+        {
+          "name": "TypeScript",
+          "level": 80
+        },
+        {
+          "name": "Node.js",
+          "level": 80
+        },
+        {
+          "name": "Nuxt",
+          "level": 80
+        },
+        {
+          "name": "PostgreSQL",
+          "level": 80
+        },
+        {
+          "name": "Docker",
+          "level": 80
         }
       ],
       "languages": [
-        "French",
-        "English",
-        "Spanish"
+        {
+          "name": "French",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "English",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "Spanish",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        }
       ],
       "certifications": [
-        "AWS Certified Developer",
-        "Scrum Master"
+        {
+          "id": "5e5ba184-09cb-419c-904e-9d706b82b113",
+          "title": "AWS Certified Developer",
+          "description": "",
+          "attachments": []
+        },
+        {
+          "id": "c5cc2f3c-9eb3-45de-9afb-1047852c7da3",
+          "title": "Scrum Master",
+          "description": "",
+          "attachments": []
+        }
+      ],
+      "projects": [
+        {
+          "id": "627e1874-4612-42c3-b8e6-8e35559a7661",
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform.",
+          "attachments": [],
+          "home_page": "https://portfolio-3.example.com"
+        }
       ],
       "references": [
-        "Sophie Bernard · Engineering Manager",
-        "Julien Roche · Product Director"
+        {
+          "id": "b36cc81b-803a-45bd-bac4-cfba71954803",
+          "title": "Sophie Bernard · Engineering Manager",
+          "description": ""
+        },
+        {
+          "id": "9128495a-0986-4003-9b9a-437f8f389ecb",
+          "title": "Julien Roche · Product Director",
+          "description": ""
+        }
       ],
       "hobbies": [
-        "Open-source",
-        "Running",
-        "Photography"
+        {
+          "id": "37815dc6-975e-4bc7-9f6f-505da4267d47",
+          "title": "Open-source",
+          "description": ""
+        },
+        {
+          "id": "53806cd9-dd03-4138-a3b7-9c91177d2f9d",
+          "title": "Running",
+          "description": ""
+        },
+        {
+          "id": "f1e97ce5-3d8b-47b0-988d-839c92982118",
+          "title": "Photography",
+          "description": ""
+        }
       ]
     }
   },
@@ -546,77 +783,156 @@
     },
     "headerType": "header-left",
     "fakeData": {
-      "fullName": "Emma Laurent",
-      "role": "Frontend Engineer",
-      "image": "/img/team-4.jpg",
-      "profileDescription": "Emma Laurent is a results-driven frontend engineer focused on product quality, scalability, and collaboration.",
-      "email": "emma.laurent@example.com",
-      "phone": "+33 6 12 34 53 68",
-      "birthday": "1993-04-13",
-      "location": "Barcelona, Spain",
-      "homepage": "https://portfolio-4.example.com",
-      "repositoryPage": "https://github.com/profile-4",
+      "id": "1b8ea83e-2588-4c05-9e5e-47fd7d64b8bb",
+      "documentUrl": null,
+      "resumeInformation": {
+        "fullName": "Emma Laurent",
+        "email": "emma.laurent@example.com",
+        "phone": "+33 6 12 34 53 68",
+        "homepage": "https://portfolio-4.example.com",
+        "repo_profile": "https://github.com/profile-4",
+        "adresse": "Barcelona, Spain",
+        "birthDate": "1993-04-13",
+        "birthPlace": "Tunisia",
+        "profileText": "Emma Laurent is a results-driven frontend engineer focused on product quality, scalability, and collaboration.",
+        "title": "Frontend Engineer",
+        "photo": "/img/team-4.jpg"
+      },
       "experiences": [
         {
+          "id": "60411f8d-d2de-46c9-a18a-d24bde8fff2f",
           "title": "Frontend Engineer",
+          "description": "Led product delivery and built maintainable architecture.",
           "company": "Bro Labs",
           "startDate": "2021-01-01",
-          "endDate": null,
-          "description": "Led product delivery and built maintainable architecture."
+          "endDate": null
         },
         {
+          "id": "421df1f7-dcd1-44d5-bc09-4aab5599698b",
           "title": "Engineer",
+          "description": "Implemented features with strong UX focus.",
           "company": "Nova Digital",
           "startDate": "2018-06-01",
-          "endDate": "2020-12-31",
-          "description": "Implemented features with strong UX focus."
+          "endDate": "2020-12-31"
         }
       ],
       "educations": [
         {
+          "id": "f998d0ea-2b99-4bed-8d96-85ab7addc0a6",
           "title": "Master in Computer Science",
+          "description": "",
           "school": "University of Lyon",
           "startDate": "2016-09-01",
-          "endDate": "2018-06-30"
+          "endDate": "2018-06-30",
+          "location": "Barcelona, Spain"
         },
         {
+          "id": "ffa0fc25-ef88-44fa-88ed-5627c07e54c7",
           "title": "Bachelor in Software Engineering",
+          "description": "",
           "school": "Université Grenoble Alpes",
           "startDate": "2013-09-01",
-          "endDate": "2016-06-30"
+          "endDate": "2016-06-30",
+          "location": "Barcelona, Spain"
         }
       ],
       "skills": [
-        "Vue.js",
-        "TypeScript",
-        "Node.js",
-        "Nuxt",
-        "PostgreSQL",
-        "Docker"
-      ],
-      "projects": [
         {
-          "title": "Recruitment Analytics",
-          "description": "Dashboard and reporting platform."
+          "name": "Vue.js",
+          "level": 80
+        },
+        {
+          "name": "TypeScript",
+          "level": 80
+        },
+        {
+          "name": "Node.js",
+          "level": 80
+        },
+        {
+          "name": "Nuxt",
+          "level": 80
+        },
+        {
+          "name": "PostgreSQL",
+          "level": 80
+        },
+        {
+          "name": "Docker",
+          "level": 80
         }
       ],
       "languages": [
-        "French",
-        "English",
-        "Spanish"
+        {
+          "name": "French",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "English",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "Spanish",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        }
       ],
       "certifications": [
-        "AWS Certified Developer",
-        "Scrum Master"
+        {
+          "id": "49a7aeec-3b8e-4ba9-8e7e-46b81f00a85d",
+          "title": "AWS Certified Developer",
+          "description": "",
+          "attachments": []
+        },
+        {
+          "id": "3edd7ded-3fa9-4217-bcd3-bcff21ced5ce",
+          "title": "Scrum Master",
+          "description": "",
+          "attachments": []
+        }
+      ],
+      "projects": [
+        {
+          "id": "ffdb5506-1bd2-43cd-8ebe-9ffe3307d942",
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform.",
+          "attachments": [],
+          "home_page": "https://portfolio-4.example.com"
+        }
       ],
       "references": [
-        "Sophie Bernard · Engineering Manager",
-        "Julien Roche · Product Director"
+        {
+          "id": "1a2ab8d8-c69c-4fd3-9982-8d914f591669",
+          "title": "Sophie Bernard · Engineering Manager",
+          "description": ""
+        },
+        {
+          "id": "2c9d28a2-a965-4bcd-8527-ac396d4b9af7",
+          "title": "Julien Roche · Product Director",
+          "description": ""
+        }
       ],
       "hobbies": [
-        "Open-source",
-        "Running",
-        "Photography"
+        {
+          "id": "0da40838-d45e-4e28-94f2-829d00037121",
+          "title": "Open-source",
+          "description": ""
+        },
+        {
+          "id": "fe6f998a-daed-459c-bc98-34bdba80f94d",
+          "title": "Running",
+          "description": ""
+        },
+        {
+          "id": "531210df-7b07-4b54-823d-5dec159aba08",
+          "title": "Photography",
+          "description": ""
+        }
       ]
     }
   },
@@ -709,77 +1025,156 @@
     },
     "headerType": "header-right",
     "fakeData": {
-      "fullName": "Noah Silva",
-      "role": "Data Analyst",
-      "image": "/img/team-5.jpg",
-      "profileDescription": "Noah Silva is a results-driven data analyst focused on product quality, scalability, and collaboration.",
-      "email": "noah.silva@example.com",
-      "phone": "+33 6 12 34 54 79",
-      "birthday": "1994-05-14",
-      "location": "Paris, France",
-      "homepage": "https://portfolio-5.example.com",
-      "repositoryPage": "https://github.com/profile-5",
+      "id": "5e2fa725-68a5-4b58-a8ab-42dfc17b1afc",
+      "documentUrl": null,
+      "resumeInformation": {
+        "fullName": "Noah Silva",
+        "email": "noah.silva@example.com",
+        "phone": "+33 6 12 34 54 79",
+        "homepage": "https://portfolio-5.example.com",
+        "repo_profile": "https://github.com/profile-5",
+        "adresse": "Paris, France",
+        "birthDate": "1994-05-14",
+        "birthPlace": "Tunisia",
+        "profileText": "Noah Silva is a results-driven data analyst focused on product quality, scalability, and collaboration.",
+        "title": "Data Analyst",
+        "photo": "/img/team-5.jpg"
+      },
       "experiences": [
         {
+          "id": "53096c0e-2a22-4d57-957c-006eb2cc1527",
           "title": "Data Analyst",
+          "description": "Led product delivery and built maintainable architecture.",
           "company": "Bro Labs",
           "startDate": "2021-01-01",
-          "endDate": null,
-          "description": "Led product delivery and built maintainable architecture."
+          "endDate": null
         },
         {
+          "id": "5a4025e0-dc89-460c-8279-b76812aeae14",
           "title": "Engineer",
+          "description": "Implemented features with strong UX focus.",
           "company": "Nova Digital",
           "startDate": "2018-06-01",
-          "endDate": "2020-12-31",
-          "description": "Implemented features with strong UX focus."
+          "endDate": "2020-12-31"
         }
       ],
       "educations": [
         {
+          "id": "a2ff1da5-3a3f-4801-ab58-bab2c2195420",
           "title": "Master in Computer Science",
+          "description": "",
           "school": "University of Lyon",
           "startDate": "2016-09-01",
-          "endDate": "2018-06-30"
+          "endDate": "2018-06-30",
+          "location": "Paris, France"
         },
         {
+          "id": "4ceb64d1-8a24-46d9-90af-0b1136682da9",
           "title": "Bachelor in Software Engineering",
+          "description": "",
           "school": "Université Grenoble Alpes",
           "startDate": "2013-09-01",
-          "endDate": "2016-06-30"
+          "endDate": "2016-06-30",
+          "location": "Paris, France"
         }
       ],
       "skills": [
-        "Vue.js",
-        "TypeScript",
-        "Node.js",
-        "Nuxt",
-        "PostgreSQL",
-        "Docker"
-      ],
-      "projects": [
         {
-          "title": "Recruitment Analytics",
-          "description": "Dashboard and reporting platform."
+          "name": "Vue.js",
+          "level": 80
+        },
+        {
+          "name": "TypeScript",
+          "level": 80
+        },
+        {
+          "name": "Node.js",
+          "level": 80
+        },
+        {
+          "name": "Nuxt",
+          "level": 80
+        },
+        {
+          "name": "PostgreSQL",
+          "level": 80
+        },
+        {
+          "name": "Docker",
+          "level": 80
         }
       ],
       "languages": [
-        "French",
-        "English",
-        "Spanish"
+        {
+          "name": "French",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "English",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "Spanish",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        }
       ],
       "certifications": [
-        "AWS Certified Developer",
-        "Scrum Master"
+        {
+          "id": "087c2543-b140-4db8-990c-44a45e6aeec8",
+          "title": "AWS Certified Developer",
+          "description": "",
+          "attachments": []
+        },
+        {
+          "id": "86d5de7b-8327-4710-b183-80fc15e03334",
+          "title": "Scrum Master",
+          "description": "",
+          "attachments": []
+        }
+      ],
+      "projects": [
+        {
+          "id": "5f65df0b-a036-4793-a81b-73f44afeb9f2",
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform.",
+          "attachments": [],
+          "home_page": "https://portfolio-5.example.com"
+        }
       ],
       "references": [
-        "Sophie Bernard · Engineering Manager",
-        "Julien Roche · Product Director"
+        {
+          "id": "f22be29c-894c-4ad0-8444-12007f189473",
+          "title": "Sophie Bernard · Engineering Manager",
+          "description": ""
+        },
+        {
+          "id": "5bc496c0-c59f-4860-bf48-d2d4e3515d6c",
+          "title": "Julien Roche · Product Director",
+          "description": ""
+        }
       ],
       "hobbies": [
-        "Open-source",
-        "Running",
-        "Photography"
+        {
+          "id": "f7dc65b2-dbf2-4bb3-99cf-176b8b3fe1ce",
+          "title": "Open-source",
+          "description": ""
+        },
+        {
+          "id": "8855e696-1453-4ac3-bc3d-894e643613d9",
+          "title": "Running",
+          "description": ""
+        },
+        {
+          "id": "2d1eaa06-c153-4f00-a870-81af40718278",
+          "title": "Photography",
+          "description": ""
+        }
       ]
     }
   },
@@ -872,77 +1267,156 @@
     },
     "headerType": "header-split",
     "fakeData": {
-      "fullName": "Mia Bernard",
-      "role": "DevOps Engineer",
-      "image": "/img/team-9.jpeg",
-      "profileDescription": "Mia Bernard is a results-driven devops engineer focused on product quality, scalability, and collaboration.",
-      "email": "mia.bernard@example.com",
-      "phone": "+33 6 12 34 55 80",
-      "birthday": "1995-06-15",
-      "location": "Lyon, France",
-      "homepage": "https://portfolio-6.example.com",
-      "repositoryPage": "https://github.com/profile-6",
+      "id": "900a6adf-0645-4f66-bdd4-9d21902094c9",
+      "documentUrl": null,
+      "resumeInformation": {
+        "fullName": "Mia Bernard",
+        "email": "mia.bernard@example.com",
+        "phone": "+33 6 12 34 55 80",
+        "homepage": "https://portfolio-6.example.com",
+        "repo_profile": "https://github.com/profile-6",
+        "adresse": "Lyon, France",
+        "birthDate": "1995-06-15",
+        "birthPlace": "Tunisia",
+        "profileText": "Mia Bernard is a results-driven devops engineer focused on product quality, scalability, and collaboration.",
+        "title": "DevOps Engineer",
+        "photo": "/img/team-9.jpeg"
+      },
       "experiences": [
         {
+          "id": "c29ef0a1-9be6-4071-97de-69ca9354c9a1",
           "title": "DevOps Engineer",
+          "description": "Led product delivery and built maintainable architecture.",
           "company": "Bro Labs",
           "startDate": "2021-01-01",
-          "endDate": null,
-          "description": "Led product delivery and built maintainable architecture."
+          "endDate": null
         },
         {
+          "id": "615e2aac-035f-4e8f-aa36-94e1bafb56ae",
           "title": "Engineer",
+          "description": "Implemented features with strong UX focus.",
           "company": "Nova Digital",
           "startDate": "2018-06-01",
-          "endDate": "2020-12-31",
-          "description": "Implemented features with strong UX focus."
+          "endDate": "2020-12-31"
         }
       ],
       "educations": [
         {
+          "id": "55ee1efa-e238-481c-bc5a-a344be2f25de",
           "title": "Master in Computer Science",
+          "description": "",
           "school": "University of Lyon",
           "startDate": "2016-09-01",
-          "endDate": "2018-06-30"
+          "endDate": "2018-06-30",
+          "location": "Lyon, France"
         },
         {
+          "id": "be796531-1073-4479-bcc6-c7fb1a5903d5",
           "title": "Bachelor in Software Engineering",
+          "description": "",
           "school": "Université Grenoble Alpes",
           "startDate": "2013-09-01",
-          "endDate": "2016-06-30"
+          "endDate": "2016-06-30",
+          "location": "Lyon, France"
         }
       ],
       "skills": [
-        "Vue.js",
-        "TypeScript",
-        "Node.js",
-        "Nuxt",
-        "PostgreSQL",
-        "Docker"
-      ],
-      "projects": [
         {
-          "title": "Recruitment Analytics",
-          "description": "Dashboard and reporting platform."
+          "name": "Vue.js",
+          "level": 80
+        },
+        {
+          "name": "TypeScript",
+          "level": 80
+        },
+        {
+          "name": "Node.js",
+          "level": 80
+        },
+        {
+          "name": "Nuxt",
+          "level": 80
+        },
+        {
+          "name": "PostgreSQL",
+          "level": 80
+        },
+        {
+          "name": "Docker",
+          "level": 80
         }
       ],
       "languages": [
-        "French",
-        "English",
-        "Spanish"
+        {
+          "name": "French",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "English",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "Spanish",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        }
       ],
       "certifications": [
-        "AWS Certified Developer",
-        "Scrum Master"
+        {
+          "id": "898c81d2-43ab-4e70-a2ef-8aa11defc1db",
+          "title": "AWS Certified Developer",
+          "description": "",
+          "attachments": []
+        },
+        {
+          "id": "de9c99b4-39f8-427b-a913-1a890a1129a1",
+          "title": "Scrum Master",
+          "description": "",
+          "attachments": []
+        }
+      ],
+      "projects": [
+        {
+          "id": "211e6acf-b8ab-4d51-b78c-ed407d221591",
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform.",
+          "attachments": [],
+          "home_page": "https://portfolio-6.example.com"
+        }
       ],
       "references": [
-        "Sophie Bernard · Engineering Manager",
-        "Julien Roche · Product Director"
+        {
+          "id": "8c5cfb54-75e9-4bd2-a175-640b1d33e82e",
+          "title": "Sophie Bernard · Engineering Manager",
+          "description": ""
+        },
+        {
+          "id": "47a73364-aa08-4fb8-baaf-cfab796e80a8",
+          "title": "Julien Roche · Product Director",
+          "description": ""
+        }
       ],
       "hobbies": [
-        "Open-source",
-        "Running",
-        "Photography"
+        {
+          "id": "d0e16263-c6b3-4b7f-a41e-2de7fe000f9f",
+          "title": "Open-source",
+          "description": ""
+        },
+        {
+          "id": "66d260be-ed4f-4fc5-a116-f88455261a7f",
+          "title": "Running",
+          "description": ""
+        },
+        {
+          "id": "cfe42c98-bf8c-404b-a437-57fca3cdce17",
+          "title": "Photography",
+          "description": ""
+        }
       ]
     }
   },
@@ -1035,77 +1509,156 @@
     },
     "headerType": "header-left",
     "fakeData": {
-      "fullName": "Ethan Rossi",
-      "role": "Mobile Developer",
-      "image": "/img/team-1.jpg",
-      "profileDescription": "Ethan Rossi is a results-driven mobile developer focused on product quality, scalability, and collaboration.",
-      "email": "ethan.rossi@example.com",
-      "phone": "+33 6 12 34 56 91",
-      "birthday": "1996-07-16",
-      "location": "Berlin, Germany",
-      "homepage": "https://portfolio-7.example.com",
-      "repositoryPage": "https://github.com/profile-7",
+      "id": "67f2c6f8-4cb3-48e1-a49d-4de057f48337",
+      "documentUrl": null,
+      "resumeInformation": {
+        "fullName": "Ethan Rossi",
+        "email": "ethan.rossi@example.com",
+        "phone": "+33 6 12 34 56 91",
+        "homepage": "https://portfolio-7.example.com",
+        "repo_profile": "https://github.com/profile-7",
+        "adresse": "Berlin, Germany",
+        "birthDate": "1996-07-16",
+        "birthPlace": "Tunisia",
+        "profileText": "Ethan Rossi is a results-driven mobile developer focused on product quality, scalability, and collaboration.",
+        "title": "Mobile Developer",
+        "photo": "/img/team-1.jpg"
+      },
       "experiences": [
         {
+          "id": "426ecda6-5f62-447d-b058-725455ff7397",
           "title": "Mobile Developer",
+          "description": "Led product delivery and built maintainable architecture.",
           "company": "Bro Labs",
           "startDate": "2021-01-01",
-          "endDate": null,
-          "description": "Led product delivery and built maintainable architecture."
+          "endDate": null
         },
         {
+          "id": "ec24f7bf-555d-440e-8e95-fb59a9c5c148",
           "title": "Engineer",
+          "description": "Implemented features with strong UX focus.",
           "company": "Nova Digital",
           "startDate": "2018-06-01",
-          "endDate": "2020-12-31",
-          "description": "Implemented features with strong UX focus."
+          "endDate": "2020-12-31"
         }
       ],
       "educations": [
         {
+          "id": "e6b0c84a-c92c-4497-8be6-2a1de058bfee",
           "title": "Master in Computer Science",
+          "description": "",
           "school": "University of Lyon",
           "startDate": "2016-09-01",
-          "endDate": "2018-06-30"
+          "endDate": "2018-06-30",
+          "location": "Berlin, Germany"
         },
         {
+          "id": "0a42a0a4-d7e7-4804-ba2f-0dba79c41b83",
           "title": "Bachelor in Software Engineering",
+          "description": "",
           "school": "Université Grenoble Alpes",
           "startDate": "2013-09-01",
-          "endDate": "2016-06-30"
+          "endDate": "2016-06-30",
+          "location": "Berlin, Germany"
         }
       ],
       "skills": [
-        "Vue.js",
-        "TypeScript",
-        "Node.js",
-        "Nuxt",
-        "PostgreSQL",
-        "Docker"
-      ],
-      "projects": [
         {
-          "title": "Recruitment Analytics",
-          "description": "Dashboard and reporting platform."
+          "name": "Vue.js",
+          "level": 80
+        },
+        {
+          "name": "TypeScript",
+          "level": 80
+        },
+        {
+          "name": "Node.js",
+          "level": 80
+        },
+        {
+          "name": "Nuxt",
+          "level": 80
+        },
+        {
+          "name": "PostgreSQL",
+          "level": 80
+        },
+        {
+          "name": "Docker",
+          "level": 80
         }
       ],
       "languages": [
-        "French",
-        "English",
-        "Spanish"
+        {
+          "name": "French",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "English",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "Spanish",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        }
       ],
       "certifications": [
-        "AWS Certified Developer",
-        "Scrum Master"
+        {
+          "id": "e28cf154-38e9-4c92-aabb-938c3d5d6d47",
+          "title": "AWS Certified Developer",
+          "description": "",
+          "attachments": []
+        },
+        {
+          "id": "013cd1ba-4d96-4b0a-b3f7-41ec960b58ef",
+          "title": "Scrum Master",
+          "description": "",
+          "attachments": []
+        }
+      ],
+      "projects": [
+        {
+          "id": "dc19d578-dd00-4448-8213-8e3d0d35941c",
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform.",
+          "attachments": [],
+          "home_page": "https://portfolio-7.example.com"
+        }
       ],
       "references": [
-        "Sophie Bernard · Engineering Manager",
-        "Julien Roche · Product Director"
+        {
+          "id": "d15c628b-ef39-476a-801f-b06902d7384c",
+          "title": "Sophie Bernard · Engineering Manager",
+          "description": ""
+        },
+        {
+          "id": "4beef7a3-5572-4208-bf30-3437ef2b1ff0",
+          "title": "Julien Roche · Product Director",
+          "description": ""
+        }
       ],
       "hobbies": [
-        "Open-source",
-        "Running",
-        "Photography"
+        {
+          "id": "ce50ed2d-340f-417a-ba01-3db2561611b4",
+          "title": "Open-source",
+          "description": ""
+        },
+        {
+          "id": "cc499995-bd48-4dbd-bd72-7010f56624c5",
+          "title": "Running",
+          "description": ""
+        },
+        {
+          "id": "c0eb6aec-ceba-4dd8-991a-8d2201bbcade",
+          "title": "Photography",
+          "description": ""
+        }
       ]
     }
   },
@@ -1198,77 +1751,156 @@
     },
     "headerType": "header-right",
     "fakeData": {
-      "fullName": "Chloé Dupont",
-      "role": "UX Researcher",
-      "image": "/img/team-2.jpg",
-      "profileDescription": "Chloé Dupont is a results-driven ux researcher focused on product quality, scalability, and collaboration.",
-      "email": "chloé.dupont@example.com",
-      "phone": "+33 6 12 34 57 02",
-      "birthday": "1997-08-17",
-      "location": "Barcelona, Spain",
-      "homepage": "https://portfolio-8.example.com",
-      "repositoryPage": "https://github.com/profile-8",
+      "id": "4cf1fa9d-2fc0-4100-81ae-878fc9949166",
+      "documentUrl": null,
+      "resumeInformation": {
+        "fullName": "Chloé Dupont",
+        "email": "chloé.dupont@example.com",
+        "phone": "+33 6 12 34 57 02",
+        "homepage": "https://portfolio-8.example.com",
+        "repo_profile": "https://github.com/profile-8",
+        "adresse": "Barcelona, Spain",
+        "birthDate": "1997-08-17",
+        "birthPlace": "Tunisia",
+        "profileText": "Chloé Dupont is a results-driven ux researcher focused on product quality, scalability, and collaboration.",
+        "title": "UX Researcher",
+        "photo": "/img/team-2.jpg"
+      },
       "experiences": [
         {
+          "id": "0bd1ef34-a216-4be4-a8b7-b6679795fc0e",
           "title": "UX Researcher",
+          "description": "Led product delivery and built maintainable architecture.",
           "company": "Bro Labs",
           "startDate": "2021-01-01",
-          "endDate": null,
-          "description": "Led product delivery and built maintainable architecture."
+          "endDate": null
         },
         {
+          "id": "b3dda171-fa8c-4003-9c55-9be367961cf4",
           "title": "Engineer",
+          "description": "Implemented features with strong UX focus.",
           "company": "Nova Digital",
           "startDate": "2018-06-01",
-          "endDate": "2020-12-31",
-          "description": "Implemented features with strong UX focus."
+          "endDate": "2020-12-31"
         }
       ],
       "educations": [
         {
+          "id": "f880f3be-5435-420b-81ae-462210ffd7d4",
           "title": "Master in Computer Science",
+          "description": "",
           "school": "University of Lyon",
           "startDate": "2016-09-01",
-          "endDate": "2018-06-30"
+          "endDate": "2018-06-30",
+          "location": "Barcelona, Spain"
         },
         {
+          "id": "82294b88-5349-41ba-bef0-b656e1f902fb",
           "title": "Bachelor in Software Engineering",
+          "description": "",
           "school": "Université Grenoble Alpes",
           "startDate": "2013-09-01",
-          "endDate": "2016-06-30"
+          "endDate": "2016-06-30",
+          "location": "Barcelona, Spain"
         }
       ],
       "skills": [
-        "Vue.js",
-        "TypeScript",
-        "Node.js",
-        "Nuxt",
-        "PostgreSQL",
-        "Docker"
-      ],
-      "projects": [
         {
-          "title": "Recruitment Analytics",
-          "description": "Dashboard and reporting platform."
+          "name": "Vue.js",
+          "level": 80
+        },
+        {
+          "name": "TypeScript",
+          "level": 80
+        },
+        {
+          "name": "Node.js",
+          "level": 80
+        },
+        {
+          "name": "Nuxt",
+          "level": 80
+        },
+        {
+          "name": "PostgreSQL",
+          "level": 80
+        },
+        {
+          "name": "Docker",
+          "level": 80
         }
       ],
       "languages": [
-        "French",
-        "English",
-        "Spanish"
+        {
+          "name": "French",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "English",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "Spanish",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        }
       ],
       "certifications": [
-        "AWS Certified Developer",
-        "Scrum Master"
+        {
+          "id": "b04c0b04-3944-4a86-ac22-4cf5aaeed446",
+          "title": "AWS Certified Developer",
+          "description": "",
+          "attachments": []
+        },
+        {
+          "id": "8672054b-0fbb-4326-94dd-777fac5b4eb1",
+          "title": "Scrum Master",
+          "description": "",
+          "attachments": []
+        }
+      ],
+      "projects": [
+        {
+          "id": "5c9148a8-9785-4e2f-b7df-3e15d4794478",
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform.",
+          "attachments": [],
+          "home_page": "https://portfolio-8.example.com"
+        }
       ],
       "references": [
-        "Sophie Bernard · Engineering Manager",
-        "Julien Roche · Product Director"
+        {
+          "id": "242343fc-c95c-4479-a785-9c74b58d9462",
+          "title": "Sophie Bernard · Engineering Manager",
+          "description": ""
+        },
+        {
+          "id": "f8ff154b-b94e-4c99-b411-3d39df366dba",
+          "title": "Julien Roche · Product Director",
+          "description": ""
+        }
       ],
       "hobbies": [
-        "Open-source",
-        "Running",
-        "Photography"
+        {
+          "id": "b33ab8d4-0bfd-4d7c-96ca-e4fdaea96211",
+          "title": "Open-source",
+          "description": ""
+        },
+        {
+          "id": "ca85fafa-0546-4dfb-a97a-e30d3d9a56bd",
+          "title": "Running",
+          "description": ""
+        },
+        {
+          "id": "f98d8f00-8171-4fea-b50c-1f7f8571d2bb",
+          "title": "Photography",
+          "description": ""
+        }
       ]
     }
   },
@@ -1361,77 +1993,156 @@
     },
     "headerType": "header-split",
     "fakeData": {
-      "fullName": "Lucas Meyer",
-      "role": "AI Engineer",
-      "image": "/img/team-3.jpg",
-      "profileDescription": "Lucas Meyer is a results-driven ai engineer focused on product quality, scalability, and collaboration.",
-      "email": "lucas.meyer@example.com",
-      "phone": "+33 6 12 34 58 13",
-      "birthday": "1998-09-18",
-      "location": "Paris, France",
-      "homepage": "https://portfolio-9.example.com",
-      "repositoryPage": "https://github.com/profile-9",
+      "id": "326db07e-b455-4a2b-838b-714e3432e541",
+      "documentUrl": null,
+      "resumeInformation": {
+        "fullName": "Lucas Meyer",
+        "email": "lucas.meyer@example.com",
+        "phone": "+33 6 12 34 58 13",
+        "homepage": "https://portfolio-9.example.com",
+        "repo_profile": "https://github.com/profile-9",
+        "adresse": "Paris, France",
+        "birthDate": "1998-09-18",
+        "birthPlace": "Tunisia",
+        "profileText": "Lucas Meyer is a results-driven ai engineer focused on product quality, scalability, and collaboration.",
+        "title": "AI Engineer",
+        "photo": "/img/team-3.jpg"
+      },
       "experiences": [
         {
+          "id": "4e01c134-99d1-41ca-8fbf-f91207246cbf",
           "title": "AI Engineer",
+          "description": "Led product delivery and built maintainable architecture.",
           "company": "Bro Labs",
           "startDate": "2021-01-01",
-          "endDate": null,
-          "description": "Led product delivery and built maintainable architecture."
+          "endDate": null
         },
         {
+          "id": "d48d8c34-abf2-4d4e-b6a3-ae54fee802c2",
           "title": "Engineer",
+          "description": "Implemented features with strong UX focus.",
           "company": "Nova Digital",
           "startDate": "2018-06-01",
-          "endDate": "2020-12-31",
-          "description": "Implemented features with strong UX focus."
+          "endDate": "2020-12-31"
         }
       ],
       "educations": [
         {
+          "id": "9f23e503-cd16-4597-a26b-e7bee813dc7a",
           "title": "Master in Computer Science",
+          "description": "",
           "school": "University of Lyon",
           "startDate": "2016-09-01",
-          "endDate": "2018-06-30"
+          "endDate": "2018-06-30",
+          "location": "Paris, France"
         },
         {
+          "id": "968b8715-3ea5-45d4-97ca-22b02fc86894",
           "title": "Bachelor in Software Engineering",
+          "description": "",
           "school": "Université Grenoble Alpes",
           "startDate": "2013-09-01",
-          "endDate": "2016-06-30"
+          "endDate": "2016-06-30",
+          "location": "Paris, France"
         }
       ],
       "skills": [
-        "Vue.js",
-        "TypeScript",
-        "Node.js",
-        "Nuxt",
-        "PostgreSQL",
-        "Docker"
-      ],
-      "projects": [
         {
-          "title": "Recruitment Analytics",
-          "description": "Dashboard and reporting platform."
+          "name": "Vue.js",
+          "level": 80
+        },
+        {
+          "name": "TypeScript",
+          "level": 80
+        },
+        {
+          "name": "Node.js",
+          "level": 80
+        },
+        {
+          "name": "Nuxt",
+          "level": 80
+        },
+        {
+          "name": "PostgreSQL",
+          "level": 80
+        },
+        {
+          "name": "Docker",
+          "level": 80
         }
       ],
       "languages": [
-        "French",
-        "English",
-        "Spanish"
+        {
+          "name": "French",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "English",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "Spanish",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        }
       ],
       "certifications": [
-        "AWS Certified Developer",
-        "Scrum Master"
+        {
+          "id": "939fdefc-d288-405d-b537-bf7514c4c873",
+          "title": "AWS Certified Developer",
+          "description": "",
+          "attachments": []
+        },
+        {
+          "id": "5e37342a-1b29-4a3d-bea5-da1714320c72",
+          "title": "Scrum Master",
+          "description": "",
+          "attachments": []
+        }
+      ],
+      "projects": [
+        {
+          "id": "ec586b76-1395-4374-baa4-8a5bf32bd922",
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform.",
+          "attachments": [],
+          "home_page": "https://portfolio-9.example.com"
+        }
       ],
       "references": [
-        "Sophie Bernard · Engineering Manager",
-        "Julien Roche · Product Director"
+        {
+          "id": "03b902c5-a0ca-48e4-bc8c-3ed10fe34e5b",
+          "title": "Sophie Bernard · Engineering Manager",
+          "description": ""
+        },
+        {
+          "id": "3c13909d-7b9d-4bae-882f-6b60e8cc1ccd",
+          "title": "Julien Roche · Product Director",
+          "description": ""
+        }
       ],
       "hobbies": [
-        "Open-source",
-        "Running",
-        "Photography"
+        {
+          "id": "09aa6873-9922-4940-97f7-974e7f1a4288",
+          "title": "Open-source",
+          "description": ""
+        },
+        {
+          "id": "e6aedac5-ca09-44fe-b789-69b424ce17f3",
+          "title": "Running",
+          "description": ""
+        },
+        {
+          "id": "912c2adc-1416-42de-8cbe-b51ed463c8d8",
+          "title": "Photography",
+          "description": ""
+        }
       ]
     }
   },
@@ -1524,77 +2235,156 @@
     },
     "headerType": "header-left",
     "fakeData": {
-      "fullName": "Ava Kim",
-      "role": "Project Manager",
-      "image": "/img/team-4.jpg",
-      "profileDescription": "Ava Kim is a results-driven project manager focused on product quality, scalability, and collaboration.",
-      "email": "ava.kim@example.com",
-      "phone": "+33 6 12 34 59 24",
-      "birthday": "1999-01-10",
-      "location": "Lyon, France",
-      "homepage": "https://portfolio-10.example.com",
-      "repositoryPage": "https://github.com/profile-10",
+      "id": "30ba3bae-5337-4897-bb6d-21596cda2387",
+      "documentUrl": null,
+      "resumeInformation": {
+        "fullName": "Ava Kim",
+        "email": "ava.kim@example.com",
+        "phone": "+33 6 12 34 59 24",
+        "homepage": "https://portfolio-10.example.com",
+        "repo_profile": "https://github.com/profile-10",
+        "adresse": "Lyon, France",
+        "birthDate": "1999-01-10",
+        "birthPlace": "Tunisia",
+        "profileText": "Ava Kim is a results-driven project manager focused on product quality, scalability, and collaboration.",
+        "title": "Project Manager",
+        "photo": "/img/team-4.jpg"
+      },
       "experiences": [
         {
+          "id": "5f15a451-82ca-4525-a4a6-6d48b4fa2dfc",
           "title": "Project Manager",
+          "description": "Led product delivery and built maintainable architecture.",
           "company": "Bro Labs",
           "startDate": "2021-01-01",
-          "endDate": null,
-          "description": "Led product delivery and built maintainable architecture."
+          "endDate": null
         },
         {
+          "id": "d8440b4e-c7d8-4dc2-90d2-6e7821e5ab08",
           "title": "Engineer",
+          "description": "Implemented features with strong UX focus.",
           "company": "Nova Digital",
           "startDate": "2018-06-01",
-          "endDate": "2020-12-31",
-          "description": "Implemented features with strong UX focus."
+          "endDate": "2020-12-31"
         }
       ],
       "educations": [
         {
+          "id": "c63f1c7a-61e3-4193-b079-1d7508e2a4a2",
           "title": "Master in Computer Science",
+          "description": "",
           "school": "University of Lyon",
           "startDate": "2016-09-01",
-          "endDate": "2018-06-30"
+          "endDate": "2018-06-30",
+          "location": "Lyon, France"
         },
         {
+          "id": "5c5c8241-7574-4950-bba4-fd14dd1f48d8",
           "title": "Bachelor in Software Engineering",
+          "description": "",
           "school": "Université Grenoble Alpes",
           "startDate": "2013-09-01",
-          "endDate": "2016-06-30"
+          "endDate": "2016-06-30",
+          "location": "Lyon, France"
         }
       ],
       "skills": [
-        "Vue.js",
-        "TypeScript",
-        "Node.js",
-        "Nuxt",
-        "PostgreSQL",
-        "Docker"
-      ],
-      "projects": [
         {
-          "title": "Recruitment Analytics",
-          "description": "Dashboard and reporting platform."
+          "name": "Vue.js",
+          "level": 80
+        },
+        {
+          "name": "TypeScript",
+          "level": 80
+        },
+        {
+          "name": "Node.js",
+          "level": 80
+        },
+        {
+          "name": "Nuxt",
+          "level": 80
+        },
+        {
+          "name": "PostgreSQL",
+          "level": 80
+        },
+        {
+          "name": "Docker",
+          "level": 80
         }
       ],
       "languages": [
-        "French",
-        "English",
-        "Spanish"
+        {
+          "name": "French",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "English",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "Spanish",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        }
       ],
       "certifications": [
-        "AWS Certified Developer",
-        "Scrum Master"
+        {
+          "id": "016213d9-5bde-41b3-9843-b5e5e3b48286",
+          "title": "AWS Certified Developer",
+          "description": "",
+          "attachments": []
+        },
+        {
+          "id": "9618e3c0-349d-4c44-8d3f-4ae79c33086d",
+          "title": "Scrum Master",
+          "description": "",
+          "attachments": []
+        }
+      ],
+      "projects": [
+        {
+          "id": "9bc23862-2a4d-4c3a-b340-1c24f0ea5d4e",
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform.",
+          "attachments": [],
+          "home_page": "https://portfolio-10.example.com"
+        }
       ],
       "references": [
-        "Sophie Bernard · Engineering Manager",
-        "Julien Roche · Product Director"
+        {
+          "id": "23ae1b92-5eb4-4a46-abce-fd1e55f130b5",
+          "title": "Sophie Bernard · Engineering Manager",
+          "description": ""
+        },
+        {
+          "id": "ae863120-d641-4f11-af37-2e3d17d0bdad",
+          "title": "Julien Roche · Product Director",
+          "description": ""
+        }
       ],
       "hobbies": [
-        "Open-source",
-        "Running",
-        "Photography"
+        {
+          "id": "2bee2061-3139-4027-b0b2-e3ee14d18ddf",
+          "title": "Open-source",
+          "description": ""
+        },
+        {
+          "id": "465c8a74-9035-4f5f-bb5a-bdb060643f1d",
+          "title": "Running",
+          "description": ""
+        },
+        {
+          "id": "b9d3a3ca-5d67-4977-9ae7-6e795af50681",
+          "title": "Photography",
+          "description": ""
+        }
       ]
     }
   },
@@ -1667,77 +2457,156 @@
     },
     "headerType": "header-right",
     "fakeData": {
-      "fullName": "Hugo Marin",
-      "role": "QA Lead",
-      "image": "/img/team-5.jpg",
-      "profileDescription": "Hugo Marin is a results-driven qa lead focused on product quality, scalability, and collaboration.",
-      "email": "hugo.marin@example.com",
-      "phone": "+33 6 12 34 50 35",
-      "birthday": "1990-02-11",
-      "location": "Berlin, Germany",
-      "homepage": "https://portfolio-11.example.com",
-      "repositoryPage": "https://github.com/profile-11",
+      "id": "283c83a7-7625-49ee-adba-9d1bb26bda2a",
+      "documentUrl": null,
+      "resumeInformation": {
+        "fullName": "Hugo Marin",
+        "email": "hugo.marin@example.com",
+        "phone": "+33 6 12 34 50 35",
+        "homepage": "https://portfolio-11.example.com",
+        "repo_profile": "https://github.com/profile-11",
+        "adresse": "Berlin, Germany",
+        "birthDate": "1990-02-11",
+        "birthPlace": "Tunisia",
+        "profileText": "Hugo Marin is a results-driven qa lead focused on product quality, scalability, and collaboration.",
+        "title": "QA Lead",
+        "photo": "/img/team-5.jpg"
+      },
       "experiences": [
         {
+          "id": "3311b00a-1bc8-41da-b9ab-8b11a38a152d",
           "title": "QA Lead",
+          "description": "Led product delivery and built maintainable architecture.",
           "company": "Bro Labs",
           "startDate": "2021-01-01",
-          "endDate": null,
-          "description": "Led product delivery and built maintainable architecture."
+          "endDate": null
         },
         {
+          "id": "65bbc8f0-d274-4db5-b607-0618bc291266",
           "title": "Engineer",
+          "description": "Implemented features with strong UX focus.",
           "company": "Nova Digital",
           "startDate": "2018-06-01",
-          "endDate": "2020-12-31",
-          "description": "Implemented features with strong UX focus."
+          "endDate": "2020-12-31"
         }
       ],
       "educations": [
         {
+          "id": "9346f8aa-7206-40dc-97a1-b204b1325d6d",
           "title": "Master in Computer Science",
+          "description": "",
           "school": "University of Lyon",
           "startDate": "2016-09-01",
-          "endDate": "2018-06-30"
+          "endDate": "2018-06-30",
+          "location": "Berlin, Germany"
         },
         {
+          "id": "dd61ff2d-2006-4464-8dff-a5d4cd9c7d98",
           "title": "Bachelor in Software Engineering",
+          "description": "",
           "school": "Université Grenoble Alpes",
           "startDate": "2013-09-01",
-          "endDate": "2016-06-30"
+          "endDate": "2016-06-30",
+          "location": "Berlin, Germany"
         }
       ],
       "skills": [
-        "Vue.js",
-        "TypeScript",
-        "Node.js",
-        "Nuxt",
-        "PostgreSQL",
-        "Docker"
-      ],
-      "projects": [
         {
-          "title": "Recruitment Analytics",
-          "description": "Dashboard and reporting platform."
+          "name": "Vue.js",
+          "level": 80
+        },
+        {
+          "name": "TypeScript",
+          "level": 80
+        },
+        {
+          "name": "Node.js",
+          "level": 80
+        },
+        {
+          "name": "Nuxt",
+          "level": 80
+        },
+        {
+          "name": "PostgreSQL",
+          "level": 80
+        },
+        {
+          "name": "Docker",
+          "level": 80
         }
       ],
       "languages": [
-        "French",
-        "English",
-        "Spanish"
+        {
+          "name": "French",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "English",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "Spanish",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        }
       ],
       "certifications": [
-        "AWS Certified Developer",
-        "Scrum Master"
+        {
+          "id": "c4a3822a-40e8-4b28-a038-03d944a0b331",
+          "title": "AWS Certified Developer",
+          "description": "",
+          "attachments": []
+        },
+        {
+          "id": "d57f1591-6eb5-41e0-af7f-1527de591d37",
+          "title": "Scrum Master",
+          "description": "",
+          "attachments": []
+        }
+      ],
+      "projects": [
+        {
+          "id": "e6405ea0-7a3c-425a-acd3-eadc9520485f",
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform.",
+          "attachments": [],
+          "home_page": "https://portfolio-11.example.com"
+        }
       ],
       "references": [
-        "Sophie Bernard · Engineering Manager",
-        "Julien Roche · Product Director"
+        {
+          "id": "afe9aa88-29c5-465d-a5d1-6cdb5336e5e3",
+          "title": "Sophie Bernard · Engineering Manager",
+          "description": ""
+        },
+        {
+          "id": "d73c48b0-1256-426d-88e9-ad796a3c5b7a",
+          "title": "Julien Roche · Product Director",
+          "description": ""
+        }
       ],
       "hobbies": [
-        "Open-source",
-        "Running",
-        "Photography"
+        {
+          "id": "70ec3644-853d-48e0-9a7b-82f465d28fcb",
+          "title": "Open-source",
+          "description": ""
+        },
+        {
+          "id": "7a22ca8f-33c9-4f10-a212-b9fe981292c5",
+          "title": "Running",
+          "description": ""
+        },
+        {
+          "id": "996ea368-c65f-4a7a-a9ed-61b8054a5556",
+          "title": "Photography",
+          "description": ""
+        }
       ]
     }
   },
@@ -1810,77 +2679,156 @@
     },
     "headerType": "header-split",
     "fakeData": {
-      "fullName": "Lina Moreau",
-      "role": "Cloud Architect",
-      "image": "/img/team-9.jpeg",
-      "profileDescription": "Lina Moreau is a results-driven cloud architect focused on product quality, scalability, and collaboration.",
-      "email": "lina.moreau@example.com",
-      "phone": "+33 6 12 34 51 46",
-      "birthday": "1991-03-12",
-      "location": "Barcelona, Spain",
-      "homepage": "https://portfolio-12.example.com",
-      "repositoryPage": "https://github.com/profile-12",
+      "id": "fa0d8079-56a8-46fd-b5aa-49f68cad0649",
+      "documentUrl": null,
+      "resumeInformation": {
+        "fullName": "Lina Moreau",
+        "email": "lina.moreau@example.com",
+        "phone": "+33 6 12 34 51 46",
+        "homepage": "https://portfolio-12.example.com",
+        "repo_profile": "https://github.com/profile-12",
+        "adresse": "Barcelona, Spain",
+        "birthDate": "1991-03-12",
+        "birthPlace": "Tunisia",
+        "profileText": "Lina Moreau is a results-driven cloud architect focused on product quality, scalability, and collaboration.",
+        "title": "Cloud Architect",
+        "photo": "/img/team-9.jpeg"
+      },
       "experiences": [
         {
+          "id": "1a7e620e-c78b-47d4-9f5f-d52718e23490",
           "title": "Cloud Architect",
+          "description": "Led product delivery and built maintainable architecture.",
           "company": "Bro Labs",
           "startDate": "2021-01-01",
-          "endDate": null,
-          "description": "Led product delivery and built maintainable architecture."
+          "endDate": null
         },
         {
+          "id": "30fa7464-619d-4d8f-9a72-485045fb7b38",
           "title": "Engineer",
+          "description": "Implemented features with strong UX focus.",
           "company": "Nova Digital",
           "startDate": "2018-06-01",
-          "endDate": "2020-12-31",
-          "description": "Implemented features with strong UX focus."
+          "endDate": "2020-12-31"
         }
       ],
       "educations": [
         {
+          "id": "c2dee535-b02f-41b8-8888-282bef03e15e",
           "title": "Master in Computer Science",
+          "description": "",
           "school": "University of Lyon",
           "startDate": "2016-09-01",
-          "endDate": "2018-06-30"
+          "endDate": "2018-06-30",
+          "location": "Barcelona, Spain"
         },
         {
+          "id": "5e4d9243-ccb7-44dc-b1ef-5d051d6cc1fb",
           "title": "Bachelor in Software Engineering",
+          "description": "",
           "school": "Université Grenoble Alpes",
           "startDate": "2013-09-01",
-          "endDate": "2016-06-30"
+          "endDate": "2016-06-30",
+          "location": "Barcelona, Spain"
         }
       ],
       "skills": [
-        "Vue.js",
-        "TypeScript",
-        "Node.js",
-        "Nuxt",
-        "PostgreSQL",
-        "Docker"
-      ],
-      "projects": [
         {
-          "title": "Recruitment Analytics",
-          "description": "Dashboard and reporting platform."
+          "name": "Vue.js",
+          "level": 80
+        },
+        {
+          "name": "TypeScript",
+          "level": 80
+        },
+        {
+          "name": "Node.js",
+          "level": 80
+        },
+        {
+          "name": "Nuxt",
+          "level": 80
+        },
+        {
+          "name": "PostgreSQL",
+          "level": 80
+        },
+        {
+          "name": "Docker",
+          "level": 80
         }
       ],
       "languages": [
-        "French",
-        "English",
-        "Spanish"
+        {
+          "name": "French",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "English",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        },
+        {
+          "name": "Spanish",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸"
+        }
       ],
       "certifications": [
-        "AWS Certified Developer",
-        "Scrum Master"
+        {
+          "id": "c4ff434e-788a-4dae-9385-1a8ab1aac6e2",
+          "title": "AWS Certified Developer",
+          "description": "",
+          "attachments": []
+        },
+        {
+          "id": "7f0419cd-d239-495a-b3e1-34a1f54412d9",
+          "title": "Scrum Master",
+          "description": "",
+          "attachments": []
+        }
+      ],
+      "projects": [
+        {
+          "id": "c6820e0a-ba6f-4c37-8a52-224f66680baf",
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform.",
+          "attachments": [],
+          "home_page": "https://portfolio-12.example.com"
+        }
       ],
       "references": [
-        "Sophie Bernard · Engineering Manager",
-        "Julien Roche · Product Director"
+        {
+          "id": "b84af337-95c4-4606-801c-f47fcf1ec0aa",
+          "title": "Sophie Bernard · Engineering Manager",
+          "description": ""
+        },
+        {
+          "id": "ccc72a6d-11f4-42bd-97f1-4e7429eeeeb8",
+          "title": "Julien Roche · Product Director",
+          "description": ""
+        }
       ],
       "hobbies": [
-        "Open-source",
-        "Running",
-        "Photography"
+        {
+          "id": "0130f389-06c3-4f99-a6ae-fdaa4d4ef36e",
+          "title": "Open-source",
+          "description": ""
+        },
+        {
+          "id": "3faa37f3-3342-498e-b776-748dffa3d5f3",
+          "title": "Running",
+          "description": ""
+        },
+        {
+          "id": "62f94b89-8fd6-4b83-bb95-7f50599a4327",
+          "title": "Photography",
+          "description": ""
+        }
       ]
     }
   }
