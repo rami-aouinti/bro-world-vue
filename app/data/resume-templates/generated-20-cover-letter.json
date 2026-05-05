@@ -2503,5 +2503,549 @@
       "photoType": "circle",
       "photoSize": 84
     }
+  },
+  {
+    "id": "cletter-021",
+    "name": "cover-letter-classic-01-no-bar-21",
+    "version": 1,
+    "layout": "layout-left",
+    "structure": "letter-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#BE123C",
+        "secondary": "#FDA4AF",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#FFF1F2"
+      },
+      "density": "comfortable",
+      "textStyle": "roman"
+    },
+    "sections": {
+      "header": "minimal",
+      "body": "narrative",
+      "signature": "simple",
+      "calloutStyle": "quote",
+      "photoPosition": "left"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "normal",
+      "showDivider": true,
+      "signatureAlign": "center",
+      "headerAlignment": "center"
+    },
+    "designTokens": {
+      "borderRadius": "sm",
+      "shadowDepth": "soft",
+      "gradientStyle": "linear-soft",
+      "patternOverlay": "dots",
+      "typographyScale": "balanced"
+    },
+    "decor": {
+      "headerStyle": "band",
+      "footerStyle": "line",
+      "divider": "none",
+      "iconStyle": "rounded",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "8%",
+          "y": "6%",
+          "size": "80",
+          "opacity": 0.08
+        }
+      ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "fullName": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "greeting": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "paragraphOne": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "paragraphTwo": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "signoff": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 4,
+        "max": 18
+      },
+      "barLayout": [],
+      "barWidth": {
+        "min": 6,
+        "max": 18
+      },
+      "photoType": "square",
+      "photoSize": 120
+    }
+  },
+  {
+    "id": "cletter-022",
+    "name": "cover-letter-classic-01-no-bar-22",
+    "version": 1,
+    "layout": "layout-left",
+    "structure": "letter-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#BE123C",
+        "secondary": "#FDA4AF",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#FFF1F2"
+      },
+      "density": "comfortable",
+      "textStyle": "roman"
+    },
+    "sections": {
+      "header": "minimal",
+      "body": "narrative",
+      "signature": "simple",
+      "calloutStyle": "quote",
+      "photoPosition": "left"
+    },
+    "layoutOptions": {
+      "paragraphSpacing": "normal",
+      "showDivider": true,
+      "signatureAlign": "center",
+      "headerAlignment": "center"
+    },
+    "designTokens": {
+      "borderRadius": "sm",
+      "shadowDepth": "soft",
+      "gradientStyle": "linear-soft",
+      "patternOverlay": "dots",
+      "typographyScale": "balanced"
+    },
+    "decor": {
+      "headerStyle": "band",
+      "footerStyle": "line",
+      "divider": "none",
+      "iconStyle": "rounded",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "8%",
+          "y": "6%",
+          "size": "80",
+          "opacity": 0.08
+        }
+      ]
+    },
+    "items": {
+      "date": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "address": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "fullName": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "greeting": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "paragraphOne": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "paragraphTwo": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "signoff": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 16,
+          "max": 22
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#BE123C"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 4,
+        "max": 18
+      },
+      "barLayout": [],
+      "barWidth": {
+        "min": 6,
+        "max": 18
+      },
+      "photoType": "square",
+      "photoSize": 120
+    }
   }
 ]
