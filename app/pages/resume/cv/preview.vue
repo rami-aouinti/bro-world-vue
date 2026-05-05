@@ -105,12 +105,18 @@ onMounted(() => {
       </div>
 
       <div class="py-8 d-flex justify-center">
-        <component :is="activeLayoutComponent" class="capture-cv-empty" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff' }">
-          <div class="empty-state">
-            <h2>{{ activeTemplate?.name }}</h2>
-            <p>{{ activeTemplate?.id }} · {{ activeTemplate?.layout }}</p>
-            <p class="text-medium-emphasis">Aucune section CV affichée pour le moment.</p>
-          </div>
+        <component :is="activeLayoutComponent" class="capture-cv-empty" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8' }">
+          <template #header>
+            <div class="empty-state">
+              <h2>{{ activeTemplate?.name }}</h2>
+              <p>{{ activeTemplate?.id }} · {{ activeTemplate?.layout }}</p>
+            </div>
+          </template>
+          <template #content>
+            <div class="empty-state">
+              <p class="text-medium-emphasis">Aucune section CV affichée pour le moment.</p>
+            </div>
+          </template>
         </component>
       </div>
     </v-container>

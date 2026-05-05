@@ -44,12 +44,18 @@ const activeLayoutComponent = computed(() => cvLayoutComponentMap[selectedTempla
 
 <template>
   <main class="capture-cv-page">
-    <component :is="activeLayoutComponent" :style="{ background: selectedTemplate?.theme?.palette?.pageBackground || '#ffffff' }">
-      <div class="capture-empty-state">
-        <h2>{{ selectedTemplate.name }}</h2>
-        <p>{{ selectedTemplate.id }} · {{ selectedTemplate.layout }}</p>
-        <p>Layout capture CV prêt (content vide pour le moment).</p>
-      </div>
+    <component :is="activeLayoutComponent" :style="{ background: selectedTemplate?.theme?.palette?.pageBackground || '#ffffff', '--cv-primary': selectedTemplate?.theme?.palette?.primary || '#1d4ed8' }">
+      <template #header>
+        <div class="capture-empty-state">
+          <h2>{{ selectedTemplate.name }}</h2>
+          <p>{{ selectedTemplate.id }} · {{ selectedTemplate.layout }}</p>
+        </div>
+      </template>
+      <template #content>
+        <div class="capture-empty-state">
+          <p>Layout capture CV prêt (content vide pour le moment).</p>
+        </div>
+      </template>
     </component>
   </main>
 </template>
