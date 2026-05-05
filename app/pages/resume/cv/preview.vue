@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-20-resume.json'
+import CvLayoutAside from '~/components/cv/layouts/CvLayoutAside.vue'
+import CvLayoutNoAside from '~/components/cv/layouts/CvLayoutNoAside.vue'
+import CvLayoutAsideLeft from '~/components/cv/layouts/CvLayoutAsideLeft.vue'
+import CvLayoutAsideRight from '~/components/cv/layouts/CvLayoutAsideRight.vue'
+import CvLayoutAsideFullLeft from '~/components/cv/layouts/CvLayoutAsideFullLeft.vue'
+import CvLayoutAsideFullRight from '~/components/cv/layouts/CvLayoutAsideFullRight.vue'
 
 definePageMeta({
   title: 'Resume · CV Preview',
@@ -13,6 +19,17 @@ const layoutMenuOpen = ref(false)
 const activeTemplate = computed(() =>
   GENERATED_RESUME_TEMPLATES.find((template) => template.id === selectedTemplate.value) || GENERATED_RESUME_TEMPLATES[0],
 )
+
+const cvLayoutComponentMap = {
+  aside: CvLayoutAside,
+  'no-aside': CvLayoutNoAside,
+  'aside-left': CvLayoutAsideLeft,
+  'aside-right': CvLayoutAsideRight,
+  'aside-full-left': CvLayoutAsideFullLeft,
+  'aside-full-right': CvLayoutAsideFullRight,
+} as const
+
+const activeLayoutComponent = computed(() => cvLayoutComponentMap[activeTemplate.value?.layout as keyof typeof cvLayoutComponentMap] || CvLayoutNoAside)
 
 function applyPreviewTemplate(templateId: string) {
   selectedTemplate.value = templateId
@@ -88,13 +105,13 @@ onMounted(() => {
       </div>
 
       <div class="py-8 d-flex justify-center">
-        <main class="capture-cv-empty">
+        <component :is="activeLayoutComponent" class="capture-cv-empty">
           <div class="empty-state">
             <h2>{{ activeTemplate?.name }}</h2>
             <p>{{ activeTemplate?.id }} · {{ activeTemplate?.layout }}</p>
             <p class="text-medium-emphasis">Aucune section CV affichée pour le moment.</p>
           </div>
-        </main>
+        </component>
       </div>
     </v-container>
   </div>
