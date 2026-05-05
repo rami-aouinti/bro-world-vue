@@ -31,11 +31,25 @@ const cvLayoutComponentMap = {
 
 const activeLayoutComponent = computed(() => cvLayoutComponentMap[activeTemplate.value?.layout as keyof typeof cvLayoutComponentMap] || CvLayoutNoAside)
 
-const asideDesign = computed(() => ({
-  width: String(activeTemplate.value?.aside?.width || '100%'),
-  height: String(activeTemplate.value?.aside?.height || '180px'),
-  radius: String(activeTemplate.value?.aside?.radius || '24px'),
-}))
+const asideWidth = ref(100)
+const asideHeight = ref(180)
+const asideRadius = ref(0)
+
+function parsePercent(value: unknown, fallback: number) {
+  const num = Number.parseFloat(String(value ?? ''))
+  return Number.isFinite(num) ? num : fallback
+}
+
+function parsePx(value: unknown, fallback: number) {
+  const num = Number.parseFloat(String(value ?? ''))
+  return Number.isFinite(num) ? num : fallback
+}
+
+watch(activeTemplate, (template) => {
+  asideWidth.value = parsePercent(template?.aside?.width, 100)
+  asideHeight.value = parsePx(template?.aside?.height, 180)
+  asideRadius.value = parsePx(template?.aside?.radius, 0)
+}, { immediate: true })
 
 function applyPreviewTemplate(templateId: string) {
   selectedTemplate.value = templateId
@@ -78,9 +92,9 @@ onMounted(() => {
           <h3 class="text-subtitle-2 font-weight-bold mb-2">Template actif</h3>
           <p class="text-body-2 mb-1">{{ activeTemplate?.name }}</p>
           <p class="text-caption text-medium-emphasis mb-3">{{ activeTemplate?.id }} · {{ activeTemplate?.layout }}</p>
-          <v-text-field  :model-value="asideDesign.width" label="Aside width" density="compact" variant="outlined" readonly class="mb-2"/>
-          <v-text-field  :model-value="asideDesign.height" label="Aside height" density="compact" variant="outlined" readonly class="mb-2"/>
-          <v-text-field  :model-value="asideDesign.radius" label="Aside radius" density="compact" variant="outlined" readonly/>
+          <v-slider v-model="asideWidth" label="Aside width (%)" :min="40" :max="100" :step="1" hide-details class="mb-2"/>
+          <v-slider v-model="asideHeight" label="Aside height (px)" :min="80" :max="420" :step="2" hide-details class="mb-2"/>
+          <v-slider v-model="asideRadius" label="Aside radius (px)" :min="0" :max="90" :step="1" hide-details/>
         </v-card-text>
       </template>
     </AppPageDrawers>
@@ -114,7 +128,7 @@ onMounted(() => {
       </div>
 
       <div class="py-8 d-flex justify-center">
-        <component :is="activeLayoutComponent" class="capture-cv-empty" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-aside-width': asideDesign.width, '--cv-aside-height': asideDesign.height, '--cv-aside-radius': asideDesign.radius }">
+        <component :is="activeLayoutComponent" class="capture-cv-empty" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-aside-width': `${asideWidth}%`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px` }">
           <template #header>
             <div class="empty-state">
               <h2>{{ activeTemplate?.name }}</h2>
