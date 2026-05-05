@@ -44,7 +44,7 @@ const selectedDividerType = ref('line')
 const textFontSize = ref(24)
 const textColor = ref('#475569')
 const barRadius = ref(0)
-const barLayout = ref<'single' | 'double'>('single')
+const barLayout = ref<'none' | 'single' | 'double'>('single')
 
 const elementStyles = reactive({
   fullName: { size: 58, color: '#111827', weight: '700' },
@@ -61,7 +61,7 @@ const model = reactive({ fullName:'Alex Martin', role:'Senior Full Stack Develop
 const activeTemplate = computed(() => GENERATED_COVER_PAGE_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_PAGE_TEMPLATES[0])
 const defaultBarDesignConfig = {
   barRadius: { min: 0, max: 30 },
-  barLayout: ['single', 'double'],
+  barLayout: ['', 'single', 'double'],
   barWidth: { min: 4, max: 24 },
   secondaryBarWidth: { min: 2, max: 20 },
 }
@@ -152,7 +152,7 @@ watch(() => activeColors.value.primary, (primaryColor) => {
   elementStyles.heading.color = primaryColor
 }, { immediate: true })
 
-watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); selectedDividerType.value = String(tpl?.decor?.divider || 'line'); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; imageShape.value = ((tpl as any)?.designConfig?.photoType === 'square' ? 'square' : 'circle'); imageSize.value = Number((tpl as any)?.designConfig?.photoSize ?? imageSize.value); const items=(tpl as any)?.items||{}; const designConfig = (tpl as any)?.designConfig || defaultBarDesignConfig; barRadius.value = designConfig?.barRadius?.min ?? defaultBarDesignConfig.barRadius.min; primaryBarWidth.value = designConfig?.barWidth?.min ?? defaultBarDesignConfig.barWidth.min; secondaryBarWidth.value = designConfig?.secondaryBarWidth?.min ?? defaultBarDesignConfig.secondaryBarWidth.min; barLayout.value = Array.isArray(designConfig?.barLayout) && designConfig.barLayout.includes('double') ? 'double' : 'single'; for (const key of ['fullName','role','heading','summary','email','phone']) { const b=items[key]?.size; if (b) elementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) elementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) elementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
+watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); selectedDividerType.value = String(tpl?.decor?.divider || 'line'); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; imageShape.value = ((tpl as any)?.designConfig?.photoType === 'square' ? 'square' : 'circle'); imageSize.value = Number((tpl as any)?.designConfig?.photoSize ?? imageSize.value); const items=(tpl as any)?.items||{}; const designConfig = (tpl as any)?.designConfig || defaultBarDesignConfig; barRadius.value = designConfig?.barRadius?.min ?? defaultBarDesignConfig.barRadius.min; primaryBarWidth.value = designConfig?.barWidth?.min ?? defaultBarDesignConfig.barWidth.min; secondaryBarWidth.value = designConfig?.secondaryBarWidth?.min ?? defaultBarDesignConfig.secondaryBarWidth.min; barLayout.value = Array.isArray(designConfig?.barLayout) && designConfig.barLayout.includes('double') ? 'double' : (designConfig.barLayout.includes('single') ? 'single' : 'none'); for (const key of ['fullName','role','heading','summary','email','phone']) { const b=items[key]?.size; if (b) elementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) elementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) elementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
 function addDecorObject(){ editableDecorObjects.value.push({ type:'circle', x:'50%', y:'50%', size:'120', opacity:0.15 }) }
 function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
 function goToCreateResume(){ navigateTo('/resume/preview') }
@@ -221,7 +221,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
        </div>
        <AppSelect v-model="selectedDividerType" :items="dividerTypeOptions" label="Divider type" hide-details class="mt-3"/>
        <v-slider v-model="barRadius" label="Bar radius" :min="activeBarDesignConfig.barRadius.min" :max="activeBarDesignConfig.barRadius.max" step="1" hide-details class="mt-3"/>
-       <AppSelect v-model="barLayout" :items="[{ title: 'Single bar', value: 'single' }, { title: 'Double bars', value: 'double' }]" label="Bar layout" hide-details class="mt-3"/>
+       <AppSelect v-model="barLayout" :items="[{ title: 'No bar', value: 'none' }, { title: 'Single bar', value: 'single' }, { title: 'Double bars', value: 'double' }]" label="Bar layout" hide-details class="mt-3"/>
        <v-slider v-model="primaryBarWidth" label="Bar width" :min="activeBarDesignConfig.barWidth.min" :max="activeBarDesignConfig.barWidth.max" step="1" hide-details class="mt-3"/>
        <v-slider v-if="barLayout==='double'" v-model="secondaryBarWidth" label="Sec Bar width" :min="activeBarDesignConfig.secondaryBarWidth.min" :max="activeBarDesignConfig.secondaryBarWidth.max" step="1" hide-details class="mt-3"/>
      </v-card-text>
@@ -266,7 +266,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
     <div class="py-8 d-flex justify-center"><main class="capture-cover-page" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-divider-color':sectionDividerColor,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
       <header
-class="hero" :class="{'hero--double': barLayout === 'double', 'hero--photo-right': photoPosition === 'right', 'hero--ribbon': activeTemplate?.decor?.headerStyle === 'ribbon', 'hero--layout-right': isLayoutRight}"
+class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barLayout === 'double', 'hero--photo-right': photoPosition === 'right', 'hero--ribbon': activeTemplate?.decor?.headerStyle === 'ribbon', 'hero--layout-right': isLayoutRight}"
         :style="activeTemplate?.decor?.gradientStyle && activeTemplate.decor.gradientStyle !== 'none' ? { background: `linear-gradient(135deg, ${activeColors.primary}22, ${activeColors.secondary}33)` } : undefined">
         <div class="hero-row" :class="{ 'hero-row--layout-right': isLayoutRight }">
 
@@ -336,7 +336,8 @@ class="hero" :class="{'hero--double': barLayout === 'double', 'hero--photo-right
 .hero-row{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
 .hero-avatar{align-self:flex-start}.hero-avatar--right{align-self:flex-end}
 .hero--photo-right{padding-top:8px}
-.hero--ribbon{padding-top:16px;padding-bottom:12px}.hero--double::before{content:'';position:absolute;left:calc(var(--bar-primary-width) + 6px);top:0;bottom:0;width:var(--bar-secondary-width);background:var(--cp-secondary);border-radius:var(--bar-radius)}.hero--layout-right{border-left:0;border-right:var(--bar-primary-width) solid var(--cp-primary);padding-left:0;padding-right:24px;text-align:right}.hero--layout-right.hero--double::before{left:auto;right:calc(var(--bar-primary-width) + 6px)}.hero-row--layout-right{align-items:flex-end}.hero-row--layout-right .hero-avatar{align-self:flex-end}
+.hero--ribbon{padding-top:16px;padding-bottom:12px}
+.hero--no-bar{border-left:0!important;border-right:0!important;padding-left:0;padding-right:0}.hero--double::before{content:'';position:absolute;left:calc(var(--bar-primary-width) + 6px);top:0;bottom:0;width:var(--bar-secondary-width);background:var(--cp-secondary);border-radius:var(--bar-radius)}.hero--layout-right{border-left:0;border-right:var(--bar-primary-width) solid var(--cp-primary);padding-left:0;padding-right:24px;text-align:right}.hero--layout-right.hero--double::before{left:auto;right:calc(var(--bar-primary-width) + 6px)}.hero-row--layout-right{align-items:flex-end}.hero-row--layout-right .hero-avatar{align-self:flex-end}
 .avatar-upload{cursor:pointer;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px');overflow:visible}
 .photo-shell{display:block;position:relative}
 .photo-quick-trigger{position:absolute;top:-10px;left:-10px;z-index:30;opacity:0;transition:opacity .15s ease;background:#fff;border:1px solid rgba(15,23,42,.2)}
