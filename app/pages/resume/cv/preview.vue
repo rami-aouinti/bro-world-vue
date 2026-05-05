@@ -124,7 +124,7 @@ onMounted(() => {
       </div>
 
       <div class="py-8">
-        <component :is="activeLayoutComponent" class="capture-cv-empty w-100" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-aside-width': `${asideWidth}%`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px` }">
+        <component :is="activeLayoutComponent" class="w-100" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-aside-width': `${asideWidth}%`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px` }">
           <template #header>
             <div class="empty-state">
               <h2>{{ activeTemplate?.name }}</h2>
@@ -143,16 +143,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.capture-cv-empty {
-  width: 850px;
-  min-height: 1123px;
-  border-radius: 16px;
-  border: 1px solid rgba(148, 163, 184, 0.45);
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
 .empty-state {
   text-align: center;
