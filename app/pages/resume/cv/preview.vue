@@ -58,6 +58,9 @@ const sectionVariantMap = computed(() => {
 })
 
 const headerType = computed(() => String(activeTemplate.value?.headerType || 'header-left'))
+
+const fakeData = computed(() => ((activeTemplate.value as any)?.fakeData || {}))
+const sectionType = (key: keyof ReturnType<typeof sectionVariantMap['value']>) => sectionVariantMap.value[key] || 'classic'
 const headerProfile = computed(() => {
   const fake = (activeTemplate.value as any)?.fakeData || {}
   return {
@@ -233,39 +236,43 @@ onMounted(() => {
           </template>
           <template #aside>
             <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" :class="['cv-aside-sections', { 'cv-aside-sections--full': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
-              <div v-for="section in structureAsideOneSections" :key="`aside-s1-${section}`" class="cv-aside-section-item">{{ section }} · {{ sectionVariantMap[section.toLowerCase() as keyof typeof sectionVariantMap] || "classic" }}</div>
+              <div v-for="section in structureAsideOneSections" :key="`aside-s1-${section}`" class="cv-aside-section-item">{{ section }} · {{ sectionType(section.toLowerCase() as any) }}</div>
             </div>
             <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" :class="['cv-aside-sections', { 'cv-aside-sections--full': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
-              <div v-for="section in structureAsideTwoSections" :key="`aside-s2-${section}`" class="cv-aside-section-item">{{ section }} · {{ sectionVariantMap[section.toLowerCase() as keyof typeof sectionVariantMap] || "classic" }}</div>
+              <div v-for="section in structureAsideTwoSections" :key="`aside-s2-${section}`" class="cv-aside-section-item">{{ section }} · {{ sectionType(section.toLowerCase() as any) }}</div>
             </div>
           </template>
 
           <template #content>
             <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
-              <div v-for="section in structureContentBaseSections" :key="`side-content-s1-${section}`" class="cv-section-row">{{ section }} · {{ sectionVariantMap[section.toLowerCase() as keyof typeof sectionVariantMap] || "classic" }}</div>
+              <div class="cv-section-row" :class="`cv-section-row--${sectionType('experience')}`">Experience · {{ sectionType('experience') }}<small v-if="fakeData.experiences?.[0]?.title"> — {{ fakeData.experiences[0].title }}</small></div>
+              <div class="cv-section-row" :class="`cv-section-row--${sectionType('education')}`">Education · {{ sectionType('education') }}<small v-if="fakeData.educations?.[0]?.title"> — {{ fakeData.educations[0].title }}</small></div>
+              <div class="cv-section-row" :class="`cv-section-row--${sectionType('projects')}`">Projects · {{ sectionType('projects') }}<small v-if="fakeData.projects?.[0]?.title"> — {{ fakeData.projects[0].title }}</small></div>
             </div>
             <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
-              <div v-for="section in structureContentBaseSections" :key="`side-content-s2-${section}`" class="cv-section-row">{{ section }} · {{ sectionVariantMap[section.toLowerCase() as keyof typeof sectionVariantMap] || "classic" }}</div>
+              <div class="cv-section-row" :class="`cv-section-row--${sectionType('experience')}`">Experience · {{ sectionType('experience') }}</div>
+              <div class="cv-section-row" :class="`cv-section-row--${sectionType('education')}`">Education · {{ sectionType('education') }}</div>
+              <div class="cv-section-row" :class="`cv-section-row--${sectionType('projects')}`">Projects · {{ sectionType('projects') }}</div>
               <v-row class="mt-1" dense>
                 <v-col cols="6">
-                  <div class="cv-section-row">Skills · {{ sectionVariantMap.skills || "classic" }} · Column 1</div>
+                  <div class="cv-section-row">Skills · {{ sectionType("skills") }} · Column 1</div>
                 </v-col>
                 <v-col cols="6">
-                  <div class="cv-section-row">Skills · {{ sectionVariantMap.skills || "classic" }} · Column 2</div>
+                  <div class="cv-section-row">Skills · {{ sectionType("skills") }} · Column 2</div>
                 </v-col>
               </v-row>
             </div>
             <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
-              <div v-for="section in structureOneSections" :key="`s1-${section}`" class="cv-section-row">{{ section }} · {{ sectionVariantMap[section.toLowerCase() as keyof typeof sectionVariantMap] || "classic" }}</div>
+              <div v-for="section in structureOneSections" :key="`s1-${section}`" class="cv-section-row">{{ section }} · {{ sectionType(section.toLowerCase() as any) }}</div>
             </div>
             <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
-              <div v-for="section in structureTwoTopSections" :key="`s2-top-${section}`" class="cv-section-row">{{ section }} · {{ sectionVariantMap[section.toLowerCase() as keyof typeof sectionVariantMap] || "classic" }}</div>
+              <div v-for="section in structureTwoTopSections" :key="`s2-top-${section}`" class="cv-section-row">{{ section }} · {{ sectionType(section.toLowerCase() as any) }}</div>
               <v-row class="mt-1" dense>
                 <v-col cols="6">
-                  <div v-for="section in structureTwoLeftSections" :key="`s2-left-${section}`" class="cv-section-row">{{ section }} · {{ sectionVariantMap[section.toLowerCase() as keyof typeof sectionVariantMap] || "classic" }}</div>
+                  <div v-for="section in structureTwoLeftSections" :key="`s2-left-${section}`" class="cv-section-row">{{ section }} · {{ sectionType(section.toLowerCase() as any) }}</div>
                 </v-col>
                 <v-col cols="6">
-                  <div v-for="section in structureTwoRightSections" :key="`s2-right-${section}`" class="cv-section-row">{{ section }} · {{ sectionVariantMap[section.toLowerCase() as keyof typeof sectionVariantMap] || "classic" }}</div>
+                  <div v-for="section in structureTwoRightSections" :key="`s2-right-${section}`" class="cv-section-row">{{ section }} · {{ sectionType(section.toLowerCase() as any) }}</div>
                 </v-col>
               </v-row>
             </div>
@@ -328,6 +335,13 @@ onMounted(() => {
   border: none;
 }
 
+.cv-section-row small { font-weight: 400; opacity: .8; }
+.cv-section-row--timeline{border-left:4px solid #6366f1;padding-left:10px}
+.cv-section-row--cards{box-shadow:0 4px 10px rgba(15,23,42,.08)}
+.cv-section-row--dot::before{content:"• ";font-weight:700}
+.cv-section-row--stars::after{content:" ★"}
+.cv-section-row--progress-line{background:linear-gradient(90deg,#dbeafe 45%,transparent 45%)}
+.cv-section-row--progress-circle{border-style:solid}
 .cv-section-row {
   border: 1px dashed rgba(100, 116, 139, 0.45);
   border-radius: 10px;
