@@ -165,7 +165,7 @@
         "max": 18
       },
       "photoType": "square",
-      "photoSize": 84
+      "photoSize": 124
     }
   },
   {
@@ -360,7 +360,7 @@
         "max": 10
       },
       "photoType": "circle",
-      "photoSize": 84
+      "photoSize": 100
     }
   },
   {
@@ -745,7 +745,7 @@
         "max": 14
       },
       "photoType": "square",
-      "photoSize": 84
+      "photoSize": 92
     }
   },
   {
@@ -935,7 +935,7 @@
         "max": 20
       },
       "photoType": "circle",
-      "photoSize": 84
+      "photoSize": 110
     }
   },
   {
@@ -1130,7 +1130,7 @@
         "max": 8
       },
       "photoType": "circle",
-      "photoSize": 84
+      "photoSize": 105
     }
   },
   {
@@ -1900,7 +1900,7 @@
         "max": 20
       },
       "photoType": "square",
-      "photoSize": 84
+      "photoSize": 124
     }
   }
 ]
