@@ -13,9 +13,9 @@ function parseItem(raw: string) {
 <template>
   <div class="cv-sec ">
     <div v-for="(item,idx) in (items||[])" :key="idx" class="cv-entry">
-      <div class="cv-line-1"><strong>{ parseItem(item).title }</strong><span class="date">{ parseItem(item).date }</span></div>
-      <div class="cv-line-2">{ parseItem(item).org }<span v-if="parseItem(item).location">, { parseItem(item).location }</span></div>
-      <div class="cv-line-3">{ parseItem(item).description }</div>
+      <div class="cv-line-1"><strong>{{ parseItem(item).title }}</strong><span class="date">{{ parseItem(item).date }}</span></div>
+      <div class="cv-line-2">{{ parseItem(item).org }}<span v-if="parseItem(item).location">, {{ parseItem(item).location }}</span></div>
+      <div class="cv-line-3">{{ parseItem(item).description }}</div>
     </div>
   </div>
 </template>

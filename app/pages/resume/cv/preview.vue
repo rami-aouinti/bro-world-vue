@@ -337,34 +337,34 @@ onMounted(() => {
 
           <template #content>
             <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
-              <div class="cv-section-row"><strong>Experience</strong><component :is="resolveSectionComponent('experience', sectionType('experience'))" :items="getSectionItems('experience')" /></div>
-              <div class="cv-section-row"><strong>Education</strong><component :is="resolveSectionComponent('education', sectionType('education'))" :items="getSectionItems('education')" /></div>
-              <div class="cv-section-row"><strong>Projects</strong><component :is="resolveSectionComponent('projects', sectionType('projects'))" :items="getSectionItems('projects')" /></div>
+              <div class="cv-section-row"><strong>Experience</strong><component :is="resolveSectionComponent('experience', sectionType('experience'))" :items="getSectionItems('experience')" :text="getSectionItems('experience')[0]" /></div>
+              <div class="cv-section-row"><strong>Education</strong><component :is="resolveSectionComponent('education', sectionType('education'))" :items="getSectionItems('education')" :text="getSectionItems('education')[0]" /></div>
+              <div class="cv-section-row"><strong>Projects</strong><component :is="resolveSectionComponent('projects', sectionType('projects'))" :items="getSectionItems('projects')" :text="getSectionItems('projects')[0]" /></div>
             </div>
             <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
-              <div class="cv-section-row"><strong>Experience</strong><component :is="resolveSectionComponent('experience', sectionType('experience'))" :items="getSectionItems('experience')" /></div>
-              <div class="cv-section-row"><strong>Education</strong><component :is="resolveSectionComponent('education', sectionType('education'))" :items="getSectionItems('education')" /></div>
-              <div class="cv-section-row"><strong>Projects</strong><component :is="resolveSectionComponent('projects', sectionType('projects'))" :items="getSectionItems('projects')" /></div>
+              <div class="cv-section-row"><strong>Experience</strong><component :is="resolveSectionComponent('experience', sectionType('experience'))" :items="getSectionItems('experience')" :text="getSectionItems('experience')[0]" /></div>
+              <div class="cv-section-row"><strong>Education</strong><component :is="resolveSectionComponent('education', sectionType('education'))" :items="getSectionItems('education')" :text="getSectionItems('education')[0]" /></div>
+              <div class="cv-section-row"><strong>Projects</strong><component :is="resolveSectionComponent('projects', sectionType('projects'))" :items="getSectionItems('projects')" :text="getSectionItems('projects')[0]" /></div>
               <v-row class="mt-1" dense>
                 <v-col cols="6">
-                  <div class="cv-section-row"><strong>Skills</strong><component :is="resolveSectionComponent('skills', sectionType('skills'))" :items="getSectionItems('skills').slice(0, Math.ceil(getSectionItems('skills').length/2))" /></div>
+                  <div class="cv-section-row"><strong>Skills</strong><component :is="resolveSectionComponent('skills', sectionType('skills'))" :items="getSectionItems('skills').slice(0, Math.ceil(getSectionItems('skills').length/2))" :text="getSectionItems('skills')[0]" /></div>
                 </v-col>
                 <v-col cols="6">
-                  <div class="cv-section-row"><strong>Skills</strong><component :is="resolveSectionComponent('skills', sectionType('skills'))" :items="getSectionItems('skills').slice(Math.ceil(getSectionItems('skills').length/2))" /></div>
+                  <div class="cv-section-row"><component :is="resolveSectionComponent('skills', sectionType('skills'))" :items="getSectionItems('skills').slice(Math.ceil(getSectionItems('skills').length/2))" :text="getSectionItems('skills')[0]" /></div>
                 </v-col>
               </v-row>
             </div>
             <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
-              <div v-for="section in structureOneSections" :key="`s1-${section}`" class="cv-section-row"><strong>{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" /></div>
+              <div v-for="section in structureOneSections" :key="`s1-${section}`" class="cv-section-row"><strong>{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
             </div>
             <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
-              <div v-for="section in structureTwoTopSections" :key="`s2-top-${section}`" class="cv-section-row"><strong>{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" /></div>
+              <div v-for="section in structureTwoTopSections" :key="`s2-top-${section}`" class="cv-section-row"><strong>{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
               <v-row class="mt-1" dense>
                 <v-col cols="6">
-                  <div v-for="section in structureTwoLeftSections" :key="`s2-left-${section}`" class="cv-section-row"><strong>{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" /></div>
+                  <div v-for="section in structureTwoLeftSections" :key="`s2-left-${section}`" class="cv-section-row"><strong>{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
                 </v-col>
                 <v-col cols="6">
-                  <div v-for="section in structureTwoRightSections" :key="`s2-right-${section}`" class="cv-section-row"><strong>{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" /></div>
+                  <div v-for="section in structureTwoRightSections" :key="`s2-right-${section}`" class="cv-section-row"><strong>{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
                 </v-col>
               </v-row>
             </div>
