@@ -107,6 +107,7 @@ const decorObjects = computed(() =>
     opacity: toNumber(object?.opacity, 0.08),
   })),
 )
+const isLayoutRight = computed(() => selectedTemplate.value.layout === 'layout-right')
 </script>
 
 <template>
@@ -138,8 +139,8 @@ const decorObjects = computed(() =>
       <p class="date" :style="itemStyles.date">May 3, 2026</p>
       <p class="address" :style="itemStyles.address">Paris, France</p>
     </div>
-    <header class="hero" :class="{ 'hero--double': resolvedStyles.barLayout === 'double', 'hero--ribbon': resolvedStyles.headerStyle === 'ribbon' }" :style="{ background: resolvedStyles.heroGradient }">
-      <div class="hero-row">
+    <header class="hero" :class="{ 'hero--double': resolvedStyles.barLayout === 'double', 'hero--ribbon': resolvedStyles.headerStyle === 'ribbon', 'hero--layout-right': isLayoutRight }" :style="{ background: resolvedStyles.heroGradient }">
+      <div class="hero-row" :class="{ 'hero-row--layout-right': isLayoutRight }">
         <img src="/img/team-1.jpg" alt="profile" class="capture-photo">
         <h1>Alex Martin</h1>
         <p class="role">Senior Full Stack Developer</p>
@@ -168,6 +169,10 @@ const decorObjects = computed(() =>
 .hero { border-left: var(--cl-bar-primary-width) solid var(--cl-primary); padding-left: 24px; padding-top: 6px; margin-bottom: 42px; min-height: 140px; position: relative; border-radius: var(--cl-bar-radius); }
 .hero--ribbon{padding-top:16px;padding-bottom:12px}.hero--double::before{content:'';position:absolute;left:calc(var(--cl-bar-primary-width) + 6px);top:0;bottom:0;width:var(--cl-bar-secondary-width);background:var(--cl-secondary);border-radius:var(--cl-bar-radius)}
 .hero-row { display: flex; flex-direction: column; gap: 6px; }
+.hero--layout-right { border-left: 0; border-right: var(--cl-bar-primary-width) solid var(--cl-primary); padding-left: 0; padding-right: 24px; text-align: right; }
+.hero--layout-right.hero--double::before { left: auto; right: calc(var(--cl-bar-primary-width) + 6px); }
+.hero-row--layout-right { align-items: flex-end; }
+.hero-row--layout-right .capture-photo { margin-left: auto; }
 h1 { color: var(--cl-text); margin: 0; font-size: 44px; line-height: 1.05; }
 .role { color: var(--cl-muted); margin: 0; font-size: 24px; }
 p { font-size: 24px; line-height: 1.55; margin: 0 0 18px; color: color-mix(in srgb,var(--cl-text) 78%, #475569); }
