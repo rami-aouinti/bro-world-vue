@@ -135,7 +135,7 @@ const isLayoutRight = computed(() => selectedTemplate.value.layout === 'layout-r
       :class="`decor-${object.type || 'circle'}`"
       :style="{ left: object.x, top: object.y, width: `${object.size}px`, height: `${object.size}px`, opacity: object.opacity ?? 0.08 }"
     />
-    <div class="meta-top-right">
+    <div class="meta-top-right" :class="{ 'meta-top-right--layout-right': isLayoutRight }">
       <p class="date" :style="itemStyles.date">May 3, 2026</p>
       <p class="address" :style="itemStyles.address">Paris, France</p>
     </div>
@@ -164,6 +164,7 @@ const isLayoutRight = computed(() => selectedTemplate.value.layout === 'layout-r
 <style scoped>
 .capture-cover-letter { position: relative; overflow: hidden; width: 850px; height: 1123px; padding: 64px 72px; background: var(--cl-bg); color: var(--cl-text); border-radius: var(--cl-radius); box-shadow: var(--cl-shadow); }
 .meta-top-right { position: absolute; top: 64px; right: 72px; text-align: right; display: flex; flex-direction: column; gap: 2px; align-items: flex-end; }
+.meta-top-right--layout-right { right: auto; left: 72px; text-align: left; align-items: flex-start; }
 .date { color: var(--cl-muted); margin: 0; }
 .address { margin: 0; }
 .hero { border-left: var(--cl-bar-primary-width) solid var(--cl-primary); padding-left: 24px; padding-top: 6px; margin-bottom: 42px; min-height: 140px; position: relative; border-radius: var(--cl-bar-radius); }
