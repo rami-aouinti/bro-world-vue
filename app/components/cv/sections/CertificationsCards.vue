@@ -6,7 +6,7 @@ defineProps<{ items?: string[] }>()
 .cv-sec{background:transparent;border:0;box-shadow:none;padding:2px 0}
 .cv-item{margin:0 0 6px;color:#334155;font-size:13px;line-height:1.35}
 .cv-sec--timeline{border-left:0;padding-left:0}
-.cv-sec--cards .cv-item{box-shadow:none;border-radius:0;padding:0}
+.cv-sec--cards .cv-item{border:1px solid color-mix(in srgb, var(--cv-secondary,#93C5FD) 40%, white);border-radius:8px;padding:6px 8px;background:transparent}
 .cv-sec--dot .cv-item::before{content:'• ';font-weight:700;color:#6366f1}
 .cv-sec--stars .cv-item::after{content:' ★';color:#f59e0b}
 .cv-sec--dots .cv-item::after{content:' •••';color:#6366f1}

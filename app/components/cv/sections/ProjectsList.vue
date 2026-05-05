@@ -3,7 +3,7 @@ defineProps<{ items?: string[] }>()
 </script>
 <template>
   <div class="cv-sec cv-sec--list">
-    <div v-for="(item,idx) in (items||[])" :key="idx" class="cv-item">{{ item }}</div>
+    <div v-for="(item,idx) in (items||[])" :key="idx" class="cv-item">- {{ item }}</div>
   </div>
 </template>
 <style scoped>

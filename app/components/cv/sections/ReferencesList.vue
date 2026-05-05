@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineProps<{ items?: string[] }>()
 </script>
-<template><div class="cv-sec cv-sec--list"><div v-for="(item,idx) in (items||[])" :key="idx" class="cv-item">{{ item }}</div></div></template>
+<template><div class="cv-sec cv-sec--list"><div v-for="(item,idx) in (items||[])" :key="idx" class="cv-item">- {{ item }}</div></div></template>
 <style scoped>
 .cv-sec{background:transparent;border:0;box-shadow:none;padding:2px 0}
 .cv-item{margin:0 0 6px;color:#334155;font-size:13px;line-height:1.35}
