@@ -76,6 +76,8 @@ const resolvedStyles = computed(() => {
     barSecondaryWidth: Number(designConfig?.secondaryBarWidth?.min ?? defaultBarDesignConfig.secondaryBarWidth.min),
     barLayout: Array.isArray(designConfig?.barLayout) && designConfig.barLayout.includes('double') ? 'double' : (designConfig.barLayout.includes('single') ? 'single' : 'none'),
     barRadius: Number(designConfig?.barRadius?.min ?? defaultBarDesignConfig.barRadius.min),
+    photoSize: Number(designConfig?.photoSize ?? 84),
+    photoType: designConfig?.photoType === 'square' ? 'square' : 'circle',
     shadow: tpl?.designTokens?.shadowDepth === 'none' ? 'none' : '0 10px 30px rgba(15,23,42,.18)',
   }
 })
@@ -142,7 +144,7 @@ const isLayoutRight = computed(() => selectedTemplate.value.layout === 'layout-r
       :style="{ left: object.x, top: object.y, width: `${object.size}px`, height: `${object.size}px`, opacity: object.opacity ?? 0.08 }"
     />
     <header class="hero" :class="{ 'hero--no-bar': resolvedStyles.barLayout === 'none', 'hero--double': resolvedStyles.barLayout === 'double', 'hero--ribbon': resolvedStyles.headerStyle === 'ribbon', 'hero--layout-right': isLayoutRight }" :style="{ background: resolvedStyles.heroGradient }">
-      <img src="/img/team-1.jpg" alt="profile" class="capture-photo">
+      <img src="/img/team-1.jpg" alt="profile" class="capture-photo" :class="{ 'capture-photo--square': resolvedStyles.photoType === 'square' }" :style="{ width: `${resolvedStyles.photoSize}px`, height: `${resolvedStyles.photoSize}px` }">
       <h1 :style="itemStyles.fullName">Alex Martin</h1>
       <p class="role" :style="itemStyles.role">Senior Full Stack Developer</p>
     </header>
@@ -185,4 +187,5 @@ section { border-top: 3px var(--section-divider-style) var(--section-divider-col
 
 <style scoped>
 .capture-photo{width:84px;height:84px;border-radius:999px;object-fit:cover;margin-bottom:8px;border:2px solid #0f172a}
+.capture-photo--square{border-radius:12px}
 </style>
