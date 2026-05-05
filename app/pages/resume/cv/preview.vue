@@ -29,6 +29,24 @@ import SkillsDots from '~/components/cv/sections/SkillsDots.vue'
 import SkillsProgressLine from '~/components/cv/sections/SkillsProgressLine.vue'
 import SkillsProgressCircle from '~/components/cv/sections/SkillsProgressCircle.vue'
 
+import LanguagesClassic from '~/components/cv/sections/LanguagesClassic.vue'
+import LanguagesStars from '~/components/cv/sections/LanguagesStars.vue'
+import LanguagesDots from '~/components/cv/sections/LanguagesDots.vue'
+import LanguagesProgressLine from '~/components/cv/sections/LanguagesProgressLine.vue'
+import LanguagesProgressCircle from '~/components/cv/sections/LanguagesProgressCircle.vue'
+import CertificationsClassic from '~/components/cv/sections/CertificationsClassic.vue'
+import CertificationsList from '~/components/cv/sections/CertificationsList.vue'
+import CertificationsDot from '~/components/cv/sections/CertificationsDot.vue'
+import CertificationsCards from '~/components/cv/sections/CertificationsCards.vue'
+import ReferencesClassic from '~/components/cv/sections/ReferencesClassic.vue'
+import ReferencesList from '~/components/cv/sections/ReferencesList.vue'
+import ReferencesDot from '~/components/cv/sections/ReferencesDot.vue'
+import ReferencesCards from '~/components/cv/sections/ReferencesCards.vue'
+import HobbiesClassic from '~/components/cv/sections/HobbiesClassic.vue'
+import HobbiesList from '~/components/cv/sections/HobbiesList.vue'
+import HobbiesDot from '~/components/cv/sections/HobbiesDot.vue'
+import HobbiesCards from '~/components/cv/sections/HobbiesCards.vue'
+
 definePageMeta({
   title: 'Resume · CV Preview',
   layout: 'resume',
@@ -98,6 +116,10 @@ const sectionComponentMap: Record<string, any> = {
   education: { classic: EducationClassic, list: EducationList, dot: EducationDot, timeline: EducationTimeline, cards: EducationCards },
   projects: { classic: ProjectsClassic, list: ProjectsList, dot: ProjectsDot, timeline: ProjectsTimeline, cards: ProjectsCards },
   skills: { classic: SkillsClassic, stars: SkillsStars, dots: SkillsDots, 'progress-line': SkillsProgressLine, 'progress-circle': SkillsProgressCircle },
+  languages: { classic: LanguagesClassic, stars: LanguagesStars, dots: LanguagesDots, 'progress-line': LanguagesProgressLine, 'progress-circle': LanguagesProgressCircle },
+  certifications: { classic: CertificationsClassic, list: CertificationsList, dot: CertificationsDot, cards: CertificationsCards },
+  references: { classic: ReferencesClassic, list: ReferencesList, dot: ReferencesDot, cards: ReferencesCards },
+  hobbies: { classic: HobbiesClassic, list: HobbiesList, dot: HobbiesDot, cards: HobbiesCards },
 }
 function resolveSectionComponent(section: string, type: string) {
   return sectionComponentMap[section]?.[type] || sectionComponentMap[section]?.classic || 'div'
