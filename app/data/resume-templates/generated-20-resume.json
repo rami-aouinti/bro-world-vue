@@ -493,7 +493,7 @@
     "id": "tpl-007",
     "name": "bar-left-variant-1",
     "version": 1,
-    "layout": "bar-left",
+    "layout": "aside-left",
     "structure": "structure-3",
     "sections": {
       "experience": "timeline",
@@ -580,7 +580,7 @@
     "id": "tpl-008",
     "name": "bar-left-variant-2",
     "version": 1,
-    "layout": "bar-left",
+    "layout": "aside-left",
     "structure": "structure-1",
     "sections": {
       "experience": "cards",
@@ -667,7 +667,7 @@
     "id": "tpl-009",
     "name": "bar-light-variant-1",
     "version": 1,
-    "layout": "bar-light",
+    "layout": "no-aside",
     "structure": "structure-1",
     "sections": {
       "experience": "timeline",
@@ -754,7 +754,7 @@
     "id": "tpl-010",
     "name": "bar-light-variant-2",
     "version": 1,
-    "layout": "bar-light",
+    "layout": "no-aside",
     "structure": "structure-2",
     "sections": {
       "experience": "cards",
@@ -975,7 +975,7 @@
     "id": "tpl-013",
     "name": "aside-split-variant-1",
     "version": 1,
-    "layout": "aside-split",
+    "layout": "aside",
     "structure": "structure-1",
     "sections": {
       "experience": "timeline",
@@ -1046,7 +1046,7 @@
     "id": "tpl-014",
     "name": "aside-split-variant-2",
     "version": 1,
-    "layout": "aside-split",
+    "layout": "aside",
     "structure": "structure-2",
     "sections": {
       "experience": "cards",
@@ -1117,7 +1117,7 @@
     "id": "tpl-015",
     "name": "no-aside-split-variant-1",
     "version": 1,
-    "layout": "no-aside-split",
+    "layout": "no-aside",
     "structure": "structure-2",
     "sections": {
       "experience": "timeline",
@@ -1184,7 +1184,7 @@
     "id": "tpl-016",
     "name": "no-aside-split-variant-2",
     "version": 1,
-    "layout": "no-aside-split",
+    "layout": "no-aside",
     "structure": "structure-3",
     "sections": {
       "experience": "cards",
