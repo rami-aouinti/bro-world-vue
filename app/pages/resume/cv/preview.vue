@@ -1,44 +1,141 @@
 <script setup lang="ts">
 import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-20-resume.json'
 
-definePageMeta({ title: 'Resume · CV Preview' })
+definePageMeta({
+  title: 'Resume · CV Preview',
+  layout: 'resume',
+})
 
-function openPreview(templateId: string) {
-  navigateTo(`/resume/preview?template=${templateId}`)
+const route = useRoute()
+const selectedTemplate = ref(GENERATED_RESUME_TEMPLATES[0]?.id || 'tpl-001')
+const layoutMenuOpen = ref(false)
+
+const activeTemplate = computed(() =>
+  GENERATED_RESUME_TEMPLATES.find((template) => template.id === selectedTemplate.value) || GENERATED_RESUME_TEMPLATES[0],
+)
+
+function applyPreviewTemplate(templateId: string) {
+  selectedTemplate.value = templateId
+  layoutMenuOpen.value = false
 }
+
+function saveFromPreview() {
+  localStorage.setItem('resume-cv-preview', JSON.stringify({ template: selectedTemplate.value }))
+}
+
+function goToCapture() {
+  navigateTo(`/resume/template-capture/cv/${selectedTemplate.value}`)
+}
+
+onMounted(() => {
+  const queryTemplate = typeof route.query.template === 'string' ? route.query.template : ''
+  if (queryTemplate && GENERATED_RESUME_TEMPLATES.some((template) => template.id === queryTemplate)) {
+    selectedTemplate.value = queryTemplate
+  }
+})
 </script>
 
 <template>
-  <div class="cv-preview-page pa-6">
-    <div class="d-flex align-center justify-space-between mb-6 flex-wrap ga-3">
-      <div>
-        <h1 class="text-h4 font-weight-bold mb-1">Generated CV Templates</h1>
-        <p class="text-medium-emphasis mb-0">20 generated resume templates (12+ configurable sections/items) ready for preview.</p>
-      </div>
-    </div>
+  <div>
+    <AppPageDrawers>
+      <template #left>
+        <v-card-text>
+          <h3 class="text-subtitle-1 font-weight-bold mb-3">CV Toolbar</h3>
+          <p class="text-body-2 text-medium-emphasis mb-4">
+            Même principe que cover page/cover letter: on garde la toolbar, mais le contenu CV est vide pour le moment.
+          </p>
+          <v-alert type="info" variant="tonal" density="comfortable">
+            Content area volontairement vide (aucune section affichée).
+          </v-alert>
+        </v-card-text>
+      </template>
 
-    <v-row>
-      <v-col
-        v-for="template in GENERATED_RESUME_TEMPLATES"
-        :key="template.id"
-        cols="12"
-        sm="6"
-        md="4"
-        lg="3"
-      >
-        <v-card class="h-100 d-flex flex-column" variant="outlined">
-          <v-img :src="`/img/cv/generated/${template.id}.png`" height="220" cover />
-          <v-card-title class="text-subtitle-1">{{ template.name }}</v-card-title>
-          <v-card-subtitle>{{ template.id }} · {{ template.layout }}</v-card-subtitle>
-          <v-card-text class="text-caption text-medium-emphasis">
-            {{ Object.keys(template.sections || {}).length }} items
-          </v-card-text>
-          <v-spacer />
-          <v-card-actions>
-            <v-btn block color="primary" variant="flat" @click="openPreview(template.id)">Open CV preview</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
+      <template #right>
+        <v-card-text>
+          <h3 class="text-subtitle-2 font-weight-bold mb-2">Template actif</h3>
+          <p class="text-body-2 mb-1">{{ activeTemplate?.name }}</p>
+          <p class="text-caption text-medium-emphasis mb-0">{{ activeTemplate?.id }} · {{ activeTemplate?.layout }}</p>
+        </v-card-text>
+      </template>
+    </AppPageDrawers>
+
+    <v-container fluid>
+      <div class="preview-toolbar-wrap">
+        <div class="preview-toolbar-row">
+          <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-content-save-cog-outline" @click="saveFromPreview">Save</v-btn>
+          <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-camera-outline" @click="goToCapture">Capture</v-btn>
+          <v-menu v-model="layoutMenuOpen" location="bottom center" origin="top center">
+            <template #activator="{ props }">
+              <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-view-grid-outline" v-bind="props">Templates</v-btn>
+            </template>
+            <v-card class="template-menu-card">
+              <div class="template-menu-grid">
+                <v-card
+                  v-for="template in GENERATED_RESUME_TEMPLATES"
+                  :key="`cv-preview-${template.id}`"
+                  class="template-menu-item"
+                  :class="{ 'template-menu-item--active': selectedTemplate === template.id }"
+                  variant="outlined"
+                  @click="applyPreviewTemplate(template.id)"
+                >
+                  <v-img :src="`/img/cv/generated/${template.id}.png`" height="96" cover />
+                  <v-card-text class="py-2 text-caption">{{ template.name }}</v-card-text>
+                </v-card>
+              </div>
+            </v-card>
+          </v-menu>
+        </div>
+      </div>
+
+      <div class="py-8 d-flex justify-center">
+        <main class="capture-cv-empty">
+          <div class="empty-state">
+            <h2>{{ activeTemplate?.name }}</h2>
+            <p>{{ activeTemplate?.id }} · {{ activeTemplate?.layout }}</p>
+            <p class="text-medium-emphasis">Aucune section CV affichée pour le moment.</p>
+          </div>
+        </main>
+      </div>
+    </v-container>
   </div>
 </template>
+
+<style scoped>
+.capture-cv-empty {
+  width: 850px;
+  min-height: 1123px;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-state {
+  text-align: center;
+  max-width: 560px;
+  padding: 24px;
+}
+
+.template-menu-card {
+  width: min(860px, calc(100vw - 48px));
+  max-height: 70vh;
+  overflow: auto;
+}
+
+.template-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  padding: 12px;
+}
+
+.template-menu-item {
+  cursor: pointer;
+}
+
+.template-menu-item--active {
+  border: 2px solid rgb(var(--v-theme-primary));
+}
+</style>
