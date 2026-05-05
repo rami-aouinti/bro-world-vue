@@ -43,12 +43,15 @@ const structureContentBaseSections = ['Experience', 'Education', 'Projects']
 const isSideContentLayout = computed(() => ['aside-left', 'aside-right', 'aside-full-left', 'aside-full-right'].includes(String(activeTemplate.value?.layout || '')))
 
 const headerType = computed(() => String(activeTemplate.value?.headerType || 'header-left'))
-const headerProfile = {
-  fullName: 'John Doe',
-  role: 'Senior Developer',
-  image: '/img/default_avatar.svg',
-  contact: ['john.doe@email.com', '+1 (555) 000-1234', 'Paris, France']
-}
+const headerProfile = computed(() => {
+  const fake = (activeTemplate.value as any)?.fakeData || {}
+  return {
+    fullName: String(fake.fullName || 'John Doe'),
+    role: String(fake.role || 'Senior Developer'),
+    image: String(fake.image || '/img/default_avatar.svg'),
+    contact: [String(fake.email || 'john.doe@email.com'), String(fake.phone || '+1 (555) 000-1234'), String(fake.location || 'Paris, France')],
+  }
+})
 
 const asideWidth = ref(850)
 const asideHeight = ref(1100)
@@ -236,14 +239,15 @@ onMounted(() => {
 <style scoped>
 
 
-.cv-header-layout { display: grid; gap: 12px; align-items: start; }
+.cv-header-layout { display: grid; gap: 12px; align-items: center; }
 .cv-header-layout--header-left { grid-template-columns: 2fr 1fr; }
 .cv-header-layout--header-right { grid-template-columns: 1fr 2fr; }
 .cv-header-layout--header-split { grid-template-columns: 1fr 1fr; }
 .cv-header-split-left { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; }
+.cv-header-contact { display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; }
 .cv-header-contact h3 { margin: 0 0 6px; font-size: 16px; }
 .cv-header-contact p { margin: 0 0 4px; font-size: 13px; }
-.cv-header-identity { display: flex; flex-direction: column; gap: 4px; }
+.cv-header-identity { display: flex; flex-direction: column; gap: 4px; justify-content:center; align-items:center; text-align:center; }
 .cv-header-avatar { width: 52px; height: 52px; object-fit: cover; border-radius: 999px; }
 
 .empty-state {

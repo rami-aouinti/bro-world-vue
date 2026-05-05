@@ -69,7 +69,81 @@
     "sectionTitleStyle": {
       "underline": "thin"
     },
-    "headerType": "header-left"
+    "headerType": "header-left",
+    "fakeData": {
+      "fullName": "Alex Martin",
+      "role": "Senior Full Stack Developer",
+      "image": "/img/team-1.jpg",
+      "profileDescription": "Alex Martin is a results-driven senior full stack developer focused on product quality, scalability, and collaboration.",
+      "email": "alex.martin@example.com",
+      "phone": "+33 6 12 34 50 35",
+      "birthday": "1990-01-10",
+      "location": "Paris, France",
+      "homepage": "https://portfolio-1.example.com",
+      "repositoryPage": "https://github.com/profile-1",
+      "experiences": [
+        {
+          "title": "Senior Full Stack Developer",
+          "company": "Bro Labs",
+          "startDate": "2021-01-01",
+          "endDate": null,
+          "description": "Led product delivery and built maintainable architecture."
+        },
+        {
+          "title": "Engineer",
+          "company": "Nova Digital",
+          "startDate": "2018-06-01",
+          "endDate": "2020-12-31",
+          "description": "Implemented features with strong UX focus."
+        }
+      ],
+      "educations": [
+        {
+          "title": "Master in Computer Science",
+          "school": "University of Lyon",
+          "startDate": "2016-09-01",
+          "endDate": "2018-06-30"
+        },
+        {
+          "title": "Bachelor in Software Engineering",
+          "school": "Université Grenoble Alpes",
+          "startDate": "2013-09-01",
+          "endDate": "2016-06-30"
+        }
+      ],
+      "skills": [
+        "Vue.js",
+        "TypeScript",
+        "Node.js",
+        "Nuxt",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "projects": [
+        {
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform."
+        }
+      ],
+      "languages": [
+        "French",
+        "English",
+        "Spanish"
+      ],
+      "certifications": [
+        "AWS Certified Developer",
+        "Scrum Master"
+      ],
+      "references": [
+        "Sophie Bernard · Engineering Manager",
+        "Julien Roche · Product Director"
+      ],
+      "hobbies": [
+        "Open-source",
+        "Running",
+        "Photography"
+      ]
+    }
   },
   {
     "id": "tpl-002",
@@ -141,7 +215,81 @@
     "sectionTitleStyle": {
       "underline": "thick"
     },
-    "headerType": "header-right"
+    "headerType": "header-right",
+    "fakeData": {
+      "fullName": "Sofia Nguyen",
+      "role": "Product Designer",
+      "image": "/img/team-2.jpg",
+      "profileDescription": "Sofia Nguyen is a results-driven product designer focused on product quality, scalability, and collaboration.",
+      "email": "sofia.nguyen@example.com",
+      "phone": "+33 6 12 34 51 46",
+      "birthday": "1991-02-11",
+      "location": "Lyon, France",
+      "homepage": "https://portfolio-2.example.com",
+      "repositoryPage": "https://github.com/profile-2",
+      "experiences": [
+        {
+          "title": "Product Designer",
+          "company": "Bro Labs",
+          "startDate": "2021-01-01",
+          "endDate": null,
+          "description": "Led product delivery and built maintainable architecture."
+        },
+        {
+          "title": "Engineer",
+          "company": "Nova Digital",
+          "startDate": "2018-06-01",
+          "endDate": "2020-12-31",
+          "description": "Implemented features with strong UX focus."
+        }
+      ],
+      "educations": [
+        {
+          "title": "Master in Computer Science",
+          "school": "University of Lyon",
+          "startDate": "2016-09-01",
+          "endDate": "2018-06-30"
+        },
+        {
+          "title": "Bachelor in Software Engineering",
+          "school": "Université Grenoble Alpes",
+          "startDate": "2013-09-01",
+          "endDate": "2016-06-30"
+        }
+      ],
+      "skills": [
+        "Vue.js",
+        "TypeScript",
+        "Node.js",
+        "Nuxt",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "projects": [
+        {
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform."
+        }
+      ],
+      "languages": [
+        "French",
+        "English",
+        "Spanish"
+      ],
+      "certifications": [
+        "AWS Certified Developer",
+        "Scrum Master"
+      ],
+      "references": [
+        "Sophie Bernard · Engineering Manager",
+        "Julien Roche · Product Director"
+      ],
+      "hobbies": [
+        "Open-source",
+        "Running",
+        "Photography"
+      ]
+    }
   },
   {
     "id": "tpl-003",
@@ -230,7 +378,81 @@
       "underline": "thin",
       "casing": "normal"
     },
-    "headerType": "header-split"
+    "headerType": "header-split",
+    "fakeData": {
+      "fullName": "Liam Carter",
+      "role": "Backend Engineer",
+      "image": "/img/team-3.jpg",
+      "profileDescription": "Liam Carter is a results-driven backend engineer focused on product quality, scalability, and collaboration.",
+      "email": "liam.carter@example.com",
+      "phone": "+33 6 12 34 52 57",
+      "birthday": "1992-03-12",
+      "location": "Berlin, Germany",
+      "homepage": "https://portfolio-3.example.com",
+      "repositoryPage": "https://github.com/profile-3",
+      "experiences": [
+        {
+          "title": "Backend Engineer",
+          "company": "Bro Labs",
+          "startDate": "2021-01-01",
+          "endDate": null,
+          "description": "Led product delivery and built maintainable architecture."
+        },
+        {
+          "title": "Engineer",
+          "company": "Nova Digital",
+          "startDate": "2018-06-01",
+          "endDate": "2020-12-31",
+          "description": "Implemented features with strong UX focus."
+        }
+      ],
+      "educations": [
+        {
+          "title": "Master in Computer Science",
+          "school": "University of Lyon",
+          "startDate": "2016-09-01",
+          "endDate": "2018-06-30"
+        },
+        {
+          "title": "Bachelor in Software Engineering",
+          "school": "Université Grenoble Alpes",
+          "startDate": "2013-09-01",
+          "endDate": "2016-06-30"
+        }
+      ],
+      "skills": [
+        "Vue.js",
+        "TypeScript",
+        "Node.js",
+        "Nuxt",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "projects": [
+        {
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform."
+        }
+      ],
+      "languages": [
+        "French",
+        "English",
+        "Spanish"
+      ],
+      "certifications": [
+        "AWS Certified Developer",
+        "Scrum Master"
+      ],
+      "references": [
+        "Sophie Bernard · Engineering Manager",
+        "Julien Roche · Product Director"
+      ],
+      "hobbies": [
+        "Open-source",
+        "Running",
+        "Photography"
+      ]
+    }
   },
   {
     "id": "tpl-004",
@@ -318,7 +540,81 @@
       "underline": "thick",
       "casing": "normal"
     },
-    "headerType": "header-left"
+    "headerType": "header-left",
+    "fakeData": {
+      "fullName": "Emma Laurent",
+      "role": "Frontend Engineer",
+      "image": "/img/team-4.jpg",
+      "profileDescription": "Emma Laurent is a results-driven frontend engineer focused on product quality, scalability, and collaboration.",
+      "email": "emma.laurent@example.com",
+      "phone": "+33 6 12 34 53 68",
+      "birthday": "1993-04-13",
+      "location": "Barcelona, Spain",
+      "homepage": "https://portfolio-4.example.com",
+      "repositoryPage": "https://github.com/profile-4",
+      "experiences": [
+        {
+          "title": "Frontend Engineer",
+          "company": "Bro Labs",
+          "startDate": "2021-01-01",
+          "endDate": null,
+          "description": "Led product delivery and built maintainable architecture."
+        },
+        {
+          "title": "Engineer",
+          "company": "Nova Digital",
+          "startDate": "2018-06-01",
+          "endDate": "2020-12-31",
+          "description": "Implemented features with strong UX focus."
+        }
+      ],
+      "educations": [
+        {
+          "title": "Master in Computer Science",
+          "school": "University of Lyon",
+          "startDate": "2016-09-01",
+          "endDate": "2018-06-30"
+        },
+        {
+          "title": "Bachelor in Software Engineering",
+          "school": "Université Grenoble Alpes",
+          "startDate": "2013-09-01",
+          "endDate": "2016-06-30"
+        }
+      ],
+      "skills": [
+        "Vue.js",
+        "TypeScript",
+        "Node.js",
+        "Nuxt",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "projects": [
+        {
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform."
+        }
+      ],
+      "languages": [
+        "French",
+        "English",
+        "Spanish"
+      ],
+      "certifications": [
+        "AWS Certified Developer",
+        "Scrum Master"
+      ],
+      "references": [
+        "Sophie Bernard · Engineering Manager",
+        "Julien Roche · Product Director"
+      ],
+      "hobbies": [
+        "Open-source",
+        "Running",
+        "Photography"
+      ]
+    }
   },
   {
     "id": "tpl-005",
@@ -406,7 +702,81 @@
       "underline": "thin",
       "casing": "normal"
     },
-    "headerType": "header-right"
+    "headerType": "header-right",
+    "fakeData": {
+      "fullName": "Noah Silva",
+      "role": "Data Analyst",
+      "image": "/img/team-5.jpg",
+      "profileDescription": "Noah Silva is a results-driven data analyst focused on product quality, scalability, and collaboration.",
+      "email": "noah.silva@example.com",
+      "phone": "+33 6 12 34 54 79",
+      "birthday": "1994-05-14",
+      "location": "Paris, France",
+      "homepage": "https://portfolio-5.example.com",
+      "repositoryPage": "https://github.com/profile-5",
+      "experiences": [
+        {
+          "title": "Data Analyst",
+          "company": "Bro Labs",
+          "startDate": "2021-01-01",
+          "endDate": null,
+          "description": "Led product delivery and built maintainable architecture."
+        },
+        {
+          "title": "Engineer",
+          "company": "Nova Digital",
+          "startDate": "2018-06-01",
+          "endDate": "2020-12-31",
+          "description": "Implemented features with strong UX focus."
+        }
+      ],
+      "educations": [
+        {
+          "title": "Master in Computer Science",
+          "school": "University of Lyon",
+          "startDate": "2016-09-01",
+          "endDate": "2018-06-30"
+        },
+        {
+          "title": "Bachelor in Software Engineering",
+          "school": "Université Grenoble Alpes",
+          "startDate": "2013-09-01",
+          "endDate": "2016-06-30"
+        }
+      ],
+      "skills": [
+        "Vue.js",
+        "TypeScript",
+        "Node.js",
+        "Nuxt",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "projects": [
+        {
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform."
+        }
+      ],
+      "languages": [
+        "French",
+        "English",
+        "Spanish"
+      ],
+      "certifications": [
+        "AWS Certified Developer",
+        "Scrum Master"
+      ],
+      "references": [
+        "Sophie Bernard · Engineering Manager",
+        "Julien Roche · Product Director"
+      ],
+      "hobbies": [
+        "Open-source",
+        "Running",
+        "Photography"
+      ]
+    }
   },
   {
     "id": "tpl-006",
@@ -494,7 +864,81 @@
       "underline": "thick",
       "casing": "normal"
     },
-    "headerType": "header-split"
+    "headerType": "header-split",
+    "fakeData": {
+      "fullName": "Mia Bernard",
+      "role": "DevOps Engineer",
+      "image": "/img/team-9.jpeg",
+      "profileDescription": "Mia Bernard is a results-driven devops engineer focused on product quality, scalability, and collaboration.",
+      "email": "mia.bernard@example.com",
+      "phone": "+33 6 12 34 55 80",
+      "birthday": "1995-06-15",
+      "location": "Lyon, France",
+      "homepage": "https://portfolio-6.example.com",
+      "repositoryPage": "https://github.com/profile-6",
+      "experiences": [
+        {
+          "title": "DevOps Engineer",
+          "company": "Bro Labs",
+          "startDate": "2021-01-01",
+          "endDate": null,
+          "description": "Led product delivery and built maintainable architecture."
+        },
+        {
+          "title": "Engineer",
+          "company": "Nova Digital",
+          "startDate": "2018-06-01",
+          "endDate": "2020-12-31",
+          "description": "Implemented features with strong UX focus."
+        }
+      ],
+      "educations": [
+        {
+          "title": "Master in Computer Science",
+          "school": "University of Lyon",
+          "startDate": "2016-09-01",
+          "endDate": "2018-06-30"
+        },
+        {
+          "title": "Bachelor in Software Engineering",
+          "school": "Université Grenoble Alpes",
+          "startDate": "2013-09-01",
+          "endDate": "2016-06-30"
+        }
+      ],
+      "skills": [
+        "Vue.js",
+        "TypeScript",
+        "Node.js",
+        "Nuxt",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "projects": [
+        {
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform."
+        }
+      ],
+      "languages": [
+        "French",
+        "English",
+        "Spanish"
+      ],
+      "certifications": [
+        "AWS Certified Developer",
+        "Scrum Master"
+      ],
+      "references": [
+        "Sophie Bernard · Engineering Manager",
+        "Julien Roche · Product Director"
+      ],
+      "hobbies": [
+        "Open-source",
+        "Running",
+        "Photography"
+      ]
+    }
   },
   {
     "id": "tpl-007",
@@ -582,7 +1026,81 @@
       "underline": "thin",
       "casing": "normal"
     },
-    "headerType": "header-left"
+    "headerType": "header-left",
+    "fakeData": {
+      "fullName": "Ethan Rossi",
+      "role": "Mobile Developer",
+      "image": "/img/team-1.jpg",
+      "profileDescription": "Ethan Rossi is a results-driven mobile developer focused on product quality, scalability, and collaboration.",
+      "email": "ethan.rossi@example.com",
+      "phone": "+33 6 12 34 56 91",
+      "birthday": "1996-07-16",
+      "location": "Berlin, Germany",
+      "homepage": "https://portfolio-7.example.com",
+      "repositoryPage": "https://github.com/profile-7",
+      "experiences": [
+        {
+          "title": "Mobile Developer",
+          "company": "Bro Labs",
+          "startDate": "2021-01-01",
+          "endDate": null,
+          "description": "Led product delivery and built maintainable architecture."
+        },
+        {
+          "title": "Engineer",
+          "company": "Nova Digital",
+          "startDate": "2018-06-01",
+          "endDate": "2020-12-31",
+          "description": "Implemented features with strong UX focus."
+        }
+      ],
+      "educations": [
+        {
+          "title": "Master in Computer Science",
+          "school": "University of Lyon",
+          "startDate": "2016-09-01",
+          "endDate": "2018-06-30"
+        },
+        {
+          "title": "Bachelor in Software Engineering",
+          "school": "Université Grenoble Alpes",
+          "startDate": "2013-09-01",
+          "endDate": "2016-06-30"
+        }
+      ],
+      "skills": [
+        "Vue.js",
+        "TypeScript",
+        "Node.js",
+        "Nuxt",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "projects": [
+        {
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform."
+        }
+      ],
+      "languages": [
+        "French",
+        "English",
+        "Spanish"
+      ],
+      "certifications": [
+        "AWS Certified Developer",
+        "Scrum Master"
+      ],
+      "references": [
+        "Sophie Bernard · Engineering Manager",
+        "Julien Roche · Product Director"
+      ],
+      "hobbies": [
+        "Open-source",
+        "Running",
+        "Photography"
+      ]
+    }
   },
   {
     "id": "tpl-008",
@@ -670,7 +1188,81 @@
       "underline": "thick",
       "casing": "normal"
     },
-    "headerType": "header-right"
+    "headerType": "header-right",
+    "fakeData": {
+      "fullName": "Chloé Dupont",
+      "role": "UX Researcher",
+      "image": "/img/team-2.jpg",
+      "profileDescription": "Chloé Dupont is a results-driven ux researcher focused on product quality, scalability, and collaboration.",
+      "email": "chloé.dupont@example.com",
+      "phone": "+33 6 12 34 57 02",
+      "birthday": "1997-08-17",
+      "location": "Barcelona, Spain",
+      "homepage": "https://portfolio-8.example.com",
+      "repositoryPage": "https://github.com/profile-8",
+      "experiences": [
+        {
+          "title": "UX Researcher",
+          "company": "Bro Labs",
+          "startDate": "2021-01-01",
+          "endDate": null,
+          "description": "Led product delivery and built maintainable architecture."
+        },
+        {
+          "title": "Engineer",
+          "company": "Nova Digital",
+          "startDate": "2018-06-01",
+          "endDate": "2020-12-31",
+          "description": "Implemented features with strong UX focus."
+        }
+      ],
+      "educations": [
+        {
+          "title": "Master in Computer Science",
+          "school": "University of Lyon",
+          "startDate": "2016-09-01",
+          "endDate": "2018-06-30"
+        },
+        {
+          "title": "Bachelor in Software Engineering",
+          "school": "Université Grenoble Alpes",
+          "startDate": "2013-09-01",
+          "endDate": "2016-06-30"
+        }
+      ],
+      "skills": [
+        "Vue.js",
+        "TypeScript",
+        "Node.js",
+        "Nuxt",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "projects": [
+        {
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform."
+        }
+      ],
+      "languages": [
+        "French",
+        "English",
+        "Spanish"
+      ],
+      "certifications": [
+        "AWS Certified Developer",
+        "Scrum Master"
+      ],
+      "references": [
+        "Sophie Bernard · Engineering Manager",
+        "Julien Roche · Product Director"
+      ],
+      "hobbies": [
+        "Open-source",
+        "Running",
+        "Photography"
+      ]
+    }
   },
   {
     "id": "tpl-009",
@@ -758,7 +1350,81 @@
       "underline": "thin",
       "casing": "normal"
     },
-    "headerType": "header-split"
+    "headerType": "header-split",
+    "fakeData": {
+      "fullName": "Lucas Meyer",
+      "role": "AI Engineer",
+      "image": "/img/team-3.jpg",
+      "profileDescription": "Lucas Meyer is a results-driven ai engineer focused on product quality, scalability, and collaboration.",
+      "email": "lucas.meyer@example.com",
+      "phone": "+33 6 12 34 58 13",
+      "birthday": "1998-09-18",
+      "location": "Paris, France",
+      "homepage": "https://portfolio-9.example.com",
+      "repositoryPage": "https://github.com/profile-9",
+      "experiences": [
+        {
+          "title": "AI Engineer",
+          "company": "Bro Labs",
+          "startDate": "2021-01-01",
+          "endDate": null,
+          "description": "Led product delivery and built maintainable architecture."
+        },
+        {
+          "title": "Engineer",
+          "company": "Nova Digital",
+          "startDate": "2018-06-01",
+          "endDate": "2020-12-31",
+          "description": "Implemented features with strong UX focus."
+        }
+      ],
+      "educations": [
+        {
+          "title": "Master in Computer Science",
+          "school": "University of Lyon",
+          "startDate": "2016-09-01",
+          "endDate": "2018-06-30"
+        },
+        {
+          "title": "Bachelor in Software Engineering",
+          "school": "Université Grenoble Alpes",
+          "startDate": "2013-09-01",
+          "endDate": "2016-06-30"
+        }
+      ],
+      "skills": [
+        "Vue.js",
+        "TypeScript",
+        "Node.js",
+        "Nuxt",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "projects": [
+        {
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform."
+        }
+      ],
+      "languages": [
+        "French",
+        "English",
+        "Spanish"
+      ],
+      "certifications": [
+        "AWS Certified Developer",
+        "Scrum Master"
+      ],
+      "references": [
+        "Sophie Bernard · Engineering Manager",
+        "Julien Roche · Product Director"
+      ],
+      "hobbies": [
+        "Open-source",
+        "Running",
+        "Photography"
+      ]
+    }
   },
   {
     "id": "tpl-010",
@@ -846,7 +1512,81 @@
       "underline": "thick",
       "casing": "normal"
     },
-    "headerType": "header-left"
+    "headerType": "header-left",
+    "fakeData": {
+      "fullName": "Ava Kim",
+      "role": "Project Manager",
+      "image": "/img/team-4.jpg",
+      "profileDescription": "Ava Kim is a results-driven project manager focused on product quality, scalability, and collaboration.",
+      "email": "ava.kim@example.com",
+      "phone": "+33 6 12 34 59 24",
+      "birthday": "1999-01-10",
+      "location": "Lyon, France",
+      "homepage": "https://portfolio-10.example.com",
+      "repositoryPage": "https://github.com/profile-10",
+      "experiences": [
+        {
+          "title": "Project Manager",
+          "company": "Bro Labs",
+          "startDate": "2021-01-01",
+          "endDate": null,
+          "description": "Led product delivery and built maintainable architecture."
+        },
+        {
+          "title": "Engineer",
+          "company": "Nova Digital",
+          "startDate": "2018-06-01",
+          "endDate": "2020-12-31",
+          "description": "Implemented features with strong UX focus."
+        }
+      ],
+      "educations": [
+        {
+          "title": "Master in Computer Science",
+          "school": "University of Lyon",
+          "startDate": "2016-09-01",
+          "endDate": "2018-06-30"
+        },
+        {
+          "title": "Bachelor in Software Engineering",
+          "school": "Université Grenoble Alpes",
+          "startDate": "2013-09-01",
+          "endDate": "2016-06-30"
+        }
+      ],
+      "skills": [
+        "Vue.js",
+        "TypeScript",
+        "Node.js",
+        "Nuxt",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "projects": [
+        {
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform."
+        }
+      ],
+      "languages": [
+        "French",
+        "English",
+        "Spanish"
+      ],
+      "certifications": [
+        "AWS Certified Developer",
+        "Scrum Master"
+      ],
+      "references": [
+        "Sophie Bernard · Engineering Manager",
+        "Julien Roche · Product Director"
+      ],
+      "hobbies": [
+        "Open-source",
+        "Running",
+        "Photography"
+      ]
+    }
   },
   {
     "id": "tpl-011",
@@ -914,7 +1654,81 @@
     "sectionTitleStyle": {
       "underline": "thin"
     },
-    "headerType": "header-right"
+    "headerType": "header-right",
+    "fakeData": {
+      "fullName": "Hugo Marin",
+      "role": "QA Lead",
+      "image": "/img/team-5.jpg",
+      "profileDescription": "Hugo Marin is a results-driven qa lead focused on product quality, scalability, and collaboration.",
+      "email": "hugo.marin@example.com",
+      "phone": "+33 6 12 34 50 35",
+      "birthday": "1990-02-11",
+      "location": "Berlin, Germany",
+      "homepage": "https://portfolio-11.example.com",
+      "repositoryPage": "https://github.com/profile-11",
+      "experiences": [
+        {
+          "title": "QA Lead",
+          "company": "Bro Labs",
+          "startDate": "2021-01-01",
+          "endDate": null,
+          "description": "Led product delivery and built maintainable architecture."
+        },
+        {
+          "title": "Engineer",
+          "company": "Nova Digital",
+          "startDate": "2018-06-01",
+          "endDate": "2020-12-31",
+          "description": "Implemented features with strong UX focus."
+        }
+      ],
+      "educations": [
+        {
+          "title": "Master in Computer Science",
+          "school": "University of Lyon",
+          "startDate": "2016-09-01",
+          "endDate": "2018-06-30"
+        },
+        {
+          "title": "Bachelor in Software Engineering",
+          "school": "Université Grenoble Alpes",
+          "startDate": "2013-09-01",
+          "endDate": "2016-06-30"
+        }
+      ],
+      "skills": [
+        "Vue.js",
+        "TypeScript",
+        "Node.js",
+        "Nuxt",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "projects": [
+        {
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform."
+        }
+      ],
+      "languages": [
+        "French",
+        "English",
+        "Spanish"
+      ],
+      "certifications": [
+        "AWS Certified Developer",
+        "Scrum Master"
+      ],
+      "references": [
+        "Sophie Bernard · Engineering Manager",
+        "Julien Roche · Product Director"
+      ],
+      "hobbies": [
+        "Open-source",
+        "Running",
+        "Photography"
+      ]
+    }
   },
   {
     "id": "tpl-012",
@@ -982,6 +1796,80 @@
     "sectionTitleStyle": {
       "underline": "thick"
     },
-    "headerType": "header-split"
+    "headerType": "header-split",
+    "fakeData": {
+      "fullName": "Lina Moreau",
+      "role": "Cloud Architect",
+      "image": "/img/team-9.jpeg",
+      "profileDescription": "Lina Moreau is a results-driven cloud architect focused on product quality, scalability, and collaboration.",
+      "email": "lina.moreau@example.com",
+      "phone": "+33 6 12 34 51 46",
+      "birthday": "1991-03-12",
+      "location": "Barcelona, Spain",
+      "homepage": "https://portfolio-12.example.com",
+      "repositoryPage": "https://github.com/profile-12",
+      "experiences": [
+        {
+          "title": "Cloud Architect",
+          "company": "Bro Labs",
+          "startDate": "2021-01-01",
+          "endDate": null,
+          "description": "Led product delivery and built maintainable architecture."
+        },
+        {
+          "title": "Engineer",
+          "company": "Nova Digital",
+          "startDate": "2018-06-01",
+          "endDate": "2020-12-31",
+          "description": "Implemented features with strong UX focus."
+        }
+      ],
+      "educations": [
+        {
+          "title": "Master in Computer Science",
+          "school": "University of Lyon",
+          "startDate": "2016-09-01",
+          "endDate": "2018-06-30"
+        },
+        {
+          "title": "Bachelor in Software Engineering",
+          "school": "Université Grenoble Alpes",
+          "startDate": "2013-09-01",
+          "endDate": "2016-06-30"
+        }
+      ],
+      "skills": [
+        "Vue.js",
+        "TypeScript",
+        "Node.js",
+        "Nuxt",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "projects": [
+        {
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform."
+        }
+      ],
+      "languages": [
+        "French",
+        "English",
+        "Spanish"
+      ],
+      "certifications": [
+        "AWS Certified Developer",
+        "Scrum Master"
+      ],
+      "references": [
+        "Sophie Bernard · Engineering Manager",
+        "Julien Roche · Product Director"
+      ],
+      "hobbies": [
+        "Open-source",
+        "Running",
+        "Photography"
+      ]
+    }
   }
 ]
