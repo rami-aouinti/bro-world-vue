@@ -8,7 +8,7 @@ const route = useRoute()
 const { coverLetterTemplates } = useResumeTemplates()
 const selectedTemplate = ref(coverLetterTemplates.value[0]?.id || GENERATED_COVER_LETTER_TEMPLATES[0]?.id || '')
 const decorShapeOptions = ['circle', 'ring', 'blob', 'square', 'diamond', 'star', 'triangle', 'pill', 'bar']
-const photoOptions = ['/img/team-1.jpg', '/img/team-2.jpg', '/img/team-3.jpg', '/img/team-4.jpg']
+const photoOptions = ['/img/team-1.jpg', '/img/team-2.jpg', '/img/team-3.jpg', '/img/team-4.jpg', '/img/team-5.jpg', '/img/team-9.jpeg']
 const imageShape = ref<'circle' | 'square'>('circle')
 const imageSize = ref(84)
 const imageBorderWidth = ref(2)
@@ -127,6 +127,17 @@ function decorObjectStyle(obj: any) {
   return base
 }
 
+function applyTemplateDefaults(tpl: any) {
+  const defaults = tpl?.defaultValues || {}
+  if (defaults.fullName) { model.fullName = String(defaults.fullName); model.phone = String(defaults.fullName) }
+  if (defaults.role) model.role = String(defaults.role)
+  if (defaults.image) model.photoUrl = String(defaults.image)
+  if (defaults.date) model.date = String(defaults.date)
+  if (defaults.location) model.location = String(defaults.location)
+  if (defaults.heading) model.heading = String(defaults.heading)
+  if (defaults.companyParagraph) model.companyParagraph = String(defaults.companyParagraph)
+  if (defaults.summary) model.summary = String(defaults.summary)
+}
 const sectionDividerStyle = computed(() => {
   const showDivider = activeTemplate.value?.layoutOptions?.showDivider ?? true
   if (!showDivider) return 'none'
@@ -154,7 +165,7 @@ watch(() => activeColors.value.primary, (primaryColor) => {
   imageBorderColor.value = primaryColor
 }, { immediate: true })
 
-watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); selectedDividerType.value = String(tpl?.decor?.divider || 'line'); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; imageShape.value = ((tpl as any)?.designConfig?.photoType === 'square' ? 'square' : 'circle'); imageSize.value = Number((tpl as any)?.designConfig?.photoSize ?? imageSize.value); const items=(tpl as any)?.items||{}; const designConfig = (tpl as any)?.designConfig || defaultBarDesignConfig; barRadius.value = designConfig?.barRadius?.min ?? defaultBarDesignConfig.barRadius.min; primaryBarWidth.value = designConfig?.barWidth?.min ?? defaultBarDesignConfig.barWidth.min; secondaryBarWidth.value = designConfig?.secondaryBarWidth?.min ?? defaultBarDesignConfig.secondaryBarWidth.min; barLayout.value = Array.isArray(designConfig?.barLayout) && designConfig.barLayout.includes('double') ? 'double' : (designConfig.barLayout.includes('single') ? 'single' : 'none'); for (const key of ['date','address']) { const b=items[key]?.size; if (b) letterElementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) letterElementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) letterElementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
+watch(activeTemplate, (tpl) => { applyTemplateDefaults(tpl); editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); selectedDividerType.value = String(tpl?.decor?.divider || 'line'); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; imageShape.value = ((tpl as any)?.designConfig?.photoType === 'square' ? 'square' : 'circle'); imageSize.value = Number((tpl as any)?.designConfig?.photoSize ?? imageSize.value); const items=(tpl as any)?.items||{}; const designConfig = (tpl as any)?.designConfig || defaultBarDesignConfig; barRadius.value = designConfig?.barRadius?.min ?? defaultBarDesignConfig.barRadius.min; primaryBarWidth.value = designConfig?.barWidth?.min ?? defaultBarDesignConfig.barWidth.min; secondaryBarWidth.value = designConfig?.secondaryBarWidth?.min ?? defaultBarDesignConfig.secondaryBarWidth.min; barLayout.value = Array.isArray(designConfig?.barLayout) && designConfig.barLayout.includes('double') ? 'double' : (designConfig.barLayout.includes('single') ? 'single' : 'none'); for (const key of ['date','address']) { const b=items[key]?.size; if (b) letterElementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) letterElementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) letterElementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
 function addDecorObject(){ editableDecorObjects.value.push(normalizeDecorObject({ type:'circle', x:50, y:50, size:120, opacity:0.15 })) }
 function addDecorObjectFromPreset(preset:any){ editableDecorObjects.value.push(normalizeDecorObject({ ...preset })) }
 function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
