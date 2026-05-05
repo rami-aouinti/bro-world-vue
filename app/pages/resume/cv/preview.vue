@@ -143,10 +143,10 @@ onMounted(() => {
             </div>
           </template>
           <template #aside>
-            <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" :class="['cv-aside-sections', { 'cv-aside-sections--light': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
+            <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" :class="['cv-aside-sections', { 'cv-aside-sections--full': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
               <div v-for="section in structureAsideOneSections" :key="`aside-s1-${section}`" class="cv-aside-section-item">{{ section }}</div>
             </div>
-            <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" :class="['cv-aside-sections', { 'cv-aside-sections--light': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
+            <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" :class="['cv-aside-sections', { 'cv-aside-sections--full': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
               <div v-for="section in structureAsideTwoSections" :key="`aside-s2-${section}`" class="cv-aside-section-item">{{ section }}</div>
             </div>
           </template>
@@ -211,16 +211,17 @@ onMounted(() => {
 .cv-aside-section-item {
   padding: 8px 10px;
   border-radius: 8px;
-  background: rgba(255,255,255,.16);
-  color: #fff;
+  background: rgba(241, 245, 249, 0.9);
+  color: #1e293b;
+  border: 1px dashed rgba(100, 116, 139, 0.35);
   font-weight: 600;
   font-size: 13px;
 }
 
-.cv-aside-sections--light .cv-aside-section-item {
-  background: rgba(241, 245, 249, 0.9);
-  color: #1e293b;
-  border: 1px dashed rgba(100, 116, 139, 0.35);
+.cv-aside-sections--full .cv-aside-section-item {
+  background: rgba(255,255,255,.16);
+  color: #fff;
+  border: none;
 }
 
 .cv-section-row {
