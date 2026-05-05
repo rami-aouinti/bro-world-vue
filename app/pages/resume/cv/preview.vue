@@ -125,6 +125,17 @@ function resolveSectionComponent(section: string, type: string) {
   return sectionComponentMap[section]?.[type] || sectionComponentMap[section]?.classic || 'div'
 }
 
+const sectionTypeOverrides = reactive<Record<string, string>>({})
+
+function getSectionVariantOptions(section: string) {
+  const variants = Object.keys(sectionComponentMap[section] || {})
+  return variants.map((variant) => ({ title: variant, value: variant }))
+}
+
+function effectiveSectionType(section: string, fallback: string) {
+  return sectionTypeOverrides[section] || fallback
+}
+
 function formatShortDate(value: any) {
   if (!value) return ''
   const str = String(value)
@@ -344,40 +355,40 @@ onMounted(() => {
             <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" :class="['cv-aside-sections', { 'cv-aside-sections--full': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
               <div v-for="section in structureAsideOneSections" :key="`aside-s1-${section}`" class="cv-aside-section-item">
                 <strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong>
-                <component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" />
+                <component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" />
               </div>
             </div>
             <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" :class="['cv-aside-sections', { 'cv-aside-sections--full': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
               <div v-for="section in structureAsideTwoSections" :key="`aside-s2-${section}`" class="cv-aside-section-item">
                 <strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong>
-                <component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" />
+                <component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" />
               </div>
             </div>
           </template>
 
           <template #content>
             <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
-              <div class="cv-section-row"><strong><v-icon icon="mdi-briefcase-outline" size="16" class="mr-1" />Experience</strong><component :is="resolveSectionComponent('experience', sectionType('experience'))" :items="getSectionItems('experience')" :text="getSectionItems('experience')[0]" /></div>
-              <div class="cv-section-row"><strong><v-icon icon="mdi-school-outline" size="16" class="mr-1" />Education</strong><component :is="resolveSectionComponent('education', sectionType('education'))" :items="getSectionItems('education')" :text="getSectionItems('education')[0]" /></div>
-              <div class="cv-section-row"><strong><v-icon icon="mdi-folder-outline" size="16" class="mr-1" />Projects</strong><component :is="resolveSectionComponent('projects', sectionType('projects'))" :items="getSectionItems('projects')" :text="getSectionItems('projects')[0]" /></div>
+              <div class="cv-section-row"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides['experience']" :items="getSectionVariantOptions('experience')" item-title="title" item-value="value" density="compact" variant="outlined" hide-details /></div><strong><v-icon icon="mdi-briefcase-outline" size="16" class="mr-1" />Experience</strong><component :is="resolveSectionComponent('experience', effectiveSectionType('experience', sectionType('experience')))" :items="getSectionItems('experience')" :text="getSectionItems('experience')[0]" /></div>
+              <div class="cv-section-row"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides['education']" :items="getSectionVariantOptions('education')" item-title="title" item-value="value" density="compact" variant="outlined" hide-details /></div><strong><v-icon icon="mdi-school-outline" size="16" class="mr-1" />Education</strong><component :is="resolveSectionComponent('education', effectiveSectionType('education', sectionType('education')))" :items="getSectionItems('education')" :text="getSectionItems('education')[0]" /></div>
+              <div class="cv-section-row"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides['projects']" :items="getSectionVariantOptions('projects')" item-title="title" item-value="value" density="compact" variant="outlined" hide-details /></div><strong><v-icon icon="mdi-folder-outline" size="16" class="mr-1" />Projects</strong><component :is="resolveSectionComponent('projects', effectiveSectionType('projects', sectionType('projects')))" :items="getSectionItems('projects')" :text="getSectionItems('projects')[0]" /></div>
             </div>
             <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
-              <div class="cv-section-row"><strong><v-icon icon="mdi-briefcase-outline" size="16" class="mr-1" />Experience</strong><component :is="resolveSectionComponent('experience', sectionType('experience'))" :items="getSectionItems('experience')" :text="getSectionItems('experience')[0]" /></div>
-              <div class="cv-section-row"><strong><v-icon icon="mdi-school-outline" size="16" class="mr-1" />Education</strong><component :is="resolveSectionComponent('education', sectionType('education'))" :items="getSectionItems('education')" :text="getSectionItems('education')[0]" /></div>
-              <div class="cv-section-row"><strong><v-icon icon="mdi-folder-outline" size="16" class="mr-1" />Projects</strong><component :is="resolveSectionComponent('projects', sectionType('projects'))" :items="getSectionItems('projects')" :text="getSectionItems('projects')[0]" /></div>
-              <div class="cv-section-row"><strong><v-icon icon="mdi-star-outline" size="16" class="mr-1" />Skills</strong><component :is="resolveSectionComponent('skills', sectionType('skills'))" :items="getSectionItems('skills')" :text="getSectionItems('skills')[0]" /></div>
+              <div class="cv-section-row"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides['skills']" :items="getSectionVariantOptions('skills')" item-title="title" item-value="value" density="compact" variant="outlined" hide-details /></div><strong><v-icon icon="mdi-briefcase-outline" size="16" class="mr-1" />Experience</strong><component :is="resolveSectionComponent('experience', effectiveSectionType('experience', sectionType('experience')))" :items="getSectionItems('experience')" :text="getSectionItems('experience')[0]" /></div>
+              <div class="cv-section-row"><strong><v-icon icon="mdi-school-outline" size="16" class="mr-1" />Education</strong><component :is="resolveSectionComponent('education', effectiveSectionType('education', sectionType('education')))" :items="getSectionItems('education')" :text="getSectionItems('education')[0]" /></div>
+              <div class="cv-section-row"><strong><v-icon icon="mdi-folder-outline" size="16" class="mr-1" />Projects</strong><component :is="resolveSectionComponent('projects', effectiveSectionType('projects', sectionType('projects')))" :items="getSectionItems('projects')" :text="getSectionItems('projects')[0]" /></div>
+              <div class="cv-section-row"><strong><v-icon icon="mdi-star-outline" size="16" class="mr-1" />Skills</strong><component :is="resolveSectionComponent('skills', effectiveSectionType('skills', sectionType('skills')))" :items="getSectionItems('skills')" :text="getSectionItems('skills')[0]" /></div>
             </div>
             <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
-              <div v-for="section in structureOneSections" :key="`s1-${section}`" class="cv-section-row"><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+              <div v-for="section in structureOneSections" :key="`s1-${section}`" class="cv-section-row"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details /></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
             </div>
             <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
-              <div v-for="section in structureTwoTopSections" :key="`s2-top-${section}`" class="cv-section-row"><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+              <div v-for="section in structureTwoTopSections" :key="`s2-top-${section}`" class="cv-section-row"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details /></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
               <v-row class="mt-1" dense>
                 <v-col cols="6">
-                  <div v-for="section in structureTwoLeftSections" :key="`s2-left-${section}`" class="cv-section-row"><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+                  <div v-for="section in structureTwoLeftSections" :key="`s2-left-${section}`" class="cv-section-row"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details /></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
                 </v-col>
                 <v-col cols="6">
-                  <div v-for="section in structureTwoRightSections" :key="`s2-right-${section}`" class="cv-section-row"><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+                  <div v-for="section in structureTwoRightSections" :key="`s2-right-${section}`" class="cv-section-row"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details /></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
                 </v-col>
               </v-row>
             </div>
@@ -459,7 +470,8 @@ onMounted(() => {
 .cv-section-row--progress-circle{border-style:solid}
 .cv-row-items { margin: 6px 0 0; padding-left: 16px; }
 .cv-row-items li { font-size: 12px; line-height: 1.35; }
-.cv-section-row {
+ .cv-section-row {
+  position:relative;
   border: 0;
   border-radius: 0;
   padding: 8px 4px;
@@ -468,6 +480,11 @@ onMounted(() => {
   color: #334155;
   background: transparent;
 }
+.cv-section-row > strong{display:block;margin-bottom:6px;padding-right:120px}
+.cv-section-toolbar{position:absolute;top:4px;right:4px;opacity:0;pointer-events:none;transition:opacity .15s ease;z-index:2}
+.cv-section-row:hover .cv-section-toolbar{opacity:1;pointer-events:auto}
+.cv-section-toolbar :deep(.v-field){min-height:28px}
+.cv-section-toolbar{width:112px}
 
 .template-menu-card {
   width: min(860px, calc(100vw - 48px));
