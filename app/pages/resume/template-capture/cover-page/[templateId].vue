@@ -67,7 +67,10 @@ const resolvedStyles = computed(() => {
   const firstItem = Object.values(items || {})[0] as { designConfig?: typeof defaultBarDesignConfig } | undefined
   const designConfig = firstItem?.designConfig || defaultBarDesignConfig
   return {
-    sectionDividerStyle: tpl?.decor?.divider === 'dashed' ? 'dashed' : 'solid',
+    sectionDividerStyle: tpl?.decor?.divider === 'none' ? 'none' : tpl?.decor?.divider === 'dashed' ? 'dashed' : 'solid',
+    sectionDividerColor: tpl?.decor?.divider === 'gradient' ? 'color-mix(in srgb,var(--cp-primary) 55%, var(--cp-secondary) 45%)' : 'var(--cp-secondary)',
+    headerStyle: String(tpl?.decor?.headerStyle || ''),
+    heroGradient: tpl?.decor?.gradientStyle && tpl?.decor?.gradientStyle !== 'none' ? 'linear-gradient(135deg, color-mix(in srgb,var(--cp-primary) 14%, transparent), color-mix(in srgb,var(--cp-secondary) 24%, transparent))' : 'transparent',
     sectionSpacing: spacingMap[tpl?.layoutOptions?.sectionSpacing] || 30,
     radius: radiusMap[tpl?.designTokens?.borderRadius] || 8,
     barWidth: Number(designConfig?.barWidth?.min ?? defaultBarDesignConfig.barWidth.min),
@@ -122,6 +125,7 @@ const decorObjects = computed(() =>
       '--cp-bg': selectedTemplate.theme.palette.pageBackground,
       '--section-divider-style': resolvedStyles.sectionDividerStyle,
       '--section-spacing': `${resolvedStyles.sectionSpacing}px`,
+      '--section-divider-color': resolvedStyles.sectionDividerColor,
       '--cp-radius': `${resolvedStyles.radius}px`,
       '--cp-bar-width': `${resolvedStyles.barWidth}px`,
       '--cp-bar-secondary-width': `${resolvedStyles.barSecondaryWidth}px`,
@@ -136,7 +140,7 @@ const decorObjects = computed(() =>
       :class="`decor-${object.type || 'circle'}`"
       :style="{ left: object.x, top: object.y, width: `${object.size}px`, height: `${object.size}px`, opacity: object.opacity ?? 0.08 }"
     />
-    <header class="hero" :class="{ 'hero--double': resolvedStyles.barLayout === 'double' }">
+    <header class="hero" :class="{ 'hero--double': resolvedStyles.barLayout === 'double', 'hero--ribbon': resolvedStyles.headerStyle === 'ribbon' }" :style="{ background: resolvedStyles.heroGradient }">
       <img src="/img/team-1.jpg" alt="profile" class="capture-photo">
       <h1 :style="itemStyles.fullName">Alex Martin</h1>
       <p class="role" :style="itemStyles.role">Senior Full Stack Developer</p>
@@ -155,12 +159,12 @@ const decorObjects = computed(() =>
 <style scoped>
 .capture-cover-page { position: relative; overflow: hidden; width: 850px; height: 1123px; padding: 80px; background: var(--cp-bg); color: var(--cp-text); border-radius: var(--cp-radius); box-shadow: var(--cp-shadow); }
 .hero { border-left: var(--cp-bar-width) solid var(--cp-primary); padding-left: 24px; margin-bottom: 48px; border-radius: var(--cp-bar-radius); min-height: 148px; position:relative; }
-.hero--double::before{content:'';position:absolute;left:calc(var(--cp-bar-width) + 6px);top:0;bottom:0;width:var(--cp-bar-secondary-width);background:var(--cp-secondary);border-radius:var(--cp-bar-radius)}
+.hero--ribbon{padding-top:16px;padding-bottom:12px}.hero--double::before{content:'';position:absolute;left:calc(var(--cp-bar-width) + 6px);top:0;bottom:0;width:var(--cp-bar-secondary-width);background:var(--cp-secondary);border-radius:var(--cp-bar-radius)}
 h1 { font-size: 58px; margin: 0; }
 p { font-size: 24px; color: var(--cp-muted); }
 .role { margin-top: 8px; }
 h2 { color: var(--cp-primary); font-size: 40px; margin: 0 0 16px; }
-section { border-top: 3px var(--section-divider-style) var(--cp-secondary); padding-top: 24px; margin-top: var(--section-spacing); }
+section { border-top: 3px var(--section-divider-style) var(--section-divider-color); padding-top: 24px; margin-top: var(--section-spacing); }
 .contact-row { display: flex; gap: 24px; margin-top: 20px; flex-wrap: wrap; }
 .decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}
 .decor-circle{border-radius:999px}
