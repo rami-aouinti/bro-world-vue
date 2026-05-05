@@ -1,0 +1,77 @@
+<script setup lang="ts">
+import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-20-resume.json'
+import CvLayoutAside from '~/components/cv/layouts/CvLayoutAside.vue'
+import CvLayoutAsideLeft from '~/components/cv/layouts/CvLayoutAsideLeft.vue'
+import CvLayoutAsideRight from '~/components/cv/layouts/CvLayoutAsideRight.vue'
+import CvLayoutNoAside from '~/components/cv/layouts/CvLayoutNoAside.vue'
+import CvLayoutAsideFullLeft from '~/components/cv/layouts/CvLayoutAsideFullLeft.vue'
+import CvLayoutAsideFullRight from '~/components/cv/layouts/CvLayoutAsideFullRight.vue'
+
+definePageMeta({ layout: false })
+
+const route = useRoute()
+const templateId = computed(() => String(route.params.templateId || 'tpl-001'))
+
+function resolveGeneratedTemplateId(rawTemplateId: string): string {
+  const normalized = rawTemplateId.trim()
+  if (!normalized) return ''
+  const exactGenerated = GENERATED_RESUME_TEMPLATES.find((template) => template.id === normalized)
+  if (exactGenerated) return exactGenerated.id
+  const unprefixed = normalized.startsWith('resume-') ? normalized.slice('resume-'.length) : normalized
+  const prefixedGenerated = GENERATED_RESUME_TEMPLATES.find((template) => template.id === unprefixed)
+  if (prefixedGenerated) return prefixedGenerated.id
+  const startsWithGenerated = GENERATED_RESUME_TEMPLATES.find((template) => template.id.startsWith(normalized))
+  if (startsWithGenerated) return startsWithGenerated.id
+  return ''
+}
+
+const selectedTemplate = computed(() => {
+  const resolvedTemplateId = resolveGeneratedTemplateId(templateId.value)
+  return GENERATED_RESUME_TEMPLATES.find((tpl) => tpl.id === resolvedTemplateId) || GENERATED_RESUME_TEMPLATES[0]
+})
+
+const cvLayoutComponentMap = {
+  aside: CvLayoutAside,
+  'no-aside': CvLayoutNoAside,
+  'aside-left': CvLayoutAsideLeft,
+  'aside-right': CvLayoutAsideRight,
+  'aside-full-left': CvLayoutAsideFullLeft,
+  'aside-full-right': CvLayoutAsideFullRight,
+} as const
+
+const activeLayoutComponent = computed(() => cvLayoutComponentMap[selectedTemplate.value.layout as keyof typeof cvLayoutComponentMap] || CvLayoutNoAside)
+</script>
+
+<template>
+  <main class="capture-cv-page">
+    <component :is="activeLayoutComponent">
+      <div class="capture-empty-state">
+        <h2>{{ selectedTemplate.name }}</h2>
+        <p>{{ selectedTemplate.id }} · {{ selectedTemplate.layout }}</p>
+        <p>Layout capture CV prêt (content vide pour le moment).</p>
+      </div>
+    </component>
+  </main>
+</template>
+
+<style scoped>
+.capture-cv-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: #eef2ff;
+  padding: 24px;
+}
+.capture-empty-state {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  color: #334155;
+}
+</style>
