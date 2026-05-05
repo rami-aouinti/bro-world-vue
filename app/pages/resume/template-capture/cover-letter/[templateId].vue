@@ -67,7 +67,10 @@ const resolvedStyles = computed(() => {
   const firstItem = Object.values(items || {})[0] as { designConfig?: typeof defaultBarDesignConfig } | undefined
   const designConfig = firstItem?.designConfig || defaultBarDesignConfig
   return {
-    sectionDividerStyle: tpl?.decor?.divider === 'dashed' ? 'dashed' : 'solid',
+    sectionDividerStyle: tpl?.decor?.divider === 'none' ? 'none' : tpl?.decor?.divider === 'dashed' ? 'dashed' : 'solid',
+    sectionDividerColor: tpl?.decor?.divider === 'gradient' ? 'color-mix(in srgb,var(--cl-primary) 55%, var(--cl-secondary) 45%)' : 'var(--cl-secondary)',
+    headerStyle: String(tpl?.decor?.headerStyle || ''),
+    heroGradient: tpl?.decor?.gradientStyle && tpl?.decor?.gradientStyle !== 'none' ? 'linear-gradient(135deg, color-mix(in srgb,var(--cl-primary) 14%, transparent), color-mix(in srgb,var(--cl-secondary) 24%, transparent))' : 'transparent',
     paragraphSpacing: spacingMap[tpl?.layoutOptions?.paragraphSpacing] || 30,
     radius: radiusMap[tpl?.designTokens?.borderRadius] || 8,
     barPrimaryWidth: Number(designConfig?.barWidth?.min ?? defaultBarDesignConfig.barWidth.min),
@@ -136,7 +139,7 @@ const decorObjects = computed(() =>
       <p class="date" :style="itemStyles.date">May 3, 2026</p>
       <p class="address" :style="itemStyles.address">Paris, France</p>
     </div>
-    <header class="hero" :class="{ 'hero--double': resolvedStyles.barLayout === 'double' }">
+    <header class="hero" :class="{ 'hero--double': resolvedStyles.barLayout === 'double', 'hero--ribbon': resolvedStyles.headerStyle === 'ribbon' }" :style="{ background: resolvedStyles.heroGradient }">
       <div class="hero-row">
         <img src="/img/team-1.jpg" alt="profile" class="capture-photo">
         <h1>Alex Martin</h1>
@@ -164,12 +167,12 @@ const decorObjects = computed(() =>
 .date { color: var(--cl-muted); margin: 0; }
 .address { margin: 0; }
 .hero { border-left: var(--cl-bar-primary-width) solid var(--cl-primary); padding-left: 24px; padding-top: 6px; margin-bottom: 42px; min-height: 140px; position: relative; border-radius: var(--cl-bar-radius); }
-.hero--double::before{content:'';position:absolute;left:calc(var(--cl-bar-primary-width) + 6px);top:0;bottom:0;width:var(--cl-bar-secondary-width);background:var(--cl-secondary);border-radius:var(--cl-bar-radius)}
+.hero--ribbon{padding-top:16px;padding-bottom:12px}.hero--double::before{content:'';position:absolute;left:calc(var(--cl-bar-primary-width) + 6px);top:0;bottom:0;width:var(--cl-bar-secondary-width);background:var(--cl-secondary);border-radius:var(--cl-bar-radius)}
 .hero-row { display: flex; flex-direction: column; gap: 6px; }
 h1 { color: var(--cl-text); margin: 0; font-size: 44px; line-height: 1.05; }
 .role { color: var(--cl-muted); margin: 0; font-size: 24px; }
 p { font-size: 24px; line-height: 1.55; margin: 0 0 18px; color: color-mix(in srgb,var(--cl-text) 78%, #475569); }
-section { border-top: 2px var(--section-divider-style) color-mix(in srgb,var(--cl-secondary) 45%, transparent); padding-top: 24px; margin-top: 24px; }
+section { border-top: 2px var(--section-divider-style) var(--section-divider-color); padding-top: 24px; margin-top: 24px; }
 .intro { font-weight: 700; color: var(--cl-text); margin-bottom: 24px; }
 .signature-label { margin-top: 24px; }
 .decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cl-primary) 35%,transparent)}
