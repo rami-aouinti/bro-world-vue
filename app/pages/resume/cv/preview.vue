@@ -299,10 +299,16 @@ onMounted(() => {
           </template>
           <template #aside>
             <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" :class="['cv-aside-sections', { 'cv-aside-sections--full': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
-              <div v-for="section in structureAsideOneSections" :key="`aside-s1-${section}`" class="cv-aside-section-item">{{ section }} · {{ sectionType(section.toLowerCase() as any) }}</div>
+              <div v-for="section in structureAsideOneSections" :key="`aside-s1-${section}`" class="cv-aside-section-item">
+                <strong>{{ section }}</strong>
+                <component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" />
+              </div>
             </div>
             <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" :class="['cv-aside-sections', { 'cv-aside-sections--full': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
-              <div v-for="section in structureAsideTwoSections" :key="`aside-s2-${section}`" class="cv-aside-section-item">{{ section }} · {{ sectionType(section.toLowerCase() as any) }}</div>
+              <div v-for="section in structureAsideTwoSections" :key="`aside-s2-${section}`" class="cv-aside-section-item">
+                <strong>{{ section }}</strong>
+                <component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" />
+              </div>
             </div>
           </template>
 
@@ -382,6 +388,8 @@ onMounted(() => {
   gap: 8px;
 }
 
+.cv-aside-section-item :deep(.cv-item){font-size:12px;margin-bottom:4px}
+.cv-aside-section-item :deep(.cv-sec){padding:4px 0}
 .cv-aside-section-item {
   padding: 8px 10px;
   border-radius: 8px;
@@ -392,7 +400,9 @@ onMounted(() => {
   font-size: 13px;
 }
 
-.cv-aside-sections--full .cv-aside-section-item {
+.cv-aside-sections--full .cv-aside-section-item :deep(.cv-item){font-size:12px;margin-bottom:4px}
+.cv-aside-section-item :deep(.cv-sec){padding:4px 0}
+.cv-aside-section-item {
   background: rgba(255,255,255,.16);
   color: #fff;
   border: none;
