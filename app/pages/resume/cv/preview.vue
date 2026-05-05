@@ -31,6 +31,12 @@ const cvLayoutComponentMap = {
 
 const activeLayoutComponent = computed(() => cvLayoutComponentMap[activeTemplate.value?.layout as keyof typeof cvLayoutComponentMap] || CvLayoutNoAside)
 
+const structureOneSections = ['Profile', 'Experience', 'Education', 'Skills', 'Projects', 'Languages', 'Certification', 'References', 'Hobby']
+const structureTwoTopSections = ['Profile', 'Experience', 'Education']
+const structureTwoLeftSections = ['Skills']
+const structureTwoRightSections = ['Projects', 'Languages', 'Certification', 'References', 'Hobby']
+const isMainStructureLayout = computed(() => ['aside', 'no-aside'].includes(String(activeTemplate.value?.layout || '')))
+
 const asideWidth = ref(850)
 const asideHeight = ref(1100)
 const asideRadius = ref(0)
@@ -132,7 +138,21 @@ onMounted(() => {
             </div>
           </template>
           <template #content>
-            <div class="empty-state">
+            <div v-if="isMainStructureLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
+              <div v-for="section in structureOneSections" :key="`s1-${section}`" class="cv-section-row">{{ section }}</div>
+            </div>
+            <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
+              <div v-for="section in structureTwoTopSections" :key="`s2-top-${section}`" class="cv-section-row">{{ section }}</div>
+              <v-row class="mt-1" dense>
+                <v-col cols="6">
+                  <div v-for="section in structureTwoLeftSections" :key="`s2-left-${section}`" class="cv-section-row">{{ section }}</div>
+                </v-col>
+                <v-col cols="6">
+                  <div v-for="section in structureTwoRightSections" :key="`s2-right-${section}`" class="cv-section-row">{{ section }}</div>
+                </v-col>
+              </v-row>
+            </div>
+            <div v-else class="empty-state">
               <p class="text-medium-emphasis">Aucune section CV affichée pour le moment.</p>
             </div>
           </template>
@@ -148,6 +168,20 @@ onMounted(() => {
   text-align: center;
   max-width: 560px;
   padding: 24px;
+}
+
+.cv-sections-list, .cv-sections-structure-2 {
+  width: 100%;
+}
+
+.cv-section-row {
+  border: 1px dashed rgba(100, 116, 139, 0.45);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #334155;
+  background: rgba(248, 250, 252, 0.7);
 }
 
 .template-menu-card {
