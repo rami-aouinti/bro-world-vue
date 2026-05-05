@@ -35,10 +35,6 @@ const asideWidth = ref(100)
 const asideHeight = ref(180)
 const asideRadius = ref(0)
 
-function parsePercent(value: unknown, fallback: number) {
-  const num = Number.parseFloat(String(value ?? ''))
-  return Number.isFinite(num) ? num : fallback
-}
 
 function parsePx(value: unknown, fallback: number) {
   const num = Number.parseFloat(String(value ?? ''))
@@ -46,7 +42,7 @@ function parsePx(value: unknown, fallback: number) {
 }
 
 watch(activeTemplate, (template) => {
-  asideWidth.value = parsePercent(template?.aside?.width, 100)
+  asideWidth.value = 100
   asideHeight.value = parsePx(template?.aside?.height, 180)
   asideRadius.value = parsePx(template?.aside?.radius, 0)
 }, { immediate: true })
