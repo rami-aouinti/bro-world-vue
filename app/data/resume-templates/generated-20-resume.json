@@ -31,7 +31,7 @@
       "showIcon": true
     },
     "aside": {
-      "width": "900px",
+      "width": "720",
       "height": "220px",
       "radius": "18px"
     },
@@ -102,8 +102,8 @@
       "showIcon": true
     },
     "aside": {
-      "width": "900px",
-      "height": "220px",
+      "width": "300px",
+      "height": "1220px",
       "radius": "18px"
     },
     "photo": {
@@ -143,10 +143,10 @@
   },
   {
     "id": "tpl-003",
-    "name": "no-aside-structure-1",
+    "name": "aside-structure-3",
     "version": 1,
-    "layout": "no-aside",
-    "structure": "structure-1",
+    "layout": "aside",
+    "structure": "structure-3",
     "sections": {
       "experience": "timeline",
       "education": "timeline",
@@ -173,8 +173,9 @@
       "showIcon": true
     },
     "aside": {
-      "width": "260px",
-      "height": "1400px"
+      "width": "400",
+      "height": "220px",
+      "radius": "22px"
     },
     "photo": {
       "position": "left",
