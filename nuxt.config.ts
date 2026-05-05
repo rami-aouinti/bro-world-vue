@@ -50,7 +50,7 @@ export default defineNuxtConfig({
     groups: [
       {
         userAgent: '*',
-        allow: ['/', '/world', '/platform', '/applications', '/resume'],
+        allow: ['/world/crm', '/world/learning', '/world/jobs', '/world/shop', '/resume', '/service', '/about', '/contact', '/faq', '/applications/quiz', '/games', '/platform', '/applications/sports'],
         disallow: ['/admin', '/dashboard', '/login', '/register'],
       },
     ],

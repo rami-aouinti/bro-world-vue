@@ -8,7 +8,7 @@ definePageMeta({
 
 const { t } = useI18n()
 const runtimeConfig = useRuntimeConfig()
-const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world.com'
+const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
 const pageUrl = `${siteUrl}/resume`
 
 useSeoMeta({
