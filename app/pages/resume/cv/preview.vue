@@ -125,6 +125,26 @@ function resolveSectionComponent(section: string, type: string) {
   return sectionComponentMap[section]?.[type] || sectionComponentMap[section]?.classic || 'div'
 }
 
+function formatShortDate(value: any) {
+  if (!value) return ''
+  const str = String(value)
+  const parts = str.split('-')
+  if (parts.length >= 2) return `${parts[1]}.${parts[0].slice(2)}`
+  return str
+}
+
+const sectionIconMap: Record<string, string> = {
+  profile: 'mdi-account-outline',
+  experience: 'mdi-briefcase-outline',
+  education: 'mdi-school-outline',
+  skills: 'mdi-star-outline',
+  certifications: 'mdi-certificate-outline',
+  languages: 'mdi-translate',
+  references: 'mdi-account-group-outline',
+  hobbies: 'mdi-heart-outline',
+  projects: 'mdi-folder-outline',
+}
+
 function toSectionKey(section: string) {
   const key = section.toLowerCase()
   if (key === "certification") return "certifications"
@@ -135,8 +155,8 @@ function toSectionKey(section: string) {
 function getSectionItems(rawSection: string): string[] {
   const key = normalizeSectionKey(rawSection)
   const data: any = fakeData.value || {}
-  if (key === 'experience') return (data.experiences || []).map((item: any) => { const from = item.startDate ? String(item.startDate).slice(0,10) : ''; const to = item.endDate ? String(item.endDate).slice(0,10) : 'Present'; const date = from ? `${from} - ${to}` : ''; return `${item.title || 'Role'}§${item.company || ''}§${date}§${item.description || 'Description...'}` })
-  if (key === 'education') return (data.educations || []).map((item: any) => { const from = item.startDate ? String(item.startDate).slice(0,10) : ''; const to = item.endDate ? String(item.endDate).slice(0,10) : ''; const date = from ? `${from}${to ? ` - ${to}` : ''}` : ''; const schoolLine = `${item.school || ''}${item.location ? `, ${item.location}` : ''}`; return `${item.title || 'Degree'}§${schoolLine}§${date}§${item.description || 'Description...'}` })
+  if (key === 'experience') return (data.experiences || []).map((item: any) => { const from = formatShortDate(item.startDate); const to = item.endDate ? formatShortDate(item.endDate) : 'Present'; const date = from ? `${from} - ${to}` : ''; return `${item.title || 'Role'}§${item.company || ''}§${date}§${item.description || 'Description...'}` })
+  if (key === 'education') return (data.educations || []).map((item: any) => { const from = formatShortDate(item.startDate); const to = formatShortDate(item.endDate); const date = from ? `${from}${to ? ` - ${to}` : ''}` : ''; const schoolLine = `${item.school || ''}${item.location ? `, ${item.location}` : ''}`; return `${item.title || 'Degree'}§${schoolLine}§${date}§${item.description || 'Description...'}` })
   if (key === 'projects') return (data.projects || []).map((item: any) => `${item.title || 'Project'}${item.description ? ` · ${item.description}` : ''}`)
   if (key === 'skills') return (data.skills || []).map((item: any) => typeof item === 'string' ? item : `${item.name || item.title || 'Skill'}${item.level ? ` (${item.level}%)` : ''}`).filter(Boolean)
   if (key === 'languages') return (data.languages || []).map((item: any) => typeof item === 'string' ? item : `${item.name || item.title || 'Language'}${item.level ? ` (${item.level}%)` : ''}`)
@@ -323,13 +343,13 @@ onMounted(() => {
           <template #aside>
             <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" :class="['cv-aside-sections', { 'cv-aside-sections--full': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
               <div v-for="section in structureAsideOneSections" :key="`aside-s1-${section}`" class="cv-aside-section-item">
-                <strong>{{ section }}</strong>
+                <strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong>
                 <component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" />
               </div>
             </div>
             <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" :class="['cv-aside-sections', { 'cv-aside-sections--full': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
               <div v-for="section in structureAsideTwoSections" :key="`aside-s2-${section}`" class="cv-aside-section-item">
-                <strong>{{ section }}</strong>
+                <strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong>
                 <component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" />
               </div>
             </div>
@@ -337,17 +357,17 @@ onMounted(() => {
 
           <template #content>
             <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
-              <div class="cv-section-row"><strong>Experience</strong><component :is="resolveSectionComponent('experience', sectionType('experience'))" :items="getSectionItems('experience')" :text="getSectionItems('experience')[0]" /></div>
-              <div class="cv-section-row"><strong>Education</strong><component :is="resolveSectionComponent('education', sectionType('education'))" :items="getSectionItems('education')" :text="getSectionItems('education')[0]" /></div>
-              <div class="cv-section-row"><strong>Projects</strong><component :is="resolveSectionComponent('projects', sectionType('projects'))" :items="getSectionItems('projects')" :text="getSectionItems('projects')[0]" /></div>
+              <div class="cv-section-row"><strong><v-icon icon="mdi-briefcase-outline" size="16" class="mr-1" />Experience</strong><component :is="resolveSectionComponent('experience', sectionType('experience'))" :items="getSectionItems('experience')" :text="getSectionItems('experience')[0]" /></div>
+              <div class="cv-section-row"><strong><v-icon icon="mdi-school-outline" size="16" class="mr-1" />Education</strong><component :is="resolveSectionComponent('education', sectionType('education'))" :items="getSectionItems('education')" :text="getSectionItems('education')[0]" /></div>
+              <div class="cv-section-row"><strong><v-icon icon="mdi-folder-outline" size="16" class="mr-1" />Projects</strong><component :is="resolveSectionComponent('projects', sectionType('projects'))" :items="getSectionItems('projects')" :text="getSectionItems('projects')[0]" /></div>
             </div>
             <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
-              <div class="cv-section-row"><strong>Experience</strong><component :is="resolveSectionComponent('experience', sectionType('experience'))" :items="getSectionItems('experience')" :text="getSectionItems('experience')[0]" /></div>
-              <div class="cv-section-row"><strong>Education</strong><component :is="resolveSectionComponent('education', sectionType('education'))" :items="getSectionItems('education')" :text="getSectionItems('education')[0]" /></div>
-              <div class="cv-section-row"><strong>Projects</strong><component :is="resolveSectionComponent('projects', sectionType('projects'))" :items="getSectionItems('projects')" :text="getSectionItems('projects')[0]" /></div>
+              <div class="cv-section-row"><strong><v-icon icon="mdi-briefcase-outline" size="16" class="mr-1" />Experience</strong><component :is="resolveSectionComponent('experience', sectionType('experience'))" :items="getSectionItems('experience')" :text="getSectionItems('experience')[0]" /></div>
+              <div class="cv-section-row"><strong><v-icon icon="mdi-school-outline" size="16" class="mr-1" />Education</strong><component :is="resolveSectionComponent('education', sectionType('education'))" :items="getSectionItems('education')" :text="getSectionItems('education')[0]" /></div>
+              <div class="cv-section-row"><strong><v-icon icon="mdi-folder-outline" size="16" class="mr-1" />Projects</strong><component :is="resolveSectionComponent('projects', sectionType('projects'))" :items="getSectionItems('projects')" :text="getSectionItems('projects')[0]" /></div>
               <v-row class="mt-1" dense>
                 <v-col cols="6">
-                  <div class="cv-section-row"><strong>Skills</strong><component :is="resolveSectionComponent('skills', sectionType('skills'))" :items="getSectionItems('skills').slice(0, Math.ceil(getSectionItems('skills').length/2))" :text="getSectionItems('skills')[0]" /></div>
+                  <div class="cv-section-row"><strong><v-icon icon="mdi-star-outline" size="16" class="mr-1" />Skills</strong><component :is="resolveSectionComponent('skills', sectionType('skills'))" :items="getSectionItems('skills').slice(0, Math.ceil(getSectionItems('skills').length/2))" :text="getSectionItems('skills')[0]" /></div>
                 </v-col>
                 <v-col cols="6">
                   <div class="cv-section-row"><component :is="resolveSectionComponent('skills', sectionType('skills'))" :items="getSectionItems('skills').slice(Math.ceil(getSectionItems('skills').length/2))" :text="getSectionItems('skills')[0]" /></div>
@@ -355,16 +375,16 @@ onMounted(() => {
               </v-row>
             </div>
             <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
-              <div v-for="section in structureOneSections" :key="`s1-${section}`" class="cv-section-row"><strong>{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+              <div v-for="section in structureOneSections" :key="`s1-${section}`" class="cv-section-row"><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
             </div>
             <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
-              <div v-for="section in structureTwoTopSections" :key="`s2-top-${section}`" class="cv-section-row"><strong>{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+              <div v-for="section in structureTwoTopSections" :key="`s2-top-${section}`" class="cv-section-row"><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
               <v-row class="mt-1" dense>
                 <v-col cols="6">
-                  <div v-for="section in structureTwoLeftSections" :key="`s2-left-${section}`" class="cv-section-row"><strong>{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+                  <div v-for="section in structureTwoLeftSections" :key="`s2-left-${section}`" class="cv-section-row"><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
                 </v-col>
                 <v-col cols="6">
-                  <div v-for="section in structureTwoRightSections" :key="`s2-right-${section}`" class="cv-section-row"><strong>{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+                  <div v-for="section in structureTwoRightSections" :key="`s2-right-${section}`" class="cv-section-row"><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
                 </v-col>
               </v-row>
             </div>
@@ -431,6 +451,10 @@ onMounted(() => {
 .cv-aside-sections--full .cv-aside-section-item :deep(.cv-item),
 .cv-aside-sections--full .cv-aside-section-item :deep(p) {
   color: #fff;
+}
+.cv-aside-sections--full .cv-aside-section-item :deep(.label),
+.cv-aside-sections--full .cv-aside-section-item :deep(.value) {
+  color: #fff !important;
 }
 
 .cv-section-row small { font-weight: 400; opacity: .8; }
