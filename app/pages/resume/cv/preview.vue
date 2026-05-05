@@ -61,6 +61,28 @@ const headerType = computed(() => String(activeTemplate.value?.headerType || 'he
 
 const fakeData = computed(() => ((activeTemplate.value as any)?.fakeData || {}))
 const sectionType = (key: keyof ReturnType<typeof sectionVariantMap['value']>) => sectionVariantMap.value[key] || 'classic'
+
+function normalizeSectionKey(raw: string) {
+  const key = raw.toLowerCase()
+  if (key === 'certification') return 'certifications'
+  if (key === 'hobby') return 'hobbies'
+  return key
+}
+
+function getSectionItems(rawSection: string): string[] {
+  const key = normalizeSectionKey(rawSection)
+  const data: any = fakeData.value || {}
+  if (key === 'experience') return (data.experiences || []).map((item: any) => `${item.title || 'Role'} · ${item.company || ''}`)
+  if (key === 'education') return (data.educations || []).map((item: any) => `${item.title || 'Degree'} · ${item.school || ''}`)
+  if (key === 'projects') return (data.projects || []).map((item: any) => `${item.title || 'Project'}${item.description ? ` · ${item.description}` : ''}`)
+  if (key === 'skills') return (data.skills || []).map((item: any) => typeof item === 'string' ? item : item.title).filter(Boolean)
+  if (key === 'languages') return (data.languages || []).map((item: any) => typeof item === 'string' ? item : `${item.title || item}`)
+  if (key === 'certifications') return (data.certifications || []).map((item: any) => typeof item === 'string' ? item : item.title).filter(Boolean)
+  if (key === 'references') return (data.references || []).map((item: any) => typeof item === 'string' ? item : item.title).filter(Boolean)
+  if (key === 'hobbies') return (data.hobbies || []).map((item: any) => typeof item === 'string' ? item : item.title).filter(Boolean)
+  if (key === 'profile') return [String(data.profileDescription || '')].filter(Boolean)
+  return []
+}
 const headerProfile = computed(() => {
   const fake = (activeTemplate.value as any)?.fakeData || {}
   return {
@@ -245,9 +267,9 @@ onMounted(() => {
 
           <template #content>
             <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
-              <div class="cv-section-row" :class="`cv-section-row--${sectionType('experience')}`">Experience · {{ sectionType('experience') }}<small v-if="fakeData.experiences?.[0]?.title"> — {{ fakeData.experiences[0].title }}</small></div>
-              <div class="cv-section-row" :class="`cv-section-row--${sectionType('education')}`">Education · {{ sectionType('education') }}<small v-if="fakeData.educations?.[0]?.title"> — {{ fakeData.educations[0].title }}</small></div>
-              <div class="cv-section-row" :class="`cv-section-row--${sectionType('projects')}`">Projects · {{ sectionType('projects') }}<small v-if="fakeData.projects?.[0]?.title"> — {{ fakeData.projects[0].title }}</small></div>
+              <div class="cv-section-row" :class="`cv-section-row--${sectionType('experience')}`">Experience · {{ sectionType('experience') }}<ul class="cv-row-items"><li v-for="(item, idx) in getSectionItems('experience').slice(0, 2)" :key="`experience-item-${idx}`">{{ item }}</li></ul><small v-if="fakeData.experiences?.[0]?.title"> — {{ fakeData.experiences[0].title }}</small></div>
+              <div class="cv-section-row" :class="`cv-section-row--${sectionType('education')}`">Education · {{ sectionType('education') }}<ul class="cv-row-items"><li v-for="(item, idx) in getSectionItems('education').slice(0, 2)" :key="`education-item-${idx}`">{{ item }}</li></ul><small v-if="fakeData.educations?.[0]?.title"> — {{ fakeData.educations[0].title }}</small></div>
+              <div class="cv-section-row" :class="`cv-section-row--${sectionType('projects')}`">Projects · {{ sectionType('projects') }}<ul class="cv-row-items"><li v-for="(item, idx) in getSectionItems('projects').slice(0, 2)" :key="`projects-item-${idx}`">{{ item }}</li></ul><small v-if="fakeData.projects?.[0]?.title"> — {{ fakeData.projects[0].title }}</small></div>
             </div>
             <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
               <div class="cv-section-row" :class="`cv-section-row--${sectionType('experience')}`">Experience · {{ sectionType('experience') }}</div>
@@ -255,24 +277,24 @@ onMounted(() => {
               <div class="cv-section-row" :class="`cv-section-row--${sectionType('projects')}`">Projects · {{ sectionType('projects') }}</div>
               <v-row class="mt-1" dense>
                 <v-col cols="6">
-                  <div class="cv-section-row">Skills · {{ sectionType("skills") }} · Column 1</div>
+                  <div class="cv-section-row">Skills · {{ sectionType("skills") }} · Column 1<ul class="cv-row-items"><li v-for="(item, idx) in getSectionItems('skills').slice(0, Math.ceil(getSectionItems('skills').length/2))" :key="`skills-left-${idx}`">{{ item }}</li></ul></div>
                 </v-col>
                 <v-col cols="6">
-                  <div class="cv-section-row">Skills · {{ sectionType("skills") }} · Column 2</div>
+                  <div class="cv-section-row">Skills · {{ sectionType("skills") }} · Column 2<ul class="cv-row-items"><li v-for="(item, idx) in getSectionItems('skills').slice(Math.ceil(getSectionItems('skills').length/2))" :key="`skills-right-${idx}`">{{ item }}</li></ul></div>
                 </v-col>
               </v-row>
             </div>
             <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
-              <div v-for="section in structureOneSections" :key="`s1-${section}`" class="cv-section-row">{{ section }} · {{ sectionType(section.toLowerCase() as any) }}</div>
+              <div v-for="section in structureOneSections" :key="`s1-${section}`" class="cv-section-row">{{ section }} · {{ sectionType(section.toLowerCase() as any) }}<ul class="cv-row-items"><li v-for="(item, idx) in getSectionItems(section).slice(0, 2)" :key="`item-${section}-${idx}`">{{ item }}</li></ul></div>
             </div>
             <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
-              <div v-for="section in structureTwoTopSections" :key="`s2-top-${section}`" class="cv-section-row">{{ section }} · {{ sectionType(section.toLowerCase() as any) }}</div>
+              <div v-for="section in structureTwoTopSections" :key="`s2-top-${section}`" class="cv-section-row">{{ section }} · {{ sectionType(section.toLowerCase() as any) }}<ul class="cv-row-items"><li v-for="(item, idx) in getSectionItems(section).slice(0, 2)" :key="`item-${section}-${idx}`">{{ item }}</li></ul></div>
               <v-row class="mt-1" dense>
                 <v-col cols="6">
-                  <div v-for="section in structureTwoLeftSections" :key="`s2-left-${section}`" class="cv-section-row">{{ section }} · {{ sectionType(section.toLowerCase() as any) }}</div>
+                  <div v-for="section in structureTwoLeftSections" :key="`s2-left-${section}`" class="cv-section-row">{{ section }} · {{ sectionType(section.toLowerCase() as any) }}<ul class="cv-row-items"><li v-for="(item, idx) in getSectionItems(section).slice(0, 2)" :key="`item-${section}-${idx}`">{{ item }}</li></ul></div>
                 </v-col>
                 <v-col cols="6">
-                  <div v-for="section in structureTwoRightSections" :key="`s2-right-${section}`" class="cv-section-row">{{ section }} · {{ sectionType(section.toLowerCase() as any) }}</div>
+                  <div v-for="section in structureTwoRightSections" :key="`s2-right-${section}`" class="cv-section-row">{{ section }} · {{ sectionType(section.toLowerCase() as any) }}<ul class="cv-row-items"><li v-for="(item, idx) in getSectionItems(section).slice(0, 2)" :key="`item-${section}-${idx}`">{{ item }}</li></ul></div>
                 </v-col>
               </v-row>
             </div>
@@ -342,6 +364,8 @@ onMounted(() => {
 .cv-section-row--stars::after{content:" ★"}
 .cv-section-row--progress-line{background:linear-gradient(90deg,#dbeafe 45%,transparent 45%)}
 .cv-section-row--progress-circle{border-style:solid}
+.cv-row-items { margin: 6px 0 0; padding-left: 16px; }
+.cv-row-items li { font-size: 12px; line-height: 1.35; }
 .cv-section-row {
   border: 1px dashed rgba(100, 116, 139, 0.45);
   border-radius: 10px;
