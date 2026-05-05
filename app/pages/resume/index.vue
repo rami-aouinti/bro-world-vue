@@ -7,7 +7,6 @@ definePageMeta({
 })
 
 const { t } = useI18n()
-const router = useRouter()
 const runtimeConfig = useRuntimeConfig()
 const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world.com'
 const pageUrl = `${siteUrl}/resume`
@@ -118,26 +117,6 @@ const selectedTemplateCard = computed(
     null,
 )
 
-const openTemplateInWriteMode = (template: {
-  id: string
-  templateId?: string
-  type: 'resume' | 'cover-page' | 'cover-letter'
-}) => {
-  const pathByType = {
-    resume: '/resume/preview',
-    'cover-page': '/resume/cover-page/editor',
-    'cover-letter': '/resume/cover-letter/editor',
-  } as const
-
-  router.push({
-    path: pathByType[template.type],
-    query: {
-      template: template.type === 'resume' ? template.templateId || template.id : template.id,
-      mode: 'write',
-    },
-  })
-}
-
 const openTemplateModal = (template: {
   id: string
   title: string
@@ -223,19 +202,21 @@ onUnmounted(() => {
               <span>{{ templateCard.title }}</span>
               <v-btn
                 color="primary"
-                variant="text"
+                variant="flat"
                 size="small"
-                class="mt-2"
+                prepend-icon="mdi-eye-outline"
+                class="mt-3 template-action-btn"
                 :to="templateCard.type === 'resume' ? `/resume/preview?template=${templateCard.id}` : templateCard.type === 'cover-page' ? `/resume/cover-page/preview?template=${templateCard.id}` : `/resume/cover-letter/preview?template=${templateCard.id}`"
                 @click.stop
               >
                 Preview
               </v-btn>
               <v-btn
-                color="primary"
-                variant="text"
+                color="secondary"
+                variant="tonal"
                 size="small"
-                class="mt-2 ml-2"
+                prepend-icon="mdi-image-search-outline"
+                class="mt-3 ml-2 template-action-btn"
                 @click.stop="openTemplateModal(templateCard)"
               >
                 Show
@@ -246,32 +227,18 @@ onUnmounted(() => {
       </section>
     </v-container>
 
-    <v-dialog
+    <AppModal
       v-model="isTemplateModalOpen"
-      max-width="960"
+      :title="selectedTemplateCard?.title || ''"
+      :max-width="960"
     >
-      <v-card
+      <v-img
         v-if="selectedTemplateCard"
-        class="template-preview-card"
-        variant="outlined"
-      >
-        <v-card-title>{{ selectedTemplateCard.title }}</v-card-title>
-        <v-card-text>
-          <v-img
-            :src="selectedTemplateCard.image"
-            :alt="selectedTemplateCard.title"
-            class="template-preview-image"
-          />
-          <v-btn
-            color="primary"
-            class="mt-4"
-            @click="openTemplateInWriteMode(selectedTemplateCard)"
-          >
-            Utiliser cette template
-          </v-btn>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+        :src="selectedTemplateCard.image"
+        :alt="selectedTemplateCard.title"
+        class="template-preview-image"
+      />
+    </AppModal>
   </div>
 </template>
 
@@ -366,5 +333,10 @@ onUnmounted(() => {
 .template-preview-image {
   border-radius: 12px;
   border: 1px solid rgba(var(--v-theme-on-surface), 0.16);
+}
+
+.template-action-btn {
+  text-transform: none;
+  font-weight: 600;
 }
 </style>
