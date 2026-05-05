@@ -70,7 +70,7 @@ const asideDesign = computed(() => ({
 .capture-cv-page {
   min-height: 100vh;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-start;
   background: #eef2ff;
   padding: 24px;
@@ -80,7 +80,7 @@ const asideDesign = computed(() => ({
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   text-align: center;
   gap: 8px;

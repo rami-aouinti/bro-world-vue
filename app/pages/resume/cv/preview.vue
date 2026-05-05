@@ -123,8 +123,8 @@ onMounted(() => {
         </div>
       </div>
 
-      <div class="py-8 d-flex justify-center">
-        <component :is="activeLayoutComponent" class="capture-cv-empty" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-aside-width': `${asideWidth}%`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px` }">
+      <div class="py-8">
+        <component :is="activeLayoutComponent" class="capture-cv-empty w-100" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-aside-width': `${asideWidth}%`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px` }">
           <template #header>
             <div class="empty-state">
               <h2>{{ activeTemplate?.name }}</h2>
