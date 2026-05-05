@@ -76,7 +76,7 @@ onMounted(() => {
       </template>
     </AppPageDrawers>
 
-    <v-container fluid :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#eef2ff' }">
+    <v-container fluid>
       <div class="preview-toolbar-wrap">
         <div class="preview-toolbar-row">
           <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-content-save-cog-outline" @click="saveFromPreview">Save</v-btn>
