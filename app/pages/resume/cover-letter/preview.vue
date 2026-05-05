@@ -14,10 +14,33 @@ const imageSize = ref(84)
 const imageBorderWidth = ref(2)
 const imageBorderColor = ref('#0f172a')
 const photoPosition = ref<'left' | 'right'>('left')
-const selectedPalette = ref<'template' | 'sunset' | 'forest' | 'custom'>('template')
-const customPrimary = ref('#0F4C81')
-const customSecondary = ref('#5FA8D3')
-const customPageBackground = ref('#F8FAFC')
+const selectedPalette = ref<string>('template')
+const paletteMenuOpen = ref(false)
+const palettePresetOptions = computed(() => [
+  { title: 'Template', value: 'template', primary: activeTemplate.value.theme.palette.primary, dark: activeTemplate.value.theme.palette.secondary, light: activeTemplate.value.theme.palette.pageBackground },
+  { title: 'Ocean', value: 'ocean', primary: '#2563EB', dark: '#1D4ED8', light: '#EFF6FF' },
+  { title: 'Indigo', value: 'indigo', primary: '#4F46E5', dark: '#3730A3', light: '#EEF2FF' },
+  { title: 'Violet', value: 'violet', primary: '#7C3AED', dark: '#5B21B6', light: '#F5F3FF' },
+  { title: 'Slate', value: 'slate', primary: '#334155', dark: '#1E293B', light: '#F8FAFC' },
+  { title: 'Olive', value: 'olive', primary: '#A3A86C', dark: '#7E8A5B', light: '#F7F8EE' },
+  { title: 'Sage', value: 'sage', primary: '#8AA07A', dark: '#647860', light: '#F3F7F1' },
+  { title: 'Emerald', value: 'emerald', primary: '#059669', dark: '#047857', light: '#ECFDF5' },
+  { title: 'Rose', value: 'rose', primary: '#E11D48', dark: '#BE123C', light: '#FFF1F2' },
+  { title: 'Sky', value: 'sky', primary: '#0EA5E9', dark: '#0284C7', light: '#F0F9FF' },
+  { title: 'Sunset', value: 'sunset', primary: '#C2410C', dark: '#9A3412', light: '#FFF7ED' },
+  { title: 'Amber', value: 'amber', primary: '#D97706', dark: '#B45309', light: '#FFFBEB' },
+  { title: 'Charcoal', value: 'charcoal', primary: '#3F3F46', dark: '#27272A', light: '#FAFAFA' },
+  { title: 'Plum', value: 'plum', primary: '#7E3F8F', dark: '#5B2C6F', light: '#FAF5FF' },
+  { title: 'Teal', value: 'teal', primary: '#0F766E', dark: '#115E59', light: '#F0FDFA' },
+])
+const borderColorOptions = ['#0f172a', '#0F4C81', '#166534', '#C2410C', '#7C3AED', '#1D4ED8', '#DC2626']
+const dividerTypeOptions = [
+  { title: 'Line', value: 'line' },
+  { title: 'Dashed', value: 'dashed' },
+  { title: 'Gradient', value: 'gradient' },
+  { title: 'None', value: 'none' },
+]
+const selectedDividerType = ref('line')
 const textFontSize = ref(24)
 const textColor = ref('#475569')
 const barRadius = ref(0)
@@ -112,18 +135,16 @@ function decorObjectStyle(obj: any) {
 const sectionDividerStyle = computed(() => {
   const showDivider = activeTemplate.value?.layoutOptions?.showDivider ?? true
   if (!showDivider) return 'none'
-  const divider = String(activeTemplate.value?.decor?.divider || 'line')
-  if (divider === 'none') return 'none'
-  if (divider === 'dashed') return 'dashed'
+  if (selectedDividerType.value === 'none') return 'none'
+  if (selectedDividerType.value === 'dashed') return 'dashed'
   return 'solid'
 })
-const sectionDividerColor = computed(() => String(activeTemplate.value?.decor?.divider || '') === 'gradient' ? `color-mix(in srgb, ${activeColors.value.primary} 55%, ${activeColors.value.secondary} 45%)` : activeColors.value.secondary)
+const sectionDividerColor = computed(() => selectedDividerType.value === 'gradient' ? `color-mix(in srgb, ${activeColors.value.primary} 55%, ${activeColors.value.secondary} 45%)` : activeColors.value.secondary)
 const sectionSpacing = computed(() => activeTemplate.value?.layoutOptions?.sectionSpacing === 'wide' ? '40px' : '24px')
 const activeColors = computed(() => {
   const palette = activeTemplate.value.theme.palette
-  if (selectedPalette.value === 'sunset') return { ...palette, primary: '#C2410C', secondary: '#FDBA74', pageBackground: '#FFF7ED' }
-  if (selectedPalette.value === 'forest') return { ...palette, primary: '#166534', secondary: '#86EFAC', pageBackground: '#F0FDF4' }
-  if (selectedPalette.value === 'custom') return { ...palette, primary: customPrimary.value, secondary: customSecondary.value, pageBackground: customPageBackground.value }
+  const selected = palettePresetOptions.value.find((option) => option.value === selectedPalette.value)
+  if (selected && selected.value !== 'template') return { ...palette, primary: selected.primary, secondary: selected.dark, pageBackground: selected.light }
   return palette
 })
 const signatureDataUrl = ref('')
@@ -133,7 +154,7 @@ const photoInput = ref<HTMLInputElement | null>(null)
 const layoutMenuOpen = ref(false)
 const photoQuickMenuOpen = ref(false)
 
-watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; const firstItem = Object.values(items || {})[0] as any; const designConfig = firstItem?.designConfig || defaultBarDesignConfig; barRadius.value = designConfig?.barRadius?.min ?? defaultBarDesignConfig.barRadius.min; primaryBarWidth.value = designConfig?.barWidth?.min ?? defaultBarDesignConfig.barWidth.min; secondaryBarWidth.value = designConfig?.secondaryBarWidth?.min ?? defaultBarDesignConfig.secondaryBarWidth.min; barLayout.value = Array.isArray(designConfig?.barLayout) && designConfig.barLayout.includes('double') ? 'double' : 'single'; for (const key of ['date','address']) { const b=items[key]?.size; if (b) letterElementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) letterElementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) letterElementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
+watch(activeTemplate, (tpl) => { editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); selectedDividerType.value = String(tpl?.decor?.divider || 'line'); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; const items=(tpl as any)?.items||{}; const firstItem = Object.values(items || {})[0] as any; const designConfig = firstItem?.designConfig || defaultBarDesignConfig; barRadius.value = designConfig?.barRadius?.min ?? defaultBarDesignConfig.barRadius.min; primaryBarWidth.value = designConfig?.barWidth?.min ?? defaultBarDesignConfig.barWidth.min; secondaryBarWidth.value = designConfig?.secondaryBarWidth?.min ?? defaultBarDesignConfig.secondaryBarWidth.min; barLayout.value = Array.isArray(designConfig?.barLayout) && designConfig.barLayout.includes('double') ? 'double' : 'single'; for (const key of ['date','address']) { const b=items[key]?.size; if (b) letterElementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) letterElementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) letterElementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
 function addDecorObject(){ editableDecorObjects.value.push(normalizeDecorObject({ type:'circle', x:50, y:50, size:120, opacity:0.15 })) }
 function addDecorObjectFromPreset(preset:any){ editableDecorObjects.value.push(normalizeDecorObject({ ...preset })) }
 function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
@@ -159,10 +180,38 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
   <AppPageDrawers>
     <template #left>
      <v-card-text>
-       <v-menu><template #activator="{ props }"><v-btn v-bind="props" class="mt-3" variant="outlined" block>Palette</v-btn></template><v-list><v-list-item title="Template" @click="selectedPalette='template'"/><v-list-item title="Sunset" @click="selectedPalette='sunset'"/><v-list-item title="Forest" @click="selectedPalette='forest'"/><v-list-item title="Custom" @click="selectedPalette='custom'"/></v-list></v-menu>
-       <v-text-field v-if="selectedPalette==='custom'" v-model="customPrimary" label="Custom primary" hide-details class="mt-3"/>
-       <v-text-field v-if="selectedPalette==='custom'" v-model="customSecondary" label="Custom secondary" hide-details class="mt-3"/>
-       <v-text-field v-if="selectedPalette==='custom'" v-model="customPageBackground" label="Custom page background" hide-details class="mt-3"/>
+       <div class="mt-3">
+         <v-menu v-model="paletteMenuOpen" :close-on-content-click="true">
+           <template #activator="{ props }">
+             <v-btn v-bind="props" variant="outlined" block justify="space-between" prepend-icon="mdi-palette">
+               Palette
+               <v-icon icon="mdi-chevron-down" />
+             </v-btn>
+           </template>
+           <v-list min-width="320">
+             <v-list-item title="Template palette" />
+             <v-list-item>
+               <div class="palette-grid">
+                 <button
+                   v-for="option in palettePresetOptions"
+                   :key="option.value"
+                   type="button"
+                   class="palette-swatch-btn"
+                   :class="{ 'palette-swatch-btn--active': selectedPalette === option.value }"
+                   @click="selectedPalette = option.value"
+                 >
+                   <div class="d-flex ga-1">
+                     <span class="palette-dot" :style="{ backgroundColor: option.primary }" />
+                     <span class="palette-dot" :style="{ backgroundColor: option.dark }" />
+                     <span class="palette-dot" :style="{ backgroundColor: option.light }" />
+                   </div>
+                 </button>
+               </div>
+             </v-list-item>
+           </v-list>
+         </v-menu>
+       </div>
+       <AppSelect v-model="selectedDividerType" :items="dividerTypeOptions" label="Divider type" hide-details class="mt-3"/>
        <v-slider v-model="barRadius" label="Bar radius" :min="activeBarDesignConfig.barRadius.min" :max="activeBarDesignConfig.barRadius.max" step="1" hide-details class="mt-3"/>
        <AppSelect v-model="barLayout" :items="[{ title: 'Single bar', value: 'single' }, { title: 'Double bars', value: 'double' }]" label="Bar layout" hide-details class="mt-3"/>
        <v-slider v-model="primaryBarWidth" label="Bar width" :min="activeBarDesignConfig.barWidth.min" :max="activeBarDesignConfig.barWidth.max" step="1" hide-details class="mt-3"/>
@@ -245,7 +294,16 @@ class="hero" :class="{'hero--double': barLayout === 'double', 'hero--photo-right
               <v-card class="pa-3 photo-quick-menu" min-width="240" @click.stop>
                 <v-slider v-model="imageSize" label="Image size" min="48" max="180" step="1" hide-details class="mt-1"/>
                 <v-slider v-model="imageBorderWidth" label="Border width" min="0" max="12" step="1" hide-details class="mt-3"/>
-                <v-text-field v-model="imageBorderColor" label="Border color" hide-details class="mt-3"/>
+                <v-menu location="bottom start">
+                  <template #activator="{ props }">
+                    <v-btn v-bind="props" class="mt-3" variant="outlined" block>Border color</v-btn>
+                  </template>
+                  <v-card class="pa-2">
+                    <div class="d-flex flex-wrap ga-2">
+                      <v-btn v-for="color in borderColorOptions" :key="`border-${color}`" icon size="x-small" :style="{ backgroundColor: color, border: imageBorderColor === color ? '2px solid #111827' : '1px solid #cbd5e1' }" @click="imageBorderColor = color"/>
+                    </div>
+                  </v-card>
+                </v-menu>
                 <v-btn-toggle v-model="imageShape" divided mandatory class="mt-3" density="comfortable">
                   <v-btn value="circle" size="small">Circle</v-btn><v-btn value="square" size="small">Square</v-btn>
                 </v-btn-toggle>
@@ -304,4 +362,12 @@ class="hero" :class="{'hero--double': barLayout === 'double', 'hero--photo-right
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+</style>
+
+
+<style scoped>
+.palette-dot { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgb(var(--v-theme-on-surface), 0.2); }
+.palette-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.palette-swatch-btn { border: 1px solid rgba(148, 163, 184, 0.35); border-radius: 12px; background: transparent; padding: 8px; }
+.palette-swatch-btn--active { border-color: rgb(var(--v-theme-primary)); }
 </style>
