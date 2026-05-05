@@ -37,6 +37,11 @@ const structureTwoLeftSections = ['Skills']
 const structureTwoRightSections = ['Projects', 'Languages', 'Certification', 'References', 'Hobby']
 const isMainStructureLayout = computed(() => ['aside', 'no-aside'].includes(String(activeTemplate.value?.layout || '')))
 
+const structureAsideOneSections = ['Profile', 'Skills', 'Languages', 'Certification', 'References', 'Hobby']
+const structureAsideTwoSections = ['Profile', 'Languages', 'Certifications', 'References', 'Hobby']
+const structureContentBaseSections = ['Experience', 'Education', 'Projects']
+const isSideContentLayout = computed(() => ['aside-left', 'aside-right', 'aside-full-left', 'aside-full-right'].includes(String(activeTemplate.value?.layout || '')))
+
 const asideWidth = ref(850)
 const asideHeight = ref(1100)
 const asideRadius = ref(0)
@@ -137,8 +142,31 @@ onMounted(() => {
               <p>{{ activeTemplate?.id }} · {{ activeTemplate?.layout }}</p>
             </div>
           </template>
+          <template #aside>
+            <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" class="cv-aside-sections">
+              <div v-for="section in structureAsideOneSections" :key="`aside-s1-${section}`" class="cv-aside-section-item">{{ section }}</div>
+            </div>
+            <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" class="cv-aside-sections">
+              <div v-for="section in structureAsideTwoSections" :key="`aside-s2-${section}`" class="cv-aside-section-item">{{ section }}</div>
+            </div>
+          </template>
+
           <template #content>
-            <div v-if="isMainStructureLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
+            <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
+              <div v-for="section in structureContentBaseSections" :key="`side-content-s1-${section}`" class="cv-section-row">{{ section }}</div>
+            </div>
+            <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
+              <div v-for="section in structureContentBaseSections" :key="`side-content-s2-${section}`" class="cv-section-row">{{ section }}</div>
+              <v-row class="mt-1" dense>
+                <v-col cols="6">
+                  <div class="cv-section-row">Skills · Column 1</div>
+                </v-col>
+                <v-col cols="6">
+                  <div class="cv-section-row">Skills · Column 2</div>
+                </v-col>
+              </v-row>
+            </div>
+            <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
               <div v-for="section in structureOneSections" :key="`s1-${section}`" class="cv-section-row">{{ section }}</div>
             </div>
             <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
@@ -172,6 +200,21 @@ onMounted(() => {
 
 .cv-sections-list, .cv-sections-structure-2 {
   width: 100%;
+}
+
+.cv-aside-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cv-aside-section-item {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,.16);
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
 }
 
 .cv-section-row {
