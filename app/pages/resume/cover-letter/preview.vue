@@ -273,7 +273,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
               variant="outlined"
               @click="applyPreviewTemplate(template.id)"
             >
-              <v-img :src="template.image" height="96" cover />
+              <v-img :src="template.image" class="template-menu-thumb" cover />
               <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
             </v-card>
           </div>
@@ -361,7 +361,8 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
 
 .template-menu-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, 168px);
+  justify-content: center;
   gap: 12px;
 }
 
@@ -369,9 +370,17 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
   margin: 0;
 }
 
+.template-menu-thumb {
+  height: 128px;
+}
+
 @media (max-width: 1100px) {
   .template-menu-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, 148px);
+  }
+
+  .template-menu-thumb {
+    height: 112px;
   }
 }
 </style>
