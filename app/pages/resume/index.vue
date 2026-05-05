@@ -8,7 +8,7 @@ definePageMeta({
 
 const { t } = useI18n()
 const runtimeConfig = useRuntimeConfig()
-const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world.com'
+const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
 const pageUrl = `${siteUrl}/resume`
 
 useSeoMeta({
@@ -195,27 +195,29 @@ onUnmounted(() => {
             >
               <v-img :src="templateCard.image" :alt="templateCard.title" />
               <span>{{ templateCard.title }}</span>
-              <v-btn
-                color="primary"
-                variant="flat"
-                size="small"
-                prepend-icon="mdi-eye-outline"
-                class="mt-3 template-action-btn"
-                :to="templateCard.type === 'resume' ? `/resume/preview?template=${templateCard.id}` : templateCard.type === 'cover-page' ? `/resume/cover-page/preview?template=${templateCard.id}` : `/resume/cover-letter/preview?template=${templateCard.id}`"
-                @click.stop
-              >
-                Preview
-              </v-btn>
-              <v-btn
-                color="secondary"
-                variant="tonal"
-                size="small"
-                prepend-icon="mdi-image-search-outline"
-                class="mt-3 ml-2 template-action-btn"
-                @click.stop="openTemplateModal(templateCard)"
-              >
-                Show
-              </v-btn>
+              <div class="template-actions">
+                <v-btn
+                  color="primary"
+                  variant="flat"
+                  size="small"
+                  prepend-icon="mdi-eye-outline"
+                  class="template-action-btn"
+                  :to="templateCard.type === 'resume' ? `/resume/preview?template=${templateCard.id}` : templateCard.type === 'cover-page' ? `/resume/cover-page/preview?template=${templateCard.id}` : `/resume/cover-letter/preview?template=${templateCard.id}`"
+                  @click.stop
+                >
+                  Preview
+                </v-btn>
+                <v-btn
+                  color="secondary"
+                  variant="tonal"
+                  size="small"
+                  prepend-icon="mdi-image-search-outline"
+                  class="template-action-btn"
+                  @click.stop="openTemplateModal(templateCard)"
+                >
+                  Show
+                </v-btn>
+              </div>
             </v-card>
           </div>
         </div>
@@ -333,5 +335,12 @@ onUnmounted(() => {
 .template-action-btn {
   text-transform: none;
   font-weight: 600;
+}
+
+.template-actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px 16px;
 }
 </style>
