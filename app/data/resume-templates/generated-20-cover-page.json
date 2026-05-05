@@ -3,7 +3,7 @@
     "id": "cpage-001",
     "name": "cover-page-hero-01",
     "version": 1,
-    "layout": "no-aside",
+    "layout": "layout-left",
     "structure": "cover-structure-1",
     "theme": {
       "palette": {
@@ -172,7 +172,7 @@
     "id": "cpage-002",
     "name": "cover-page-editorial-02",
     "version": 1,
-    "layout": "aside-left",
+    "layout": "layout-left",
     "structure": "cover-structure-2",
     "theme": {
       "palette": {
@@ -367,7 +367,7 @@
     "id": "cpage-003",
     "name": "cover-page-minimal-03",
     "version": 1,
-    "layout": "aside-right",
+    "layout": "layout-left",
     "structure": "cover-structure-3",
     "theme": {
       "palette": {
@@ -557,7 +557,7 @@
     "id": "cpage-004",
     "name": "cover-page-executive-04",
     "version": 1,
-    "layout": "header-band-split",
+    "layout": "layout-left",
     "structure": "cover-structure-4",
     "theme": {
       "palette": {
@@ -752,7 +752,7 @@
     "id": "cpage-005",
     "name": "cover-page-creative-05",
     "version": 1,
-    "layout": "two-columns-balanced",
+    "layout": "layout-left",
     "structure": "cover-structure-1",
     "theme": {
       "palette": {
@@ -942,7 +942,7 @@
     "id": "cpage-006",
     "name": "cover-page-hero-06",
     "version": 1,
-    "layout": "no-aside",
+    "layout": "layout-right",
     "structure": "cover-structure-2",
     "theme": {
       "palette": {
@@ -1137,7 +1137,7 @@
     "id": "cpage-007",
     "name": "cover-page-editorial-07",
     "version": 1,
-    "layout": "aside-left",
+    "layout": "layout-right",
     "structure": "cover-structure-3",
     "theme": {
       "palette": {
@@ -1327,7 +1327,7 @@
     "id": "cpage-008",
     "name": "cover-page-minimal-08",
     "version": 1,
-    "layout": "aside-right",
+    "layout": "layout-right",
     "structure": "cover-structure-4",
     "theme": {
       "palette": {
@@ -1522,7 +1522,7 @@
     "id": "cpage-009",
     "name": "cover-page-executive-09",
     "version": 1,
-    "layout": "header-band-split",
+    "layout": "layout-right",
     "structure": "cover-structure-1",
     "theme": {
       "palette": {
@@ -1712,7 +1712,7 @@
     "id": "cpage-010",
     "name": "cover-page-creative-10",
     "version": 1,
-    "layout": "two-columns-balanced",
+    "layout": "layout-right",
     "structure": "cover-structure-2",
     "theme": {
       "palette": {

@@ -3,7 +3,7 @@
     "id": "cletter-001",
     "name": "cover-letter-classic-01",
     "version": 1,
-    "layout": "aside-left",
+    "layout": "layout-left",
     "structure": "letter-structure-1",
     "theme": {
       "palette": {
@@ -277,7 +277,7 @@
     "id": "cletter-002",
     "name": "cover-letter-modern-02",
     "version": 1,
-    "layout": "aside-right",
+    "layout": "layout-left",
     "structure": "letter-structure-2",
     "theme": {
       "palette": {
@@ -526,7 +526,7 @@
     "id": "cletter-003",
     "name": "cover-letter-ats-03",
     "version": 1,
-    "layout": "header-band-split",
+    "layout": "layout-left",
     "structure": "letter-structure-3",
     "theme": {
       "palette": {
@@ -770,7 +770,7 @@
     "id": "cletter-004",
     "name": "cover-letter-premium-04",
     "version": 1,
-    "layout": "two-columns-balanced",
+    "layout": "layout-left",
     "structure": "letter-structure-4",
     "theme": {
       "palette": {
@@ -1019,7 +1019,7 @@
     "id": "cletter-005",
     "name": "cover-letter-split-05",
     "version": 1,
-    "layout": "no-aside",
+    "layout": "layout-left",
     "structure": "letter-structure-1",
     "theme": {
       "palette": {
@@ -1263,7 +1263,7 @@
     "id": "cletter-006",
     "name": "cover-letter-classic-06",
     "version": 1,
-    "layout": "aside-left",
+    "layout": "layout-right",
     "structure": "letter-structure-2",
     "theme": {
       "palette": {
@@ -1512,7 +1512,7 @@
     "id": "cletter-007",
     "name": "cover-letter-modern-07",
     "version": 1,
-    "layout": "aside-right",
+    "layout": "layout-right",
     "structure": "letter-structure-3",
     "theme": {
       "palette": {
@@ -1761,7 +1761,7 @@
     "id": "cletter-008",
     "name": "cover-letter-ats-08",
     "version": 1,
-    "layout": "header-band-split",
+    "layout": "layout-right",
     "structure": "letter-structure-4",
     "theme": {
       "palette": {
@@ -2010,7 +2010,7 @@
     "id": "cletter-009",
     "name": "cover-letter-premium-09",
     "version": 1,
-    "layout": "two-columns-balanced",
+    "layout": "layout-right",
     "structure": "letter-structure-1",
     "theme": {
       "palette": {
@@ -2259,7 +2259,7 @@
     "id": "cletter-010",
     "name": "cover-letter-split-10",
     "version": 1,
-    "layout": "no-aside",
+    "layout": "layout-right",
     "structure": "letter-structure-2",
     "theme": {
       "palette": {
