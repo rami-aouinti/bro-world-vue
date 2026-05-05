@@ -1,19 +1,28 @@
 <script setup lang="ts">
 defineProps<{ items?: string[] }>()
+
+function parseItem(raw: string) {
+  const [titlePart='', orgPart=''] = String(raw || '').split('·').map((s)=>s.trim())
+  const dateMatch = titlePart.match(/\(([^)]+)\)$/)
+  const title = titlePart.replace(/\s*\([^)]+\)\s*$/, '').trim()
+  const date = dateMatch?.[1] || ''
+  const [org='', location=''] = orgPart.split(',').map((s)=>s.trim())
+  return { title, date, org, location, description: 'Description...' }
+}
 </script>
 <template>
-  <div class="cv-sec cv-sec--dot">
-    <div v-for="(item,idx) in (items||[])" :key="idx" class="cv-item">{{ item }}</div>
+  <div class="cv-sec ">
+    <div v-for="(item,idx) in (items||[])" :key="idx" class="cv-entry">
+      <div class="cv-line-1"><strong>{ parseItem(item).title }</strong><span class="date">{ parseItem(item).date }</span></div>
+      <div class="cv-line-2">{ parseItem(item).org }<span v-if="parseItem(item).location">, { parseItem(item).location }</span></div>
+      <div class="cv-line-3">{ parseItem(item).description }</div>
+    </div>
   </div>
 </template>
 <style scoped>
-.cv-sec{background:transparent;border:0;box-shadow:none;padding:2px 0}
-.cv-item{margin:0 0 6px;color:#334155;font-size:13px;line-height:1.35}
-.cv-sec--timeline{border-left:0;padding-left:0}
-.cv-sec--cards .cv-item{box-shadow:none;border-radius:0;padding:0}
-.cv-sec--dot .cv-item::before{content:'• ';font-weight:700;color:#6366f1}
-.cv-sec--stars .cv-item::after{content:' ★';color:#f59e0b}
-.cv-sec--dots .cv-item::after{content:' •••';color:#6366f1}
-.cv-sec--progressline .cv-item{background:linear-gradient(90deg, rgba(99,102,241,.16) 55%, transparent 55%);padding:2px 6px;border-radius:6px}
-.cv-sec--progresscircle .cv-item::before{content:'◉ ';color:#4f46e5}
+.cv-entry{margin-bottom:8px}
+.cv-line-1{display:flex;justify-content:space-between;gap:8px}
+.date{font-size:12px;color:#6366f1}
+.cv-line-2,.cv-line-3{font-size:12px;color:#475569}
+.cv-sec--timeline .date{background:#e0e7ff;padding:2px 6px;border-radius:999px}
 </style>

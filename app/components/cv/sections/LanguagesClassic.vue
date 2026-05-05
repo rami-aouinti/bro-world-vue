@@ -4,7 +4,7 @@ defineProps<{ items?: string[] }>()
 <template><div class="cv-sec cv-sec--classic"><div v-for="(item,idx) in (items||[])" :key="idx" class="cv-item">{{ item }}</div></div></template>
 <style scoped>
 .cv-sec{background:transparent;border:0;box-shadow:none;padding:2px 0}
-.cv-item{margin:0 0 6px;color:#334155;font-size:13px;line-height:1.35}
+.cv-item{margin:0 0 6px;color:#334155;font-size:13px;line-height:1.35;text-align:end}
 .cv-sec--timeline{border-left:0;padding-left:0}
 .cv-sec--cards .cv-item{box-shadow:none;border-radius:0;padding:0}
 .cv-sec--dot .cv-item::before{content:'• ';font-weight:700;color:#6366f1}

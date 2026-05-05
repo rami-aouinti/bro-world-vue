@@ -347,10 +347,10 @@ onMounted(() => {
               <div class="cv-section-row"><strong>Projects</strong><component :is="resolveSectionComponent('projects', sectionType('projects'))" :items="getSectionItems('projects')" /></div>
               <v-row class="mt-1" dense>
                 <v-col cols="6">
-                  <div class="cv-section-row"><strong>Skills · Column 1</strong><component :is="resolveSectionComponent('skills', sectionType('skills'))" :items="getSectionItems('skills').slice(0, Math.ceil(getSectionItems('skills').length/2))" /></div>
+                  <div class="cv-section-row"><strong>Skills</strong><component :is="resolveSectionComponent('skills', sectionType('skills'))" :items="getSectionItems('skills').slice(0, Math.ceil(getSectionItems('skills').length/2))" /></div>
                 </v-col>
                 <v-col cols="6">
-                  <div class="cv-section-row"><strong>Skills · Column 2</strong><component :is="resolveSectionComponent('skills', sectionType('skills'))" :items="getSectionItems('skills').slice(Math.ceil(getSectionItems('skills').length/2))" /></div>
+                  <div class="cv-section-row"><strong>Skills</strong><component :is="resolveSectionComponent('skills', sectionType('skills'))" :items="getSectionItems('skills').slice(Math.ceil(getSectionItems('skills').length/2))" /></div>
                 </v-col>
               </v-row>
             </div>
