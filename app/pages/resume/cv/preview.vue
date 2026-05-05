@@ -7,6 +7,28 @@ import CvLayoutAsideRight from '~/components/cv/layouts/CvLayoutAsideRight.vue'
 import CvLayoutAsideFullLeft from '~/components/cv/layouts/CvLayoutAsideFullLeft.vue'
 import CvLayoutAsideFullRight from '~/components/cv/layouts/CvLayoutAsideFullRight.vue'
 
+import ProfileClassic from '~/components/cv/sections/ProfileClassic.vue'
+import ExperienceClassic from '~/components/cv/sections/ExperienceClassic.vue'
+import ExperienceList from '~/components/cv/sections/ExperienceList.vue'
+import ExperienceDot from '~/components/cv/sections/ExperienceDot.vue'
+import ExperienceTimeline from '~/components/cv/sections/ExperienceTimeline.vue'
+import ExperienceCards from '~/components/cv/sections/ExperienceCards.vue'
+import EducationClassic from '~/components/cv/sections/EducationClassic.vue'
+import EducationList from '~/components/cv/sections/EducationList.vue'
+import EducationDot from '~/components/cv/sections/EducationDot.vue'
+import EducationTimeline from '~/components/cv/sections/EducationTimeline.vue'
+import EducationCards from '~/components/cv/sections/EducationCards.vue'
+import ProjectsClassic from '~/components/cv/sections/ProjectsClassic.vue'
+import ProjectsList from '~/components/cv/sections/ProjectsList.vue'
+import ProjectsDot from '~/components/cv/sections/ProjectsDot.vue'
+import ProjectsTimeline from '~/components/cv/sections/ProjectsTimeline.vue'
+import ProjectsCards from '~/components/cv/sections/ProjectsCards.vue'
+import SkillsClassic from '~/components/cv/sections/SkillsClassic.vue'
+import SkillsStars from '~/components/cv/sections/SkillsStars.vue'
+import SkillsDots from '~/components/cv/sections/SkillsDots.vue'
+import SkillsProgressLine from '~/components/cv/sections/SkillsProgressLine.vue'
+import SkillsProgressCircle from '~/components/cv/sections/SkillsProgressCircle.vue'
+
 definePageMeta({
   title: 'Resume · CV Preview',
   layout: 'resume',
@@ -67,6 +89,18 @@ function normalizeSectionKey(raw: string) {
   if (key === 'certification') return 'certifications'
   if (key === 'hobby') return 'hobbies'
   return key
+}
+
+
+const sectionComponentMap: Record<string, any> = {
+  profile: { classic: ProfileClassic },
+  experience: { classic: ExperienceClassic, list: ExperienceList, dot: ExperienceDot, timeline: ExperienceTimeline, cards: ExperienceCards },
+  education: { classic: EducationClassic, list: EducationList, dot: EducationDot, timeline: EducationTimeline, cards: EducationCards },
+  projects: { classic: ProjectsClassic, list: ProjectsList, dot: ProjectsDot, timeline: ProjectsTimeline, cards: ProjectsCards },
+  skills: { classic: SkillsClassic, stars: SkillsStars, dots: SkillsDots, 'progress-line': SkillsProgressLine, 'progress-circle': SkillsProgressCircle },
+}
+function resolveSectionComponent(section: string, type: string) {
+  return sectionComponentMap[section]?.[type] || sectionComponentMap[section]?.classic || 'div'
 }
 
 function getSectionItems(rawSection: string): string[] {
@@ -267,9 +301,9 @@ onMounted(() => {
 
           <template #content>
             <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
-              <div class="cv-section-row" :class="`cv-section-row--${sectionType('experience')}`">Experience · {{ sectionType('experience') }}<ul class="cv-row-items"><li v-for="(item, idx) in getSectionItems('experience').slice(0, 2)" :key="`experience-item-${idx}`">{{ item }}</li></ul><small v-if="fakeData.experiences?.[0]?.title"> — {{ fakeData.experiences[0].title }}</small></div>
-              <div class="cv-section-row" :class="`cv-section-row--${sectionType('education')}`">Education · {{ sectionType('education') }}<ul class="cv-row-items"><li v-for="(item, idx) in getSectionItems('education').slice(0, 2)" :key="`education-item-${idx}`">{{ item }}</li></ul><small v-if="fakeData.educations?.[0]?.title"> — {{ fakeData.educations[0].title }}</small></div>
-              <div class="cv-section-row" :class="`cv-section-row--${sectionType('projects')}`">Projects · {{ sectionType('projects') }}<ul class="cv-row-items"><li v-for="(item, idx) in getSectionItems('projects').slice(0, 2)" :key="`projects-item-${idx}`">{{ item }}</li></ul><small v-if="fakeData.projects?.[0]?.title"> — {{ fakeData.projects[0].title }}</small></div>
+              <div class="cv-section-row"><strong>Experience</strong><component :is="resolveSectionComponent('experience', sectionType('experience'))" :items="getSectionItems('experience')" /></div>
+              <div class="cv-section-row"><strong>Education</strong><component :is="resolveSectionComponent('education', sectionType('education'))" :items="getSectionItems('education')" /></div>
+              <div class="cv-section-row"><strong>Projects</strong><component :is="resolveSectionComponent('projects', sectionType('projects'))" :items="getSectionItems('projects')" /></div>
             </div>
             <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
               <div class="cv-section-row" :class="`cv-section-row--${sectionType('experience')}`">Experience · {{ sectionType('experience') }}</div>
@@ -277,10 +311,10 @@ onMounted(() => {
               <div class="cv-section-row" :class="`cv-section-row--${sectionType('projects')}`">Projects · {{ sectionType('projects') }}</div>
               <v-row class="mt-1" dense>
                 <v-col cols="6">
-                  <div class="cv-section-row">Skills · {{ sectionType("skills") }} · Column 1<ul class="cv-row-items"><li v-for="(item, idx) in getSectionItems('skills').slice(0, Math.ceil(getSectionItems('skills').length/2))" :key="`skills-left-${idx}`">{{ item }}</li></ul></div>
+                  <div class="cv-section-row"><strong>Skills · Column 1</strong><component :is="resolveSectionComponent('skills', sectionType('skills'))" :items="getSectionItems('skills').slice(0, Math.ceil(getSectionItems('skills').length/2))" /></div>
                 </v-col>
                 <v-col cols="6">
-                  <div class="cv-section-row">Skills · {{ sectionType("skills") }} · Column 2<ul class="cv-row-items"><li v-for="(item, idx) in getSectionItems('skills').slice(Math.ceil(getSectionItems('skills').length/2))" :key="`skills-right-${idx}`">{{ item }}</li></ul></div>
+                  <div class="cv-section-row"><strong>Skills · Column 2</strong><component :is="resolveSectionComponent('skills', sectionType('skills'))" :items="getSectionItems('skills').slice(Math.ceil(getSectionItems('skills').length/2))" /></div>
                 </v-col>
               </v-row>
             </div>
