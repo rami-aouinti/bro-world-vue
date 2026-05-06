@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-90.json'
+import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-20-resume.json'
 import { sectionRendererRegistry } from '~/modules/resume/renderers/sections/sectionRendererRegistry'
 
 type VariantOption = { title: string; value: string }

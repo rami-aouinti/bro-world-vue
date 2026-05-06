@@ -9,7 +9,7 @@ import {
   RESUME_SKIN_PALETTES,
   type ResumeSkinPaletteId,
 } from '~/constants/resumeDesign'
-import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-90.json'
+import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-20-resume.json'
 import GENERATED_COVER_PAGE_TEMPLATES from '~/data/resume-templates/generated-20-cover-page.json'
 import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-20-cover-letter.json'
 import {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-90.json'
+import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-20-resume.json'
 import ResumeLayoutAside from '~/components/resume/layouts/ResumeLayoutAside.vue'
 import ResumeLayoutAsideLeft from '~/components/resume/layouts/ResumeLayoutAsideLeft.vue'
 import ResumeLayoutAsideRight from '~/components/resume/layouts/ResumeLayoutAsideRight.vue'
