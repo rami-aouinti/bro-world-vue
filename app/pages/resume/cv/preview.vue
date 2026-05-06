@@ -469,26 +469,14 @@ function parsePx(value: unknown, fallback: number) {
   return Number.isFinite(num) ? num : fallback
 }
 
-function isDarkHexColor(color: string) {
-  const value = String(color || '').replace('#', '')
-  const normalized = value.length === 3 ? value.split('').map((c) => c + c).join('') : value
-  if (normalized.length !== 6) return false
-  const r = Number.parseInt(normalized.slice(0, 2), 16)
-  const g = Number.parseInt(normalized.slice(2, 4), 16)
-  const b = Number.parseInt(normalized.slice(4, 6), 16)
-  const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255
-  return luminance < 0.55
-}
-
-const headerTextColor = computed(() => {
-  const primary = String(activeTemplate.value?.theme?.palette?.primary || '#1d4ed8')
-  return isDarkHexColor(primary) ? '#F8FAFC' : '#0F172A'
+const isHeaderLightLayout = computed(() => {
+  const layout = String(activeTemplate.value?.layout || '')
+  return ['aside', 'aside-bar-left', 'aside-bar-right'].includes(layout)
 })
 
-const headerMutedColor = computed(() => {
-  const primary = String(activeTemplate.value?.theme?.palette?.primary || '#1d4ed8')
-  return isDarkHexColor(primary) ? '#CBD5E1' : '#334155'
-})
+const headerTextColor = computed(() => (isHeaderLightLayout.value ? '#F8FAFC' : '#0F172A'))
+
+const headerMutedColor = computed(() => (isHeaderLightLayout.value ? '#CBD5E1' : '#334155'))
 
 watch(activeTemplate, (template) => {
   asideWidth.value = parsePx(template?.aside?.width, 850)
