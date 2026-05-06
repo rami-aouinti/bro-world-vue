@@ -19,30 +19,59 @@ const emit = defineEmits<{
 }>()
 
 function splitComplexItem(raw: string) {
-  const [title = '', subtitle = '', period = '', description = ''] = String(raw || '').split('§')
+  const [title = '', subtitle = '', period = '', description = ''] = String(
+    raw || '',
+  ).split('§')
   return { title, subtitle, period, description }
 }
 
-function joinComplexItem(parts: { title: string; subtitle: string; period: string; description: string }) {
-  return [parts.title, parts.subtitle, parts.period, parts.description].join('§')
+function joinComplexItem(parts: {
+  title: string
+  subtitle: string
+  period: string
+  description: string
+}) {
+  return [parts.title, parts.subtitle, parts.period, parts.description].join(
+    '§',
+  )
 }
 
 function isComplexItem(raw: string) {
-  return ['experience', 'education'].includes(props.sectionKey) && String(raw || '').includes('§')
+  return (
+    ['experience', 'education'].includes(props.sectionKey) &&
+    String(raw || '').includes('§')
+  )
+}
+
+function clampLevel(value: number) {
+  return Math.max(0, Math.min(100, value))
 }
 
 function splitLeveledItem(raw: string) {
   const match = String(raw || '').match(/^(.*)\s\((\d+)%\)$/)
   return match
-    ? { label: match[1], value: Number(match[2]) }
+    ? { label: match[1], value: clampLevel(Number(match[2])) }
     : { label: String(raw || ''), value: 0 }
+}
+
+function progressCircleStyle(raw: string) {
+  const value = splitLeveledItem(raw).value
+
+  return {
+    background: `conic-gradient(var(--cv-secondary, #93c5fd) ${value}%, rgba(148, 163, 184, 0.24) 0)`,
+  }
 }
 
 function updateSimpleItem(index: number, value: string) {
   emit('update-item', index, value)
 }
 
-function updateComplexPart(index: number, raw: string, key: 'title' | 'subtitle' | 'period' | 'description', value: string) {
+function updateComplexPart(
+  index: number,
+  raw: string,
+  key: 'title' | 'subtitle' | 'period' | 'description',
+  value: string,
+) {
   const parts = splitComplexItem(raw)
   parts[key] = value
   emit('update-item', index, joinComplexItem(parts))
@@ -55,7 +84,7 @@ function updateLeveledLabel(index: number, raw: string, value: string) {
 
 function updateLeveledValue(index: number, raw: string, value: string) {
   const parts = splitLeveledItem(raw)
-  const level = Math.max(0, Math.min(100, Number.parseInt(value, 10) || 0))
+  const level = clampLevel(Number.parseInt(value, 10) || 0)
   emit('update-item', index, `${parts.label} (${level}%)`)
 }
 
@@ -73,12 +102,23 @@ function isLeveledSection() {
 </script>
 
 <template>
-  <div class="cv-rich-section" :class="[`cv-rich-section--${variant}`, `cv-rich-section--${sectionKey}`]">
+  <div
+    class="cv-rich-section"
+    :class="[`cv-rich-section--${variant}`, `cv-rich-section--${sectionKey}`]"
+  >
     <div
       v-for="(item, index) in items"
       :key="index"
       class="cv-rich-item"
-      :class="[`cv-rich-item--${variant}`, { 'cv-rich-item--complex': isComplexItem(item), 'cv-rich-item--timeline-complex': isComplexItem(item) && variant === 'timeline', 'cv-rich-item--leveled': isLeveledSection() }]"
+      :class="[
+        `cv-rich-item--${variant}`,
+        {
+          'cv-rich-item--complex': isComplexItem(item),
+          'cv-rich-item--timeline-complex':
+            isComplexItem(item) && variant === 'timeline',
+          'cv-rich-item--leveled': isLeveledSection(),
+        },
+      ]"
     >
       <template v-if="isComplexItem(item)">
         <template v-if="variant === 'timeline'">
@@ -92,7 +132,9 @@ function isLeveledSection() {
             font-weight="500"
             font-family="var(--cv-text-body, inherit)"
             color="inherit"
-            @update:model-value="updateComplexPart(index, item, 'period', $event)"
+            @update:model-value="
+              updateComplexPart(index, item, 'period', $event)
+            "
           />
           <div class="cv-rich-timeline-body">
             <HoverRichTextEditor
@@ -103,7 +145,9 @@ function isLeveledSection() {
               font-weight="700"
               font-family="var(--cv-text-entry-title, inherit)"
               color="inherit"
-              @update:model-value="updateComplexPart(index, item, 'title', $event)"
+              @update:model-value="
+                updateComplexPart(index, item, 'title', $event)
+              "
             />
             <HoverRichTextEditor
               v-if="splitComplexItem(item).subtitle"
@@ -114,7 +158,9 @@ function isLeveledSection() {
               font-weight="600"
               font-family="var(--cv-text-body, inherit)"
               color="inherit"
-              @update:model-value="updateComplexPart(index, item, 'subtitle', $event)"
+              @update:model-value="
+                updateComplexPart(index, item, 'subtitle', $event)
+              "
             />
             <HoverRichTextEditor
               v-if="splitComplexItem(item).description"
@@ -125,7 +171,9 @@ function isLeveledSection() {
               font-weight="400"
               font-family="var(--cv-text-body, inherit)"
               color="inherit"
-              @update:model-value="updateComplexPart(index, item, 'description', $event)"
+              @update:model-value="
+                updateComplexPart(index, item, 'description', $event)
+              "
             />
           </div>
         </template>
@@ -140,7 +188,9 @@ function isLeveledSection() {
               font-weight="700"
               font-family="var(--cv-text-entry-title, inherit)"
               color="inherit"
-              @update:model-value="updateComplexPart(index, item, 'title', $event)"
+              @update:model-value="
+                updateComplexPart(index, item, 'title', $event)
+              "
             />
             <HoverRichTextEditor
               v-if="splitComplexItem(item).period"
@@ -151,7 +201,9 @@ function isLeveledSection() {
               font-weight="500"
               font-family="var(--cv-text-body, inherit)"
               color="inherit"
-              @update:model-value="updateComplexPart(index, item, 'period', $event)"
+              @update:model-value="
+                updateComplexPart(index, item, 'period', $event)
+              "
             />
           </div>
           <HoverRichTextEditor
@@ -163,9 +215,15 @@ function isLeveledSection() {
             font-weight="600"
             font-family="var(--cv-text-body, inherit)"
             color="inherit"
-            @update:model-value="updateComplexPart(index, item, 'subtitle', $event)"
+            @update:model-value="
+              updateComplexPart(index, item, 'subtitle', $event)
+            "
           />
-          <div v-if="splitComplexItem(item).description" class="cv-rich-description-row" :class="`cv-rich-description-row--${variant}`">
+          <div
+            v-if="splitComplexItem(item).description"
+            class="cv-rich-description-row"
+            :class="`cv-rich-description-row--${variant}`"
+          >
             <span v-if="variant === 'list'" class="cv-rich-prefix">-</span>
             <span v-else-if="variant === 'dot'" class="cv-rich-prefix">•</span>
             <HoverRichTextEditor
@@ -176,46 +234,79 @@ function isLeveledSection() {
               font-weight="400"
               font-family="var(--cv-text-body, inherit)"
               color="inherit"
-              @update:model-value="updateComplexPart(index, item, 'description', $event)"
+              @update:model-value="
+                updateComplexPart(index, item, 'description', $event)
+              "
             />
           </div>
         </template>
       </template>
 
       <template v-else-if="isLeveledSection()">
-        <HoverRichTextEditor
-          class="cv-rich-editor cv-rich-editor--label"
-          :model-value="splitLeveledItem(item).label"
-          placeholder="Label"
-          font-size="13px"
-          font-weight="500"
-          font-family="var(--cv-text-body, inherit)"
-          color="inherit"
-          @update:model-value="updateLeveledLabel(index, item, $event)"
-        />
-        <template v-if="variant === 'stars'">
-          <span class="cv-rich-stars" aria-hidden="true">{{ '★'.repeat(filledStars(item)) }}{{ '☆'.repeat(5 - filledStars(item)) }}</span>
-        </template>
-        <template v-else-if="variant === 'dots'">
-          <span class="cv-rich-dots" aria-hidden="true">
-            <span v-for="dot in 5" :key="dot" class="cv-rich-dot" :class="{ 'cv-rich-dot--filled': dot <= filledDots(item) }" />
+        <template v-if="variant === 'progress-circle'">
+          <span
+            class="cv-rich-circle"
+            :style="progressCircleStyle(item)"
+            role="img"
+            :aria-label="`${splitLeveledItem(item).label}: ${splitLeveledItem(item).value}%`"
+            :title="splitLeveledItem(item).label"
+          >
+            <HoverRichTextEditor
+              class="cv-rich-editor cv-rich-editor--circle-value"
+              :model-value="`${splitLeveledItem(item).value}%`"
+              placeholder="Level"
+              font-size="13px"
+              font-weight="700"
+              font-family="var(--cv-text-body, inherit)"
+              color="inherit"
+              @update:model-value="updateLeveledValue(index, item, $event)"
+            />
           </span>
         </template>
-        <template v-else-if="variant === 'progress-line'">
-          <span class="cv-rich-progress"><i :style="{ width: `${splitLeveledItem(item).value}%` }" /></span>
+        <template v-else>
+          <HoverRichTextEditor
+            class="cv-rich-editor cv-rich-editor--label"
+            :model-value="splitLeveledItem(item).label"
+            placeholder="Label"
+            font-size="13px"
+            font-weight="500"
+            font-family="var(--cv-text-body, inherit)"
+            color="inherit"
+            @update:model-value="updateLeveledLabel(index, item, $event)"
+          />
+          <template v-if="variant === 'stars'">
+            <span class="cv-rich-stars" aria-hidden="true"
+              >{{ '★'.repeat(filledStars(item))
+              }}{{ '☆'.repeat(5 - filledStars(item)) }}</span
+            >
+          </template>
+          <template v-else-if="variant === 'dots'">
+            <span class="cv-rich-dots" aria-hidden="true">
+              <span
+                v-for="dot in 5"
+                :key="dot"
+                class="cv-rich-dot"
+                :class="{ 'cv-rich-dot--filled': dot <= filledDots(item) }"
+              />
+            </span>
+          </template>
+          <template v-else-if="variant === 'progress-line'">
+            <span class="cv-rich-progress"
+              ><i :style="{ width: `${splitLeveledItem(item).value}%` }"
+            /></span>
+          </template>
+          <HoverRichTextEditor
+            v-else
+            class="cv-rich-editor cv-rich-editor--value"
+            :model-value="`${splitLeveledItem(item).value}%`"
+            placeholder="Level"
+            font-size="12px"
+            font-weight="500"
+            font-family="var(--cv-text-body, inherit)"
+            color="inherit"
+            @update:model-value="updateLeveledValue(index, item, $event)"
+          />
         </template>
-        <HoverRichTextEditor
-          v-else
-          class="cv-rich-editor cv-rich-editor--value"
-          :model-value="`${splitLeveledItem(item).value}%`"
-          placeholder="Level"
-          font-size="12px"
-          font-weight="500"
-          font-family="var(--cv-text-body, inherit)"
-          color="inherit"
-          @update:model-value="updateLeveledValue(index, item, $event)"
-        />
-        <span v-if="variant === 'progress-circle'" class="cv-rich-circle">{{ splitLeveledItem(item).value }}%</span>
       </template>
 
       <template v-else>
@@ -249,7 +340,6 @@ function isLeveledSection() {
   line-height: 1.35;
   min-width: 0;
 }
-
 
 .cv-rich-section--timeline.cv-rich-section--experience,
 .cv-rich-section--timeline.cv-rich-section--education {
@@ -360,7 +450,8 @@ function isLeveledSection() {
   margin-bottom: 0;
   background: rgb(var(--v-theme-surface));
   color: rgb(var(--v-theme-on-surface));
-  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-on-surface)) 14%, transparent);
+  border: 1px solid
+    color-mix(in srgb, rgb(var(--v-theme-on-surface)) 14%, transparent);
   border-radius: 8px;
   padding: 4px;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
@@ -369,7 +460,11 @@ function isLeveledSection() {
 .cv-rich-editor :deep(.toolbar-size) {
   background: rgb(var(--v-theme-surface));
   color: rgb(var(--v-theme-on-surface));
-  border-color: color-mix(in srgb, rgb(var(--v-theme-on-surface)) 22%, transparent);
+  border-color: color-mix(
+    in srgb,
+    rgb(var(--v-theme-on-surface)) 22%,
+    transparent
+  );
 }
 
 .cv-rich-editor :deep(.v-btn) {
@@ -436,14 +531,48 @@ function isLeveledSection() {
   background: var(--cv-secondary, #93c5fd);
 }
 
-.cv-rich-circle {
-  width: 39px;
-  height: 39px;
-  border-radius: 999px;
-  border: 2px solid var(--cv-secondary, #93c5fd);
+.cv-rich-section--progress-circle.cv-rich-section--skills,
+.cv-rich-section--progress-circle.cv-rich-section--languages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.cv-rich-item--progress-circle.cv-rich-item--leveled {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 9px;
+}
+
+.cv-rich-circle {
+  display: inline-flex;
+  width: 54px;
+  height: 54px;
+  padding: 6px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+
+.cv-rich-editor--circle-value {
+  display: inline-flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  border-radius: inherit;
+  background: var(--cv-circle-inner, var(--cv-page-background, #fff));
+  color: color-mix(in srgb, currentColor 82%, #1f2937);
+  text-align: center;
+}
+
+.cv-rich-editor--circle-value :deep(.hover-editor__content) {
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 </style>
