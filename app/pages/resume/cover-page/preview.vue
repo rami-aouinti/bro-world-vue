@@ -246,30 +246,17 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
     </template>
   </AppPageDrawers>
   <v-container fluid>
-    <div class="preview-toolbar-wrap"><div class="preview-toolbar-row">
-      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-content-save-cog-outline" @click="saveFromPreview">Save</v-btn>
-      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-robot-outline" @click="goToCreateResume">AI</v-btn>
-      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-signature-freehand" @click="openSignatureDialog">Signature</v-btn>
-      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-file-pdf-box" @click="downloadPdf">PDF</v-btn>
-      <v-menu v-model="layoutMenuOpen" location="bottom center" origin="top center">
-        <template #activator="{ props }"><v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-view-grid-outline" v-bind="props">Templates</v-btn></template>
-        <v-card class="template-menu-card">
-          <div class="template-menu-grid">
-            <v-card
-              v-for="template in coverPageTemplates"
-              :key="`cover-page-preview-${template.id}`"
-              class="template-menu-item"
-              :class="{ 'template-menu-item--active': selectedTemplate === template.id }"
-              variant="outlined"
-              @click="applyPreviewTemplate(template.id)"
-            >
-              <v-img :src="template.image" class="template-menu-thumb" cover />
-              <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
-            </v-card>
-          </div>
-        </v-card>
-      </v-menu>
-    </div></div>
+    <ResumePreviewToolbar
+      v-model:menu-open="layoutMenuOpen"
+      :templates="coverPageTemplates"
+      :selected-template="selectedTemplate"
+      template-key-prefix="cover-page-preview"
+      @save="saveFromPreview"
+      @ai="goToCreateResume"
+      @signature="openSignatureDialog"
+      @pdf="downloadPdf"
+      @select-template="applyPreviewTemplate"
+    />
     <div class="py-8 d-flex justify-center"><main class="capture-cover-page" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-divider-color':sectionDividerColor,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
       <header
