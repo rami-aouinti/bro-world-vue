@@ -279,6 +279,19 @@ function confirmAddSectionItem() {
 }
 function isSectionVisible(section: string) { return !hiddenSections[normalizeSectionKey(section)] }
 
+const hiddenSectionsByZone = reactive<Record<string, Record<string, boolean>>>({})
+
+function hideSectionInZone(orderKey: keyof typeof sectionOrders, section: string) {
+  const normalized = normalizeSectionKey(section)
+  hiddenSectionsByZone[orderKey] = hiddenSectionsByZone[orderKey] || {}
+  hiddenSectionsByZone[orderKey][normalized] = true
+}
+
+function isSectionVisibleInZone(orderKey: keyof typeof sectionOrders, section: string) {
+  const normalized = normalizeSectionKey(section)
+  return !(hiddenSectionsByZone[orderKey]?.[normalized])
+}
+
 function getSectionVariantOptions(section: string) {
   const variants = Object.keys(sectionComponentMap[section] || {})
   return variants.map((variant) => ({ title: variant, value: variant }))
@@ -543,14 +556,14 @@ onMounted(() => {
           </template>
           <template #aside>
             <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" :class="['cv-aside-sections', { 'cv-aside-sections--full': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
-              <div v-for="section in orderedSections('asideOne', structureAsideOneSections)" :key="`aside-s1-${section}`" class="cv-aside-section-item" v-if="isSectionVisible(toSectionKey(section))">
-                <div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('asideOne', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong>
+              <div v-for="section in orderedSections('asideOne', structureAsideOneSections)" :key="`aside-s1-${section}`" class="cv-aside-section-item" v-if="isSectionVisible(toSectionKey(section)) && isSectionVisibleInZone('asideOne', toSectionKey(section))">
+                <div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section)); hideSectionInZone('asideOne', toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('asideOne', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong>
                 <component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" />
               </div>
             </div>
             <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" :class="['cv-aside-sections', { 'cv-aside-sections--full': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
-              <div v-for="section in orderedSections('asideTwo', structureAsideTwoSections)" :key="`aside-s2-${section}`" class="cv-aside-section-item" v-if="isSectionVisible(toSectionKey(section))">
-                <div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('asideTwo', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong>
+              <div v-for="section in orderedSections('asideTwo', structureAsideTwoSections)" :key="`aside-s2-${section}`" class="cv-aside-section-item" v-if="isSectionVisible(toSectionKey(section)) && isSectionVisibleInZone('asideTwo', toSectionKey(section))">
+                <div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section)); hideSectionInZone('asideTwo', toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('asideTwo', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong>
                 <component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" />
               </div>
             </div>
