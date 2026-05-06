@@ -209,6 +209,33 @@ const sectionTypeOverrides = reactive<Record<string, string>>({})
 
 const hiddenSections = reactive<Record<string, boolean>>({})
 const sectionExtraItems = reactive<Record<string, any[]>>({})
+const sectionLineOffsets = reactive<Record<string, number>>({})
+const CV_SECTION_LINE_OFFSET_PX = 18
+const CV_SECTION_MAX_LINE_OFFSET = 24
+
+function sectionOffsetKey(orderKey: keyof typeof sectionOrders, section: string) {
+  return `${orderKey}:${normalizeSectionKey(section)}`
+}
+
+function sectionOffsetStyle(orderKey: keyof typeof sectionOrders, section: string) {
+  const lines = sectionLineOffsets[sectionOffsetKey(orderKey, section)] || 0
+  return lines > 0 ? { marginTop: `${lines * CV_SECTION_LINE_OFFSET_PX}px` } : undefined
+}
+
+function shiftSectionByLine(orderKey: keyof typeof sectionOrders, section: string, direction: 'up' | 'down') {
+  const key = sectionOffsetKey(orderKey, section)
+  const current = sectionLineOffsets[key] || 0
+  const next = direction === 'down'
+    ? Math.min(CV_SECTION_MAX_LINE_OFFSET, current + 1)
+    : Math.max(0, current - 1)
+
+  sectionLineOffsets[key] = next
+  scheduleCvPreviewMeasure()
+}
+
+function canShiftSectionUp(orderKey: keyof typeof sectionOrders, section: string) {
+  return (sectionLineOffsets[sectionOffsetKey(orderKey, section)] || 0) > 0
+}
 const languageOption = ref<any | null>(null)
 const languageStars = ref(3)
 const languageCatalog = [
@@ -558,7 +585,7 @@ function saveFromPreview() {
 }
 
 function goToCreateResume() {
-  navigateTo('/resume/preview')
+  navigateTo('/resume/cv/preview')
 }
 
 async function downloadPdf() {
@@ -1058,7 +1085,7 @@ onMounted(async () => {
   font-size: 13px;
 }
 
-.cv-aside-section-item > strong{display:block;margin-bottom:6px;padding-right:120px}
+.cv-aside-section-item > strong{display:block;margin-bottom:6px;padding-right:220px}
 .cv-aside-section-item:hover .cv-section-toolbar{opacity:1;pointer-events:auto}
 .cv-aside-section-item :deep(.cv-sec) { padding: 4px 0; }
 .cv-aside-section-item :deep(.cv-item) { font-size: 12px; margin-bottom: 4px; }
@@ -1095,11 +1122,11 @@ onMounted(async () => {
   color: #334155;
   background: transparent;
 }
-.cv-section-row > strong{display:block;margin-bottom:6px;padding-right:120px}
+.cv-section-row > strong{display:block;margin-bottom:6px;padding-right:220px}
 .cv-section-toolbar{position:absolute;top:0;right:0;opacity:0;pointer-events:none;transition:opacity .15s ease;z-index:2}
 .cv-section-row:hover .cv-section-toolbar{opacity:1;pointer-events:auto}
 .cv-section-toolbar :deep(.v-field){min-height:28px}
-.cv-section-toolbar{width:180px;display:flex;align-items:center;gap:1px;justify-content:flex-end}
+.cv-section-toolbar{width:220px;display:flex;align-items:center;gap:1px;justify-content:flex-end}
 
 .signature-footer {
   margin-top: 32px;
