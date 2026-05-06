@@ -24,6 +24,8 @@ const { loggedIn } = useUserSession()
 const myResumes = ref<ResumeApiItem[]>([])
 const selectedTemplate = ref(GENERATED_RESUME_TEMPLATES[0]?.id || 'tpl-001')
 const layoutMenuOpen = ref(false)
+const paletteMenuOpen = ref(false)
+const selectedPalette = ref('template')
 const signatureDataUrl = ref('')
 const signatureDialogOpen = ref(false)
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
@@ -47,6 +49,20 @@ const cvLayoutComponentMap = {
 } as const
 
 const activeLayoutComponent = computed(() => cvLayoutComponentMap[activeTemplate.value?.layout as keyof typeof cvLayoutComponentMap] || CvLayoutNoAside)
+const palettePresetOptions = computed(() => [
+  { title: 'Template', value: 'template', primary: activeTemplate.value?.theme?.palette?.primary, dark: activeTemplate.value?.theme?.palette?.secondary, light: activeTemplate.value?.theme?.palette?.pageBackground },
+  { title: 'Ocean', value: 'ocean', primary: '#0ea5e9', dark: '#0f172a', light: '#f0f9ff' },
+  { title: 'Emerald', value: 'emerald', primary: '#10b981', dark: '#064e3b', light: '#ecfdf5' },
+  { title: 'Sunset', value: 'sunset', primary: '#f97316', dark: '#7c2d12', light: '#fff7ed' },
+  { title: 'Violet', value: 'violet', primary: '#8b5cf6', dark: '#312e81', light: '#f5f3ff' },
+])
+const activeColors = computed(() => {
+  const palette = activeTemplate.value?.theme?.palette || {}
+  const selected = palettePresetOptions.value.find((option) => option.value === selectedPalette.value)
+  if (selected && selected.value !== 'template') return { ...palette, primary: selected.primary, secondary: selected.dark, pageBackground: selected.light }
+  return palette
+})
+const sectionBarConfig = reactive({ show: true, height: 3, width: 44, radius: 999 })
 
 function toPercentNumber(value: unknown, fallback = 50): number {
   if (typeof value === 'number' && Number.isFinite(value)) return Math.min(100, Math.max(0, value))
@@ -717,6 +733,11 @@ onMounted(async () => {
 
 watch(activeTemplate, (template) => {
   editableDecorObjects.value = ((template as any)?.decor?.objects || []).map((obj: any) => normalizeDecorObject(obj))
+  const raw = (template as any)?.sectionBar || {}
+  sectionBarConfig.show = raw.show !== false
+  sectionBarConfig.height = Number(raw.height ?? 3)
+  sectionBarConfig.width = Number(raw.width ?? 44)
+  sectionBarConfig.radius = Number(raw.radius ?? raw.raduis ?? 999)
 }, { immediate: true })
 </script>
 
@@ -729,9 +750,38 @@ watch(activeTemplate, (template) => {
           <h3 class="text-subtitle-2 font-weight-bold mb-2">Template actif</h3>
           <p class="text-body-2 mb-1">{{ activeTemplate?.name }}</p>
           <p class="text-caption text-medium-emphasis mb-3">{{ activeTemplate?.id }} · {{ activeTemplate?.layout }}</p>
+          <v-menu v-model="paletteMenuOpen" :close-on-content-click="true">
+            <template #activator="{ props }">
+              <v-btn v-bind="props" variant="outlined" block justify="space-between" prepend-icon="mdi-palette" class="mb-3">Palette</v-btn>
+            </template>
+            <v-card class="pa-3" min-width="260">
+              <div class="palette-grid">
+                <button
+                  v-for="option in palettePresetOptions"
+                  :key="option.value"
+                  type="button"
+                  class="palette-swatch-btn"
+                  :class="{ 'palette-swatch-btn--active': selectedPalette === option.value }"
+                  @click="selectedPalette = option.value"
+                >
+                  <span class="d-flex ga-2 align-center mb-1">
+                    <span class="palette-dot" :style="{ backgroundColor: option.primary }" />
+                    <span class="palette-dot" :style="{ backgroundColor: option.dark }" />
+                    <span class="palette-dot" :style="{ backgroundColor: option.light }" />
+                  </span>
+                  <span class="text-caption">{{ option.title }}</span>
+                </button>
+              </div>
+            </v-card>
+          </v-menu>
           <v-slider v-model="asideWidth" label="Aside width (px)" :min="240" :max="1200" :step="2" hide-details class="mb-2"/>
           <v-slider v-model="asideHeight" label="Aside height (px)" :min="120" :max="2600" :step="2" hide-details class="mb-2"/>
           <v-slider v-model="asideRadius" label="Aside radius (px)" :min="0" :max="90" :step="1" hide-details/>
+          <v-divider class="my-3" />
+          <v-switch v-model="sectionBarConfig.show" label="Section bar" hide-details inset />
+          <v-slider v-model="sectionBarConfig.height" label="Bar height (px)" :min="1" :max="12" :step="1" hide-details class="mt-2"/>
+          <v-slider v-model="sectionBarConfig.width" label="Bar width (px)" :min="12" :max="120" :step="1" hide-details class="mt-2"/>
+          <v-slider v-model="sectionBarConfig.radius" label="Bar radius (px)" :min="0" :max="999" :step="1" hide-details class="mt-2"/>
         </v-card-text>
       </template>
 
@@ -772,7 +822,7 @@ watch(activeTemplate, (template) => {
           }"
         >
           <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
-          <component :is="activeLayoutComponent" class="w-100 cv-preview-page" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', height: 'auto', minHeight: `${cvPreviewHeight}px`, overflow: 'visible', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-secondary': activeTemplate?.theme?.palette?.secondary || '#93C5FD', '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body'), '--cv-header-text': headerTextColor, '--cv-header-muted': headerMutedColor }">
+          <component :is="activeLayoutComponent" class="w-100 cv-preview-page" :style="{ background: activeColors?.pageBackground || '#ffffff', height: 'auto', minHeight: `${cvPreviewHeight}px`, overflow: 'visible', '--cv-primary': activeColors?.primary || '#1d4ed8', '--cv-secondary': activeColors?.secondary || '#93C5FD', '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body'), '--cv-header-text': headerTextColor, '--cv-header-muted': headerMutedColor, '--cv-section-bar-width': `${sectionBarConfig.width}px`, '--cv-section-bar-height': `${sectionBarConfig.height}px`, '--cv-section-bar-radius': `${sectionBarConfig.radius}px`, '--cv-section-bar-display': sectionBarConfig.show ? 'block' : 'none' }">
           <template #header>
             <div class="cv-header-layout" :class="`cv-header-layout--${headerType}`">
               <template v-if="headerType === 'header-left'">
@@ -1268,6 +1318,22 @@ watch(activeTemplate, (template) => {
 .cv-color-dot{width:20px;height:20px;border-radius:999px;border:1px solid #cbd5e1;cursor:pointer}
 .cv-section-row > strong{color:color-mix(in srgb, var(--cv-primary,#1d4ed8) 78%, #0f172a)}
 .cv-aside-section-item > strong{color:color-mix(in srgb, var(--cv-primary,#1d4ed8) 55%, white)}
+.cv-section-row > strong,
+.cv-aside-section-item > strong { position: relative; display: inline-flex; flex-direction: column; align-items: flex-start; }
+.cv-section-row > strong::after,
+.cv-aside-section-item > strong::after {
+  content: '';
+  display: var(--cv-section-bar-display, block);
+  width: var(--cv-section-bar-width, 44px);
+  height: var(--cv-section-bar-height, 3px);
+  border-radius: var(--cv-section-bar-radius, 999px);
+  margin-top: 6px;
+  background: var(--cv-primary, #1d4ed8);
+}
+.palette-dot { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgb(var(--v-theme-on-surface), 0.2); }
+.palette-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.palette-swatch-btn { border: 1px solid rgba(148, 163, 184, 0.35); border-radius: 12px; background: transparent; padding: 8px; }
+.palette-swatch-btn--active { border-color: rgb(var(--v-theme-primary)); }
 
 
 .cv-section-toolbar :deep(.v-btn) {
