@@ -158,13 +158,13 @@ const applicationsMenu = navMenus[1]!
 const worldMenu = navMenus[2]!
 const resumeEditorRoutes = [
   '/resume/cv/preview',
-  '/resume/cover-page/editor',
-  '/resume/cover-letter/editor',
+  '/resume/cover-page/preview',
+  '/resume/cover-letter/preview',
 ] as const
 const resumeEditorNavButtons = [
   { label: 'Resume', to: '/resume/cv/preview' },
-  { label: 'Cover page', to: '/resume/cover-page/editor' },
-  { label: 'Cover letter', to: '/resume/cover-letter/editor' },
+  { label: 'Cover page', to: '/resume/cover-page/preview' },
+  { label: 'Cover letter', to: '/resume/cover-letter/preview' },
 ] as const
 const isResumeEditorRoute = computed(() =>
   resumeEditorRoutes.includes(
