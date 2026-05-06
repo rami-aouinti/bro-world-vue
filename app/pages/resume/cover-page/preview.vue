@@ -2,6 +2,7 @@
 import GENERATED_COVER_PAGE_TEMPLATES from '~/data/resume-templates/generated-20-cover-page.json'
 import { listMyResumes } from '~/services/resumeApi'
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
+import { resolveResumeTextFont, useResumeGoogleFonts } from '~/composables/useResumeGoogleFonts'
 
 definePageMeta({ title: 'Resume · Cover Page Preview' })
 const route = useRoute()
@@ -47,18 +48,22 @@ const barRadius = ref(0)
 const barLayout = ref<'none' | 'single' | 'double'>('single')
 
 const elementStyles = reactive({
-  fullName: { size: 58, color: '#111827', weight: '700' },
-  role: { size: 30, color: '#475569', weight: '500' },
-  heading: { size: 32, color: '#0F4C81', weight: '600' },
-  summary: { size: 24, color: '#475569', weight: '400' },
-  email: { size: 16, color: '#475569', weight: '400' },
-  phone: { size: 16, color: '#475569', weight: '400' },
+  fullName: { size: 48, color: '#111827', weight: '700' },
+  role: { size: 24, color: '#475569', weight: '500' },
+  heading: { size: 28, color: '#0F4C81', weight: '600' },
+  summary: { size: 18, color: '#475569', weight: '400' },
+  email: { size: 15, color: '#475569', weight: '400' },
+  phone: { size: 15, color: '#475569', weight: '400' },
 })
 const fontWeightMap: Record<string, string> = { regular: '400', medium: '500', semibold: '600', bold: '700' }
 const primaryBarWidth = ref(10)
 const secondaryBarWidth = ref(5)
 const model = reactive({ fullName:'Alex Martin', role:'Senior Full Stack Developer', summary:'Driven engineer delivering robust products with strong UX and clean architecture.', location:'Paris, France', email:'alex@example.com', phone:'+33 6 00 00 00 00', date:new Date().toLocaleDateString('en-US'), photoUrl:photoOptions[0], heading:'About Me' })
 const activeTemplate = computed(() => GENERATED_COVER_PAGE_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_PAGE_TEMPLATES[0])
+useResumeGoogleFonts(activeTemplate)
+function textFontFamily(key: string, fallback: 'sans' | 'serif' | 'mono' | 'display' = 'sans') {
+  return resolveResumeTextFont((activeTemplate.value as any)?.textStyles?.[key], fallback)
+}
 const defaultBarDesignConfig = {
   barRadius: { min: 0, max: 30 },
   barLayout: ['', 'single', 'double'],
@@ -159,7 +164,7 @@ watch(() => activeColors.value.primary, (primaryColor) => {
   elementStyles.heading.color = primaryColor
 }, { immediate: true })
 
-watch(activeTemplate, (tpl) => { applyTemplateDefaults(tpl); editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); selectedDividerType.value = String(tpl?.decor?.divider || 'line'); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; imageShape.value = ((tpl as any)?.designConfig?.photoType === 'square' ? 'square' : 'circle'); imageSize.value = Number((tpl as any)?.designConfig?.photoSize ?? imageSize.value); const items=(tpl as any)?.items||{}; const designConfig = (tpl as any)?.designConfig || defaultBarDesignConfig; barRadius.value = designConfig?.barRadius?.min ?? defaultBarDesignConfig.barRadius.min; primaryBarWidth.value = designConfig?.barWidth?.min ?? defaultBarDesignConfig.barWidth.min; secondaryBarWidth.value = designConfig?.secondaryBarWidth?.min ?? defaultBarDesignConfig.secondaryBarWidth.min; barLayout.value = Array.isArray(designConfig?.barLayout) && designConfig.barLayout.includes('double') ? 'double' : (designConfig.barLayout.includes('single') ? 'single' : 'none'); for (const key of ['fullName','role','heading','summary','email','phone']) { const b=items[key]?.size; if (b) elementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) elementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) elementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
+watch(activeTemplate, (tpl) => { applyTemplateDefaults(tpl); editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); selectedDividerType.value = String(tpl?.decor?.divider || 'line'); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; imageShape.value = ((tpl as any)?.designConfig?.photoType === 'square' ? 'square' : 'circle'); imageSize.value = Number((tpl as any)?.designConfig?.photoSize ?? imageSize.value); const items=(tpl as any)?.items||{}; const designConfig = (tpl as any)?.designConfig || defaultBarDesignConfig; barRadius.value = designConfig?.barRadius?.min ?? defaultBarDesignConfig.barRadius.min; primaryBarWidth.value = designConfig?.barWidth?.min ?? defaultBarDesignConfig.barWidth.min; secondaryBarWidth.value = designConfig?.secondaryBarWidth?.min ?? defaultBarDesignConfig.secondaryBarWidth.min; barLayout.value = Array.isArray(designConfig?.barLayout) && designConfig.barLayout.includes('double') ? 'double' : (designConfig.barLayout.includes('single') ? 'single' : 'none'); for (const key of ['fullName','role','heading','summary','email','phone']) { const b=items[key]?.size; if (b) elementStyles[key].size=Math.round(((b.min+b.max)/2)*0.78); if (items[key]?.colors?.[0]) elementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) elementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
 function addDecorObject(){ editableDecorObjects.value.push({ type:'circle', x:'50%', y:'50%', size:'120', opacity:0.15 }) }
 function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
 function goToCreateResume(){ navigateTo('/resume/preview') }
@@ -246,31 +251,18 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
     </template>
   </AppPageDrawers>
   <v-container fluid>
-    <div class="preview-toolbar-wrap"><div class="preview-toolbar-row">
-      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-content-save-cog-outline" @click="saveFromPreview">Save</v-btn>
-      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-robot-outline" @click="goToCreateResume">AI</v-btn>
-      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-signature-freehand" @click="openSignatureDialog">Signature</v-btn>
-      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-file-pdf-box" @click="downloadPdf">PDF</v-btn>
-      <v-menu v-model="layoutMenuOpen" location="bottom center" origin="top center">
-        <template #activator="{ props }"><v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-view-grid-outline" v-bind="props">Templates</v-btn></template>
-        <v-card class="template-menu-card">
-          <div class="template-menu-grid">
-            <v-card
-              v-for="template in coverPageTemplates"
-              :key="`cover-page-preview-${template.id}`"
-              class="template-menu-item"
-              :class="{ 'template-menu-item--active': selectedTemplate === template.id }"
-              variant="outlined"
-              @click="applyPreviewTemplate(template.id)"
-            >
-              <v-img :src="template.image" class="template-menu-thumb" cover />
-              <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
-            </v-card>
-          </div>
-        </v-card>
-      </v-menu>
-    </div></div>
-    <div class="py-8 d-flex justify-center"><main class="capture-cover-page" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-divider-color':sectionDividerColor,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
+    <ResumePreviewToolbar
+      v-model:menu-open="layoutMenuOpen"
+      :templates="coverPageTemplates"
+      :selected-template="selectedTemplate"
+      template-key-prefix="cover-page-preview"
+      @save="saveFromPreview"
+      @ai="goToCreateResume"
+      @signature="openSignatureDialog"
+      @pdf="downloadPdf"
+      @select-template="applyPreviewTemplate"
+    />
+    <div class="py-8 d-flex justify-center preview-single-page-frame"><main class="capture-cover-page" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-divider-color':sectionDividerColor,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
       <header
 class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barLayout === 'double', 'hero--photo-right': photoPosition === 'right', 'hero--ribbon': activeTemplate?.decor?.headerStyle === 'ribbon', 'hero--layout-right': isLayoutRight}"
@@ -306,17 +298,17 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
             </v-menu>
             <v-img :src="model.photoUrl" cover class="photo-shell__img" @click.stop="openPhotoUpload"/>
           </div>
-          <HoverRichTextEditor v-model="model.fullName" :font-size="`${elementStyles.fullName.size}px`" :color="elementStyles.fullName.color" :font-weight="elementStyles.fullName.weight" />
-          <HoverRichTextEditor v-model="model.role" :font-size="`${elementStyles.role.size}px`" :color="elementStyles.role.color" :font-weight="elementStyles.role.weight" />
+          <HoverRichTextEditor v-model="model.fullName" :font-size="`${elementStyles.fullName.size}px`" :color="elementStyles.fullName.color" :font-weight="elementStyles.fullName.weight" :font-family="textFontFamily('fullName', 'serif')" />
+          <HoverRichTextEditor v-model="model.role" :font-size="`${elementStyles.role.size}px`" :color="elementStyles.role.color" :font-weight="elementStyles.role.weight" :font-family="textFontFamily('role')" />
         </div>
       </header>
-      <section><HoverRichTextEditor v-model="model.heading" :font-size="`${elementStyles.heading.size}px`" :color="elementStyles.heading.color" :font-weight="elementStyles.heading.weight" />
-        <HoverRichTextEditor v-model="model.summary" :font-size="`${elementStyles.summary.size}px`" :color="elementStyles.summary.color" :font-weight="elementStyles.summary.weight" />
-        <HoverRichTextEditor v-model="model.email" :font-size="`${elementStyles.email.size}px`" :color="elementStyles.email.color" :font-weight="elementStyles.email.weight" />
-        <HoverRichTextEditor v-model="model.phone" :font-size="`${elementStyles.phone.size}px`" :color="elementStyles.phone.color" :font-weight="elementStyles.phone.weight" />
+      <section><HoverRichTextEditor v-model="model.heading" :font-size="`${elementStyles.heading.size}px`" :color="elementStyles.heading.color" :font-weight="elementStyles.heading.weight" :font-family="textFontFamily('heading', 'serif')" />
+        <HoverRichTextEditor v-model="model.summary" :font-size="`${elementStyles.summary.size}px`" :color="elementStyles.summary.color" :font-weight="elementStyles.summary.weight" :font-family="textFontFamily('summary')" />
+        <HoverRichTextEditor v-model="model.email" :font-size="`${elementStyles.email.size}px`" :color="elementStyles.email.color" :font-weight="elementStyles.email.weight" :font-family="textFontFamily('email')" />
+        <HoverRichTextEditor v-model="model.phone" :font-size="`${elementStyles.phone.size}px`" :color="elementStyles.phone.color" :font-weight="elementStyles.phone.weight" :font-family="textFontFamily('phone')" />
       </section>
       <footer v-if="signatureDataUrl" class="signature-footer"><img :src="signatureDataUrl" alt="signature" class="signature-image"/></footer>
-    </main></div>
+    </main><ResumePreviewPageBreak :page-number="1" /></div>
     <input ref="photoInput" type="file" accept="image/*" class="d-none" @change="onPhotoUpload">
     <v-dialog v-model="signatureDialogOpen" max-width="760"><v-card><v-card-title>Signature</v-card-title><v-card-text><canvas ref="signatureCanvas" style="width:100%;height:200px;border:1px solid rgba(0,0,0,.15);border-radius:10px"/></v-card-text></v-card></v-dialog>
   </v-container>
@@ -324,12 +316,14 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
 </template>
 
 <style scoped>
+.preview-single-page-frame{position:relative;flex-direction:column;align-items:center}
 .capture-cover-page{
   position:relative;
   overflow:hidden;
-  width:850px;
+  box-sizing:border-box;
+  width:min(100%, 850px);
   min-height:1123px;
-  padding:80px;
+  padding:64px;
   background:var(--cp-bg);
   color:var(--cp-text)
 }
@@ -361,7 +355,7 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
 .app-page-drawers{
   display:none !important
 }
-@media print{.preview-toolbar-wrap,.app-page-drawers,.avatar-overlay{display:none !important}}h1{font-size:58px;margin:0}p{font-size:var(--body-size);color:var(--body-color)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:40px;margin:0 0 16px}section{border-top:3px var(--section-divider-style) var(--section-divider-color);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.decor-square{border-radius:10px}.decor-diamond{border-radius:8px;transform:translate(-50%,-50%) rotate(45deg)}.decor-star{-webkit-clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}.decor-triangle{-webkit-clip-path:polygon(50% 0%,0 100%,100% 100%);clip-path:polygon(50% 0%,0 100%,100% 100%)}.decor-pill{border-radius:999px}.decor-bar{border-radius:999px}.preview-toolbar-wrap{position:sticky;top:76px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background:rgba(var(--v-theme-primary))}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}
+@media print{.preview-toolbar-wrap,.app-page-drawers,.avatar-overlay{display:none !important}}h1{font-size:48px;margin:0}p{font-size:var(--body-size);color:var(--body-color)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:32px;margin:0 0 16px}section{border-top:3px var(--section-divider-style) var(--section-divider-color);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.decor-square{border-radius:10px}.decor-diamond{border-radius:8px;transform:translate(-50%,-50%) rotate(45deg)}.decor-star{-webkit-clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}.decor-triangle{-webkit-clip-path:polygon(50% 0%,0 100%,100% 100%);clip-path:polygon(50% 0%,0 100%,100% 100%)}.decor-pill{border-radius:999px}.decor-bar{border-radius:999px}.preview-toolbar-wrap{position:sticky;top:76px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background:rgba(var(--v-theme-primary))}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}
 
 @media (prefers-color-scheme: dark) {
   .capture-cover-page,

@@ -281,6 +281,84 @@
       "heading": "Application for Senior Role",
       "companyParagraph": "I am excited to apply to NovaTech as Product Designer. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
       "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support NovaTech's goals."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Merriweather",
+        "Source Sans 3"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Merriweather",
+        "body": "Source Sans 3"
+      }
+    },
+    "textStyles": {
+      "date": {
+        "kind": "meta",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "address": {
+        "kind": "meta",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Merriweather",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.025em",
+        "lineHeight": 1.05
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Merriweather",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.18
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.62
+      },
+      "email": {
+        "kind": "closing",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0em",
+        "lineHeight": 1.4
+      },
+      "phone": {
+        "kind": "signature",
+        "fontFamily": "Merriweather",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.25
+      }
     }
   },
   {
@@ -540,6 +618,84 @@
       "heading": "Motivation Letter",
       "companyParagraph": "I am excited to apply to Blue Orbit as Full Stack Developer. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
       "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support Blue Orbit's goals."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Inter",
+        "Lora"
+      ],
+      "scale": "spacious",
+      "fonts": {
+        "display": "Lora",
+        "body": "Inter"
+      }
+    },
+    "textStyles": {
+      "date": {
+        "kind": "meta",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "address": {
+        "kind": "meta",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Lora",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.025em",
+        "lineHeight": 1.05
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Lora",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.18
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.62
+      },
+      "email": {
+        "kind": "closing",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0em",
+        "lineHeight": 1.4
+      },
+      "phone": {
+        "kind": "signature",
+        "fontFamily": "Lora",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.25
+      }
     }
   },
   {
@@ -794,6 +950,84 @@
       "heading": "Application for Open Position",
       "companyParagraph": "I am excited to apply to PixelForge as Marketing Manager. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
       "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support PixelForge's goals."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Libre Baskerville",
+        "Public Sans"
+      ],
+      "scale": "tight",
+      "fonts": {
+        "display": "Libre Baskerville",
+        "body": "Public Sans"
+      }
+    },
+    "textStyles": {
+      "date": {
+        "kind": "meta",
+        "fontFamily": "Public Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "address": {
+        "kind": "meta",
+        "fontFamily": "Public Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Libre Baskerville",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.025em",
+        "lineHeight": 1.05
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Public Sans",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Libre Baskerville",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.18
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Public Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.62
+      },
+      "email": {
+        "kind": "closing",
+        "fontFamily": "Public Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0em",
+        "lineHeight": 1.4
+      },
+      "phone": {
+        "kind": "signature",
+        "fontFamily": "Libre Baskerville",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.25
+      }
     }
   },
   {
@@ -1053,6 +1287,84 @@
       "heading": "Cover Letter",
       "companyParagraph": "I am excited to apply to Greenline Labs as Data Analyst. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
       "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support Greenline Labs's goals."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Crimson Text",
+        "Lato"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Crimson Text",
+        "body": "Lato"
+      }
+    },
+    "textStyles": {
+      "date": {
+        "kind": "meta",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "address": {
+        "kind": "meta",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Crimson Text",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.025em",
+        "lineHeight": 1.05
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Crimson Text",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.18
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.62
+      },
+      "email": {
+        "kind": "closing",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0em",
+        "lineHeight": 1.4
+      },
+      "phone": {
+        "kind": "signature",
+        "fontFamily": "Crimson Text",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.25
+      }
     }
   },
   {
@@ -1307,6 +1619,84 @@
       "heading": "Professional Application",
       "companyParagraph": "I am excited to apply to Atlas Digital as HR Specialist. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
       "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support Atlas Digital's goals."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Cormorant Garamond",
+        "Nunito Sans"
+      ],
+      "scale": "spacious",
+      "fonts": {
+        "display": "Cormorant Garamond",
+        "body": "Nunito Sans"
+      }
+    },
+    "textStyles": {
+      "date": {
+        "kind": "meta",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "address": {
+        "kind": "meta",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Cormorant Garamond",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.025em",
+        "lineHeight": 1.05
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Cormorant Garamond",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.18
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.62
+      },
+      "email": {
+        "kind": "closing",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0em",
+        "lineHeight": 1.4
+      },
+      "phone": {
+        "kind": "signature",
+        "fontFamily": "Cormorant Garamond",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.25
+      }
     }
   },
   {
@@ -1566,6 +1956,84 @@
       "heading": "Role Application",
       "companyParagraph": "I am excited to apply to BrightPath as Project Manager. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
       "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support BrightPath's goals."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Source Sans 3",
+        "Source Serif 4"
+      ],
+      "scale": "tight",
+      "fonts": {
+        "display": "Source Serif 4",
+        "body": "Source Sans 3"
+      }
+    },
+    "textStyles": {
+      "date": {
+        "kind": "meta",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "address": {
+        "kind": "meta",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Source Serif 4",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.025em",
+        "lineHeight": 1.05
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Source Serif 4",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.18
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.62
+      },
+      "email": {
+        "kind": "closing",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0em",
+        "lineHeight": 1.4
+      },
+      "phone": {
+        "kind": "signature",
+        "fontFamily": "Source Serif 4",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.25
+      }
     }
   },
   {
@@ -1825,6 +2293,84 @@
       "heading": "Job Application",
       "companyParagraph": "I am excited to apply to Urban Shift as UX Researcher. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
       "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support Urban Shift's goals."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Manrope",
+        "Playfair Display"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Playfair Display",
+        "body": "Manrope"
+      }
+    },
+    "textStyles": {
+      "date": {
+        "kind": "meta",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "address": {
+        "kind": "meta",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Playfair Display",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.025em",
+        "lineHeight": 1.05
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Playfair Display",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.18
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.62
+      },
+      "email": {
+        "kind": "closing",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0em",
+        "lineHeight": 1.4
+      },
+      "phone": {
+        "kind": "signature",
+        "fontFamily": "Playfair Display",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.25
+      }
     }
   },
   {
@@ -2084,6 +2630,84 @@
       "heading": "Application Letter",
       "companyParagraph": "I am excited to apply to CloudSpring as DevOps Engineer. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
       "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support CloudSpring's goals."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Bitter",
+        "Open Sans"
+      ],
+      "scale": "spacious",
+      "fonts": {
+        "display": "Bitter",
+        "body": "Open Sans"
+      }
+    },
+    "textStyles": {
+      "date": {
+        "kind": "meta",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "address": {
+        "kind": "meta",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Bitter",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.025em",
+        "lineHeight": 1.05
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Bitter",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.18
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.62
+      },
+      "email": {
+        "kind": "closing",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0em",
+        "lineHeight": 1.4
+      },
+      "phone": {
+        "kind": "signature",
+        "fontFamily": "Bitter",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.25
+      }
     }
   },
   {
@@ -2343,6 +2967,84 @@
       "heading": "Career Opportunity Application",
       "companyParagraph": "I am excited to apply to NextHive as Business Consultant. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
       "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support NextHive's goals."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Fraunces",
+        "Work Sans"
+      ],
+      "scale": "tight",
+      "fonts": {
+        "display": "Fraunces",
+        "body": "Work Sans"
+      }
+    },
+    "textStyles": {
+      "date": {
+        "kind": "meta",
+        "fontFamily": "Work Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "address": {
+        "kind": "meta",
+        "fontFamily": "Work Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Fraunces",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.025em",
+        "lineHeight": 1.05
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Work Sans",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Fraunces",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.18
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Work Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.62
+      },
+      "email": {
+        "kind": "closing",
+        "fontFamily": "Work Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0em",
+        "lineHeight": 1.4
+      },
+      "phone": {
+        "kind": "signature",
+        "fontFamily": "Fraunces",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.25
+      }
     }
   },
   {
@@ -2602,6 +3304,84 @@
       "heading": "Position Application",
       "companyParagraph": "I am excited to apply to CoreScale as Mobile Developer. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
       "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support CoreScale's goals."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Roboto",
+        "Roboto Slab"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Roboto Slab",
+        "body": "Roboto"
+      }
+    },
+    "textStyles": {
+      "date": {
+        "kind": "meta",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "address": {
+        "kind": "meta",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Roboto Slab",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.025em",
+        "lineHeight": 1.05
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Roboto Slab",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.18
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.62
+      },
+      "email": {
+        "kind": "closing",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0em",
+        "lineHeight": 1.4
+      },
+      "phone": {
+        "kind": "signature",
+        "fontFamily": "Roboto Slab",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.25
+      }
     }
   },
   {
@@ -2884,6 +3664,84 @@
       "heading": "Team Contribution Proposal",
       "companyParagraph": "I am excited to apply to Visionary Works as Content Strategist. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
       "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support Visionary Works's goals."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "DM Sans",
+        "DM Serif Display"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "DM Serif Display",
+        "body": "DM Sans"
+      }
+    },
+    "textStyles": {
+      "date": {
+        "kind": "meta",
+        "fontFamily": "DM Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "address": {
+        "kind": "meta",
+        "fontFamily": "DM Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "DM Serif Display",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.025em",
+        "lineHeight": 1.05
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "DM Sans",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "DM Serif Display",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.18
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "DM Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.62
+      },
+      "email": {
+        "kind": "closing",
+        "fontFamily": "DM Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0em",
+        "lineHeight": 1.4
+      },
+      "phone": {
+        "kind": "signature",
+        "fontFamily": "DM Serif Display",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.25
+      }
     }
   },
   {
@@ -3166,6 +4024,84 @@
       "heading": "Application for Your Team",
       "companyParagraph": "I am excited to apply to Peak Horizon as Operations Lead. My experience combines execution excellence and strong team collaboration to deliver quality outcomes.",
       "summary": "Thank you for reviewing my application. I would be glad to discuss how I can support Peak Horizon's goals."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Inter",
+        "Prata"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Prata",
+        "body": "Inter"
+      }
+    },
+    "textStyles": {
+      "date": {
+        "kind": "meta",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "address": {
+        "kind": "meta",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.015em",
+        "lineHeight": 1.35
+      },
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Prata",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.025em",
+        "lineHeight": 1.05
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Prata",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.18
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.62
+      },
+      "email": {
+        "kind": "closing",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0em",
+        "lineHeight": 1.4
+      },
+      "phone": {
+        "kind": "signature",
+        "fontFamily": "Prata",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.015em",
+        "lineHeight": 1.25
+      }
     }
   }
 ]

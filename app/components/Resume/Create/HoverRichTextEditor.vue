@@ -36,13 +36,14 @@ const FontSize = Extension.create({
 })
 
 const props = withDefaults(
-  defineProps<{ modelValue: string; label?: string; placeholder?: string; fontSize?: string; color?: string; fontWeight?: string | number }>(),
+  defineProps<{ modelValue: string; label?: string; placeholder?: string; fontSize?: string; color?: string; fontWeight?: string | number; fontFamily?: string }>(),
   {
     label: '',
     placeholder: 'Write here...',
     fontSize: '',
     color: '',
     fontWeight: '400',
+    fontFamily: '',
   },
 )
 
@@ -170,7 +171,7 @@ watch(() => props.fontWeight, (value) => {
     <div
       class="hover-editor__surface"
       :class="{ 'hover-editor__surface--empty': isEmpty }"
-      :style="{ '--editor-font-size': props.fontSize || selectedSize, '--editor-color': props.color || selectedColor, '--editor-font-weight': String(props.fontWeight || '400') }"
+      :style="{ '--editor-font-size': props.fontSize || selectedSize, '--editor-color': props.color || selectedColor, '--editor-font-weight': String(props.fontWeight || '400'), '--editor-font-family': props.fontFamily || 'inherit' }"
     >
       <EditorContent :editor="editor" />
       <span v-if="isEmpty" class="hover-editor__placeholder">{{
@@ -211,6 +212,10 @@ watch(() => props.fontWeight, (value) => {
   color: var(--editor-color);
   font-size: var(--editor-font-size);
   font-weight: var(--editor-font-weight);
+  font-family: var(--editor-font-family);
+}
+:deep(.hover-editor__content p) {
+  font-family: var(--editor-font-family);
 }
 
 </style>
