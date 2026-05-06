@@ -2,6 +2,7 @@
 import GENERATED_COVER_PAGE_TEMPLATES from '~/data/resume-templates/generated-20-cover-page.json'
 import { listMyResumes } from '~/services/resumeApi'
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
+import { resolveResumeTextFont, useResumeGoogleFonts } from '~/composables/useResumeGoogleFonts'
 
 definePageMeta({ title: 'Resume · Cover Page Preview' })
 const route = useRoute()
@@ -59,6 +60,10 @@ const primaryBarWidth = ref(10)
 const secondaryBarWidth = ref(5)
 const model = reactive({ fullName:'Alex Martin', role:'Senior Full Stack Developer', summary:'Driven engineer delivering robust products with strong UX and clean architecture.', location:'Paris, France', email:'alex@example.com', phone:'+33 6 00 00 00 00', date:new Date().toLocaleDateString('en-US'), photoUrl:photoOptions[0], heading:'About Me' })
 const activeTemplate = computed(() => GENERATED_COVER_PAGE_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_PAGE_TEMPLATES[0])
+useResumeGoogleFonts(activeTemplate)
+function textFontFamily(key: string, fallback: 'sans' | 'serif' | 'mono' | 'display' = 'sans') {
+  return resolveResumeTextFont((activeTemplate.value as any)?.textStyles?.[key], fallback)
+}
 const defaultBarDesignConfig = {
   barRadius: { min: 0, max: 30 },
   barLayout: ['', 'single', 'double'],
@@ -293,14 +298,14 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
             </v-menu>
             <v-img :src="model.photoUrl" cover class="photo-shell__img" @click.stop="openPhotoUpload"/>
           </div>
-          <HoverRichTextEditor v-model="model.fullName" :font-size="`${elementStyles.fullName.size}px`" :color="elementStyles.fullName.color" :font-weight="elementStyles.fullName.weight" />
-          <HoverRichTextEditor v-model="model.role" :font-size="`${elementStyles.role.size}px`" :color="elementStyles.role.color" :font-weight="elementStyles.role.weight" />
+          <HoverRichTextEditor v-model="model.fullName" :font-size="`${elementStyles.fullName.size}px`" :color="elementStyles.fullName.color" :font-weight="elementStyles.fullName.weight" :font-family="textFontFamily('fullName', 'serif')" />
+          <HoverRichTextEditor v-model="model.role" :font-size="`${elementStyles.role.size}px`" :color="elementStyles.role.color" :font-weight="elementStyles.role.weight" :font-family="textFontFamily('role')" />
         </div>
       </header>
-      <section><HoverRichTextEditor v-model="model.heading" :font-size="`${elementStyles.heading.size}px`" :color="elementStyles.heading.color" :font-weight="elementStyles.heading.weight" />
-        <HoverRichTextEditor v-model="model.summary" :font-size="`${elementStyles.summary.size}px`" :color="elementStyles.summary.color" :font-weight="elementStyles.summary.weight" />
-        <HoverRichTextEditor v-model="model.email" :font-size="`${elementStyles.email.size}px`" :color="elementStyles.email.color" :font-weight="elementStyles.email.weight" />
-        <HoverRichTextEditor v-model="model.phone" :font-size="`${elementStyles.phone.size}px`" :color="elementStyles.phone.color" :font-weight="elementStyles.phone.weight" />
+      <section><HoverRichTextEditor v-model="model.heading" :font-size="`${elementStyles.heading.size}px`" :color="elementStyles.heading.color" :font-weight="elementStyles.heading.weight" :font-family="textFontFamily('heading', 'serif')" />
+        <HoverRichTextEditor v-model="model.summary" :font-size="`${elementStyles.summary.size}px`" :color="elementStyles.summary.color" :font-weight="elementStyles.summary.weight" :font-family="textFontFamily('summary')" />
+        <HoverRichTextEditor v-model="model.email" :font-size="`${elementStyles.email.size}px`" :color="elementStyles.email.color" :font-weight="elementStyles.email.weight" :font-family="textFontFamily('email')" />
+        <HoverRichTextEditor v-model="model.phone" :font-size="`${elementStyles.phone.size}px`" :color="elementStyles.phone.color" :font-weight="elementStyles.phone.weight" :font-family="textFontFamily('phone')" />
       </section>
       <footer v-if="signatureDataUrl" class="signature-footer"><img :src="signatureDataUrl" alt="signature" class="signature-image"/></footer>
     </main><ResumePreviewPageBreak :page-number="1" /></div>

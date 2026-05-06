@@ -9,6 +9,7 @@ import CvLayoutAsideFullRight from '~/components/cv/layouts/CvLayoutAsideFullRig
 import CvLayoutAsideBarLeft from '~/components/cv/layouts/CvLayoutAsideBarLeft.vue'
 import CvLayoutAsideBarRight from '~/components/cv/layouts/CvLayoutAsideBarRight.vue'
 import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
+import { resolveResumeTextFont, useResumeGoogleFonts } from '~/composables/useResumeGoogleFonts'
 
 import ProfileClassic from '~/components/cv/sections/ProfileClassic.vue'
 import ExperienceClassic from '~/components/cv/sections/ExperienceClassic.vue'
@@ -66,6 +67,7 @@ const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const activeTemplate = computed(() =>
   GENERATED_RESUME_TEMPLATES.find((template) => template.id === selectedTemplate.value) || GENERATED_RESUME_TEMPLATES[0],
 )
+useResumeGoogleFonts(activeTemplate)
 
 const cvLayoutComponentMap = {
   aside: CvLayoutAside,
@@ -545,10 +547,8 @@ onBeforeUnmount(() => {
 
 
 function textFontPreset(kind: 'fullName'|'sectionLabel'|'entryTitle'|'body') {
-  const style = String((activeTemplate.value as any)?.textStyles?.[kind] || 'sans')
-  if (style === 'serif') return 'Georgia, "Times New Roman", serif'
-  if (style === 'mono') return '"Fira Code", "Courier New", monospace'
-  return 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif'
+  const fallback = kind === 'fullName' ? 'serif' : 'sans'
+  return resolveResumeTextFont((activeTemplate.value as any)?.textStyles?.[kind], fallback)
 }
 
 function applyPreviewTemplate(templateId: string) {

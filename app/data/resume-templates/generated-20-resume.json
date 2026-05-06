@@ -232,10 +232,60 @@
       ]
     },
     "textStyles": {
-      "fullName": "serif",
-      "sectionLabel": "sans",
-      "entryTitle": "sans",
-      "body": "sans"
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Playfair Display",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Fira Code",
+        "Inter",
+        "Playfair Display"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Playfair Display",
+        "body": "Inter",
+        "mono": "Fira Code"
+      }
     }
   },
   {
@@ -471,10 +521,60 @@
       ]
     },
     "textStyles": {
-      "fullName": "serif",
-      "sectionLabel": "sans",
-      "entryTitle": "sans",
-      "body": "sans"
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Cormorant Garamond",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Cormorant Garamond",
+        "Fira Code",
+        "Lato"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Cormorant Garamond",
+        "body": "Lato",
+        "mono": "Fira Code"
+      }
     }
   },
   {
@@ -727,10 +827,60 @@
       ]
     },
     "textStyles": {
-      "fullName": "serif",
-      "sectionLabel": "sans",
-      "entryTitle": "sans",
-      "body": "sans"
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Merriweather",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Fira Code",
+        "Merriweather",
+        "Source Sans 3"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Merriweather",
+        "body": "Source Sans 3",
+        "mono": "Fira Code"
+      }
     }
   },
   {
@@ -982,10 +1132,60 @@
       ]
     },
     "textStyles": {
-      "fullName": "serif",
-      "sectionLabel": "sans",
-      "entryTitle": "sans",
-      "body": "sans"
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Libre Baskerville",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Fira Code",
+        "Libre Baskerville",
+        "Nunito Sans"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Libre Baskerville",
+        "body": "Nunito Sans",
+        "mono": "Fira Code"
+      }
     }
   },
   {
@@ -1237,10 +1437,60 @@
       ]
     },
     "textStyles": {
-      "fullName": "serif",
-      "sectionLabel": "sans",
-      "entryTitle": "sans",
-      "body": "sans"
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Roboto Slab",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Fira Code",
+        "Roboto",
+        "Roboto Slab"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Roboto Slab",
+        "body": "Roboto",
+        "mono": "Fira Code"
+      }
     }
   },
   {
@@ -1492,10 +1742,60 @@
       ]
     },
     "textStyles": {
-      "fullName": "serif",
-      "sectionLabel": "sans",
-      "entryTitle": "sans",
-      "body": "sans"
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Prata",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Fira Code",
+        "Manrope",
+        "Prata"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Prata",
+        "body": "Manrope",
+        "mono": "Fira Code"
+      }
     }
   },
   {
@@ -1747,10 +2047,60 @@
       ]
     },
     "textStyles": {
-      "fullName": "serif",
-      "sectionLabel": "sans",
-      "entryTitle": "sans",
-      "body": "sans"
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Space Grotesk",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Fira Code",
+        "Inter",
+        "Space Grotesk"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Space Grotesk",
+        "body": "Inter",
+        "mono": "Fira Code"
+      }
     }
   },
   {
@@ -2002,10 +2352,60 @@
       ]
     },
     "textStyles": {
-      "fullName": "serif",
-      "sectionLabel": "sans",
-      "entryTitle": "sans",
-      "body": "sans"
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Montserrat",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Fira Code",
+        "Montserrat",
+        "Open Sans"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Montserrat",
+        "body": "Open Sans",
+        "mono": "Fira Code"
+      }
     }
   },
   {
@@ -2257,10 +2657,60 @@
       ]
     },
     "textStyles": {
-      "fullName": "serif",
-      "sectionLabel": "sans",
-      "entryTitle": "sans",
-      "body": "sans"
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Oswald",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Fira Code",
+        "Lato",
+        "Oswald"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Oswald",
+        "body": "Lato",
+        "mono": "Fira Code"
+      }
     }
   },
   {
@@ -2512,10 +2962,60 @@
       ]
     },
     "textStyles": {
-      "fullName": "serif",
-      "sectionLabel": "sans",
-      "entryTitle": "sans",
-      "body": "sans"
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Raleway",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Fira Code",
+        "Nunito Sans",
+        "Raleway"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Raleway",
+        "body": "Nunito Sans",
+        "mono": "Fira Code"
+      }
     }
   },
   {
@@ -2747,10 +3247,60 @@
       ]
     },
     "textStyles": {
-      "fullName": "serif",
-      "sectionLabel": "sans",
-      "entryTitle": "sans",
-      "body": "sans"
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Poppins",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Fira Code",
+        "Poppins",
+        "Source Sans 3"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Poppins",
+        "body": "Source Sans 3",
+        "mono": "Fira Code"
+      }
     }
   },
   {
@@ -2982,10 +3532,60 @@
       ]
     },
     "textStyles": {
-      "fullName": "serif",
-      "sectionLabel": "sans",
-      "entryTitle": "sans",
-      "body": "sans"
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "DM Serif Display",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "DM Sans",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "DM Sans",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "DM Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "DM Sans",
+        "DM Serif Display",
+        "Fira Code"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "DM Serif Display",
+        "body": "DM Sans",
+        "mono": "Fira Code"
+      }
     }
   },
   {
@@ -3237,10 +3837,60 @@
       ]
     },
     "textStyles": {
-      "fullName": "serif",
-      "sectionLabel": "sans",
-      "entryTitle": "sans",
-      "body": "sans"
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Bitter",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "Work Sans",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "Work Sans",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Work Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Bitter",
+        "Fira Code",
+        "Work Sans"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Bitter",
+        "body": "Work Sans",
+        "mono": "Fira Code"
+      }
     }
   },
   {
@@ -3492,10 +4142,60 @@
       ]
     },
     "textStyles": {
-      "fullName": "serif",
-      "sectionLabel": "sans",
-      "entryTitle": "sans",
-      "body": "sans"
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Fraunces",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "Public Sans",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "Public Sans",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Public Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Fira Code",
+        "Fraunces",
+        "Public Sans"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Fraunces",
+        "body": "Public Sans",
+        "mono": "Fira Code"
+      }
     }
   }
 ]

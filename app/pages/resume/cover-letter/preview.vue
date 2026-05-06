@@ -2,6 +2,7 @@
 import { listMyResumes } from '~/services/resumeApi'
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-20-cover-letter.json'
+import { resolveResumeTextFont, useResumeGoogleFonts } from '~/composables/useResumeGoogleFonts'
 
 definePageMeta({ title: 'Resume · Cover Letter Preview' })
 const route = useRoute()
@@ -51,6 +52,10 @@ const primaryBarWidth = ref(10)
 const secondaryBarWidth = ref(5)
 const model = reactive({ fullName:'Alex Martin', role:'Senior Full Stack Developer', location:'Paris, France', date:new Date().toLocaleDateString('en-US'), heading:'Dear Hiring Manager,', companyParagraph:'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.', summary:'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.', email:'Sincerely,', phone:'Alex Martin', photoUrl: photoOptions[0] })
 const activeTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
+useResumeGoogleFonts(activeTemplate)
+function textFontFamily(key: string, fallback: 'sans' | 'serif' | 'mono' | 'display' = 'sans') {
+  return resolveResumeTextFont((activeTemplate.value as any)?.textStyles?.[key], fallback)
+}
 const editableDecorObjects = ref<any[]>([])
 const defaultDecorPresets = [
   { type: 'circle', x: 8, y: 6, size: 80, opacity: 0.08 },
@@ -273,8 +278,8 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
 class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barLayout === 'double', 'hero--photo-right': photoPosition === 'right', 'hero--ribbon': activeTemplate?.decor?.headerStyle === 'ribbon', 'hero--layout-right': isLayoutRight}"
         :style="activeTemplate?.decor?.gradientStyle && activeTemplate.decor.gradientStyle !== 'none' ? { background: `linear-gradient(135deg, ${activeColors.primary}22, ${activeColors.secondary}33)` } : undefined">
         <div class="meta-top-right" :class="{ 'meta-top-right--layout-right': isLayoutRight }">
-          <HoverRichTextEditor v-model="model.date" :font-size="`${letterElementStyles.date.size}px`" :color="letterElementStyles.date.color" :font-weight="letterElementStyles.date.weight" />
-          <HoverRichTextEditor v-model="model.location" :font-size="`${letterElementStyles.address.size}px`" :color="letterElementStyles.address.color" :font-weight="letterElementStyles.address.weight" />
+          <HoverRichTextEditor v-model="model.date" :font-size="`${letterElementStyles.date.size}px`" :color="letterElementStyles.date.color" :font-weight="letterElementStyles.date.weight" :font-family="textFontFamily('date')" />
+          <HoverRichTextEditor v-model="model.location" :font-size="`${letterElementStyles.address.size}px`" :color="letterElementStyles.address.color" :font-weight="letterElementStyles.address.weight" :font-family="textFontFamily('address')" />
         </div>
         <div class="hero-row" :class="{ 'hero-row--layout-right': isLayoutRight }">
           <div class="avatar-upload hero-avatar photo-shell" :style="{ width: `${imageSize}px`, height: `${imageSize}px`, borderRadius: imageShape === 'circle' ? '999px' : '12px' }" @click="openPhotoUpload">
@@ -311,16 +316,16 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
               <v-img :src="model.photoUrl" alt="profile" cover />
             </div>
           </div>
-          <HoverRichTextEditor v-model="model.fullName" class="hero-name"/>
-          <HoverRichTextEditor v-model="model.role" class="hero-role"/>
+          <HoverRichTextEditor v-model="model.fullName" class="hero-name" :font-family="textFontFamily('fullName', 'serif')"/>
+          <HoverRichTextEditor v-model="model.role" class="hero-role" :font-family="textFontFamily('role')"/>
         </div>
       </header>
       <section class="letter-body">
-        <HoverRichTextEditor v-model="model.heading" class="letter-heading" />
-        <HoverRichTextEditor v-model="model.companyParagraph" />
-        <HoverRichTextEditor v-model="model.summary" />
-        <HoverRichTextEditor v-model="model.email" />
-        <HoverRichTextEditor v-model="model.phone" />
+        <HoverRichTextEditor v-model="model.heading" class="letter-heading" :font-family="textFontFamily('heading', 'serif')" />
+        <HoverRichTextEditor v-model="model.companyParagraph" :font-family="textFontFamily('body')" />
+        <HoverRichTextEditor v-model="model.summary" :font-family="textFontFamily('body')" />
+        <HoverRichTextEditor v-model="model.email" :font-family="textFontFamily('email')" />
+        <HoverRichTextEditor v-model="model.phone" :font-family="textFontFamily('phone', 'serif')" />
       </section>
       <footer v-if="signatureDataUrl" class="signature-footer"><img :src="signatureDataUrl" alt="signature" class="signature-image"/></footer>
     </main><ResumePreviewPageBreak :page-number="1" /></div>
