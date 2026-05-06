@@ -286,6 +286,12 @@
         "body": "Inter",
         "mono": "Fira Code"
       }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "width": "flex",
+      "raduis": 999
     }
   },
   {
@@ -575,6 +581,12 @@
         "body": "Lato",
         "mono": "Fira Code"
       }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "width": "flex",
+      "raduis": 999
     }
   },
   {
@@ -881,6 +893,12 @@
         "body": "Source Sans 3",
         "mono": "Fira Code"
       }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "width": "flex",
+      "raduis": 999
     }
   },
   {
@@ -1186,6 +1204,12 @@
         "body": "Nunito Sans",
         "mono": "Fira Code"
       }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "width": "flex",
+      "raduis": 999
     }
   },
   {
@@ -1491,6 +1515,12 @@
         "body": "Roboto",
         "mono": "Fira Code"
       }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "width": "flex",
+      "raduis": 999
     }
   },
   {
@@ -1796,6 +1826,12 @@
         "body": "Manrope",
         "mono": "Fira Code"
       }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "width": "flex",
+      "raduis": 999
     }
   },
   {
@@ -2101,6 +2137,12 @@
         "body": "Inter",
         "mono": "Fira Code"
       }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "width": "flex",
+      "raduis": 999
     }
   },
   {
@@ -2406,6 +2448,12 @@
         "body": "Open Sans",
         "mono": "Fira Code"
       }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "width": "flex",
+      "raduis": 999
     }
   },
   {
@@ -2711,6 +2759,12 @@
         "body": "Lato",
         "mono": "Fira Code"
       }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "width": "flex",
+      "raduis": 999
     }
   },
   {
@@ -3016,6 +3070,12 @@
         "body": "Nunito Sans",
         "mono": "Fira Code"
       }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "width": "flex",
+      "raduis": 999
     }
   },
   {
@@ -3301,6 +3361,12 @@
         "body": "Source Sans 3",
         "mono": "Fira Code"
       }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "width": "flex",
+      "raduis": 999
     }
   },
   {
@@ -3586,6 +3652,12 @@
         "body": "DM Sans",
         "mono": "Fira Code"
       }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "width": "flex",
+      "raduis": 999
     }
   },
   {
@@ -3891,6 +3963,12 @@
         "body": "Work Sans",
         "mono": "Fira Code"
       }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "width": "flex",
+      "raduis": 999
     }
   },
   {
@@ -4196,6 +4274,12 @@
         "body": "Public Sans",
         "mono": "Fira Code"
       }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "width": "flex",
+      "raduis": 999
     }
   }
 ]
