@@ -49,6 +49,18 @@ const page = await browser.newPage({ viewport: { width: 1200, height: 1500 } })
 for (const tpl of generatedCvTemplates) {
   const url = `${baseUrl}/resume/cv/preview?template=${encodeURIComponent(tpl.id)}`
   await page.goto(url, { waitUntil: 'networkidle' })
+  await page.keyboard.press('Escape').catch(() => {})
+  await page.addStyleTag({
+    content: `
+      .v-overlay-container,
+      [role="dialog"],
+      [aria-modal="true"],
+      [class*="cookie"],
+      [id*="cookie"],
+      [class*="consent"],
+      [id*="consent"] { display: none !important; visibility: hidden !important; }
+    `,
+  }).catch(() => {})
 
   const cvCanvas = page.locator('.cv-layout').first()
   await cvCanvas.waitFor({ state: 'visible' })
