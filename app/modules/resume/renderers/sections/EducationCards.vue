@@ -6,6 +6,7 @@ defineProps<ResumeSectionRendererProps>()
 
 <template>
   <SectionItemsRenderer
+    :editable="editable"
     :items="items"
     :theme="theme"
     :show-icon="showIcon"
