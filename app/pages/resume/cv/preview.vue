@@ -588,7 +588,7 @@ function saveFromPreview() {
 }
 
 function goToCreateResume() {
-  navigateTo('/resume/preview')
+  navigateTo('/resume/cv/preview')
 }
 
 async function downloadPdf() {

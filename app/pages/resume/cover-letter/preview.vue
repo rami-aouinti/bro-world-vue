@@ -174,7 +174,7 @@ watch(activeTemplate, (tpl) => { applyTemplateDefaults(tpl); editableDecorObject
 function addDecorObject(){ editableDecorObjects.value.push(normalizeDecorObject({ type:'circle', x:50, y:50, size:120, opacity:0.15 })) }
 function addDecorObjectFromPreset(preset:any){ editableDecorObjects.value.push(normalizeDecorObject({ ...preset })) }
 function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
-function goToCreateResume(){ navigateTo('/resume/preview') }
+function goToCreateResume(){ navigateTo('/resume/cv/preview') }
 function applyPreviewTemplate(id:string){ selectedTemplate.value = id; layoutMenuOpen.value = false }
 function saveFromPreview(){ localStorage.setItem('resume-cover-preview-letter', JSON.stringify({ template:selectedTemplate.value, model, decor:editableDecorObjects.value, signature:signatureDataUrl.value })) }
 async function downloadPdf(){ const node=document.querySelector('.capture-cover-letter') as HTMLElement|null; if(!node) return; const w=window.open('','_blank','width=900,height=1300'); if(!w) return; const headStyles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]')).map((el)=>el.outerHTML).join(''); w.document.write(`<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.capture-cover-letter{width:210mm;min-height:297mm;box-sizing:border-box;margin:0}</style></head><body>${node.outerHTML}</body></html>`); w.document.close(); await new Promise((r)=>setTimeout(r,900)); w.focus(); w.print(); w.close() }

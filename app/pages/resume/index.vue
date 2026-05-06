@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-90.json'
+import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-20-resume.json'
 
 definePageMeta({
   title: 'resumeBuilder.meta.indexTitle',
@@ -147,7 +147,7 @@ onUnmounted(() => {
           color="primary"
           variant="tonal"
           size="large"
-          to="/resume/preview"
+          to="/resume/cv/preview"
           class="mt-3"
         >
           {{ t('resumeBuilder.index.journey.steps.template.cta') }}
@@ -217,7 +217,7 @@ onUnmounted(() => {
                   class="template-action-btn"
                   :to="
                     templateCard.type === 'resume'
-                      ? `/resume/preview?template=${templateCard.id}`
+                      ? `/resume/cv/preview?template=${templateCard.id}`
                       : templateCard.type === 'cover-page'
                         ? `/resume/cover-page/preview?template=${templateCard.id}`
                         : `/resume/cover-letter/preview?template=${templateCard.id}`
