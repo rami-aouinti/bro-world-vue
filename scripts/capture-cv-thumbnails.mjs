@@ -44,7 +44,7 @@ async function launchBrowser() {
 }
 
 const browser = await launchBrowser()
-const page = await browser.newPage({ viewport: { width: 1200, height: 1123 } })
+const page = await browser.newPage({ viewport: { width: 1200, height: 1500 } })
 
 for (const tpl of generatedCvTemplates) {
   const url = `${baseUrl}/resume/cv/preview?template=${encodeURIComponent(tpl.id)}`
@@ -64,7 +64,21 @@ for (const tpl of generatedCvTemplates) {
 
   const cvCanvas = page.locator('.cv-layout').first()
   await cvCanvas.waitFor({ state: 'visible' })
-  await cvCanvas.screenshot({ path: path.join(outDir, `${tpl.id}.png`) })
+  const box = await cvCanvas.boundingBox()
+  if (!box) {
+    console.warn(`Skip ${tpl.id}: unable to resolve canvas bounds`)
+    continue
+  }
+
+  await page.screenshot({
+    path: path.join(outDir, `${tpl.id}.png`),
+    clip: {
+      x: box.x,
+      y: box.y,
+      width: box.width,
+      height: Math.min(1000, box.height),
+    },
+  })
 
   console.log(`Captured ${tpl.id}`)
 }
