@@ -40,7 +40,11 @@
       "position": "left",
       "size": "92px",
       "shape": "circle",
-      "border": "2px solid #1F2937"
+      "border": "2px solid #1F2937",
+      "photoType": "circle",
+      "photoSize": "92px",
+      "photoBorderRadius": "999px",
+      "photoBorderColor": "#1F2937"
     },
     "decor": {
       "corners": [
@@ -275,7 +279,11 @@
       "position": "left",
       "size": "92px",
       "shape": "circle",
-      "border": "2px solid #1F2937"
+      "border": "2px solid #1F2937",
+      "photoType": "circle",
+      "photoSize": "92px",
+      "photoBorderRadius": "999px",
+      "photoBorderColor": "#1F2937"
     },
     "decor": {
       "corners": [
@@ -510,7 +518,11 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81"
+      "border": "2px solid #0F4C81",
+      "photoType": "circle",
+      "photoSize": "96px",
+      "photoBorderRadius": "999px",
+      "photoBorderColor": "#0F4C81"
     },
     "decor": {
       "corners": [
@@ -761,7 +773,11 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81"
+      "border": "2px solid #0F4C81",
+      "photoType": "circle",
+      "photoSize": "96px",
+      "photoBorderRadius": "999px",
+      "photoBorderColor": "#0F4C81"
     },
     "decor": {
       "corners": [
@@ -1012,7 +1028,11 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #1B5E20"
+      "border": "2px solid #1B5E20",
+      "photoType": "circle",
+      "photoSize": "96px",
+      "photoBorderRadius": "999px",
+      "photoBorderColor": "#1B5E20"
     },
     "decor": {
       "corners": [
@@ -1263,7 +1283,11 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #1B5E20"
+      "border": "2px solid #1B5E20",
+      "photoType": "circle",
+      "photoSize": "96px",
+      "photoBorderRadius": "999px",
+      "photoBorderColor": "#1B5E20"
     },
     "decor": {
       "corners": [
@@ -1514,7 +1538,11 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81"
+      "border": "2px solid #0F4C81",
+      "photoType": "circle",
+      "photoSize": "96px",
+      "photoBorderRadius": "999px",
+      "photoBorderColor": "#0F4C81"
     },
     "decor": {
       "corners": [
@@ -1765,7 +1793,11 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81"
+      "border": "2px solid #0F4C81",
+      "photoType": "circle",
+      "photoSize": "96px",
+      "photoBorderRadius": "999px",
+      "photoBorderColor": "#0F4C81"
     },
     "decor": {
       "corners": [
@@ -2016,7 +2048,11 @@
       "position": "right",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81"
+      "border": "2px solid #0F4C81",
+      "photoType": "circle",
+      "photoSize": "96px",
+      "photoBorderRadius": "999px",
+      "photoBorderColor": "#0F4C81"
     },
     "decor": {
       "corners": [
@@ -2267,7 +2303,11 @@
       "position": "right",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81"
+      "border": "2px solid #0F4C81",
+      "photoType": "circle",
+      "photoSize": "96px",
+      "photoBorderRadius": "999px",
+      "photoBorderColor": "#0F4C81"
     },
     "decor": {
       "corners": [
@@ -2518,7 +2558,11 @@
       "position": "left",
       "size": "84px",
       "shape": "square",
-      "border": "2px solid #0F4C81"
+      "border": "2px solid #0F4C81",
+      "photoType": "square",
+      "photoSize": "84px",
+      "photoBorderRadius": "8px",
+      "photoBorderColor": "#0F4C81"
     },
     "decor": {
       "corners": [
@@ -2749,7 +2793,11 @@
       "position": "left",
       "size": "84px",
       "shape": "square",
-      "border": "2px solid #0F4C81"
+      "border": "2px solid #0F4C81",
+      "photoType": "square",
+      "photoSize": "84px",
+      "photoBorderRadius": "8px",
+      "photoBorderColor": "#0F4C81"
     },
     "decor": {
       "corners": [

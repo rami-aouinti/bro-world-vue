@@ -195,6 +195,32 @@ const headerProfile = computed(() => {
   }
 })
 
+
+const photoMenuOpen = ref(false)
+const photoFileInput = ref<HTMLInputElement | null>(null)
+const photoPreview = ref('')
+const photoSize = ref(92)
+const photoRadius = ref(999)
+const photoBorderColor = ref('#1F2937')
+const photoColors = ['#1F2937','#1D4ED8','#2563EB','#0EA5E9','#14B8A6','#22C55E','#EAB308','#F97316','#EF4444','#EC4899','#8B5CF6','#64748B']
+
+watch(activeTemplate, (template) => {
+  const photo = (template as any)?.photo || {}
+  photoSize.value = parsePx(photo.photoSize || photo.size, 92)
+  photoRadius.value = parsePx(photo.photoBorderRadius || (photo.shape === 'circle' ? '999px' : '8px'), 999)
+  photoBorderColor.value = String(photo.photoBorderColor || '#1F2937')
+}, { immediate: true })
+
+function openPhotoPicker() { photoFileInput.value?.click() }
+function onPhotoSelected(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input?.files?.[0]
+  if (!file) return
+  const reader = new FileReader()
+  reader.onload = () => { photoPreview.value = String(reader.result || '') }
+  reader.readAsDataURL(file)
+}
+
 const asideWidth = ref(850)
 const asideHeight = ref(1100)
 const asideRadius = ref(0)
@@ -242,6 +268,7 @@ onMounted(() => {
 
 <template>
   <div>
+    <input ref="photoFileInput" type="file" accept="image/*" class="d-none" @change="onPhotoSelected">
     <AppPageDrawers>
       <template #left>
         <v-card-text>
@@ -312,14 +339,14 @@ onMounted(() => {
                   </div>
                 </div>
                 <div class="cv-header-identity cv-col-4">
-                  <img :src="headerProfile.image" alt="profile" class="cv-header-avatar">
+                  <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `2px solid ${photoBorderColor}` }" @click="openPhotoPicker"><v-menu v-model="photoMenuOpen" location="bottom end"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"/></div></v-card></v-menu></div>
                   <strong>{{ headerProfile.fullName }}</strong>
                   <span>{{ headerProfile.role }}</span>
                 </div>
               </template>
               <template v-else-if="headerType === 'header-right'">
                 <div class="cv-header-identity cv-col-4">
-                  <img :src="headerProfile.image" alt="profile" class="cv-header-avatar">
+                  <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `2px solid ${photoBorderColor}` }" @click="openPhotoPicker"><v-menu v-model="photoMenuOpen" location="bottom end"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"/></div></v-card></v-menu></div>
                   <strong>{{ headerProfile.fullName }}</strong>
                   <span>{{ headerProfile.role }}</span>
                 </div>
@@ -338,7 +365,7 @@ onMounted(() => {
               <template v-else>
                 <div class="cv-col-6 cv-header-split-left">
                   <div class="cv-col-3">
-                    <img :src="headerProfile.image" alt="profile" class="cv-header-avatar">
+                    <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `2px solid ${photoBorderColor}` }" @click="openPhotoPicker"><v-menu v-model="photoMenuOpen" location="bottom end"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"/></div></v-card></v-menu></div>
                   </div>
                   <div class="cv-col-3 cv-header-identity cv-header-identity--split">
                     <strong>{{ headerProfile.fullName }}</strong>
@@ -522,5 +549,14 @@ onMounted(() => {
 .cv-section-row > strong,.cv-aside-section-item > strong{font-family:var(--cv-text-section-label)}
 .cv-section-row :deep(.cv-entry strong), .cv-aside-section-item :deep(.cv-entry strong){font-family:var(--cv-text-entry-title)}
 .cv-section-row :deep(.cv-sec), .cv-aside-section-item :deep(.cv-sec), .cv-section-row :deep(.cv-item), .cv-aside-section-item :deep(.cv-item){font-family:var(--cv-text-body)}
+
+
+.cv-photo-wrap{position:relative;display:inline-flex}
+.cv-photo-menu-btn{position:absolute;top:-8px;right:-8px;opacity:0;transition:opacity .15s}
+.cv-photo-wrap:hover .cv-photo-menu-btn{opacity:1}
+.cv-color-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.cv-color-dot{width:20px;height:20px;border-radius:999px;border:1px solid #cbd5e1;cursor:pointer}
+.cv-section-row > strong{color:color-mix(in srgb, var(--cv-primary,#1d4ed8) 78%, #0f172a)}
+.cv-aside-section-item > strong{color:color-mix(in srgb, var(--cv-primary,#1d4ed8) 55%, white)}
 
 </style>
