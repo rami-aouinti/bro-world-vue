@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { formatDateRange, sortByStartDateDescKeepingSourceOrder } from '../formatters/dateRange'
 import { levelToSteps, normalizeLevel } from './levelUtils'
 import type { ResumeSectionRendererProps } from './types'
+import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 
 type DescriptionChunk =
   | { type: 'paragraph'; text: string }
@@ -17,6 +18,13 @@ type NormalizedItem = {
   subheading: string
   location: string
   period: string
+  source: Record<string, unknown>
+  headingKey: string
+  subheadingKey: string
+  locationKey: string
+  periodKey: string
+  descriptionKey: string
+  description: string
   descriptionChunks: DescriptionChunk[]
 }
 
@@ -99,10 +107,12 @@ function toDescriptionChunks(raw: string): DescriptionChunk[] {
 }
 
 
-function updateItemField(index: number, key: string, value: string) {
-  const entry = (props.items?.[index] ?? null) as Record<string, unknown> | null
-  if (!entry) return
-  entry[key] = value
+function firstStringField(item: Record<string, unknown>, keys: string[]) {
+  return keys.find((key) => typeof item[key] === 'string' && String(item[key]).trim().length > 0) || keys[0]
+}
+
+function updateItemField(item: NormalizedItem, key: string, value: string) {
+  item.source[key] = value
 }
 
 const emptyMessage = computed(() => {
@@ -132,35 +142,22 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
   return orderedItems.map((entry) => {
     const item = (entry ?? {}) as Record<string, unknown>
 
-    const heading =
-      (item.name as string) ||
-      (item.title as string) ||
-      (item.role as string) ||
-      (item.position as string) ||
-      t('resumeBuilder.create.preview.itemFallback')
+    const headingKey = firstStringField(item, ['name', 'title', 'role', 'position'])
+    const heading = String(item[headingKey] || t('resumeBuilder.create.preview.itemFallback'))
 
-    const subheading =
-      (item.company as string) ||
-      (item.school as string) ||
-      (item.organization as string) ||
-      (item.institution as string) ||
-      ''
+    const subheadingKey = firstStringField(item, ['company', 'school', 'organization', 'institution'])
+    const subheading = String(item[subheadingKey] || '')
 
-    const location =
-      (item.location as string) ||
-      (item.city as string) ||
-      (item.place as string) ||
-      ''
+    const locationKey = firstStringField(item, ['location', 'city', 'place'])
+    const location = String(item[locationKey] || '')
 
+    const periodKey = firstStringField(item, ['period'])
     const start = item.startDate ?? item.start
     const end = item.endDate ?? item.end
-    const period = formatDateRange(start, end)
+    const period = String(item[periodKey] || '') || formatDateRange(start, end)
 
-    const description =
-      (item.description as string) ||
-      (item.summary as string) ||
-      (item.details as string) ||
-      ''
+    const descriptionKey = firstStringField(item, ['description', 'summary', 'details'])
+    const description = String(item[descriptionKey] || '')
 
     const level = normalizeLevel(item.level)
 
@@ -170,6 +167,12 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
         : ''
 
     return {
+      source: item,
+      headingKey,
+      subheadingKey,
+      locationKey,
+      periodKey,
+      descriptionKey,
       heading,
       prefix,
       level,
@@ -177,6 +180,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
       subheading,
       location,
       period,
+      description,
       descriptionChunks: toDescriptionChunks(description),
     }
   })
@@ -203,54 +207,75 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
         :key="index"
         class="renderer-timeline-item"
       >
-        <p v-if="item.period" class="renderer-period">
-          {{ item.period }}
-        </p>
+        <HoverRichTextEditor
+          v-if="item.period"
+          class="renderer-rich-editor renderer-period renderer-period-editor"
+          :model-value="item.period"
+          font-size="var(--section-font-meta)"
+          font-weight="500"
+          color="inherit"
+          font-family="var(--font-family, inherit)"
+          placeholder="Period"
+          @update:model-value="updateItemField(item, item.periodKey, $event)"
+        />
 
         <div class="renderer-timeline-content">
-          <p class="renderer-heading">
+          <div class="renderer-heading">
             <span
               v-if="template === 'flags' && item.prefix"
               class="renderer-prefix"
             >
               {{ item.prefix }}
             </span>
-            <span class="editable-text" :contenteditable="editable" @input="(event) => updateItemField(index, 'title', (event.target as HTMLElement).innerText)">{{ item.heading }}</span>
-          </p>
-
-          <p v-if="item.subheading || item.location" class="renderer-subheading">
-            <span v-if="item.subheading"><span class="editable-text" :contenteditable="editable" @input="(event) => updateItemField(index, 'company', (event.target as HTMLElement).innerText)">{{ item.subheading }}</span></span>
-            <span v-if="item.subheading && item.location" aria-hidden="true">
-              ·
-            </span>
-            <span v-if="item.location">{{ item.location }}</span>
-          </p>
-
-          <div
-            v-if="item.descriptionChunks.length"
-            class="renderer-description-block"
-          >
-            <template
-              v-for="(chunk, chunkIndex) in item.descriptionChunks"
-              :key="chunkIndex"
-            >
-              <p
-                v-if="chunk.type === 'paragraph'"
-                class="renderer-description"
-              >
-                {{ chunk.text }}
-              </p>
-
-              <ul v-else class="renderer-description-list">
-                <li
-                  v-for="(bullet, bulletIndex) in chunk.items"
-                  :key="bulletIndex"
-                >
-                  {{ bullet }}
-                </li>
-              </ul>
-            </template>
+            <HoverRichTextEditor
+              class="renderer-rich-editor renderer-heading-editor"
+              :model-value="item.heading"
+              font-size="var(--section-font-title)"
+              font-weight="650"
+              color="inherit"
+              font-family="var(--font-family, inherit)"
+              placeholder="Title"
+              @update:model-value="updateItemField(item, item.headingKey, $event)"
+            />
           </div>
+
+          <div v-if="item.subheading || item.location" class="renderer-subheading renderer-subheading-row">
+            <HoverRichTextEditor
+              v-if="item.subheading"
+              class="renderer-rich-editor renderer-subheading-editor"
+              :model-value="item.subheading"
+              font-size="var(--section-font-subtitle)"
+              font-weight="520"
+              color="inherit"
+              font-family="var(--font-family, inherit)"
+              placeholder="Subtitle"
+              @update:model-value="updateItemField(item, item.subheadingKey, $event)"
+            />
+            <span v-if="item.subheading && item.location" aria-hidden="true">·</span>
+            <HoverRichTextEditor
+              v-if="item.location"
+              class="renderer-rich-editor renderer-location-editor"
+              :model-value="item.location"
+              font-size="var(--section-font-subtitle)"
+              font-weight="400"
+              color="inherit"
+              font-family="var(--font-family, inherit)"
+              placeholder="Location"
+              @update:model-value="updateItemField(item, item.locationKey, $event)"
+            />
+          </div>
+
+          <HoverRichTextEditor
+            v-if="item.description"
+            class="renderer-rich-editor renderer-description-editor"
+            :model-value="item.description"
+            font-size="var(--section-font-description)"
+            font-weight="400"
+            color="inherit"
+            font-family="var(--font-family, inherit)"
+            placeholder="Description"
+            @update:model-value="updateItemField(item, item.descriptionKey, $event)"
+          />
         </div>
       </li>
     </ol>
@@ -262,24 +287,49 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
         class="renderer-card"
       >
         <div class="renderer-heading-row">
-          <p class="renderer-heading">
+          <div class="renderer-heading">
             <span
               v-if="template === 'flags' && item.prefix"
               class="renderer-prefix"
             >
               {{ item.prefix }}
             </span>
-            <span class="editable-text" :contenteditable="editable" @input="(event) => updateItemField(index, 'title', (event.target as HTMLElement).innerText)">{{ item.heading }}</span>
-          </p>
+            <HoverRichTextEditor
+              class="renderer-rich-editor renderer-heading-editor"
+              :model-value="item.heading"
+              font-size="var(--section-font-title)"
+              font-weight="650"
+              color="inherit"
+              font-family="var(--font-family, inherit)"
+              placeholder="Title"
+              @update:model-value="updateItemField(item, item.headingKey, $event)"
+            />
+          </div>
 
-          <p v-if="item.period" class="renderer-period">
-            {{ item.period }}
-          </p>
+          <HoverRichTextEditor
+            v-if="item.period"
+            class="renderer-rich-editor renderer-period renderer-period-editor"
+            :model-value="item.period"
+            font-size="var(--section-font-meta)"
+            font-weight="500"
+            color="inherit"
+            font-family="var(--font-family, inherit)"
+            placeholder="Period"
+            @update:model-value="updateItemField(item, item.periodKey, $event)"
+          />
         </div>
 
-        <p v-if="item.subheading" class="renderer-subheading">
-          <span class="editable-text" :contenteditable="editable" @input="(event) => updateItemField(index, 'company', (event.target as HTMLElement).innerText)">{{ item.subheading }}</span>
-        </p>
+        <HoverRichTextEditor
+          v-if="item.subheading"
+          class="renderer-rich-editor renderer-subheading renderer-subheading-editor"
+          :model-value="item.subheading"
+          font-size="var(--section-font-subtitle)"
+          font-weight="520"
+          color="inherit"
+          font-family="var(--font-family, inherit)"
+          placeholder="Subtitle"
+          @update:model-value="updateItemField(item, item.subheadingKey, $event)"
+        />
       </article>
     </div>
 
@@ -313,15 +363,24 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
         <div class="renderer-list-content">
           <div class="renderer-list-main">
             <div class="renderer-heading-row">
-              <p class="renderer-heading">
+              <div class="renderer-heading">
                 <span
                   v-if="template === 'flags' && item.prefix"
                   class="renderer-prefix"
                 >
                   {{ item.prefix }}
                 </span>
-                <span class="editable-text" :contenteditable="editable" @input="(event) => updateItemField(index, 'title', (event.target as HTMLElement).innerText)">{{ item.heading }}</span>
-              </p>
+                <HoverRichTextEditor
+                  class="renderer-rich-editor renderer-heading-editor"
+                  :model-value="item.heading"
+                  font-size="var(--section-font-title)"
+                  font-weight="650"
+                  color="inherit"
+                  font-family="var(--font-family, inherit)"
+                  placeholder="Title"
+                  @update:model-value="updateItemField(item, item.headingKey, $event)"
+                />
+              </div>
 
               <p
                 v-if="template === 'progress-line'"
@@ -330,14 +389,30 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
                 {{ item.level }}%
               </p>
 
-              <p v-else-if="item.period" class="renderer-period">
-                {{ item.period }}
-              </p>
+              <HoverRichTextEditor
+                v-else-if="item.period"
+                class="renderer-rich-editor renderer-period renderer-period-editor"
+                :model-value="item.period"
+                font-size="var(--section-font-meta)"
+                font-weight="500"
+                color="inherit"
+                font-family="var(--font-family, inherit)"
+                placeholder="Period"
+                @update:model-value="updateItemField(item, item.periodKey, $event)"
+              />
             </div>
 
-            <p v-if="item.subheading" class="renderer-subheading">
-              <span class="editable-text" :contenteditable="editable" @input="(event) => updateItemField(index, 'company', (event.target as HTMLElement).innerText)">{{ item.subheading }}</span>
-            </p>
+            <HoverRichTextEditor
+              v-if="item.subheading"
+              class="renderer-rich-editor renderer-subheading renderer-subheading-editor"
+              :model-value="item.subheading"
+              font-size="var(--section-font-subtitle)"
+              font-weight="520"
+              color="inherit"
+              font-family="var(--font-family, inherit)"
+              placeholder="Subtitle"
+              @update:model-value="updateItemField(item, item.subheadingKey, $event)"
+            />
           </div>
 
           <div
@@ -398,24 +473,49 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
         class="renderer-classic-item"
       >
         <div class="renderer-heading-row">
-          <p class="renderer-heading">
+          <div class="renderer-heading">
             <span
               v-if="template === 'flags' && item.prefix"
               class="renderer-prefix"
             >
               {{ item.prefix }}
             </span>
-            <span class="editable-text" :contenteditable="editable" @input="(event) => updateItemField(index, 'title', (event.target as HTMLElement).innerText)">{{ item.heading }}</span>
-          </p>
+            <HoverRichTextEditor
+              class="renderer-rich-editor renderer-heading-editor"
+              :model-value="item.heading"
+              font-size="var(--section-font-title)"
+              font-weight="650"
+              color="inherit"
+              font-family="var(--font-family, inherit)"
+              placeholder="Title"
+              @update:model-value="updateItemField(item, item.headingKey, $event)"
+            />
+          </div>
 
-          <p v-if="item.period" class="renderer-period">
-            {{ item.period }}
-          </p>
+          <HoverRichTextEditor
+            v-if="item.period"
+            class="renderer-rich-editor renderer-period renderer-period-editor"
+            :model-value="item.period"
+            font-size="var(--section-font-meta)"
+            font-weight="500"
+            color="inherit"
+            font-family="var(--font-family, inherit)"
+            placeholder="Period"
+            @update:model-value="updateItemField(item, item.periodKey, $event)"
+          />
         </div>
 
-        <p v-if="item.subheading" class="renderer-subheading">
-          <span class="editable-text" :contenteditable="editable" @input="(event) => updateItemField(index, 'company', (event.target as HTMLElement).innerText)">{{ item.subheading }}</span>
-        </p>
+        <HoverRichTextEditor
+          v-if="item.subheading"
+          class="renderer-rich-editor renderer-subheading renderer-subheading-editor"
+          :model-value="item.subheading"
+          font-size="var(--section-font-subtitle)"
+          font-weight="520"
+          color="inherit"
+          font-family="var(--font-family, inherit)"
+          placeholder="Subtitle"
+          @update:model-value="updateItemField(item, item.subheadingKey, $event)"
+        />
       </li>
     </ul>
   </section>
@@ -701,6 +801,49 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 
 .renderer-prefix {
   margin-right: 0.35rem;
+}
+
+
+.renderer-rich-editor {
+  min-width: 0;
+  color: inherit;
+}
+
+.renderer-rich-editor :deep(.hover-editor__content p) {
+  margin: 0;
+}
+
+.renderer-rich-editor :deep(.hover-editor__content) {
+  line-height: inherit;
+}
+
+.renderer-rich-editor :deep(.hover-editor__toolbar) {
+  position: absolute;
+  z-index: 20;
+  background: color-mix(in srgb, Canvas 92%, transparent);
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 8px 18px rgba(15,23,42,.16);
+}
+
+.renderer-heading-editor {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.renderer-description-editor {
+  margin-top: var(--section-space-xs);
+  font-size: var(--section-font-description);
+  line-height: 1.45;
+  color: color-mix(in srgb, currentColor 87%, transparent);
+  white-space: pre-line;
+}
+
+.renderer-subheading-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  min-width: 0;
 }
 
 @media (max-width: 720px) {
