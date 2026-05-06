@@ -1094,7 +1094,7 @@ watch(activeTemplate, (template) => {
   top: auto;
   bottom: calc(100% - 1px);
   left: 0;
-  z-index: 60;
+  z-index: 2400;
   width: max-content;
   max-width: min(560px, 92vw);
   margin-bottom: 0;
@@ -1104,6 +1104,11 @@ watch(activeTemplate, (template) => {
   border-radius: 8px;
   padding: 4px;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+.cv-preview-shell :deep(.hover-editor__toolbar),
+.cv-preview-shell :deep(.hover-editor__popover) {
+  z-index: 2400 !important;
 }
 
 .cv-header-editor :deep(.toolbar-size),
