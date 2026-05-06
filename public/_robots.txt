@@ -1,7 +1,10 @@
 User-Agent: *
-Disallow:
-Allow: /resume
-Allow: /resume/
-Allow: /resume/preview
+Allow: /
 
-Sitemap: https://bro-world.com/sitemap.xml
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /login
+Disallow: /register
+Disallow: /resume/preview
+
+Sitemap: https://bro-world-space.com/sitemap.xml
