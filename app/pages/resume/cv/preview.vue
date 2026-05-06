@@ -974,6 +974,11 @@ onMounted(async () => {
   color: inherit;
 }
 
+.cv-header-editor :deep(.hover-editor),
+.cv-section-title-editor :deep(.hover-editor) {
+  position: relative;
+}
+
 .cv-header-editor :deep(.hover-editor__content p),
 .cv-section-title-editor :deep(.hover-editor__content p) {
   margin: 0;
@@ -982,7 +987,12 @@ onMounted(async () => {
 .cv-header-editor :deep(.hover-editor__toolbar),
 .cv-section-title-editor :deep(.hover-editor__toolbar) {
   position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
   z-index: 30;
+  width: max-content;
+  max-width: min(560px, 92vw);
+  margin-bottom: 0;
   background: color-mix(in srgb, Canvas 92%, transparent);
   border-radius: 8px;
   padding: 4px;
