@@ -78,23 +78,14 @@ function isLeveledSection() {
       v-for="(item, index) in items"
       :key="index"
       class="cv-rich-item"
-      :class="[`cv-rich-item--${variant}`, { 'cv-rich-item--complex': isComplexItem(item), 'cv-rich-item--leveled': isLeveledSection() }]"
+      :class="[`cv-rich-item--${variant}`, { 'cv-rich-item--complex': isComplexItem(item), 'cv-rich-item--timeline-complex': isComplexItem(item) && variant === 'timeline', 'cv-rich-item--leveled': isLeveledSection() }]"
     >
       <template v-if="isComplexItem(item)">
-        <div class="cv-rich-entry-head">
-          <HoverRichTextEditor
-            class="cv-rich-editor cv-rich-editor--title"
-            :model-value="splitComplexItem(item).title"
-            placeholder="Title"
-            font-size="13px"
-            font-weight="700"
-            font-family="var(--cv-text-entry-title, inherit)"
-            color="inherit"
-            @update:model-value="updateComplexPart(index, item, 'title', $event)"
-          />
+        <template v-if="variant === 'timeline'">
+          <div class="cv-rich-timeline-dot" aria-hidden="true" />
           <HoverRichTextEditor
             v-if="splitComplexItem(item).period"
-            class="cv-rich-editor cv-rich-editor--period"
+            class="cv-rich-editor cv-rich-editor--period cv-rich-editor--timeline-period"
             :model-value="splitComplexItem(item).period"
             placeholder="Period"
             font-size="12px"
@@ -103,29 +94,92 @@ function isLeveledSection() {
             color="inherit"
             @update:model-value="updateComplexPart(index, item, 'period', $event)"
           />
-        </div>
-        <HoverRichTextEditor
-          v-if="splitComplexItem(item).subtitle"
-          class="cv-rich-editor cv-rich-editor--subtitle"
-          :model-value="splitComplexItem(item).subtitle"
-          placeholder="Subtitle"
-          font-size="12px"
-          font-weight="600"
-          font-family="var(--cv-text-body, inherit)"
-          color="inherit"
-          @update:model-value="updateComplexPart(index, item, 'subtitle', $event)"
-        />
-        <HoverRichTextEditor
-          v-if="splitComplexItem(item).description"
-          class="cv-rich-editor cv-rich-editor--description"
-          :model-value="splitComplexItem(item).description"
-          placeholder="Description"
-          font-size="12px"
-          font-weight="400"
-          font-family="var(--cv-text-body, inherit)"
-          color="inherit"
-          @update:model-value="updateComplexPart(index, item, 'description', $event)"
-        />
+          <div class="cv-rich-timeline-body">
+            <HoverRichTextEditor
+              class="cv-rich-editor cv-rich-editor--title"
+              :model-value="splitComplexItem(item).title"
+              placeholder="Title"
+              font-size="13px"
+              font-weight="700"
+              font-family="var(--cv-text-entry-title, inherit)"
+              color="inherit"
+              @update:model-value="updateComplexPart(index, item, 'title', $event)"
+            />
+            <HoverRichTextEditor
+              v-if="splitComplexItem(item).subtitle"
+              class="cv-rich-editor cv-rich-editor--subtitle"
+              :model-value="splitComplexItem(item).subtitle"
+              placeholder="Subtitle"
+              font-size="12px"
+              font-weight="600"
+              font-family="var(--cv-text-body, inherit)"
+              color="inherit"
+              @update:model-value="updateComplexPart(index, item, 'subtitle', $event)"
+            />
+            <HoverRichTextEditor
+              v-if="splitComplexItem(item).description"
+              class="cv-rich-editor cv-rich-editor--description"
+              :model-value="splitComplexItem(item).description"
+              placeholder="Description"
+              font-size="11px"
+              font-weight="400"
+              font-family="var(--cv-text-body, inherit)"
+              color="inherit"
+              @update:model-value="updateComplexPart(index, item, 'description', $event)"
+            />
+          </div>
+        </template>
+
+        <template v-else>
+          <div class="cv-rich-entry-head">
+            <HoverRichTextEditor
+              class="cv-rich-editor cv-rich-editor--title"
+              :model-value="splitComplexItem(item).title"
+              placeholder="Title"
+              font-size="13px"
+              font-weight="700"
+              font-family="var(--cv-text-entry-title, inherit)"
+              color="inherit"
+              @update:model-value="updateComplexPart(index, item, 'title', $event)"
+            />
+            <HoverRichTextEditor
+              v-if="splitComplexItem(item).period"
+              class="cv-rich-editor cv-rich-editor--period"
+              :model-value="splitComplexItem(item).period"
+              placeholder="Period"
+              font-size="12px"
+              font-weight="500"
+              font-family="var(--cv-text-body, inherit)"
+              color="inherit"
+              @update:model-value="updateComplexPart(index, item, 'period', $event)"
+            />
+          </div>
+          <HoverRichTextEditor
+            v-if="splitComplexItem(item).subtitle"
+            class="cv-rich-editor cv-rich-editor--subtitle"
+            :model-value="splitComplexItem(item).subtitle"
+            placeholder="Subtitle"
+            font-size="12px"
+            font-weight="600"
+            font-family="var(--cv-text-body, inherit)"
+            color="inherit"
+            @update:model-value="updateComplexPart(index, item, 'subtitle', $event)"
+          />
+          <div v-if="splitComplexItem(item).description" class="cv-rich-description-row" :class="`cv-rich-description-row--${variant}`">
+            <span v-if="variant === 'list'" class="cv-rich-prefix">-</span>
+            <span v-else-if="variant === 'dot'" class="cv-rich-prefix">•</span>
+            <HoverRichTextEditor
+              class="cv-rich-editor cv-rich-editor--description"
+              :model-value="splitComplexItem(item).description"
+              placeholder="Description"
+              font-size="12px"
+              font-weight="400"
+              font-family="var(--cv-text-body, inherit)"
+              color="inherit"
+              @update:model-value="updateComplexPart(index, item, 'description', $event)"
+            />
+          </div>
+        </template>
       </template>
 
       <template v-else-if="isLeveledSection()">
@@ -196,7 +250,68 @@ function isLeveledSection() {
   min-width: 0;
 }
 
+
+.cv-rich-section--timeline.cv-rich-section--experience,
+.cv-rich-section--timeline.cv-rich-section--education {
+  position: relative;
+  padding-left: 22px;
+}
+
+.cv-rich-section--timeline.cv-rich-section--experience::before,
+.cv-rich-section--timeline.cv-rich-section--education::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: color-mix(in srgb, var(--cv-secondary, #93c5fd) 45%, white);
+}
+
+.cv-rich-item--timeline-complex {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(72px, 100px) minmax(0, 1fr);
+  column-gap: 12px;
+  margin-bottom: 14px;
+}
+
+.cv-rich-timeline-dot {
+  position: absolute;
+  left: -18px;
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  border: 2px solid var(--cv-secondary, #93c5fd);
+  background: var(--cv-page-background, #fff);
+  z-index: 1;
+}
+
+.cv-rich-editor--timeline-period {
+  grid-column: 1;
+  color: var(--cv-secondary, #93c5fd);
+}
+
+.cv-rich-timeline-body {
+  grid-column: 2;
+  min-width: 0;
+}
+
+.cv-rich-item--complex.cv-rich-item--list,
+.cv-rich-item--complex.cv-rich-item--dot {
+  display: block;
+}
+
+.cv-rich-description-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  min-width: 0;
+}
+
 .cv-rich-item--cards {
+  margin-bottom: 10px;
   border: 1px solid color-mix(in srgb, var(--cv-secondary, #93c5fd) 40%, white);
   border-radius: 8px;
   padding: 6px 8px;
@@ -273,6 +388,7 @@ function isLeveledSection() {
 }
 
 .cv-rich-editor--description {
+  flex: 1 1 auto;
   font-weight: 400;
   color: color-mix(in srgb, currentColor 82%, transparent);
   white-space: pre-line;
