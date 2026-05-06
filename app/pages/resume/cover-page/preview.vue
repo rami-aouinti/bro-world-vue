@@ -257,7 +257,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
       @pdf="downloadPdf"
       @select-template="applyPreviewTemplate"
     />
-    <div class="py-8 d-flex justify-center"><main class="capture-cover-page" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-divider-color':sectionDividerColor,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
+    <div class="py-8 d-flex justify-center preview-single-page-frame"><main class="capture-cover-page" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-divider-color':sectionDividerColor,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
       <header
 class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barLayout === 'double', 'hero--photo-right': photoPosition === 'right', 'hero--ribbon': activeTemplate?.decor?.headerStyle === 'ribbon', 'hero--layout-right': isLayoutRight}"
@@ -303,7 +303,7 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
         <HoverRichTextEditor v-model="model.phone" :font-size="`${elementStyles.phone.size}px`" :color="elementStyles.phone.color" :font-weight="elementStyles.phone.weight" />
       </section>
       <footer v-if="signatureDataUrl" class="signature-footer"><img :src="signatureDataUrl" alt="signature" class="signature-image"/></footer>
-    </main></div>
+    </main><ResumePreviewPageBreak :page-number="1" /></div>
     <input ref="photoInput" type="file" accept="image/*" class="d-none" @change="onPhotoUpload">
     <v-dialog v-model="signatureDialogOpen" max-width="760"><v-card><v-card-title>Signature</v-card-title><v-card-text><canvas ref="signatureCanvas" style="width:100%;height:200px;border:1px solid rgba(0,0,0,.15);border-radius:10px"/></v-card-text></v-card></v-dialog>
   </v-container>
@@ -311,6 +311,7 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
 </template>
 
 <style scoped>
+.preview-single-page-frame{position:relative;flex-direction:column;align-items:center}
 .capture-cover-page{
   position:relative;
   overflow:hidden;

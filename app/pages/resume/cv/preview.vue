@@ -570,7 +570,7 @@ async function downloadPdf() {
   const printWindow = window.open('', '_blank', 'width=900,height=1300')
   if (!printWindow) return
   const headStyles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]')).map((el) => el.outerHTML).join('')
-  printWindow.document.write(`<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.cv-preview-shell{width:210mm;box-sizing:border-box;margin:0}.cv-page-break{display:none!important}.cv-section-toolbar,.cv-photo-menu-btn{display:none!important}</style></head><body>${node.outerHTML}</body></html>`)
+  printWindow.document.write(`<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.cv-preview-shell{width:210mm;box-sizing:border-box;margin:0}.resume-preview-page-break{display:none!important}.cv-section-toolbar,.cv-photo-menu-btn{display:none!important}</style></head><body>${node.outerHTML}</body></html>`)
   printWindow.document.close()
   await new Promise((resolve) => setTimeout(resolve, 900))
   printWindow.focus()
@@ -797,14 +797,12 @@ onMounted(async () => {
             </footer>
           </template>
           </component>
-          <div
+          <ResumePreviewPageBreak
             v-for="pageBreak in cvPreviewPageBreaks"
             :key="`cv-page-break-${pageBreak}`"
-            class="cv-page-break"
-            :style="{ top: `${pageBreak * CV_PREVIEW_PDF_PAGE_HEIGHT}px` }"
-          >
-            <span>Fin page {{ pageBreak }}</span>
-          </div>
+            :page-number="pageBreak"
+            :top="pageBreak * CV_PREVIEW_PDF_PAGE_HEIGHT"
+          />
         </div>
       </div>
     </v-container>
@@ -883,39 +881,6 @@ onMounted(async () => {
   height: auto !important;
   min-height: var(--cv-preview-total-height, 1100px) !important;
   overflow: visible !important;
-}
-
-.cv-page-break {
-  position: absolute;
-  right: 0;
-  left: 0;
-  z-index: 4;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  pointer-events: none;
-  color: color-mix(in srgb, var(--cv-primary, #1d4ed8) 70%, #64748b);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  transform: translateY(-50%);
-}
-
-.cv-page-break::before,
-.cv-page-break::after {
-  content: '';
-  height: 1px;
-  flex: 1;
-  border-top: 1px dashed currentColor;
-  opacity: 0.75;
-}
-
-.cv-page-break span {
-  padding: 3px 8px;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--cv-primary, #1d4ed8) 8%, white);
 }
 
 .cv-header-layout { display: grid; gap: 12px; align-items: center; }
