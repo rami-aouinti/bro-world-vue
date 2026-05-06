@@ -462,9 +462,10 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
             <div
               v-else-if="template === 'progress-circle'"
               class="renderer-circle"
-            >
-              {{ item.level }}%
-            </div>
+              :style="{ '--renderer-circle-progress': `${item.level}%` }"
+              :aria-label="`${item.level}%`"
+              role="img"
+            />
           </div>
         </div>
       </li>
@@ -698,14 +699,30 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 }
 
 .renderer-circle {
-  width: 2.2rem;
-  height: 2.2rem;
+  --renderer-circle-size: 2.75rem;
+  --renderer-circle-thickness: 0.38rem;
+  --renderer-circle-track: color-mix(in srgb, currentColor 14%, transparent);
+  --renderer-circle-fill: color-mix(in srgb, currentColor 58%, transparent);
+
+  width: var(--renderer-circle-size);
+  height: var(--renderer-circle-size);
   border-radius: 999px;
-  border: 2px solid color-mix(in srgb, currentColor 55%, transparent);
-  display: grid;
-  place-items: center;
-  font-size: 0.68rem;
-  white-space: nowrap;
+  background: conic-gradient(
+    var(--renderer-circle-fill) var(--renderer-circle-progress),
+    var(--renderer-circle-track) 0
+  );
+  flex: 0 0 var(--renderer-circle-size);
+  transform: rotate(-90deg);
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - var(--renderer-circle-thickness)),
+    #000 0
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - var(--renderer-circle-thickness)),
+    #000 0
+  );
 }
 
 /* CARDS */
