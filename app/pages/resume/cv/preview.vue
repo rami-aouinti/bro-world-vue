@@ -24,7 +24,6 @@ import EducationCards from '~/components/cv/sections/EducationCards.vue'
 import ProjectsClassic from '~/components/cv/sections/ProjectsClassic.vue'
 import ProjectsList from '~/components/cv/sections/ProjectsList.vue'
 import ProjectsDot from '~/components/cv/sections/ProjectsDot.vue'
-import ProjectsTimeline from '~/components/cv/sections/ProjectsTimeline.vue'
 import ProjectsCards from '~/components/cv/sections/ProjectsCards.vue'
 import SkillsClassic from '~/components/cv/sections/SkillsClassic.vue'
 import SkillsStars from '~/components/cv/sections/SkillsStars.vue'
@@ -116,6 +115,171 @@ function visibleOrderedSections(orderKey: keyof typeof sectionOrders, fallback: 
   })
 }
 
+const CV_PREVIEW_PAGE_HEIGHT = 1123
+const CV_PREVIEW_PAGE_BOTTOM_PADDING = 24
+const cvPreviewRef = ref<HTMLElement | null>(null)
+const cvPageCount = ref(1)
+const paginationReady = ref(false)
+const measuredSectionHeights = reactive<Record<string, Record<string, number>>>({})
+const sectionPageAssignments = reactive<Record<string, Record<string, number>>>({})
+let paginationMeasureTimer: ReturnType<typeof setTimeout> | undefined
+
+function resetPagination() {
+  paginationReady.value = false
+  cvPageCount.value = 1
+  for (const key of Object.keys(sectionPageAssignments)) {
+    sectionPageAssignments[key] = {}
+  }
+  for (const key of Object.keys(measuredSectionHeights)) {
+    measuredSectionHeights[key] = {}
+  }
+  schedulePaginationMeasure()
+}
+
+function sectionPaginationKey(section: string) {
+  return section
+}
+
+function getSectionPage(orderKey: keyof typeof sectionOrders, section: string) {
+  if (!paginationReady.value) return 0
+  return sectionPageAssignments[orderKey]?.[sectionPaginationKey(section)] || 0
+}
+
+function visibleOrderedSectionsForPage(
+  orderKey: keyof typeof sectionOrders,
+  fallback: string[],
+  pageIndex: number,
+  zoneKey?: keyof typeof sectionOrders,
+) {
+  const sections = visibleOrderedSections(orderKey, fallback, zoneKey)
+  if (!paginationReady.value) return pageIndex === 0 ? sections : []
+  return sections.filter((section) => getSectionPage(orderKey, section) === pageIndex)
+}
+
+function readElementHeight(element: HTMLElement) {
+  const styles = window.getComputedStyle(element)
+  const marginBottom = Number.parseFloat(styles.marginBottom || '0') || 0
+  return Math.ceil(element.getBoundingClientRect().height + marginBottom)
+}
+
+function calculatePaginationAssignments() {
+  const nextAssignments: Record<string, Record<string, number>> = {}
+  let nextPageCount = 1
+
+  for (const [orderKey, order] of Object.entries(sectionOrders) as Array<[
+    keyof typeof sectionOrders,
+    string[],
+  ]>) {
+    const heights = measuredSectionHeights[orderKey] || {}
+    if (!Object.keys(heights).length) continue
+
+    const firstMeasuredSection = order.find((section) => heights[sectionPaginationKey(section)])
+    if (!firstMeasuredSection) continue
+
+    const availableHeight = Math.max(
+      180,
+      heights.__available || CV_PREVIEW_PAGE_HEIGHT - CV_PREVIEW_PAGE_BOTTOM_PADDING,
+    )
+    let pageIndex = 0
+    let usedHeight = 0
+    nextAssignments[orderKey] = {}
+
+    for (const section of order) {
+      const key = sectionPaginationKey(section)
+      const sectionHeight = heights[key]
+      if (!sectionHeight) continue
+      if (usedHeight > 0 && usedHeight + sectionHeight > availableHeight) {
+        pageIndex += 1
+        usedHeight = 0
+      }
+      nextAssignments[orderKey][key] = pageIndex
+      usedHeight += sectionHeight
+      nextPageCount = Math.max(nextPageCount, pageIndex + 1)
+    }
+  }
+
+  return { assignments: nextAssignments, pageCount: nextPageCount }
+}
+
+function arePaginationAssignmentsEqual(
+  assignments: Record<string, Record<string, number>>,
+  nextPageCount: number,
+) {
+  if (cvPageCount.value !== Math.max(1, nextPageCount)) return false
+  const currentKeys = Object.keys(sectionPageAssignments).sort()
+  const nextKeys = Object.keys(assignments).sort()
+  if (currentKeys.join('|') !== nextKeys.join('|')) return false
+
+  return nextKeys.every((orderKey) => {
+    const currentPages = sectionPageAssignments[orderKey] || {}
+    const nextPages = assignments[orderKey] || {}
+    const currentPageKeys = Object.keys(currentPages).sort()
+    const nextPageKeys = Object.keys(nextPages).sort()
+    if (currentPageKeys.join('|') !== nextPageKeys.join('|')) return false
+    return nextPageKeys.every((section) => currentPages[section] === nextPages[section])
+  })
+}
+
+function applyPaginationAssignments(
+  assignments: Record<string, Record<string, number>>,
+  nextPageCount: number,
+) {
+  if (paginationReady.value && arePaginationAssignmentsEqual(assignments, nextPageCount)) return
+
+  for (const key of Object.keys(sectionPageAssignments)) {
+    if (!assignments[key]) sectionPageAssignments[key] = {}
+  }
+
+  for (const [orderKey, pages] of Object.entries(assignments)) {
+    sectionPageAssignments[orderKey] = { ...pages }
+  }
+
+  cvPageCount.value = Math.max(1, nextPageCount)
+  paginationReady.value = true
+}
+
+function measurePagination() {
+  if (!import.meta.client) return
+  const root = cvPreviewRef.value
+  const firstPage = root?.querySelector<HTMLElement>('[data-cv-page-index="0"]')
+  if (!firstPage) return
+
+  const pageRect = firstPage.getBoundingClientRect()
+  const measuredItems = firstPage.querySelectorAll<HTMLElement>(
+    '[data-cv-order-key][data-cv-section]',
+  )
+
+  measuredItems.forEach((element) => {
+    const orderKey = element.dataset.cvOrderKey
+    const section = element.dataset.cvSection
+    if (!orderKey || !section) return
+    measuredSectionHeights[orderKey] = measuredSectionHeights[orderKey] || {}
+    measuredSectionHeights[orderKey][section] = readElementHeight(element)
+
+    const firstItemTop = Math.max(
+      0,
+      Math.floor(element.getBoundingClientRect().top - pageRect.top),
+    )
+    const availableHeight = Math.max(
+      180,
+      CV_PREVIEW_PAGE_HEIGHT - firstItemTop - CV_PREVIEW_PAGE_BOTTOM_PADDING,
+    )
+    measuredSectionHeights[orderKey].__available = availableHeight
+  })
+
+  const { assignments, pageCount } = calculatePaginationAssignments()
+  applyPaginationAssignments(assignments, pageCount)
+}
+
+function schedulePaginationMeasure() {
+  if (!import.meta.client) return
+  if (paginationMeasureTimer) window.clearTimeout(paginationMeasureTimer)
+  paginationMeasureTimer = window.setTimeout(() => {
+    paginationMeasureTimer = undefined
+    measurePagination()
+  }, 80)
+}
+
 
 const dragSection = ref<string>('')
 const dragOrderKey = ref<keyof typeof sectionOrders | ''>('')
@@ -189,7 +353,7 @@ const sectionComponentMap: Record<string, any> = {
   profile: { classic: ProfileClassic },
   experience: { classic: ExperienceClassic, list: ExperienceList, dot: ExperienceDot, timeline: ExperienceTimeline, cards: ExperienceCards },
   education: { classic: EducationClassic, list: EducationList, dot: EducationDot, timeline: EducationTimeline, cards: EducationCards },
-  projects: { classic: ProjectsClassic, list: ProjectsList, dot: ProjectsDot, timeline: ProjectsTimeline, cards: ProjectsCards },
+  projects: { classic: ProjectsClassic, list: ProjectsList, dot: ProjectsDot, cards: ProjectsCards },
   skills: { classic: SkillsClassic, stars: SkillsStars, dots: SkillsDots, 'progress-line': SkillsProgressLine, 'progress-circle': SkillsProgressCircle },
   languages: { classic: LanguagesClassic, stars: LanguagesStars, dots: LanguagesDots, 'progress-line': LanguagesProgressLine, 'progress-circle': LanguagesProgressCircle },
   certifications: { classic: CertificationsClassic, list: CertificationsList, dot: CertificationsDot, cards: CertificationsCards },
@@ -489,6 +653,18 @@ watch(activeTemplate, (template) => {
   asideRadius.value = parsePx(template?.aside?.radius, 0)
 }, { immediate: true })
 
+watch(selectedTemplate, () => resetPagination())
+watch(sectionTypeOverrides, () => resetPagination(), { deep: true })
+watch(sectionExtraItems, () => resetPagination(), { deep: true })
+watch(hiddenSections, () => resetPagination(), { deep: true })
+watch(hiddenSectionsByZone, () => resetPagination(), { deep: true })
+watch([asideWidth, asideHeight, asideRadius, photoSize, photoRadius, photoBorderWidth], () => resetPagination())
+
+onUpdated(() => schedulePaginationMeasure())
+onBeforeUnmount(() => {
+  if (paginationMeasureTimer) window.clearTimeout(paginationMeasureTimer)
+})
+
 
 function textFontPreset(kind: 'fullName'|'sectionLabel'|'entryTitle'|'body') {
   const style = String((activeTemplate.value as any)?.textStyles?.[kind] || 'sans')
@@ -524,6 +700,9 @@ onMounted(async () => {
   if (queryTemplate && GENERATED_RESUME_TEMPLATES.some((template) => template.id === queryTemplate)) {
     selectedTemplate.value = queryTemplate
   }
+
+  await nextTick()
+  schedulePaginationMeasure()
 })
 </script>
 
@@ -583,8 +762,15 @@ onMounted(async () => {
         </div>
       </div>
 
-      <div class="py-8">
-        <component :is="activeLayoutComponent" class="w-100" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-secondary': activeTemplate?.theme?.palette?.secondary || '#93C5FD', '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body'), '--cv-header-text': headerTextColor, '--cv-header-muted': headerMutedColor }">
+      <div ref="cvPreviewRef" class="py-8 cv-preview-pages">
+        <component
+          :is="activeLayoutComponent"
+          v-for="pageIndex in cvPageCount"
+          :key="`cv-preview-page-${selectedTemplate}-${pageIndex}`"
+          class="w-100 cv-preview-page"
+          :data-cv-page-index="pageIndex - 1"
+          :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-secondary': activeTemplate?.theme?.palette?.secondary || '#93C5FD', '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body'), '--cv-header-text': headerTextColor, '--cv-header-muted': headerMutedColor }"
+        >
           <template #header>
             <div class="cv-header-layout" :class="`cv-header-layout--${headerType}`">
               <template v-if="headerType === 'header-left'">
@@ -649,13 +835,13 @@ onMounted(async () => {
           </template>
           <template #aside>
             <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" :class="['cv-aside-sections', { 'cv-aside-sections--full': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
-              <div v-for="section in visibleOrderedSections('asideOne', structureAsideOneSections, 'asideOne')" :key="`aside-s1-${section}`" class="cv-aside-section-item" draggable="true" @dragstart="onSectionDragStart('asideOne', section)" @dragover.prevent @drop="onSectionDrop('asideOne', section)" @dragend="onSectionDragEnd">
+              <div v-for="section in visibleOrderedSectionsForPage('asideOne', structureAsideOneSections, pageIndex - 1, 'asideOne')" :key="`aside-s1-${section}`" class="cv-aside-section-item" :data-cv-order-key="'asideOne'" :data-cv-section="sectionPaginationKey(section)" draggable="true" @dragstart="onSectionDragStart('asideOne', section)" @dragover.prevent @drop="onSectionDrop('asideOne', section)" @dragend="onSectionDragEnd">
                 <div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section)); hideSectionInZone('asideOne', toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('asideOne', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong>
                 <component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" />
               </div>
             </div>
             <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" :class="['cv-aside-sections', { 'cv-aside-sections--full': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
-              <div v-for="section in visibleOrderedSections('asideTwo', structureAsideTwoSections, 'asideTwo')" :key="`aside-s2-${section}`" class="cv-aside-section-item" draggable="true" @dragstart="onSectionDragStart('asideTwo', section)" @dragover.prevent @drop="onSectionDrop('asideTwo', section)" @dragend="onSectionDragEnd">
+              <div v-for="section in visibleOrderedSectionsForPage('asideTwo', structureAsideTwoSections, pageIndex - 1, 'asideTwo')" :key="`aside-s2-${section}`" class="cv-aside-section-item" :data-cv-order-key="'asideTwo'" :data-cv-section="sectionPaginationKey(section)" draggable="true" @dragstart="onSectionDragStart('asideTwo', section)" @dragover.prevent @drop="onSectionDrop('asideTwo', section)" @dragend="onSectionDragEnd">
                 <div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section)); hideSectionInZone('asideTwo', toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('asideTwo', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong>
                 <component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" />
               </div>
@@ -664,22 +850,22 @@ onMounted(async () => {
 
           <template #content>
             <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
-              <div v-for="section in visibleOrderedSections('contentBase', structureContentBaseSections)" :key="`content-base-${section}`" class="cv-section-row" draggable="true" @dragstart="onSectionDragStart('contentBase', section)" @dragover.prevent @drop="onSectionDrop('contentBase', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('contentBase', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ sectionTitleMap[toSectionKey(section)] || section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+              <div v-for="section in visibleOrderedSectionsForPage('contentBase', structureContentBaseSections, pageIndex - 1)" :key="`content-base-${section}`" class="cv-section-row" :data-cv-order-key="'contentBase'" :data-cv-section="sectionPaginationKey(section)" draggable="true" @dragstart="onSectionDragStart('contentBase', section)" @dragover.prevent @drop="onSectionDrop('contentBase', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('contentBase', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ sectionTitleMap[toSectionKey(section)] || section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
             </div>
             <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
-              <div v-for="section in visibleOrderedSections('contentStructure2', [...structureContentBaseSections, 'Skills'])" :key="`content-s2-${section}`" class="cv-section-row" draggable="true" @dragstart="onSectionDragStart('contentStructure2', section)" @dragover.prevent @drop="onSectionDrop('contentStructure2', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('contentStructure2', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ sectionTitleMap[toSectionKey(section)] || section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+              <div v-for="section in visibleOrderedSectionsForPage('contentStructure2', [...structureContentBaseSections, 'Skills'], pageIndex - 1)" :key="`content-s2-${section}`" class="cv-section-row" :data-cv-order-key="'contentStructure2'" :data-cv-section="sectionPaginationKey(section)" draggable="true" @dragstart="onSectionDragStart('contentStructure2', section)" @dragover.prevent @drop="onSectionDrop('contentStructure2', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('contentStructure2', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ sectionTitleMap[toSectionKey(section)] || section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
             </div>
             <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
-              <div v-for="section in visibleOrderedSections('mainOne', structureOneSections)" :key="`s1-${section}`" class="cv-section-row" draggable="true" @dragstart="onSectionDragStart('mainOne', section)" @dragover.prevent @drop="onSectionDrop('mainOne', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('mainOne', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+              <div v-for="section in visibleOrderedSectionsForPage('mainOne', structureOneSections, pageIndex - 1)" :key="`s1-${section}`" class="cv-section-row" :data-cv-order-key="'mainOne'" :data-cv-section="sectionPaginationKey(section)" draggable="true" @dragstart="onSectionDragStart('mainOne', section)" @dragover.prevent @drop="onSectionDrop('mainOne', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('mainOne', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
             </div>
             <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
-              <div v-for="section in visibleOrderedSections('mainTwoTop', structureTwoTopSections)" :key="`s2-top-${section}`" class="cv-section-row" draggable="true" @dragstart="onSectionDragStart('mainTwoTop', section)" @dragover.prevent @drop="onSectionDrop('mainTwoTop', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('mainTwoTop', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+              <div v-for="section in visibleOrderedSectionsForPage('mainTwoTop', structureTwoTopSections, pageIndex - 1)" :key="`s2-top-${section}`" class="cv-section-row" :data-cv-order-key="'mainTwoTop'" :data-cv-section="sectionPaginationKey(section)" draggable="true" @dragstart="onSectionDragStart('mainTwoTop', section)" @dragover.prevent @drop="onSectionDrop('mainTwoTop', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('mainTwoTop', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
               <v-row class="mt-1" dense>
                 <v-col cols="6">
-                  <div v-for="section in visibleOrderedSections('mainTwoLeft', structureTwoLeftSections)" :key="`s2-left-${section}`" class="cv-section-row" draggable="true" @dragstart="onSectionDragStart('mainTwoLeft', section)" @dragover.prevent @drop="onSectionDrop('mainTwoLeft', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('mainTwoLeft', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+                  <div v-for="section in visibleOrderedSectionsForPage('mainTwoLeft', structureTwoLeftSections, pageIndex - 1)" :key="`s2-left-${section}`" class="cv-section-row" :data-cv-order-key="'mainTwoLeft'" :data-cv-section="sectionPaginationKey(section)" draggable="true" @dragstart="onSectionDragStart('mainTwoLeft', section)" @dragover.prevent @drop="onSectionDrop('mainTwoLeft', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('mainTwoLeft', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
                 </v-col>
                 <v-col cols="6">
-                  <div v-for="section in visibleOrderedSections('mainTwoRight', structureTwoRightSections)" :key="`s2-right-${section}`" class="cv-section-row" draggable="true" @dragstart="onSectionDragStart('mainTwoRight', section)" @dragover.prevent @drop="onSectionDrop('mainTwoRight', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('mainTwoRight', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+                  <div v-for="section in visibleOrderedSectionsForPage('mainTwoRight', structureTwoRightSections, pageIndex - 1)" :key="`s2-right-${section}`" class="cv-section-row" :data-cv-order-key="'mainTwoRight'" :data-cv-section="sectionPaginationKey(section)" draggable="true" @dragstart="onSectionDragStart('mainTwoRight', section)" @dragover.prevent @drop="onSectionDrop('mainTwoRight', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('mainTwoRight', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
                 </v-col>
               </v-row>
             </div>
@@ -747,6 +933,28 @@ onMounted(async () => {
 
 <style scoped>
 
+.cv-preview-pages {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.cv-preview-page {
+  height: 1123px;
+  min-height: 1123px;
+  overflow: hidden !important;
+}
+
+.cv-preview-page :deep(.cv-layout) {
+  height: 1123px;
+  min-height: 1123px;
+  overflow: hidden;
+}
+
+.cv-preview-page :deep(.cv-aside-panel) {
+  max-height: 100%;
+  overflow: hidden;
+}
 
 .cv-header-layout { display: grid; gap: 12px; align-items: center; }
 .cv-header-layout--header-left { grid-template-columns: 2fr 1fr; }
