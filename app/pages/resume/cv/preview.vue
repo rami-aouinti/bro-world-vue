@@ -145,6 +145,12 @@ const sectionModalValue = ref('')
 const sectionModalTitle = ref('')
 const sectionModalDescription = ref('')
 const sectionModalFiles = ref<File[]>([])
+const sectionModalCompany = ref('')
+const sectionModalSchool = ref('')
+const sectionModalLocation = ref('')
+const sectionModalHomePage = ref('')
+const sectionModalStartDate = ref('')
+const sectionModalEndDate = ref('')
 
 function hideSection(section: string) { hiddenSections[section] = true }
 function addSectionItem(section: string) {
@@ -156,6 +162,12 @@ function addSectionItem(section: string) {
   sectionModalTitle.value = ''
   sectionModalDescription.value = ''
   sectionModalFiles.value = []
+  sectionModalCompany.value = ''
+  sectionModalSchool.value = ''
+  sectionModalLocation.value = ''
+  sectionModalHomePage.value = ''
+  sectionModalStartDate.value = ''
+  sectionModalEndDate.value = ''
 }
 function confirmAddSectionItem() {
   const key = sectionModalKey.value
@@ -183,6 +195,41 @@ function confirmAddSectionItem() {
     sectionExtraItems[key] = [...(sectionExtraItems[key] || []), {
       title,
       description: sectionModalDescription.value.trim(),
+    }]
+  } else if (key === 'experience') {
+    const title = sectionModalTitle.value.trim()
+    const company = sectionModalCompany.value.trim()
+    if (!title || !company) return
+    sectionExtraItems[key] = [...(sectionExtraItems[key] || []), {
+      id: crypto.randomUUID(),
+      title,
+      description: sectionModalDescription.value.trim(),
+      company,
+      startDate: sectionModalStartDate.value || '',
+      endDate: sectionModalEndDate.value || '',
+    }]
+  } else if (key === 'education') {
+    const title = sectionModalTitle.value.trim()
+    const school = sectionModalSchool.value.trim()
+    if (!title || !school) return
+    sectionExtraItems[key] = [...(sectionExtraItems[key] || []), {
+      id: crypto.randomUUID(),
+      title,
+      description: sectionModalDescription.value.trim(),
+      school,
+      startDate: sectionModalStartDate.value || '',
+      endDate: sectionModalEndDate.value || '',
+      location: sectionModalLocation.value.trim(),
+    }]
+  } else if (key === 'projects') {
+    const title = sectionModalTitle.value.trim()
+    if (!title) return
+    sectionExtraItems[key] = [...(sectionExtraItems[key] || []), {
+      id: crypto.randomUUID(),
+      title,
+      description: sectionModalDescription.value.trim(),
+      attachments: sectionModalFiles.value.map((f: any) => f?.name || 'file'),
+      home_page: sectionModalHomePage.value.trim(),
     }]
   } else {
     const value = sectionModalValue.value.trim()
@@ -233,9 +280,9 @@ function getSectionItems(rawSection: string): string[] {
   const key = normalizeSectionKey(rawSection)
   const data: any = fakeData.value || {}
   const extra = sectionExtraItems[key] || []
-  if (key === 'experience') return [...(data.experiences || []).map((item: any) => { const from = formatShortDate(item.startDate); const to = item.endDate ? formatShortDate(item.endDate) : 'Present'; const date = from ? `${from} - ${to}` : ''; return `${item.title || 'Role'}§${item.company || ''}§${date}§${item.description || 'Description...'}` }), ...extra]
-  if (key === 'education') return [...(data.educations || []).map((item: any) => { const from = formatShortDate(item.startDate); const to = formatShortDate(item.endDate); const date = from ? `${from}${to ? ` - ${to}` : ''}` : ''; const schoolLine = `${item.school || ''}${item.location ? `, ${item.location}` : ''}`; return `${item.title || 'Degree'}§${schoolLine}§${date}§${item.description || 'Description...'}` }), ...extra]
-  if (key === 'projects') return [...(data.projects || []).map((item: any) => `${item.title || 'Project'}${item.description ? ` · ${item.description}` : ''}`), ...extra]
+  if (key === 'experience') return [...(data.experiences || []).map((item: any) => { const from = formatShortDate(item.startDate); const to = item.endDate ? formatShortDate(item.endDate) : 'Present'; const date = from ? `${from} - ${to}` : ''; return `${item.title || 'Role'}§${item.company || ''}§${date}§${item.description || 'Description...'}` }), ...extra.map((item: any) => { const from = formatShortDate(item.startDate); const to = item.endDate ? formatShortDate(item.endDate) : 'Present'; const date = from ? `${from} - ${to}` : ''; return `${item.title || 'Role'}§${item.company || ''}§${date}§${item.description || 'Description...'}` })]
+  if (key === 'education') return [...(data.educations || []).map((item: any) => { const from = formatShortDate(item.startDate); const to = formatShortDate(item.endDate); const date = from ? `${from}${to ? ` - ${to}` : ''}` : ''; const schoolLine = `${item.school || ''}${item.location ? `, ${item.location}` : ''}`; return `${item.title || 'Degree'}§${schoolLine}§${date}§${item.description || 'Description...'}` }), ...extra.map((item: any) => { const from = formatShortDate(item.startDate); const to = formatShortDate(item.endDate); const date = from ? `${from}${to ? ` - ${to}` : ''}` : ''; const schoolLine = `${item.school || ''}${item.location ? `, ${item.location}` : ''}`; return `${item.title || 'Degree'}§${schoolLine}§${date}§${item.description || 'Description...'}` })]
+  if (key === 'projects') return [...(data.projects || []).map((item: any) => `${item.title || 'Project'}${item.description ? ` · ${item.description}` : ''}`), ...extra.map((item: any) => `${item.title || 'Project'}${item.description ? ` · ${item.description}` : ''}`)]
   if (key === 'skills') return [...(data.skills || []).map((item: any) => typeof item === 'string' ? item : `${item.name || item.title || 'Skill'}${item.level ? ` (${item.level}%)` : ''}`).filter(Boolean), ...extra]
   if (key === 'languages') return [...(data.languages || []), ...extra].map((item: any) => { if (typeof item === 'string') return item; const display = item.languageType === 'flag' && item.flag ? item.flag : (item.name || item.title || 'Language'); return `${display}${item.level ? ` (${item.level}%)` : ''}` })
   if (key === 'certifications') return [...(data.certifications || []).map((item: any) => typeof item === 'string' ? item : `${item.title || ''}${item.description ? ` · ${item.description}` : ''}`).filter(Boolean), ...extra.map((item: any) => typeof item === 'string' ? item : `${item.title || ''}${item.description ? ` · ${item.description}` : ''}`)].filter(Boolean)
@@ -509,6 +556,31 @@ onMounted(() => {
         <template v-if="sectionModalKey === 'languages'">
           <AppSelect v-model="languageOption" :items="languageCatalog" item-title="title" label="Language" return-object class="mb-3"/>
           <v-rating v-model="languageStars" length="5" density="compact" color="amber"/>
+        </template>
+        <template v-else-if="sectionModalKey === 'experience'">
+          <v-text-field v-model="sectionModalTitle" label="Title" class="mb-2"/>
+          <v-text-field v-model="sectionModalCompany" label="Company" class="mb-2"/>
+          <v-textarea v-model="sectionModalDescription" label="Description" rows="3" class="mb-2"/>
+          <v-row dense>
+            <v-col cols="6"><v-text-field v-model="sectionModalStartDate" type="date" label="Start date"/></v-col>
+            <v-col cols="6"><v-text-field v-model="sectionModalEndDate" type="date" label="End date"/></v-col>
+          </v-row>
+        </template>
+        <template v-else-if="sectionModalKey === 'education'">
+          <v-text-field v-model="sectionModalTitle" label="Title" class="mb-2"/>
+          <v-text-field v-model="sectionModalSchool" label="School" class="mb-2"/>
+          <v-text-field v-model="sectionModalLocation" label="Location" class="mb-2"/>
+          <v-textarea v-model="sectionModalDescription" label="Description" rows="3" class="mb-2"/>
+          <v-row dense>
+            <v-col cols="6"><v-text-field v-model="sectionModalStartDate" type="date" label="Start date"/></v-col>
+            <v-col cols="6"><v-text-field v-model="sectionModalEndDate" type="date" label="End date"/></v-col>
+          </v-row>
+        </template>
+        <template v-else-if="sectionModalKey === 'projects'">
+          <v-text-field v-model="sectionModalTitle" label="Title" class="mb-2"/>
+          <v-text-field v-model="sectionModalHomePage" label="Homepage" class="mb-2"/>
+          <v-textarea v-model="sectionModalDescription" label="Description" rows="3" class="mb-2"/>
+          <v-file-input v-model="sectionModalFiles" label="Attachments" multiple chips show-size/>
         </template>
         <template v-else-if="sectionModalKey === 'certifications'">
           <v-text-field v-model="sectionModalTitle" label="Title" class="mb-2"/>
