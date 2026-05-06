@@ -469,6 +469,27 @@ function parsePx(value: unknown, fallback: number) {
   return Number.isFinite(num) ? num : fallback
 }
 
+function isDarkHexColor(color: string) {
+  const value = String(color || '').replace('#', '')
+  const normalized = value.length === 3 ? value.split('').map((c) => c + c).join('') : value
+  if (normalized.length !== 6) return false
+  const r = Number.parseInt(normalized.slice(0, 2), 16)
+  const g = Number.parseInt(normalized.slice(2, 4), 16)
+  const b = Number.parseInt(normalized.slice(4, 6), 16)
+  const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255
+  return luminance < 0.55
+}
+
+const headerTextColor = computed(() => {
+  const primary = String(activeTemplate.value?.theme?.palette?.primary || '#1d4ed8')
+  return isDarkHexColor(primary) ? '#F8FAFC' : '#0F172A'
+})
+
+const headerMutedColor = computed(() => {
+  const primary = String(activeTemplate.value?.theme?.palette?.primary || '#1d4ed8')
+  return isDarkHexColor(primary) ? '#CBD5E1' : '#334155'
+})
+
 watch(activeTemplate, (template) => {
   asideWidth.value = parsePx(template?.aside?.width, 850)
   asideHeight.value = parsePx(template?.aside?.height, 1100)
@@ -561,7 +582,7 @@ onMounted(() => {
       </div>
 
       <div class="py-8">
-        <component :is="activeLayoutComponent" class="w-100" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-secondary': activeTemplate?.theme?.palette?.secondary || '#93C5FD', '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body') }">
+        <component :is="activeLayoutComponent" class="w-100" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-secondary': activeTemplate?.theme?.palette?.secondary || '#93C5FD', '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body'), '--cv-header-text': headerTextColor, '--cv-header-muted': headerMutedColor }">
           <template #header>
             <div class="cv-header-layout" :class="`cv-header-layout--${headerType}`">
               <template v-if="headerType === 'header-left'">
@@ -733,6 +754,7 @@ onMounted(() => {
 .cv-header-contact { display:flex; flex-direction:column; justify-content:center; align-items:stretch; text-align:start; }
 .cv-header-contact-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 10px; width:100%; text-align:start; }
 .cv-contact-item { display:flex; align-items:center; gap:6px; font-size:13px; }
+.cv-header-layout, .cv-contact-item, .cv-header-identity strong { color: var(--cv-header-text, #0f172a); }
 .cv-contact-link { color: inherit; text-decoration: none; font-weight: 500; }
 .cv-contact-link:hover { text-decoration: none; color: inherit; }
 .cv-header-identity { display: flex; flex-direction: column; gap: 4px; justify-content:center; align-items:center; text-align:center; }
@@ -850,6 +872,6 @@ onMounted(() => {
 .cv-variant-select :deep(.v-field__input){display:none}
 .cv-variant-select :deep(.v-field__prepend-inner){padding-inline-end:0}
 .cv-variant-select :deep(.v-field__append-inner){display:none}
-.cv-header-identity span{font-size:12px;opacity:.9}
+.cv-header-identity span{font-size:12px;opacity:.95;color:var(--cv-header-muted,#334155)}
 
 </style>
