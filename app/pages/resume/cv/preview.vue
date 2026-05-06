@@ -419,7 +419,7 @@ function getSectionItems(rawSection: string): string[] {
   return []
 }
 const headerProfile = computed(() => {
-  const fake: any = (activeTemplate.value as any)?.fakeData || {}
+  const fake: any = fakeData.value || {}
   const info = fake.resumeInformation || {}
   return {
     fullName: String(info.fullName || fake.fullName || 'John Doe'),
