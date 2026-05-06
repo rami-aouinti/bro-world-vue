@@ -205,7 +205,7 @@ function isLeveledSection() {
           <span class="cv-rich-progress"><i :style="{ width: `${splitLeveledItem(item).value}%` }" /></span>
         </template>
         <HoverRichTextEditor
-          v-else
+          v-else-if="variant !== 'progress-circle'"
           class="cv-rich-editor cv-rich-editor--value"
           :model-value="`${splitLeveledItem(item).value}%`"
           placeholder="Level"
