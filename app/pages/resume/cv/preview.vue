@@ -8,6 +8,7 @@ import CvLayoutAsideFullLeft from '~/components/cv/layouts/CvLayoutAsideFullLeft
 import CvLayoutAsideFullRight from '~/components/cv/layouts/CvLayoutAsideFullRight.vue'
 import CvLayoutAsideBarLeft from '~/components/cv/layouts/CvLayoutAsideBarLeft.vue'
 import CvLayoutAsideBarRight from '~/components/cv/layouts/CvLayoutAsideBarRight.vue'
+import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 
 import ProfileClassic from '~/components/cv/sections/ProfileClassic.vue'
 import ExperienceClassic from '~/components/cv/sections/ExperienceClassic.vue'
@@ -55,6 +56,8 @@ definePageMeta({
 })
 
 const route = useRoute()
+const { loggedIn } = useUserSession()
+const myResumes = ref<ResumeApiItem[]>([])
 const selectedTemplate = ref(GENERATED_RESUME_TEMPLATES[0]?.id || 'tpl-001')
 const layoutMenuOpen = ref(false)
 
@@ -169,7 +172,9 @@ const sectionVariantMap = computed(() => {
 
 const headerType = computed(() => String(activeTemplate.value?.headerType || 'header-left'))
 
-const fakeData = computed(() => ((activeTemplate.value as any)?.fakeData || {}))
+const templateFakeData = computed(() => ((activeTemplate.value as any)?.fakeData || {}))
+const userResumeData = computed<any>(() => myResumes.value[0] || null)
+const fakeData = computed(() => userResumeData.value || templateFakeData.value)
 const sectionType = (key: keyof ReturnType<typeof sectionVariantMap['value']>) => sectionVariantMap.value[key] || 'classic'
 
 function normalizeSectionKey(raw: string) {
@@ -505,7 +510,16 @@ function goToCapture() {
   navigateTo(`/resume/template-capture/cv/${selectedTemplate.value}`)
 }
 
-onMounted(() => {
+onMounted(async () => {
+  if (loggedIn.value) {
+    try {
+      const resumes = await listMyResumes()
+      if (Array.isArray(resumes) && resumes.length > 0) myResumes.value = resumes
+    } catch {
+      // keep template fake data fallback
+    }
+  }
+
   const queryTemplate = typeof route.query.template === 'string' ? route.query.template : ''
   if (queryTemplate && GENERATED_RESUME_TEMPLATES.some((template) => template.id === queryTemplate)) {
     selectedTemplate.value = queryTemplate
