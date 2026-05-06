@@ -24,7 +24,6 @@ import EducationCards from '~/components/cv/sections/EducationCards.vue'
 import ProjectsClassic from '~/components/cv/sections/ProjectsClassic.vue'
 import ProjectsList from '~/components/cv/sections/ProjectsList.vue'
 import ProjectsDot from '~/components/cv/sections/ProjectsDot.vue'
-import ProjectsTimeline from '~/components/cv/sections/ProjectsTimeline.vue'
 import ProjectsCards from '~/components/cv/sections/ProjectsCards.vue'
 import SkillsClassic from '~/components/cv/sections/SkillsClassic.vue'
 import SkillsStars from '~/components/cv/sections/SkillsStars.vue'
@@ -189,7 +188,7 @@ const sectionComponentMap: Record<string, any> = {
   profile: { classic: ProfileClassic },
   experience: { classic: ExperienceClassic, list: ExperienceList, dot: ExperienceDot, timeline: ExperienceTimeline, cards: ExperienceCards },
   education: { classic: EducationClassic, list: EducationList, dot: EducationDot, timeline: EducationTimeline, cards: EducationCards },
-  projects: { classic: ProjectsClassic, list: ProjectsList, dot: ProjectsDot, timeline: ProjectsTimeline, cards: ProjectsCards },
+  projects: { classic: ProjectsClassic, list: ProjectsList, dot: ProjectsDot, cards: ProjectsCards },
   skills: { classic: SkillsClassic, stars: SkillsStars, dots: SkillsDots, 'progress-line': SkillsProgressLine, 'progress-circle': SkillsProgressCircle },
   languages: { classic: LanguagesClassic, stars: LanguagesStars, dots: LanguagesDots, 'progress-line': LanguagesProgressLine, 'progress-circle': LanguagesProgressCircle },
   certifications: { classic: CertificationsClassic, list: CertificationsList, dot: CertificationsDot, cards: CertificationsCards },
