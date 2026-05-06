@@ -11,7 +11,7 @@ const route = useRoute()
 
 const hideCookieConsent = computed(
   () =>
-    route.path.startsWith('/resume/preview') ||
+    route.path.startsWith('/resume/cv/preview') ||
     route.path.startsWith('/resume/template-capture'),
 )
 const { locale, t } = useI18n()

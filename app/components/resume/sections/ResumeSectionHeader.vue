@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import type { ResumeApiItem } from '~/services/resumeApi'
+import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 import { useI18n } from 'vue-i18n'
 
 type PhotoShape = 'circle' | 'rounded' | 'square' | 'hex' | 'blob'
+type ResumeInfoKey = NonNullable<ResumeApiItem['resumeInformation']> extends infer Info ? keyof Info & string : string
 
 const props = defineProps<{ resume: ResumeApiItem; template?: any; showContactInHeader?: boolean }>()
 const { t } = useI18n()
+function getEditableResume() {
+  return props.resume as ResumeApiItem & { resumeInformation?: Record<string, string> }
+}
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024
@@ -88,15 +93,24 @@ const headerContactFields = computed(() => {
   const normalize = (value: unknown) => (typeof value === 'string' ? value.trim() : '')
 
   return [
-    { key: 'email', icon: 'mdi-email-outline', label: 'Email', value: normalize(info?.email), href: normalize(info?.email) ? `mailto:${normalize(info?.email)}` : undefined },
-    { key: 'birthDate', icon: 'mdi-cake-variant-outline', label: 'Birth date', value: normalize(info?.birthDate) },
-    { key: 'phone', icon: 'mdi-phone-outline', label: 'Phone', value: normalize(info?.phone), href: normalize(info?.phone) ? `tel:${normalize(info?.phone).replace(/\s+/g, '')}` : undefined },
-    { key: 'address', icon: 'mdi-map-marker-outline', label: 'Address', value: normalize(info?.adresse) },
-    { key: 'homepage', icon: 'mdi-web', label: 'Homepage', value: normalize(info?.homepage), href: normalize(info?.homepage) || undefined, displayValue: 'Official Website' },
-    { key: 'repo', icon: 'mdi-source-repository', label: 'Repo', value: normalize(info?.repo_profile), href: normalize(info?.repo_profile) || undefined, displayValue: 'Link Repo' },
+    { key: 'email', infoKey: 'email', icon: 'mdi-email-outline', label: 'Email', value: normalize(info?.email), href: normalize(info?.email) ? `mailto:${normalize(info?.email)}` : undefined },
+    { key: 'birthDate', infoKey: 'birthDate', icon: 'mdi-cake-variant-outline', label: 'Birth date', value: normalize(info?.birthDate) },
+    { key: 'phone', infoKey: 'phone', icon: 'mdi-phone-outline', label: 'Phone', value: normalize(info?.phone), href: normalize(info?.phone) ? `tel:${normalize(info?.phone).replace(/\s+/g, '')}` : undefined },
+    { key: 'address', infoKey: 'adresse', icon: 'mdi-map-marker-outline', label: 'Address', value: normalize(info?.adresse) },
+    { key: 'homepage', infoKey: 'homepage', icon: 'mdi-web', label: 'Homepage', value: normalize(info?.homepage), href: normalize(info?.homepage) || undefined },
+    { key: 'repo', infoKey: 'repo_profile', icon: 'mdi-source-repository', label: 'Repo', value: normalize(info?.repo_profile), href: normalize(info?.repo_profile) || undefined },
   ].filter((field) => field.value.length > 0)
 })
 
+function ensureResumeInformation() {
+  const editableResume = getEditableResume()
+  if (!editableResume.resumeInformation) editableResume.resumeInformation = {}
+  return editableResume.resumeInformation
+}
+
+function updateResumeInformation(key: ResumeInfoKey, value: string) {
+  ensureResumeInformation()[key] = value
+}
 
 function openPhotoPicker() { fileInput.value?.click() }
 function zoomIn() { photoZoom.value = Math.min(2.4, Number((photoZoom.value + 0.1).toFixed(2))) }
@@ -213,18 +227,44 @@ onBeforeUnmount(() => {
     <input ref="fileInput" class="photo-input" type="file" accept="image/png,image/jpeg,image/webp" @change="onPhotoSelected">
 
     <div class="header-main">
-      <h2 class="editable-text" contenteditable="true" @input="(event) => { if (!resume.resumeInformation) resume.resumeInformation = {} as any; resume.resumeInformation.fullName = (event.target as HTMLElement).innerText }">{{ resume.resumeInformation?.fullName }}</h2>
-      <p class="editable-text" contenteditable="true" @input="(event) => { if (!resume.resumeInformation) resume.resumeInformation = {} as any; resume.resumeInformation.title = (event.target as HTMLElement).innerText }">{{ resume.resumeInformation?.title }}</p>
+      <HoverRichTextEditor
+        class="header-name-editor"
+        :model-value="resume.resumeInformation?.fullName || ''"
+        placeholder="Full name"
+        font-size="var(--header-name-size, 2rem)"
+        font-weight="700"
+        font-family="var(--font-family, inherit)"
+        color="inherit"
+        @update:model-value="updateResumeInformation('fullName', $event)"
+      />
+      <HoverRichTextEditor
+        class="header-title-editor"
+        :model-value="resume.resumeInformation?.title || ''"
+        placeholder="Professional title"
+        font-size="var(--header-title-size, 1rem)"
+        font-weight="500"
+        font-family="var(--font-family, inherit)"
+        color="inherit"
+        @update:model-value="updateResumeInformation('title', $event)"
+      />
       <p v-if="photoError" class="photo-error">{{ photoError }}</p>
     </div>
 
     <div v-if="showContactInHeader" class="header-contact">
-      <p v-for="field in headerContactFields" :key="field.key" class="contact-item">
+      <div v-for="field in headerContactFields" :key="field.key" class="contact-item">
         <v-icon v-if="usesContactIcons" :icon="field.icon" size="14" class="contact-icon" />
         <strong v-else>{{ field.label }}:</strong>
-        <a v-if="field.href" :href="field.href" target="_blank" rel="noopener noreferrer">{{ field.displayValue || field.value }}</a>
-        <span v-else>{{ field.value }}</span>
-      </p>
+        <HoverRichTextEditor
+          class="contact-rich-editor"
+          :model-value="field.value"
+          :placeholder="field.label"
+          font-size="0.89em"
+          font-weight="400"
+          font-family="var(--font-family, inherit)"
+          color="inherit"
+          @update:model-value="updateResumeInformation(field.infoKey, $event)"
+        />
+      </div>
     </div>
   </section>
 </template>
@@ -331,6 +371,9 @@ onBeforeUnmount(() => {
 }
 .contact-item { margin: 0; display: flex; gap: 6px; min-width: 0; align-items: baseline; }
 .header-contact .contact-item { font-size: .89em; line-height: 1.2; }
+.header-name-editor, .header-title-editor, .contact-rich-editor { min-width: 0; }
+.header-name-editor :deep(.hover-editor__content p), .header-title-editor :deep(.hover-editor__content p), .contact-rich-editor :deep(.hover-editor__content p) { margin: 0; }
+.header-name-editor :deep(.hover-editor__toolbar), .header-title-editor :deep(.hover-editor__toolbar), .contact-rich-editor :deep(.hover-editor__toolbar) { position: absolute; z-index: 10; background: color-mix(in srgb, Canvas 92%, transparent); border-radius: 8px; padding: 4px; box-shadow: 0 8px 18px rgba(15,23,42,.16); }
 .contact-icon { flex: 0 0 auto; opacity: .95; font-size: 14px !important; }
 .contact-item strong { flex: 0 0 auto; white-space: nowrap; }
 .contact-item a, .contact-item span { min-width: 0; overflow-wrap: anywhere; word-break: break-word; color: inherit; text-decoration: none; }
