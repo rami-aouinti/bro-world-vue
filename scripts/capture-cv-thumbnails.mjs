@@ -44,7 +44,7 @@ async function launchBrowser() {
 }
 
 const browser = await launchBrowser()
-const page = await browser.newPage({ viewport: { width: 1200, height: 1500 } })
+const page = await browser.newPage({ viewport: { width: 1200, height: 1123 } })
 
 for (const tpl of generatedCvTemplates) {
   const url = `${baseUrl}/resume/cv/preview?template=${encodeURIComponent(tpl.id)}`
