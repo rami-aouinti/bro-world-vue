@@ -27,6 +27,8 @@ const layoutMenuOpen = ref(false)
 const signatureDataUrl = ref('')
 const signatureDialogOpen = ref(false)
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
+const decorShapeOptions = ['circle', 'ring', 'blob', 'square', 'diamond', 'star', 'triangle', 'pill', 'bar']
+const editableDecorObjects = ref<any[]>([])
 
 const activeTemplate = computed(() =>
   GENERATED_RESUME_TEMPLATES.find((template) => template.id === selectedTemplate.value) || GENERATED_RESUME_TEMPLATES[0],
@@ -45,6 +47,54 @@ const cvLayoutComponentMap = {
 } as const
 
 const activeLayoutComponent = computed(() => cvLayoutComponentMap[activeTemplate.value?.layout as keyof typeof cvLayoutComponentMap] || CvLayoutNoAside)
+
+function toPercentNumber(value: unknown, fallback = 50): number {
+  if (typeof value === 'number' && Number.isFinite(value)) return Math.min(100, Math.max(0, value))
+  if (typeof value === 'string') {
+    const parsed = Number.parseFloat(value.replace('%', '').trim())
+    if (Number.isFinite(parsed)) return Math.min(100, Math.max(0, parsed))
+  }
+  return fallback
+}
+
+function toNumber(value: unknown, fallback: number): number {
+  const parsed = typeof value === 'number' ? value : Number.parseFloat(String(value ?? ''))
+  return Number.isFinite(parsed) ? parsed : fallback
+}
+
+function normalizeDecorObject(obj: any) {
+  const rawType = String(obj?.type ?? 'circle')
+  const normalizedType = rawType === 'diamand' ? 'diamond' : rawType
+  return {
+    ...obj,
+    type: normalizedType,
+    x: toPercentNumber(obj?.x, 50),
+    y: toPercentNumber(obj?.y, 50),
+    size: toNumber(obj?.size, 120),
+    opacity: toNumber(obj?.opacity, 0.15),
+  }
+}
+
+function decorObjectStyle(obj: any) {
+  const size = toNumber(obj?.size, 120)
+  const x = toPercentNumber(obj?.x, 50)
+  const y = toPercentNumber(obj?.y, 50)
+  const opacity = toNumber(obj?.opacity, 0.15)
+  const type = String(obj?.type ?? 'circle')
+  const base: Record<string, string | number> = { left: `${x}%`, top: `${y}%`, opacity, width: `${size}px`, height: `${size}px` }
+  if (type === 'bar') {
+    base.width = `${Math.round(size * 1.8)}px`
+    base.height = `${Math.max(8, Math.round(size * 0.22))}px`
+  }
+  if (type === 'pill') {
+    base.width = `${Math.round(size * 1.8)}px`
+    base.height = `${Math.max(14, Math.round(size * 0.62))}px`
+  }
+  return base
+}
+
+function addDecorObject() { editableDecorObjects.value.push(normalizeDecorObject({ type: 'circle', x: 50, y: 50, size: 120, opacity: 0.15 })) }
+function removeDecorObject(index: number) { editableDecorObjects.value.splice(index, 1) }
 
 const structureOneSections = ['Profile', 'Experience', 'Education', 'Skills', 'Projects', 'Languages', 'Certification', 'References', 'Hobby']
 const structureTwoTopSections = ['Profile', 'Experience', 'Education']
@@ -664,6 +714,10 @@ onMounted(async () => {
     cvPreviewResizeObserver.observe(cvPreviewRef.value)
   }
 })
+
+watch(activeTemplate, (template) => {
+  editableDecorObjects.value = ((template as any)?.decor?.objects || []).map((obj: any) => normalizeDecorObject(obj))
+}, { immediate: true })
 </script>
 
 <template>
@@ -672,18 +726,6 @@ onMounted(async () => {
     <AppPageDrawers>
       <template #left>
         <v-card-text>
-          <h3 class="text-subtitle-1 font-weight-bold mb-3">CV Toolbar</h3>
-          <p class="text-body-2 text-medium-emphasis mb-4">
-            Même principe que cover page/cover letter: on garde la toolbar, mais le contenu CV est vide pour le moment.
-          </p>
-          <v-alert type="info" variant="tonal" density="comfortable">
-            Content area volontairement vide (aucune section affichée).
-          </v-alert>
-        </v-card-text>
-      </template>
-
-      <template #right>
-        <v-card-text>
           <h3 class="text-subtitle-2 font-weight-bold mb-2">Template actif</h3>
           <p class="text-body-2 mb-1">{{ activeTemplate?.name }}</p>
           <p class="text-caption text-medium-emphasis mb-3">{{ activeTemplate?.id }} · {{ activeTemplate?.layout }}</p>
@@ -691,6 +733,18 @@ onMounted(async () => {
           <v-slider v-model="asideHeight" label="Aside height (px)" :min="120" :max="2600" :step="2" hide-details class="mb-2"/>
           <v-slider v-model="asideRadius" label="Aside radius (px)" :min="0" :max="90" :step="1" hide-details/>
         </v-card-text>
+      </template>
+
+      <template #right>
+        <v-btn class="mt-3" size="small" variant="outlined" @click="addDecorObject">Add decor</v-btn>
+        <v-card v-for="(obj,i) in editableDecorObjects" :key="`obj-${i}`" class="mt-3 pa-2" variant="outlined">
+          <AppSelect v-model="obj.type" :items="decorShapeOptions.map((s)=>({title:s,value:s}))" label="Shape" hide-details class="mt-3"/>
+          <v-slider v-model="obj.x" label="X %" :min="0" :max="100" :step="1" hide-details class="mt-2"/>
+          <v-slider v-model="obj.y" label="Y %" :min="0" :max="100" :step="1" hide-details class="mt-2"/>
+          <v-slider v-model="obj.size" label="Size" :min="20" :max="420" :step="2" hide-details class="mt-2"/>
+          <v-slider v-model="obj.opacity" label="Opacity" :min="0.02" :max="0.35" :step="0.01" hide-details class="mt-2"/>
+          <v-btn size="x-small" color="error" variant="text" @click="removeDecorObject(i)">remove</v-btn>
+        </v-card>
       </template>
     </AppPageDrawers>
 
@@ -717,6 +771,7 @@ onMounted(async () => {
             '--cv-preview-total-height': `${cvPreviewHeight}px`,
           }"
         >
+          <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
           <component :is="activeLayoutComponent" class="w-100 cv-preview-page" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', height: 'auto', minHeight: `${cvPreviewHeight}px`, overflow: 'visible', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-secondary': activeTemplate?.theme?.palette?.secondary || '#93C5FD', '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body'), '--cv-header-text': headerTextColor, '--cv-header-muted': headerMutedColor }">
           <template #header>
             <div class="cv-header-layout" :class="`cv-header-layout--${headerType}`">
@@ -1245,5 +1300,7 @@ onMounted(async () => {
   color: rgb(var(--v-theme-on-surface));
 }
 .cv-header-identity span{font-size:12px;opacity:.95;color:var(--cv-header-muted,#334155)}
+.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cv-primary,#1d4ed8) 35%,transparent);transform:translate(-50%,-50%);z-index:0}
+.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cv-secondary,#93C5FD) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.decor-square{border-radius:10px}.decor-diamond{border-radius:8px;transform:translate(-50%,-50%) rotate(45deg)}.decor-star{-webkit-clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}.decor-triangle{-webkit-clip-path:polygon(50% 0%,0 100%,100% 100%);clip-path:polygon(50% 0%,0 100%,100% 100%)}.decor-pill{border-radius:999px}.decor-bar{border-radius:999px}
 
 </style>
