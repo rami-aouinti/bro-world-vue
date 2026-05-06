@@ -35,7 +35,15 @@ const { locale, _t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 const publicPagesStore = usePublicPagesStore()
 
-definePageMeta({ _title: 'appbar.faq' })
+definePageMeta({
+  title: 'appbar.faq',
+  description:
+    'Find answers to common Bro World questions about accounts, platform tools, jobs, CRM, learning, games, privacy, and support.',
+  keywords:
+    'Bro World FAQ, help center, platform questions, account help, CRM help, jobs help, learning help',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'weekly', priority: 0.6 },
+})
 
 const searchTerm = ref('')
 const activeCategory = ref('all')

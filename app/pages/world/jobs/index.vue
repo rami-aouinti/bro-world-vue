@@ -5,6 +5,10 @@ definePageMeta({
   layout: 'job',
   title: 'world.jobs.label',
   description: 'world.jobs.seo.metaDescription',
+  keywords:
+    'Bro World Jobs, job board, recruitment, applications, job offers, careers, hiring platform',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'daily', priority: 0.8 },
 })
 
 type JobsPublicReferencePage = {

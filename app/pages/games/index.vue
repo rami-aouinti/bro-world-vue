@@ -2,7 +2,11 @@
 definePageMeta({
   title: 'appbar.games',
   description:
-    'Play multiplayer games on Bro World: cards, strategy, party games and online sessions with your friends.',
+    'Play multiplayer games on Bro World: card games, strategy games, party games, and online sessions with friends.',
+  keywords:
+    'Bro World games, multiplayer games, online games, card games, strategy games, party games',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'weekly', priority: 0.7 },
 })
 
 const { catalogStore, ensureCatalogLoaded, entityRouteValue, tOrFallback } =

@@ -5,8 +5,11 @@ definePageMeta({
   layout: 'crm',
   title: 'world.crm.label',
   description: 'world.crm.seo.metaDescription',
+  keywords:
+    'Bro World CRM, online CRM, project management, contact management, tasks, sprints, GitHub sync',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'daily', priority: 0.8 },
 })
-
 
 const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()

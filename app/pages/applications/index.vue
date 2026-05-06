@@ -1,6 +1,12 @@
 <script setup lang="ts">
 definePageMeta({
   title: 'appbar.applications',
+  description:
+    'Explore Bro World applications: platform dashboards, games, sports pages, quizzes, and connected online tools.',
+  keywords:
+    'Bro World applications, online apps, platform tools, games, sports, quiz, dashboards',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'weekly', priority: 0.7 },
 })
 
 const { t } = useI18n()

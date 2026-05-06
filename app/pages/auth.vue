@@ -6,6 +6,10 @@ const { t } = useI18n()
 definePageMeta({
   icon: 'mdi-security',
   title: 'appbar.auth',
+  description:
+    'Private Bro World authentication administration page for account and access management.',
+  robots: { index: false, follow: false },
+  sitemap: false,
   drawerIndex: 4,
   middleware: 'auth',
 })

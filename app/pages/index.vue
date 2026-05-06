@@ -8,6 +8,12 @@ const deferredInteractiveReady = ref(false)
 
 definePageMeta({
   title: 'appbar.home',
+  description:
+    'Bro World Space brings together social networking, CRM, jobs, learning, games, quizzes, sports, and online collaboration tools.',
+  keywords:
+    'Bro World Space, social network, CRM, jobs, learning, games, online collaboration, productivity platform',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'daily', priority: 1 },
 })
 
 onMounted(() => {

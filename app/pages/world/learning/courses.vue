@@ -3,7 +3,16 @@ import type { SchoolResource } from '~/stores/worldLearningSchool'
 import { useWorldLearningSchoolStore } from '~/stores/worldLearningSchool'
 import LearningResourceCards from '~/components/World/LearningResourceCards.vue'
 
-definePageMeta({ layout: 'learning', title: 'Learning Courses' })
+definePageMeta({
+  layout: 'learning',
+  title: 'Learning Courses',
+  description:
+    'Browse Bro World Learning courses with levels, teachers, structured lessons, and training resources.',
+  keywords:
+    'Bro World Learning courses, online courses, lessons, teachers, education platform, training resources',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'weekly', priority: 0.6 },
+})
 
 const { t } = useI18n()
 const { learningNavItems } = useWorldLearningNavItems()

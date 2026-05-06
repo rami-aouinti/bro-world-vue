@@ -2,6 +2,10 @@
 definePageMeta({
   layout: 'auth',
   title: 'appbar.register',
+  description:
+    'Create a Bro World account to use social features, platform applications, jobs, learning, games, and collaborative tools.',
+  robots: { index: false, follow: true },
+  sitemap: false,
   publicPage: true,
   middleware: 'guest',
 })

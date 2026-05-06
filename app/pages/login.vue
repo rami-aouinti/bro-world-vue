@@ -2,6 +2,10 @@
 definePageMeta({
   layout: 'auth',
   title: 'appbar.login',
+  description:
+    'Sign in to Bro World to access your profile, messages, applications, CRM tools, jobs, learning, and shop features.',
+  robots: { index: false, follow: true },
+  sitemap: false,
   publicPage: true,
   middleware: 'guest',
 })
