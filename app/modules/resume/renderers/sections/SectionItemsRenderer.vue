@@ -39,6 +39,10 @@ const props = withDefaults(defineProps<ResumeSectionRendererProps>(), {
 })
 const { t } = useI18n()
 
+const hideProgressLinePercent = computed(() =>
+  props.template === 'progress-line' && ['skills', 'languages'].includes(props.sectionKey),
+)
+
 function normalizeBulletLine(line: string): string {
   return line.replace(/^[-*•◦▪‣]+\s*/, '').trim()
 }
@@ -383,7 +387,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
               </div>
 
               <p
-                v-if="template === 'progress-line'"
+                v-if="template === 'progress-line' && !hideProgressLinePercent"
                 class="renderer-period"
               >
                 {{ item.level }}%
