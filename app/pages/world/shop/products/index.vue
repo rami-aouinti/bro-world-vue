@@ -6,6 +6,10 @@ definePageMeta({
   layout: 'shop',
   title: 'world.shop.products.title',
   description: 'world.shop.seo.metaDescription',
+  keywords:
+    'Bro World products, online shop, product catalog, ecommerce, promotions, shopping cart',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'daily', priority: 0.7 },
 })
 
 const { t, locale } = useI18n()

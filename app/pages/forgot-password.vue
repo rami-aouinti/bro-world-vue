@@ -2,6 +2,10 @@
 definePageMeta({
   layout: 'auth',
   title: 'appbar.forgotPassword',
+  description:
+    'Recover access to your Bro World account securely with the password reset flow.',
+  robots: { index: false, follow: true },
+  sitemap: false,
   publicPage: true,
   middleware: 'guest',
 })

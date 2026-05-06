@@ -68,7 +68,15 @@ const { locale } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 const publicPagesStore = usePublicPagesStore()
 
-definePageMeta({ title: 'appbar.contact' })
+definePageMeta({
+  title: 'appbar.contact',
+  description:
+    'Contact Bro World for support, partnership requests, privacy questions, business tools, jobs, learning, and platform help.',
+  keywords:
+    'contact Bro World, Bro World support, platform support, partnership, privacy request, help',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'monthly', priority: 0.6 },
+})
 
 const asyncKey = computed(() => `public-page-contact-${locale.value}`)
 

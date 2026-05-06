@@ -2,7 +2,16 @@
 import type { ShopGeneralProduct } from '~/types/world/shop'
 import type { SessionUser } from '~/types/session'
 
-definePageMeta({ layout: 'shop', title: 'world.shop.productDetail.title' })
+definePageMeta({
+  layout: 'shop',
+  title: 'world.shop.productDetail.title',
+  description:
+    'View a Bro World Shop product with images, pricing, discounts, product details, similar items, and cart actions.',
+  keywords:
+    'Bro World product, shop product detail, online store, product price, discounts, cart',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'weekly', priority: 0.6 },
+})
 
 const route = useRoute()
 const { user } = useUserSession()

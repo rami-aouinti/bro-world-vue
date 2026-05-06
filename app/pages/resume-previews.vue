@@ -1,6 +1,16 @@
 <script setup lang="ts">
 import { RESUME_TEMPLATES_CATALOG } from '~/constants/resumeTemplates.catalog'
 
+definePageMeta({
+  title: 'Resume Template Previews',
+  description:
+    'Preview Bro World resume templates by layout, style, density, and professional CV design options.',
+  keywords:
+    'resume templates, CV templates, resume preview, professional CV, Bro World resume builder',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'weekly', priority: 0.6 },
+})
+
 const allResumeTemplates = RESUME_TEMPLATES_CATALOG.filter(
   (template) => template.type === 'resume',
 )
@@ -28,7 +38,8 @@ const filteredResumeTemplates = computed(() =>
     const layoutMatch =
       layoutFilter.value === 'all' ||
       (template as any).layout === layoutFilter.value
-    const lineMatch = lineFilter.value === 'all' || themeLine === lineFilter.value
+    const lineMatch =
+      lineFilter.value === 'all' || themeLine === lineFilter.value
     const densityMatch =
       densityFilter.value === 'all' || themeDensity === densityFilter.value
 
@@ -93,8 +104,18 @@ const filteredResumeTemplates = computed(() =>
           <li><strong>Structure:</strong> {{ template.structureId }}</li>
           <li><strong>Layout:</strong> {{ template.layoutId }}</li>
           <li><strong>Skin:</strong> {{ template.skinId }}</li>
-          <li><strong>Line:</strong> {{ (template as any).theme?.line ?? (template as any).line ?? '-' }}</li>
-          <li><strong>Density:</strong> {{ (template as any).theme?.density ?? (template as any).density ?? '-' }}</li>
+          <li>
+            <strong>Line:</strong>
+            {{ (template as any).theme?.line ?? (template as any).line ?? '-' }}
+          </li>
+          <li>
+            <strong>Density:</strong>
+            {{
+              (template as any).theme?.density ??
+              (template as any).density ??
+              '-'
+            }}
+          </li>
         </ul>
       </article>
     </section>
@@ -102,9 +123,21 @@ const filteredResumeTemplates = computed(() =>
 </template>
 
 <style scoped>
-.resume-previews-page { padding: 24px; }
-.filters { display:flex; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
-.filters label { display:flex; flex-direction:column; gap:4px; font-size:.85rem; }
+.resume-previews-page {
+  padding: 24px;
+}
+.filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+}
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -123,7 +156,19 @@ img {
   border-radius: 8px;
   border: 1px solid #e5e7eb;
 }
-h2 { margin: 10px 0 6px; font-size: 1rem; }
-p { margin: 0 0 8px; color: #4b5563; font-size: 0.9rem; }
-ul { margin: 0; padding-left: 16px; color: #374151; font-size: 0.85rem; }
+h2 {
+  margin: 10px 0 6px;
+  font-size: 1rem;
+}
+p {
+  margin: 0 0 8px;
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+ul {
+  margin: 0;
+  padding-left: 16px;
+  color: #374151;
+  font-size: 0.85rem;
+}
 </style>

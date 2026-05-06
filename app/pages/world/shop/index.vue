@@ -5,6 +5,10 @@ definePageMeta({
   layout: 'shop',
   title: 'world.shop.label',
   description: 'world.shop.seo.metaDescription',
+  keywords:
+    'Bro World Shop, online store, ecommerce, products, promotions, checkout, orders',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'daily', priority: 0.8 },
 })
 const { fetch: _refreshSession, loggedIn } = useUserSession()
 

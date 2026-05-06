@@ -1,6 +1,12 @@
 <script setup lang="ts">
 definePageMeta({
   title: 'appbar.games',
+  description:
+    'Explore Bro World game subcategories with playable online games, multiplayer rooms, and quick access to sessions.',
+  keywords:
+    'Bro World game subcategory, online game rooms, multiplayer sessions, games catalog',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'weekly', priority: 0.6 },
 })
 
 const route = useRoute()

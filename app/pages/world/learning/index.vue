@@ -6,6 +6,10 @@ definePageMeta({
   layout: 'learning',
   title: 'world.learning.label',
   description: 'world.learning.seo.metaDescription',
+  keywords:
+    'Bro World Learning, online learning, courses, teachers, students, exams, education platform',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'weekly', priority: 0.8 },
 })
 
 type LearningPublicReferencePage = {

@@ -1,7 +1,12 @@
 <script setup lang="ts">
 definePageMeta({
   title: 'Privacy Policy',
-  description: 'Bro World privacy policy and personal data handling details.',
+  description:
+    'Read the Bro World privacy policy to understand how personal data is collected, used, secured, and managed across the platform.',
+  keywords:
+    'Bro World privacy policy, personal data, data protection, user privacy, privacy rights',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'yearly', priority: 0.4 },
 })
 </script>
 

@@ -8,7 +8,16 @@ import type {
 } from '~/types/world/jobs'
 import { privateApi } from '~/utils/http/privateApi'
 
-definePageMeta({ layout: 'job', title: 'Jobs Offer Detail' })
+definePageMeta({
+  layout: 'job',
+  title: 'Jobs Offer Detail',
+  description:
+    'Read a Bro World Jobs offer with role details, requirements, contract information, and application options.',
+  keywords:
+    'Bro World job offer, job detail, apply online, recruitment, role requirements, career opportunity',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'daily', priority: 0.6 },
+})
 
 const { t } = useI18n()
 const { scopedRecruitPath } = useRecruitScopedApi()

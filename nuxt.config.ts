@@ -9,12 +9,72 @@ const resolvedSiteUrl =
     ? configuredSiteUrl
     : defaultSiteUrl
 
+const indexablePublicRoutes = [
+  '/',
+  '/world/crm',
+  '/world/learning',
+  '/world/jobs',
+  '/world/shop',
+  '/resume',
+  '/service',
+  '/about',
+  '/contact',
+  '/faq',
+  '/privacy',
+  '/terms',
+  '/data-deletion',
+  '/applications',
+  '/applications/quiz',
+  '/applications/sports',
+  '/games',
+  '/platform',
+  '/world',
+  '/world/jobs/offers',
+  '/world/learning/courses',
+  '/world/learning/teachers',
+  '/world/shop/products',
+] as const
+
+const privateRouteRules = {
+  '/admin/**': { robots: false, sitemap: false },
+  '/dashboard/**': { robots: false, sitemap: false },
+  '/login': { robots: false, sitemap: false },
+  '/register': { robots: false, sitemap: false },
+  '/auth': { robots: false, sitemap: false },
+  '/settings': { robots: false, sitemap: false },
+  '/calendar': { robots: false, sitemap: false },
+  '/inbox/**': { robots: false, sitemap: false },
+  '/notification/**': { robots: false, sitemap: false },
+  '/profile/**': { robots: false, sitemap: false },
+  '/platform/*/new/**': { robots: false, sitemap: false },
+  '/resume/preview/**': { robots: false, sitemap: false },
+  '/resume/template-capture/**': { robots: false, sitemap: false },
+  '/world/**/admin/**': { robots: false, sitemap: false },
+  '/world/jobs/admin': { robots: false, sitemap: false },
+  '/world/shop/admin': { robots: false, sitemap: false },
+} as const
+
+const indexableRouteRules = Object.fromEntries(
+  indexablePublicRoutes.map((route) => [
+    route,
+    {
+      robots: true,
+      sitemap: {
+        changefreq: 'daily',
+        priority: route === '/' ? 1 : 0.7,
+      },
+    },
+  ]),
+)
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: true,
   routeRules: {
-    '/quiz': { redirect: '/applications/quiz' },
+    ...indexableRouteRules,
+    ...privateRouteRules,
+    '/quiz': { redirect: '/applications/quiz', robots: false, sitemap: false },
   },
   app: {
     head: {
@@ -53,22 +113,7 @@ export default defineNuxtConfig({
   },
   sitemap: {
     siteUrl: resolvedSiteUrl,
-    urls: [
-      '/',
-      '/world/crm',
-      '/world/learning',
-      '/world/jobs',
-      '/world/shop',
-      '/resume',
-      '/service',
-      '/about',
-      '/contact',
-      '/faq',
-      '/applications/quiz',
-      '/games',
-      '/platform',
-      '/applications/sports',
-    ],
+    urls: [...indexablePublicRoutes],
     defaults: {
       changefreq: 'daily',
       priority: 0.7,
@@ -79,8 +124,29 @@ export default defineNuxtConfig({
     groups: [
       {
         userAgent: '*',
-        allow: ['/world/crm', '/world/learning', '/world/jobs', '/world/shop', '/resume', '/service', '/about', '/contact', '/faq', '/applications/quiz', '/games', '/platform', '/applications/sports'],
-        disallow: ['/admin', '/dashboard', '/login', '/register'],
+        allow: ['/'],
+        disallow: [
+          '/admin',
+          '/dashboard',
+          '/login',
+          '/register',
+          '/auth',
+          '/settings',
+          '/calendar',
+          '/inbox',
+          '/notification',
+          '/profile',
+          '/platform/crm/new',
+          '/platform/job/new',
+          '/platform/school/new',
+          '/platform/shop/new',
+          '/resume/preview',
+          '/resume/template-capture',
+          '/world/crm/admin',
+          '/world/jobs/admin',
+          '/world/learning/admin',
+          '/world/shop/admin',
+        ],
       },
     ],
   },
@@ -88,7 +154,7 @@ export default defineNuxtConfig({
     'vuetify/styles',
     '~/assets/styles/material-dashboard.scss',
     '~/assets/styles/football-dashboard.scss',
-    '~/assets/styles/index.css'
+    '~/assets/styles/index.css',
   ],
   experimental: { typedPages: true },
   typescript: {
