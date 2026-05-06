@@ -6,6 +6,8 @@ import CvLayoutAsideRight from '~/components/cv/layouts/CvLayoutAsideRight.vue'
 import CvLayoutNoAside from '~/components/cv/layouts/CvLayoutNoAside.vue'
 import CvLayoutAsideFullLeft from '~/components/cv/layouts/CvLayoutAsideFullLeft.vue'
 import CvLayoutAsideFullRight from '~/components/cv/layouts/CvLayoutAsideFullRight.vue'
+import CvLayoutAsideBarLeft from '~/components/cv/layouts/CvLayoutAsideBarLeft.vue'
+import CvLayoutAsideBarRight from '~/components/cv/layouts/CvLayoutAsideBarRight.vue'
 
 definePageMeta({ layout: false })
 
@@ -37,6 +39,8 @@ const cvLayoutComponentMap = {
   'aside-right': CvLayoutAsideRight,
   'aside-full-left': CvLayoutAsideFullLeft,
   'aside-full-right': CvLayoutAsideFullRight,
+  'aside-bar-left': CvLayoutAsideBarLeft,
+  'aside-bar-right': CvLayoutAsideBarRight,
 } as const
 
 const activeLayoutComponent = computed(() => cvLayoutComponentMap[selectedTemplate.value.layout as keyof typeof cvLayoutComponentMap] || CvLayoutNoAside)

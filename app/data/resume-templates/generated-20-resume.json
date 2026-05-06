@@ -2987,5 +2987,515 @@
       "entryTitle": "sans",
       "body": "sans"
     }
+  },
+  {
+    "id": "tpl-013",
+    "name": "aside-bar-left-structure-1",
+    "version": 1,
+    "layout": "aside-bar-left",
+    "structure": "structure-1",
+    "sections": {
+      "experience": "list",
+      "education": "dot",
+      "skills": "dots",
+      "languages": "stars",
+      "languagesLabel": "classic",
+      "certifications": "dot",
+      "references": "cards",
+      "projects": "timeline",
+      "interests": "classic",
+      "contact": "labels",
+      "profile": "classic"
+    },
+    "theme": {
+      "palette": {
+        "primary": "#1D4ED8",
+        "secondary": "#93C5FD",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#F8FAFC"
+      },
+      "line": "soft",
+      "density": "comfortable",
+      "textStyle": "mono",
+      "showIcon": true
+    },
+    "aside": {
+      "width": "240px",
+      "height": "1200px"
+    },
+    "photo": {
+      "position": "left",
+      "size": "96px",
+      "shape": "circle",
+      "border": "2px solid #0F4C81",
+      "photoType": "circle",
+      "photoSize": "88px",
+      "photoBorderRadius": "14px",
+      "photoBorderColor": "#0F4C81"
+    },
+    "decor": {
+      "corners": [
+        {
+          "shape": "circle",
+          "size": "280px",
+          "color": "#93C5FD",
+          "x": "top-right",
+          "y": "0"
+        },
+        {
+          "shape": "square",
+          "size": "220px",
+          "color": "#1D4ED8",
+          "x": "bottom-left",
+          "y": "0"
+        }
+      ]
+    },
+    "layoutOptions": {
+      "columnsGap": "wide",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal"
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "none",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "geo-duo"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "thin",
+      "casing": "normal"
+    },
+    "headerType": "header-left",
+    "fakeData": {
+      "id": "67f2c6f8-4cb3-48e1-a49d-4de057f48337",
+      "documentUrl": null,
+      "resumeInformation": {
+        "fullName": "Ethan Rossi",
+        "email": "ethan.rossi@example.com",
+        "phone": "+33 6 12 34 56 91",
+        "homepage": "https://portfolio-7.example.com",
+        "repo_profile": "https://github.com/profile-7",
+        "adresse": "Berlin, Germany",
+        "birthDate": "1996-07-16",
+        "birthPlace": "Tunisia",
+        "profileText": "Ethan Rossi is a results-driven mobile developer focused on product quality, scalability, and collaboration.",
+        "title": "Mobile Developer",
+        "photo": "/img/team-1.jpg"
+      },
+      "experiences": [
+        {
+          "id": "426ecda6-5f62-447d-b058-725455ff7397",
+          "title": "Mobile Developer",
+          "description": "Led product delivery and built maintainable architecture.",
+          "company": "Bro Labs",
+          "startDate": "2021-01-01",
+          "endDate": null
+        },
+        {
+          "id": "ec24f7bf-555d-440e-8e95-fb59a9c5c148",
+          "title": "Engineer",
+          "description": "Implemented features with strong UX focus.",
+          "company": "Nova Digital",
+          "startDate": "2018-06-01",
+          "endDate": "2020-12-31"
+        }
+      ],
+      "educations": [
+        {
+          "id": "e6b0c84a-c92c-4497-8be6-2a1de058bfee",
+          "title": "Master in Computer Science",
+          "description": "",
+          "school": "University of Lyon",
+          "startDate": "2016-09-01",
+          "endDate": "2018-06-30",
+          "location": "Berlin, Germany"
+        },
+        {
+          "id": "0a42a0a4-d7e7-4804-ba2f-0dba79c41b83",
+          "title": "Bachelor in Software Engineering",
+          "description": "",
+          "school": "Université Grenoble Alpes",
+          "startDate": "2013-09-01",
+          "endDate": "2016-06-30",
+          "location": "Berlin, Germany"
+        }
+      ],
+      "skills": [
+        {
+          "name": "Vue.js",
+          "level": 80
+        },
+        {
+          "name": "TypeScript",
+          "level": 80
+        },
+        {
+          "name": "Node.js",
+          "level": 80
+        },
+        {
+          "name": "Nuxt",
+          "level": 80
+        },
+        {
+          "name": "PostgreSQL",
+          "level": 80
+        },
+        {
+          "name": "Docker",
+          "level": 80
+        }
+      ],
+      "languages": [
+        {
+          "name": "French",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸",
+          "languageType": "label"
+        },
+        {
+          "name": "English",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸",
+          "languageType": "label"
+        },
+        {
+          "name": "Spanish",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸",
+          "languageType": "label"
+        }
+      ],
+      "certifications": [
+        {
+          "id": "e28cf154-38e9-4c92-aabb-938c3d5d6d47",
+          "title": "AWS Certified Developer",
+          "description": "",
+          "attachments": []
+        },
+        {
+          "id": "013cd1ba-4d96-4b0a-b3f7-41ec960b58ef",
+          "title": "Scrum Master",
+          "description": "",
+          "attachments": []
+        }
+      ],
+      "projects": [
+        {
+          "id": "dc19d578-dd00-4448-8213-8e3d0d35941c",
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform.",
+          "attachments": [],
+          "home_page": "https://portfolio-7.example.com"
+        }
+      ],
+      "references": [
+        {
+          "id": "d15c628b-ef39-476a-801f-b06902d7384c",
+          "title": "Sophie Bernard · Engineering Manager",
+          "description": ""
+        },
+        {
+          "id": "4beef7a3-5572-4208-bf30-3437ef2b1ff0",
+          "title": "Julien Roche · Product Director",
+          "description": ""
+        }
+      ],
+      "hobbies": [
+        {
+          "id": "ce50ed2d-340f-417a-ba01-3db2561611b4",
+          "title": "Open-source",
+          "description": ""
+        },
+        {
+          "id": "cc499995-bd48-4dbd-bd72-7010f56624c5",
+          "title": "Running",
+          "description": ""
+        },
+        {
+          "id": "c0eb6aec-ceba-4dd8-991a-8d2201bbcade",
+          "title": "Photography",
+          "description": ""
+        }
+      ]
+    },
+    "textStyles": {
+      "fullName": "serif",
+      "sectionLabel": "sans",
+      "entryTitle": "sans",
+      "body": "sans"
+    }
+  },
+  {
+    "id": "tpl-014",
+    "name": "aside-bar-right-structure-2",
+    "version": 1,
+    "layout": "aside-bar-right",
+    "structure": "structure-2",
+    "sections": {
+      "experience": "timeline",
+      "education": "cards",
+      "skills": "dots",
+      "languages": "progress-circle",
+      "languagesLabel": "classic",
+      "certifications": "cards",
+      "references": "classic",
+      "projects": "dot",
+      "interests": "list",
+      "contact": "labels",
+      "profile": "classic"
+    },
+    "theme": {
+      "palette": {
+        "primary": "#7C3AED",
+        "secondary": "#C4B5FD",
+        "text": "#1F2937",
+        "muted": "#6B7280",
+        "pageBackground": "#FAF5FF"
+      },
+      "line": "strong",
+      "density": "compact",
+      "textStyle": "mono",
+      "showIcon": true
+    },
+    "aside": {
+      "width": "240px",
+      "height": "1200px"
+    },
+    "photo": {
+      "position": "left",
+      "size": "96px",
+      "shape": "circle",
+      "border": "2px solid #0F4C81",
+      "photoType": "circle",
+      "photoSize": "112px",
+      "photoBorderRadius": "999px",
+      "photoBorderColor": "#0F4C81"
+    },
+    "decor": {
+      "corners": [
+        {
+          "shape": "triangle",
+          "size": "280px",
+          "color": "#C4B5FD",
+          "x": "top-right",
+          "y": "0"
+        },
+        {
+          "shape": "diamond",
+          "size": "220px",
+          "color": "#7C3AED",
+          "x": "bottom-left",
+          "y": "0"
+        }
+      ]
+    },
+    "layoutOptions": {
+      "columnsGap": "wide",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal"
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "none",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "abstract-duo"
+    },
+    "sectionTitleStyle": {
+      "icon": "outline",
+      "underline": "thick",
+      "casing": "normal"
+    },
+    "headerType": "header-split",
+    "fakeData": {
+      "id": "4cf1fa9d-2fc0-4100-81ae-878fc9949166",
+      "documentUrl": null,
+      "resumeInformation": {
+        "fullName": "Chloé Dupont",
+        "email": "chloé.dupont@example.com",
+        "phone": "+33 6 12 34 57 02",
+        "homepage": "https://portfolio-8.example.com",
+        "repo_profile": "https://github.com/profile-8",
+        "adresse": "Barcelona, Spain",
+        "birthDate": "1997-08-17",
+        "birthPlace": "Tunisia",
+        "profileText": "Chloé Dupont is a results-driven ux researcher focused on product quality, scalability, and collaboration.",
+        "title": "UX Researcher",
+        "photo": "/img/team-2.jpg"
+      },
+      "experiences": [
+        {
+          "id": "0bd1ef34-a216-4be4-a8b7-b6679795fc0e",
+          "title": "UX Researcher",
+          "description": "Led product delivery and built maintainable architecture.",
+          "company": "Bro Labs",
+          "startDate": "2021-01-01",
+          "endDate": null
+        },
+        {
+          "id": "b3dda171-fa8c-4003-9c55-9be367961cf4",
+          "title": "Engineer",
+          "description": "Implemented features with strong UX focus.",
+          "company": "Nova Digital",
+          "startDate": "2018-06-01",
+          "endDate": "2020-12-31"
+        }
+      ],
+      "educations": [
+        {
+          "id": "f880f3be-5435-420b-81ae-462210ffd7d4",
+          "title": "Master in Computer Science",
+          "description": "",
+          "school": "University of Lyon",
+          "startDate": "2016-09-01",
+          "endDate": "2018-06-30",
+          "location": "Barcelona, Spain"
+        },
+        {
+          "id": "82294b88-5349-41ba-bef0-b656e1f902fb",
+          "title": "Bachelor in Software Engineering",
+          "description": "",
+          "school": "Université Grenoble Alpes",
+          "startDate": "2013-09-01",
+          "endDate": "2016-06-30",
+          "location": "Barcelona, Spain"
+        }
+      ],
+      "skills": [
+        {
+          "name": "Vue.js",
+          "level": 80
+        },
+        {
+          "name": "TypeScript",
+          "level": 80
+        },
+        {
+          "name": "Node.js",
+          "level": 80
+        },
+        {
+          "name": "Nuxt",
+          "level": 80
+        },
+        {
+          "name": "PostgreSQL",
+          "level": 80
+        },
+        {
+          "name": "Docker",
+          "level": 80
+        }
+      ],
+      "languages": [
+        {
+          "name": "French",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸",
+          "languageType": "label"
+        },
+        {
+          "name": "English",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸",
+          "languageType": "label"
+        },
+        {
+          "name": "Spanish",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸",
+          "languageType": "label"
+        }
+      ],
+      "certifications": [
+        {
+          "id": "b04c0b04-3944-4a86-ac22-4cf5aaeed446",
+          "title": "AWS Certified Developer",
+          "description": "",
+          "attachments": []
+        },
+        {
+          "id": "8672054b-0fbb-4326-94dd-777fac5b4eb1",
+          "title": "Scrum Master",
+          "description": "",
+          "attachments": []
+        }
+      ],
+      "projects": [
+        {
+          "id": "5c9148a8-9785-4e2f-b7df-3e15d4794478",
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform.",
+          "attachments": [],
+          "home_page": "https://portfolio-8.example.com"
+        }
+      ],
+      "references": [
+        {
+          "id": "242343fc-c95c-4479-a785-9c74b58d9462",
+          "title": "Sophie Bernard · Engineering Manager",
+          "description": ""
+        },
+        {
+          "id": "f8ff154b-b94e-4c99-b411-3d39df366dba",
+          "title": "Julien Roche · Product Director",
+          "description": ""
+        }
+      ],
+      "hobbies": [
+        {
+          "id": "b33ab8d4-0bfd-4d7c-96ca-e4fdaea96211",
+          "title": "Open-source",
+          "description": ""
+        },
+        {
+          "id": "ca85fafa-0546-4dfb-a97a-e30d3d9a56bd",
+          "title": "Running",
+          "description": ""
+        },
+        {
+          "id": "f98d8f00-8171-4fea-b50c-1f7f8571d2bb",
+          "title": "Photography",
+          "description": ""
+        }
+      ]
+    },
+    "textStyles": {
+      "fullName": "serif",
+      "sectionLabel": "sans",
+      "entryTitle": "sans",
+      "body": "sans"
+    }
   }
 ]
