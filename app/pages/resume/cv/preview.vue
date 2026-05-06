@@ -11,44 +11,8 @@ import CvLayoutAsideBarRight from '~/components/cv/layouts/CvLayoutAsideBarRight
 import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 import { resolveResumeTextFont, useResumeGoogleFonts } from '~/composables/useResumeGoogleFonts'
 
-import ProfileClassic from '~/components/cv/sections/ProfileClassic.vue'
-import ExperienceClassic from '~/components/cv/sections/ExperienceClassic.vue'
-import ExperienceList from '~/components/cv/sections/ExperienceList.vue'
-import ExperienceDot from '~/components/cv/sections/ExperienceDot.vue'
-import ExperienceTimeline from '~/components/cv/sections/ExperienceTimeline.vue'
-import ExperienceCards from '~/components/cv/sections/ExperienceCards.vue'
-import EducationClassic from '~/components/cv/sections/EducationClassic.vue'
-import EducationList from '~/components/cv/sections/EducationList.vue'
-import EducationDot from '~/components/cv/sections/EducationDot.vue'
-import EducationTimeline from '~/components/cv/sections/EducationTimeline.vue'
-import EducationCards from '~/components/cv/sections/EducationCards.vue'
-import ProjectsClassic from '~/components/cv/sections/ProjectsClassic.vue'
-import ProjectsList from '~/components/cv/sections/ProjectsList.vue'
-import ProjectsDot from '~/components/cv/sections/ProjectsDot.vue'
-import ProjectsCards from '~/components/cv/sections/ProjectsCards.vue'
-import SkillsClassic from '~/components/cv/sections/SkillsClassic.vue'
-import SkillsStars from '~/components/cv/sections/SkillsStars.vue'
-import SkillsDots from '~/components/cv/sections/SkillsDots.vue'
-import SkillsProgressLine from '~/components/cv/sections/SkillsProgressLine.vue'
-import SkillsProgressCircle from '~/components/cv/sections/SkillsProgressCircle.vue'
-
-import LanguagesClassic from '~/components/cv/sections/LanguagesClassic.vue'
-import LanguagesStars from '~/components/cv/sections/LanguagesStars.vue'
-import LanguagesDots from '~/components/cv/sections/LanguagesDots.vue'
-import LanguagesProgressLine from '~/components/cv/sections/LanguagesProgressLine.vue'
-import LanguagesProgressCircle from '~/components/cv/sections/LanguagesProgressCircle.vue'
-import CertificationsClassic from '~/components/cv/sections/CertificationsClassic.vue'
-import CertificationsList from '~/components/cv/sections/CertificationsList.vue'
-import CertificationsDot from '~/components/cv/sections/CertificationsDot.vue'
-import CertificationsCards from '~/components/cv/sections/CertificationsCards.vue'
-import ReferencesClassic from '~/components/cv/sections/ReferencesClassic.vue'
-import ReferencesList from '~/components/cv/sections/ReferencesList.vue'
-import ReferencesDot from '~/components/cv/sections/ReferencesDot.vue'
-import ReferencesCards from '~/components/cv/sections/ReferencesCards.vue'
-import HobbiesClassic from '~/components/cv/sections/HobbiesClassic.vue'
-import HobbiesList from '~/components/cv/sections/HobbiesList.vue'
-import HobbiesDot from '~/components/cv/sections/HobbiesDot.vue'
-import HobbiesCards from '~/components/cv/sections/HobbiesCards.vue'
+import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
+import CvEditableSectionContent from '~/components/cv/sections/CvEditableSectionContent.vue'
 
 definePageMeta({
   title: 'Resume · CV Preview',
@@ -186,12 +150,15 @@ function onSectionDragEnd() {
   dragOrderKey.value = ''
 }
 
-function moveSection(orderKey: keyof typeof sectionOrders, section: string) {
+function moveSection(orderKey: keyof typeof sectionOrders, section: string, direction: 'up' | 'down' = 'down') {
   const order = sectionOrders[orderKey]
   if (!order) return
   const idx = order.indexOf(section)
   if (idx === -1 || order.length <= 1) return
-  const next = idx === order.length - 1 ? 0 : idx + 1
+  const next = direction === 'up'
+    ? Math.max(0, idx - 1)
+    : Math.min(order.length - 1, idx + 1)
+  if (next === idx) return
   const swapped = [...order]
   const [item] = swapped.splice(idx, 1)
   swapped.splice(next, 0, item)
@@ -228,19 +195,16 @@ function normalizeSectionKey(raw: string) {
 }
 
 
-const sectionComponentMap: Record<string, any> = {
-  profile: { classic: ProfileClassic },
-  experience: { classic: ExperienceClassic, list: ExperienceList, dot: ExperienceDot, timeline: ExperienceTimeline, cards: ExperienceCards },
-  education: { classic: EducationClassic, list: EducationList, dot: EducationDot, timeline: EducationTimeline, cards: EducationCards },
-  projects: { classic: ProjectsClassic, list: ProjectsList, dot: ProjectsDot, cards: ProjectsCards },
-  skills: { classic: SkillsClassic, stars: SkillsStars, dots: SkillsDots, 'progress-line': SkillsProgressLine, 'progress-circle': SkillsProgressCircle },
-  languages: { classic: LanguagesClassic, stars: LanguagesStars, dots: LanguagesDots, 'progress-line': LanguagesProgressLine, 'progress-circle': LanguagesProgressCircle },
-  certifications: { classic: CertificationsClassic, list: CertificationsList, dot: CertificationsDot, cards: CertificationsCards },
-  references: { classic: ReferencesClassic, list: ReferencesList, dot: ReferencesDot, cards: ReferencesCards },
-  hobbies: { classic: HobbiesClassic, list: HobbiesList, dot: HobbiesDot, cards: HobbiesCards },
-}
-function resolveSectionComponent(section: string, type: string) {
-  return sectionComponentMap[section]?.[type] || sectionComponentMap[section]?.classic || 'div'
+const sectionVariantOptionsMap: Record<string, string[]> = {
+  profile: ['classic'],
+  experience: ['classic', 'list', 'dot', 'timeline', 'cards'],
+  education: ['classic', 'list', 'dot', 'timeline', 'cards'],
+  projects: ['classic', 'list', 'dot', 'cards'],
+  skills: ['classic', 'stars', 'dots', 'progress-line', 'progress-circle'],
+  languages: ['classic', 'stars', 'dots', 'progress-line', 'progress-circle'],
+  certifications: ['classic', 'list', 'dot', 'cards'],
+  references: ['classic', 'list', 'dot', 'cards'],
+  hobbies: ['classic', 'list', 'dot', 'cards'],
 }
 
 const sectionTypeOverrides = reactive<Record<string, string>>({})
@@ -365,6 +329,7 @@ function confirmAddSectionItem() {
     if (!value) return
     sectionExtraItems[key] = [...(sectionExtraItems[key] || []), value]
   }
+  Reflect.deleteProperty(editableSectionItems, key)
   sectionModalOpen.value = false
 }
 function isSectionVisible(section: string) { return !hiddenSections[normalizeSectionKey(section)] }
@@ -383,7 +348,7 @@ function isSectionVisibleInZone(orderKey: keyof typeof sectionOrders, section: s
 }
 
 function getSectionVariantOptions(section: string) {
-  const variants = Object.keys(sectionComponentMap[section] || {})
+  const variants = sectionVariantOptionsMap[section] || ['classic']
   return variants.map((variant) => ({ title: variant, value: variant }))
 }
 
@@ -461,20 +426,55 @@ function getSectionItems(rawSection: string): string[] {
   if (key === 'profile') return [String(data.resumeInformation?.profileText || data.profileDescription || ''), ...extra].filter(Boolean)
   return []
 }
+
+const editableSectionItems = reactive<Record<string, string[]>>({})
+const sectionTitleOverrides = reactive<Record<string, string>>({})
+const headerOverrides = reactive<Record<string, string>>({})
+
+function getEditableSectionItems(rawSection: string) {
+  const key = normalizeSectionKey(rawSection)
+  if (!editableSectionItems[key]) editableSectionItems[key] = getSectionItems(rawSection)
+  return editableSectionItems[key]
+}
+
+function updateEditableSectionItem(rawSection: string, index: number, value: string) {
+  const items = getEditableSectionItems(rawSection)
+  items[index] = value
+  scheduleCvPreviewMeasure(true)
+}
+
+function sectionDisplayTitle(section: string) {
+  const key = toSectionKey(section)
+  return sectionTitleOverrides[key] || sectionTitleMap[key] || section
+}
+
+function updateSectionDisplayTitle(section: string, value: string) {
+  sectionTitleOverrides[toSectionKey(section)] = value
+}
+
+function updateHeaderField(key: string, value: string) {
+  headerOverrides[key] = value
+}
+
+watch([selectedTemplate, userResumeData], () => {
+  Object.keys(editableSectionItems).forEach((key) => Reflect.deleteProperty(editableSectionItems, key))
+  Object.keys(headerOverrides).forEach((key) => Reflect.deleteProperty(headerOverrides, key))
+}, { deep: false })
+
 const headerProfile = computed(() => {
   const fake: any = fakeData.value || {}
   const info = fake.resumeInformation || {}
   return {
-    fullName: String(info.fullName || fake.fullName || 'John Doe'),
-    role: String(info.title || fake.role || 'Senior Developer'),
+    fullName: headerOverrides.fullName ?? String(info.fullName || fake.fullName || 'John Doe'),
+    role: headerOverrides.role ?? String(info.title || fake.role || 'Senior Developer'),
     image: String(info.photo || fake.image || '/img/default_avatar.svg'),
     contact: [
-      { icon: 'mdi-email-outline', type: 'text', label: '', value: String(info.email || fake.email || 'john.doe@email.com') },
-      { icon: 'mdi-phone-outline', type: 'text', label: '', value: String(info.phone || fake.phone || '+1 (555) 000-1234') },
-      { icon: 'mdi-cake-variant-outline', type: 'text', label: '', value: String(info.birthDate || fake.birthday || '1992-05-12') },
-      { icon: 'mdi-map-marker-outline', type: 'text', label: '', value: String(info.adresse || fake.location || 'Paris, France') },
-      { icon: 'mdi-home-outline', type: 'link', label: 'Home Page', value: String(info.homepage || fake.homepage || 'https://portfolio.example.com') },
-      { icon: 'mdi-github', type: 'link', label: 'Repository Profile', value: String(info.repo_profile || fake.repositoryPage || 'https://github.com/john-doe') },
+      { key: 'email', icon: 'mdi-email-outline', type: 'text', label: '', value: headerOverrides.email ?? String(info.email || fake.email || 'john.doe@email.com') },
+      { key: 'phone', icon: 'mdi-phone-outline', type: 'text', label: '', value: headerOverrides.phone ?? String(info.phone || fake.phone || '+1 (555) 000-1234') },
+      { key: 'birthDate', icon: 'mdi-cake-variant-outline', type: 'text', label: '', value: headerOverrides.birthDate ?? String(info.birthDate || fake.birthday || '1992-05-12') },
+      { key: 'adresse', icon: 'mdi-map-marker-outline', type: 'text', label: '', value: headerOverrides.adresse ?? String(info.adresse || fake.location || 'Paris, France') },
+      { key: 'homepage', icon: 'mdi-home-outline', type: 'link', label: 'Home Page', value: headerOverrides.homepage ?? String(info.homepage || fake.homepage || 'https://portfolio.example.com') },
+      { key: 'repo_profile', icon: 'mdi-github', type: 'link', label: 'Repository Profile', value: headerOverrides.repo_profile ?? String(info.repo_profile || fake.repositoryPage || 'https://github.com/john-doe') },
     ],
   }
 })
@@ -698,33 +698,81 @@ onMounted(async () => {
                   <div class="cv-header-contact-grid">
                     <div v-for="(item, idx) in headerProfile.contact" :key="`left-${idx}`" class="cv-contact-item">
                       <v-icon :icon="item.icon" size="16" />
-                      <template v-if="item.type === 'link'">
-                        <a :href="item.value" target="_blank" rel="noopener" class="cv-contact-link">{{ item.label }}</a>
-                      </template>
-                      <template v-else>{{ item.value }}</template>
+                      <HoverRichTextEditor
+                        class="cv-header-editor cv-header-editor--contact"
+                        :model-value="item.value"
+                        :placeholder="item.label || 'Contact'"
+                        font-size="13px"
+                        font-weight="500"
+                        :font-family="textFontPreset('body')"
+                        color="inherit"
+                        @update:model-value="updateHeaderField(item.key, $event)"
+                      />
                     </div>
                   </div>
                 </div>
                 <div class="cv-header-identity cv-col-4">
                   <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker"><v-menu v-model="photoMenuOpen" location="bottom end" :close-on-content-click="false"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"/></div></v-card></v-menu></div>
-                  <strong>{{ headerProfile.fullName }}</strong>
-                  <span>{{ headerProfile.role }}</span>
+                  <HoverRichTextEditor
+                    class="cv-header-editor cv-header-editor--name"
+                    :model-value="headerProfile.fullName"
+                    placeholder="Full name"
+                    font-size="22px"
+                    font-weight="700"
+                    :font-family="textFontPreset('fullName')"
+                    color="inherit"
+                    @update:model-value="updateHeaderField('fullName', $event)"
+                  />
+                  <HoverRichTextEditor
+                    class="cv-header-editor cv-header-editor--role"
+                    :model-value="headerProfile.role"
+                    placeholder="Role"
+                    font-size="14px"
+                    font-weight="500"
+                    :font-family="textFontPreset('body')"
+                    color="inherit"
+                    @update:model-value="updateHeaderField('role', $event)"
+                  />
                 </div>
               </template>
               <template v-else-if="headerType === 'header-right'">
                 <div class="cv-header-identity cv-col-4">
                   <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker"><v-menu v-model="photoMenuOpen" location="bottom end" :close-on-content-click="false"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"/></div></v-card></v-menu></div>
-                  <strong>{{ headerProfile.fullName }}</strong>
-                  <span>{{ headerProfile.role }}</span>
+                  <HoverRichTextEditor
+                    class="cv-header-editor cv-header-editor--name"
+                    :model-value="headerProfile.fullName"
+                    placeholder="Full name"
+                    font-size="22px"
+                    font-weight="700"
+                    :font-family="textFontPreset('fullName')"
+                    color="inherit"
+                    @update:model-value="updateHeaderField('fullName', $event)"
+                  />
+                  <HoverRichTextEditor
+                    class="cv-header-editor cv-header-editor--role"
+                    :model-value="headerProfile.role"
+                    placeholder="Role"
+                    font-size="14px"
+                    font-weight="500"
+                    :font-family="textFontPreset('body')"
+                    color="inherit"
+                    @update:model-value="updateHeaderField('role', $event)"
+                  />
                 </div>
                 <div class="cv-header-contact cv-col-8">
                   <div class="cv-header-contact-grid">
                     <div v-for="(item, idx) in headerProfile.contact" :key="`right-${idx}`" class="cv-contact-item">
                       <v-icon :icon="item.icon" size="16" />
-                      <template v-if="item.type === 'link'">
-                        <a :href="item.value" target="_blank" rel="noopener" class="cv-contact-link">{{ item.label }}</a>
-                      </template>
-                      <template v-else>{{ item.value }}</template>
+                      <HoverRichTextEditor
+                        class="cv-header-editor cv-header-editor--contact"
+                        :model-value="item.value"
+                        :placeholder="item.label || 'Contact'"
+                        font-size="13px"
+                        font-weight="500"
+                        :font-family="textFontPreset('body')"
+                        color="inherit"
+                        @update:model-value="updateHeaderField(item.key, $event)"
+                      />
                     </div>
                   </div>
                 </div>
@@ -735,18 +783,42 @@ onMounted(async () => {
                     <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker"><v-menu v-model="photoMenuOpen" location="bottom end" :close-on-content-click="false"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"/></div></v-card></v-menu></div>
                   </div>
                   <div class="cv-col-3 cv-header-identity cv-header-identity--split">
-                    <strong>{{ headerProfile.fullName }}</strong>
-                    <span>{{ headerProfile.role }}</span>
+                    <HoverRichTextEditor
+                      class="cv-header-editor cv-header-editor--name"
+                      :model-value="headerProfile.fullName"
+                      placeholder="Full name"
+                      font-size="22px"
+                      font-weight="700"
+                      :font-family="textFontPreset('fullName')"
+                      color="inherit"
+                      @update:model-value="updateHeaderField('fullName', $event)"
+                    />
+                    <HoverRichTextEditor
+                      class="cv-header-editor cv-header-editor--role"
+                      :model-value="headerProfile.role"
+                      placeholder="Role"
+                      font-size="14px"
+                      font-weight="500"
+                      :font-family="textFontPreset('body')"
+                      color="inherit"
+                      @update:model-value="updateHeaderField('role', $event)"
+                    />
                   </div>
                 </div>
                 <div class="cv-col-6 cv-header-contact">
                   <div class="cv-header-contact-grid">
                     <div v-for="(item, idx) in headerProfile.contact" :key="`split-${idx}`" class="cv-contact-item">
                       <v-icon :icon="item.icon" size="16" />
-                      <template v-if="item.type === 'link'">
-                        <a :href="item.value" target="_blank" rel="noopener" class="cv-contact-link">{{ item.label }}</a>
-                      </template>
-                      <template v-else>{{ item.value }}</template>
+                      <HoverRichTextEditor
+                        class="cv-header-editor cv-header-editor--contact"
+                        :model-value="item.value"
+                        :placeholder="item.label || 'Contact'"
+                        font-size="13px"
+                        font-weight="500"
+                        :font-family="textFontPreset('body')"
+                        color="inherit"
+                        @update:model-value="updateHeaderField(item.key, $event)"
+                      />
                     </div>
                   </div>
                 </div>
@@ -756,36 +828,36 @@ onMounted(async () => {
           <template #aside>
             <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" :class="['cv-aside-sections', { 'cv-aside-sections--full': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
               <div v-for="section in visibleOrderedSections('asideOne', structureAsideOneSections, 'asideOne')" :key="`aside-s1-${section}`" class="cv-aside-section-item" draggable="true" @dragstart="onSectionDragStart('asideOne', section)" @dragover.prevent @drop="onSectionDrop('asideOne', section)" @dragend="onSectionDragEnd">
-                <div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section)); hideSectionInZone('asideOne', toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('asideOne', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong>
-                <component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" />
+                <div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section)); hideSectionInZone('asideOne', toSectionKey(section))"/><v-btn icon="mdi-arrow-up" size="x-small" variant="text" @click.stop="moveSection('asideOne', section, 'up')"/><v-btn icon="mdi-arrow-down" size="x-small" variant="text" @click.stop="moveSection('asideOne', section, 'down')"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('asideOne', section, 'down')"/></div><strong class="cv-section-title"><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" /><HoverRichTextEditor class="cv-section-title-editor" :model-value="sectionDisplayTitle(section)" font-size="13px" font-weight="700" :font-family="textFontPreset('sectionLabel')" color="inherit" @update:model-value="updateSectionDisplayTitle(section, $event)" /></strong>
+                <CvEditableSectionContent :section-key="toSectionKey(section)" :variant="effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getEditableSectionItems(section)" @update-item="(index, value) => updateEditableSectionItem(section, index, value)" />
               </div>
             </div>
             <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" :class="['cv-aside-sections', { 'cv-aside-sections--full': ['aside-full-left', 'aside-full-right'].includes(String(activeTemplate?.layout || '')) }]">
               <div v-for="section in visibleOrderedSections('asideTwo', structureAsideTwoSections, 'asideTwo')" :key="`aside-s2-${section}`" class="cv-aside-section-item" draggable="true" @dragstart="onSectionDragStart('asideTwo', section)" @dragover.prevent @drop="onSectionDrop('asideTwo', section)" @dragend="onSectionDragEnd">
-                <div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section)); hideSectionInZone('asideTwo', toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('asideTwo', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong>
-                <component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" />
+                <div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section)); hideSectionInZone('asideTwo', toSectionKey(section))"/><v-btn icon="mdi-arrow-up" size="x-small" variant="text" @click.stop="moveSection('asideTwo', section, 'up')"/><v-btn icon="mdi-arrow-down" size="x-small" variant="text" @click.stop="moveSection('asideTwo', section, 'down')"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('asideTwo', section, 'down')"/></div><strong class="cv-section-title"><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" /><HoverRichTextEditor class="cv-section-title-editor" :model-value="sectionDisplayTitle(section)" font-size="13px" font-weight="700" :font-family="textFontPreset('sectionLabel')" color="inherit" @update:model-value="updateSectionDisplayTitle(section, $event)" /></strong>
+                <CvEditableSectionContent :section-key="toSectionKey(section)" :variant="effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getEditableSectionItems(section)" @update-item="(index, value) => updateEditableSectionItem(section, index, value)" />
               </div>
             </div>
           </template>
 
           <template #content>
             <div v-if="isSideContentLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
-              <div v-for="section in visibleOrderedSections('contentBase', structureContentBaseSections)" :key="`content-base-${section}`" class="cv-section-row" draggable="true" @dragstart="onSectionDragStart('contentBase', section)" @dragover.prevent @drop="onSectionDrop('contentBase', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('contentBase', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ sectionTitleMap[toSectionKey(section)] || section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+              <div v-for="section in visibleOrderedSections('contentBase', structureContentBaseSections)" :key="`content-base-${section}`" class="cv-section-row" draggable="true" @dragstart="onSectionDragStart('contentBase', section)" @dragover.prevent @drop="onSectionDrop('contentBase', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-arrow-up" size="x-small" variant="text" @click.stop="moveSection('contentBase', section, 'up')"/><v-btn icon="mdi-arrow-down" size="x-small" variant="text" @click.stop="moveSection('contentBase', section, 'down')"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('contentBase', section, 'down')"/></div><strong class="cv-section-title"><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" /><HoverRichTextEditor class="cv-section-title-editor" :model-value="sectionDisplayTitle(section)" font-size="13px" font-weight="700" :font-family="textFontPreset('sectionLabel')" color="inherit" @update:model-value="updateSectionDisplayTitle(section, $event)" /></strong><CvEditableSectionContent :section-key="toSectionKey(section)" :variant="effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getEditableSectionItems(section)" @update-item="(index, value) => updateEditableSectionItem(section, index, value)" /></div>
             </div>
             <div v-else-if="isSideContentLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
-              <div v-for="section in visibleOrderedSections('contentStructure2', [...structureContentBaseSections, 'Skills'])" :key="`content-s2-${section}`" class="cv-section-row" draggable="true" @dragstart="onSectionDragStart('contentStructure2', section)" @dragover.prevent @drop="onSectionDrop('contentStructure2', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('contentStructure2', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ sectionTitleMap[toSectionKey(section)] || section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+              <div v-for="section in visibleOrderedSections('contentStructure2', [...structureContentBaseSections, 'Skills'])" :key="`content-s2-${section}`" class="cv-section-row" draggable="true" @dragstart="onSectionDragStart('contentStructure2', section)" @dragover.prevent @drop="onSectionDrop('contentStructure2', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-arrow-up" size="x-small" variant="text" @click.stop="moveSection('contentStructure2', section, 'up')"/><v-btn icon="mdi-arrow-down" size="x-small" variant="text" @click.stop="moveSection('contentStructure2', section, 'down')"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('contentStructure2', section, 'down')"/></div><strong class="cv-section-title"><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" /><HoverRichTextEditor class="cv-section-title-editor" :model-value="sectionDisplayTitle(section)" font-size="13px" font-weight="700" :font-family="textFontPreset('sectionLabel')" color="inherit" @update:model-value="updateSectionDisplayTitle(section, $event)" /></strong><CvEditableSectionContent :section-key="toSectionKey(section)" :variant="effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getEditableSectionItems(section)" @update-item="(index, value) => updateEditableSectionItem(section, index, value)" /></div>
             </div>
             <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-1'" class="cv-sections-list">
-              <div v-for="section in visibleOrderedSections('mainOne', structureOneSections)" :key="`s1-${section}`" class="cv-section-row" draggable="true" @dragstart="onSectionDragStart('mainOne', section)" @dragover.prevent @drop="onSectionDrop('mainOne', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('mainOne', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+              <div v-for="section in visibleOrderedSections('mainOne', structureOneSections)" :key="`s1-${section}`" class="cv-section-row" draggable="true" @dragstart="onSectionDragStart('mainOne', section)" @dragover.prevent @drop="onSectionDrop('mainOne', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-arrow-up" size="x-small" variant="text" @click.stop="moveSection('mainOne', section, 'up')"/><v-btn icon="mdi-arrow-down" size="x-small" variant="text" @click.stop="moveSection('mainOne', section, 'down')"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('mainOne', section, 'down')"/></div><strong class="cv-section-title"><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" /><HoverRichTextEditor class="cv-section-title-editor" :model-value="sectionDisplayTitle(section)" font-size="13px" font-weight="700" :font-family="textFontPreset('sectionLabel')" color="inherit" @update:model-value="updateSectionDisplayTitle(section, $event)" /></strong><CvEditableSectionContent :section-key="toSectionKey(section)" :variant="effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getEditableSectionItems(section)" @update-item="(index, value) => updateEditableSectionItem(section, index, value)" /></div>
             </div>
             <div v-else-if="isMainStructureLayout && activeTemplate?.structure === 'structure-2'" class="cv-sections-structure-2">
-              <div v-for="section in visibleOrderedSections('mainTwoTop', structureTwoTopSections)" :key="`s2-top-${section}`" class="cv-section-row" draggable="true" @dragstart="onSectionDragStart('mainTwoTop', section)" @dragover.prevent @drop="onSectionDrop('mainTwoTop', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('mainTwoTop', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+              <div v-for="section in visibleOrderedSections('mainTwoTop', structureTwoTopSections)" :key="`s2-top-${section}`" class="cv-section-row" draggable="true" @dragstart="onSectionDragStart('mainTwoTop', section)" @dragover.prevent @drop="onSectionDrop('mainTwoTop', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-arrow-up" size="x-small" variant="text" @click.stop="moveSection('mainTwoTop', section, 'up')"/><v-btn icon="mdi-arrow-down" size="x-small" variant="text" @click.stop="moveSection('mainTwoTop', section, 'down')"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('mainTwoTop', section, 'down')"/></div><strong class="cv-section-title"><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" /><HoverRichTextEditor class="cv-section-title-editor" :model-value="sectionDisplayTitle(section)" font-size="13px" font-weight="700" :font-family="textFontPreset('sectionLabel')" color="inherit" @update:model-value="updateSectionDisplayTitle(section, $event)" /></strong><CvEditableSectionContent :section-key="toSectionKey(section)" :variant="effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getEditableSectionItems(section)" @update-item="(index, value) => updateEditableSectionItem(section, index, value)" /></div>
               <v-row class="mt-1" dense>
                 <v-col cols="6">
-                  <div v-for="section in visibleOrderedSections('mainTwoLeft', structureTwoLeftSections)" :key="`s2-left-${section}`" class="cv-section-row" draggable="true" @dragstart="onSectionDragStart('mainTwoLeft', section)" @dragover.prevent @drop="onSectionDrop('mainTwoLeft', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('mainTwoLeft', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+                  <div v-for="section in visibleOrderedSections('mainTwoLeft', structureTwoLeftSections)" :key="`s2-left-${section}`" class="cv-section-row" draggable="true" @dragstart="onSectionDragStart('mainTwoLeft', section)" @dragover.prevent @drop="onSectionDrop('mainTwoLeft', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-arrow-up" size="x-small" variant="text" @click.stop="moveSection('mainTwoLeft', section, 'up')"/><v-btn icon="mdi-arrow-down" size="x-small" variant="text" @click.stop="moveSection('mainTwoLeft', section, 'down')"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('mainTwoLeft', section, 'down')"/></div><strong class="cv-section-title"><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" /><HoverRichTextEditor class="cv-section-title-editor" :model-value="sectionDisplayTitle(section)" font-size="13px" font-weight="700" :font-family="textFontPreset('sectionLabel')" color="inherit" @update:model-value="updateSectionDisplayTitle(section, $event)" /></strong><CvEditableSectionContent :section-key="toSectionKey(section)" :variant="effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getEditableSectionItems(section)" @update-item="(index, value) => updateEditableSectionItem(section, index, value)" /></div>
                 </v-col>
                 <v-col cols="6">
-                  <div v-for="section in visibleOrderedSections('mainTwoRight', structureTwoRightSections)" :key="`s2-right-${section}`" class="cv-section-row" draggable="true" @dragstart="onSectionDragStart('mainTwoRight', section)" @dragover.prevent @drop="onSectionDrop('mainTwoRight', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('mainTwoRight', section)"/></div><strong><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" />{{ section }}</strong><component :is="resolveSectionComponent(toSectionKey(section), effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any)))" :items="getSectionItems(section)" :text="getSectionItems(section)[0]" /></div>
+                  <div v-for="section in visibleOrderedSections('mainTwoRight', structureTwoRightSections)" :key="`s2-right-${section}`" class="cv-section-row" draggable="true" @dragstart="onSectionDragStart('mainTwoRight', section)" @dragover.prevent @drop="onSectionDrop('mainTwoRight', section)" @dragend="onSectionDragEnd"><div class="cv-section-toolbar"><AppSelect v-model="sectionTypeOverrides[toSectionKey(section)]" :items="getSectionVariantOptions(toSectionKey(section))" item-title="title" item-value="value" density="compact" variant="outlined" hide-details prepend-inner-icon="mdi-shape-outline" class="cv-variant-select" /><v-btn icon="mdi-plus" size="x-small" variant="text" @click.stop="addSectionItem(toSectionKey(section))"/><v-btn icon="mdi-minus" size="x-small" variant="text" @click.stop="hideSection(toSectionKey(section))"/><v-btn icon="mdi-arrow-up" size="x-small" variant="text" @click.stop="moveSection('mainTwoRight', section, 'up')"/><v-btn icon="mdi-arrow-down" size="x-small" variant="text" @click.stop="moveSection('mainTwoRight', section, 'down')"/><v-btn icon="mdi-drag" size="x-small" variant="text" @click.stop="moveSection('mainTwoRight', section, 'down')"/></div><strong class="cv-section-title"><v-icon :icon="sectionIconMap[toSectionKey(section)] || 'mdi-circle-small'" size="16" class="mr-1" /><HoverRichTextEditor class="cv-section-title-editor" :model-value="sectionDisplayTitle(section)" font-size="13px" font-weight="700" :font-family="textFontPreset('sectionLabel')" color="inherit" @update:model-value="updateSectionDisplayTitle(section, $event)" /></strong><CvEditableSectionContent :section-key="toSectionKey(section)" :variant="effectiveSectionType(toSectionKey(section), sectionType(toSectionKey(section) as any))" :items="getEditableSectionItems(section)" @update-item="(index, value) => updateEditableSectionItem(section, index, value)" /></div>
                 </v-col>
               </v-row>
             </div>
@@ -872,6 +944,66 @@ onMounted(async () => {
 
 <style scoped>
 
+.cv-header-editor,
+.cv-section-title-editor {
+  position: relative;
+  min-width: 0;
+  color: inherit;
+}
+
+.cv-header-editor :deep(.hover-editor__content p),
+.cv-section-title-editor :deep(.hover-editor__content p) {
+  margin: 0;
+}
+
+.cv-header-editor :deep(.hover-editor__toolbar),
+.cv-section-title-editor :deep(.hover-editor__toolbar) {
+  position: absolute;
+  top: auto;
+  bottom: calc(100% - 1px);
+  left: 0;
+  z-index: 30;
+  width: max-content;
+  max-width: min(560px, 92vw);
+  margin-bottom: 0;
+  background: rgb(var(--v-theme-surface));
+  color: rgb(var(--v-theme-on-surface));
+  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-on-surface)) 14%, transparent);
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+.cv-header-editor :deep(.toolbar-size),
+.cv-section-title-editor :deep(.toolbar-size) {
+  background: rgb(var(--v-theme-surface));
+  color: rgb(var(--v-theme-on-surface));
+  border-color: color-mix(in srgb, rgb(var(--v-theme-on-surface)) 22%, transparent);
+}
+
+.cv-header-editor :deep(.v-btn),
+.cv-section-title-editor :deep(.v-btn) {
+  color: rgb(var(--v-theme-on-surface));
+}
+
+.cv-header-editor--contact {
+  flex: 1 1 auto;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.cv-section-title {
+  display: flex !important;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.cv-section-title-editor {
+  display: inline-block;
+  max-width: 100%;
+}
+
 .cv-preview-shell {
   position: relative;
   min-height: var(--cv-preview-total-height, 1100px);
@@ -925,7 +1057,7 @@ onMounted(async () => {
   font-size: 13px;
 }
 
-.cv-aside-section-item > strong{display:block;margin-bottom:6px;padding-right:120px}
+.cv-aside-section-item > strong{display:block;margin-bottom:6px;padding-right:0}
 .cv-aside-section-item:hover .cv-section-toolbar{opacity:1;pointer-events:auto}
 .cv-aside-section-item :deep(.cv-sec) { padding: 4px 0; }
 .cv-aside-section-item :deep(.cv-item) { font-size: 12px; margin-bottom: 4px; }
@@ -962,11 +1094,47 @@ onMounted(async () => {
   color: #334155;
   background: transparent;
 }
-.cv-section-row > strong{display:block;margin-bottom:6px;padding-right:120px}
-.cv-section-toolbar{position:absolute;top:0;right:0;opacity:0;pointer-events:none;transition:opacity .15s ease;z-index:2}
-.cv-section-row:hover .cv-section-toolbar{opacity:1;pointer-events:auto}
-.cv-section-toolbar :deep(.v-field){min-height:28px}
-.cv-section-toolbar{width:180px;display:flex;align-items:center;gap:1px;justify-content:flex-end}
+.cv-section-row > strong{display:block;margin-bottom:6px;padding-right:0}
+.cv-section-toolbar {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  width: max-content;
+  max-width: calc(100% - 8px);
+  padding: 4px;
+  opacity: 0;
+  pointer-events: none;
+  background: rgb(var(--v-theme-surface));
+  color: rgb(var(--v-theme-on-surface));
+  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-on-surface)) 14%, transparent);
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  transform: translateY(-2px);
+  transition: opacity .15s ease, transform .15s ease;
+}
+.cv-section-row:hover .cv-section-toolbar,
+.cv-aside-section-item:hover .cv-section-toolbar,
+.cv-section-toolbar:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.cv-section-toolbar :deep(.v-field) {
+  min-height: 26px;
+  height: 26px;
+  background: rgb(var(--v-theme-surface));
+  color: rgb(var(--v-theme-on-surface));
+  border-radius: 8px;
+}
+.cv-section-toolbar :deep(.v-field__outline),
+.cv-section-toolbar :deep(.v-field__overlay) {
+  color: color-mix(in srgb, rgb(var(--v-theme-on-surface)) 22%, transparent);
+}
 
 .signature-footer {
   margin-top: 32px;
@@ -1020,11 +1188,35 @@ onMounted(async () => {
 .cv-aside-section-item > strong{color:color-mix(in srgb, var(--cv-primary,#1d4ed8) 55%, white)}
 
 
-.cv-section-toolbar .v-btn{min-width:16px!important;width:16px;height:16px;padding:0}
-.cv-variant-select{max-width:30px;min-width:30px}
-.cv-variant-select :deep(.v-field__input){display:none}
-.cv-variant-select :deep(.v-field__prepend-inner){padding-inline-end:0}
-.cv-variant-select :deep(.v-field__append-inner){display:none}
+.cv-section-toolbar :deep(.v-btn) {
+  min-width: 26px !important;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  color: rgb(var(--v-theme-on-surface));
+  border-radius: 8px;
+}
+.cv-section-toolbar :deep(.v-btn:hover) {
+  background: color-mix(in srgb, rgb(var(--v-theme-on-surface)) 10%, transparent);
+}
+.cv-variant-select {
+  width: 76px;
+  min-width: 76px;
+  max-width: 76px;
+}
+.cv-variant-select :deep(.v-field__input) {
+  min-height: 26px;
+  padding: 0 4px;
+  font-size: 11px;
+  color: rgb(var(--v-theme-on-surface));
+}
+.cv-variant-select :deep(.v-field__prepend-inner) {
+  display: none;
+}
+.cv-variant-select :deep(.v-field__append-inner) {
+  padding-inline-start: 0;
+  color: rgb(var(--v-theme-on-surface));
+}
 .cv-header-identity span{font-size:12px;opacity:.95;color:var(--cv-header-muted,#334155)}
 
 </style>
