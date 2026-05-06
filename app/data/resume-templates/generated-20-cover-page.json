@@ -172,6 +172,68 @@
       "role": "Product Designer",
       "image": "/img/team-1.jpg",
       "description": "Alex Martin is a product designer focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Inter",
+        "Playfair Display"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Playfair Display",
+        "body": "Inter"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Playfair Display",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Playfair Display",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
     }
   },
   {
@@ -373,6 +435,68 @@
       "role": "Full Stack Developer",
       "image": "/img/team-2.jpg",
       "description": "Jordan Lee is a full stack developer focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Montserrat",
+        "Open Sans"
+      ],
+      "scale": "spacious",
+      "fonts": {
+        "display": "Montserrat",
+        "body": "Open Sans"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Montserrat",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Montserrat",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
     }
   },
   {
@@ -569,6 +693,68 @@
       "role": "Marketing Manager",
       "image": "/img/team-3.jpg",
       "description": "Alex Martin is a marketing manager focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Cormorant Garamond",
+        "Lato"
+      ],
+      "scale": "tight",
+      "fonts": {
+        "display": "Cormorant Garamond",
+        "body": "Lato"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Cormorant Garamond",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Cormorant Garamond",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
     }
   },
   {
@@ -770,6 +956,68 @@
       "role": "Data Analyst",
       "image": "/img/team-4.jpg",
       "description": "Jordan Lee is a data analyst focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Bebas Neue",
+        "Roboto"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Bebas Neue",
+        "body": "Roboto"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Bebas Neue",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Bebas Neue",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
     }
   },
   {
@@ -966,6 +1214,68 @@
       "role": "HR Specialist",
       "image": "/img/team-5.jpg",
       "description": "Alex Martin is a hr specialist focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Abril Fatface",
+        "Source Sans 3"
+      ],
+      "scale": "spacious",
+      "fonts": {
+        "display": "Abril Fatface",
+        "body": "Source Sans 3"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Abril Fatface",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Abril Fatface",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
     }
   },
   {
@@ -1167,6 +1477,68 @@
       "role": "Project Manager",
       "image": "/img/team-9.jpeg",
       "description": "Jordan Lee is a project manager focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Nunito Sans",
+        "Raleway"
+      ],
+      "scale": "tight",
+      "fonts": {
+        "display": "Raleway",
+        "body": "Nunito Sans"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Raleway",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Raleway",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
     }
   },
   {
@@ -1363,6 +1735,68 @@
       "role": "UX Researcher",
       "image": "/img/team-1.jpg",
       "description": "Emma Wilson is a ux researcher focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Manrope",
+        "Prata"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Prata",
+        "body": "Manrope"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Prata",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Prata",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
     }
   },
   {
@@ -1564,6 +1998,68 @@
       "role": "DevOps Engineer",
       "image": "/img/team-2.jpg",
       "description": "Noah Turner is a devops engineer focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Inter",
+        "Space Grotesk"
+      ],
+      "scale": "spacious",
+      "fonts": {
+        "display": "Space Grotesk",
+        "body": "Inter"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Space Grotesk",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Space Grotesk",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
     }
   },
   {
@@ -1760,6 +2256,68 @@
       "role": "Business Consultant",
       "image": "/img/team-3.jpg",
       "description": "Emma Wilson is a business consultant focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Libre Baskerville",
+        "Public Sans"
+      ],
+      "scale": "tight",
+      "fonts": {
+        "display": "Libre Baskerville",
+        "body": "Public Sans"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Libre Baskerville",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Public Sans",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Libre Baskerville",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Public Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Public Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Public Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
     }
   },
   {
@@ -1961,6 +2519,68 @@
       "role": "Mobile Developer",
       "image": "/img/team-4.jpg",
       "description": "Noah Turner is a mobile developer focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Lato",
+        "Oswald"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Oswald",
+        "body": "Lato"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Oswald",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Oswald",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
     }
   },
   {
@@ -2134,6 +2754,68 @@
       "role": "Content Strategist",
       "image": "/img/team-5.jpg",
       "description": "Emma Wilson is a content strategist focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "DM Sans",
+        "DM Serif Display"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "DM Serif Display",
+        "body": "DM Sans"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "DM Serif Display",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "DM Sans",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "DM Serif Display",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "DM Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "DM Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "DM Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
     }
   },
   {
@@ -2307,6 +2989,68 @@
       "role": "Operations Lead",
       "image": "/img/team-9.jpeg",
       "description": "Noah Turner is a operations lead focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Cinzel",
+        "Work Sans"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Cinzel",
+        "body": "Work Sans"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Cinzel",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Work Sans",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Cinzel",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Work Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Work Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Work Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
     }
   }
 ]

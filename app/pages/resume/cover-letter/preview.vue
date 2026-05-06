@@ -2,6 +2,7 @@
 import { listMyResumes } from '~/services/resumeApi'
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-20-cover-letter.json'
+import { resolveResumeTextFont, useResumeGoogleFonts } from '~/composables/useResumeGoogleFonts'
 
 definePageMeta({ title: 'Resume · Cover Letter Preview' })
 const route = useRoute()
@@ -51,6 +52,10 @@ const primaryBarWidth = ref(10)
 const secondaryBarWidth = ref(5)
 const model = reactive({ fullName:'Alex Martin', role:'Senior Full Stack Developer', location:'Paris, France', date:new Date().toLocaleDateString('en-US'), heading:'Dear Hiring Manager,', companyParagraph:'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.', summary:'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.', email:'Sincerely,', phone:'Alex Martin', photoUrl: photoOptions[0] })
 const activeTemplate = computed(() => GENERATED_COVER_LETTER_TEMPLATES.find((tpl) => tpl.id === selectedTemplate.value) || GENERATED_COVER_LETTER_TEMPLATES[0])
+useResumeGoogleFonts(activeTemplate)
+function textFontFamily(key: string, fallback: 'sans' | 'serif' | 'mono' | 'display' = 'sans') {
+  return resolveResumeTextFont((activeTemplate.value as any)?.textStyles?.[key], fallback)
+}
 const editableDecorObjects = ref<any[]>([])
 const defaultDecorPresets = [
   { type: 'circle', x: 8, y: 6, size: 80, opacity: 0.08 },
@@ -256,38 +261,25 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
     </template>
   </AppPageDrawers>
   <v-container fluid>
-    <div class="preview-toolbar-wrap"><div class="preview-toolbar-row">
-      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-content-save-cog-outline" @click="saveFromPreview">Save</v-btn>
-      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-robot-outline" @click="goToCreateResume">AI</v-btn>
-      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-signature-freehand" @click="openSignatureDialog">Signature</v-btn>
-      <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-file-pdf-box" @click="downloadPdf">PDF</v-btn>
-      <v-menu v-model="layoutMenuOpen" location="bottom center" origin="top center">
-        <template #activator="{ props }"><v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-view-grid-outline" v-bind="props">Templates</v-btn></template>
-        <v-card class="template-menu-card">
-          <div class="template-menu-grid">
-            <v-card
-              v-for="template in coverLetterTemplates"
-              :key="`cover-letter-preview-${template.id}`"
-              class="template-menu-item"
-              :class="{ 'template-menu-item--active': selectedTemplate === template.id }"
-              variant="outlined"
-              @click="applyPreviewTemplate(template.id)"
-            >
-              <v-img :src="template.image" class="template-menu-thumb" cover />
-              <v-card-text class="py-2 text-caption">{{ template.title }}</v-card-text>
-            </v-card>
-          </div>
-        </v-card>
-      </v-menu>
-    </div></div>
-    <div class="py-8 d-flex justify-center"><main class="capture-cover-letter" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-divider-color':sectionDividerColor,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
+    <ResumePreviewToolbar
+      v-model:menu-open="layoutMenuOpen"
+      :templates="coverLetterTemplates"
+      :selected-template="selectedTemplate"
+      template-key-prefix="cover-letter-preview"
+      @save="saveFromPreview"
+      @ai="goToCreateResume"
+      @signature="openSignatureDialog"
+      @pdf="downloadPdf"
+      @select-template="applyPreviewTemplate"
+    />
+    <div class="py-8 d-flex justify-center preview-single-page-frame"><main class="capture-cover-letter" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-divider-color':sectionDividerColor,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
       <header
 class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barLayout === 'double', 'hero--photo-right': photoPosition === 'right', 'hero--ribbon': activeTemplate?.decor?.headerStyle === 'ribbon', 'hero--layout-right': isLayoutRight}"
         :style="activeTemplate?.decor?.gradientStyle && activeTemplate.decor.gradientStyle !== 'none' ? { background: `linear-gradient(135deg, ${activeColors.primary}22, ${activeColors.secondary}33)` } : undefined">
         <div class="meta-top-right" :class="{ 'meta-top-right--layout-right': isLayoutRight }">
-          <HoverRichTextEditor v-model="model.date" :font-size="`${letterElementStyles.date.size}px`" :color="letterElementStyles.date.color" :font-weight="letterElementStyles.date.weight" />
-          <HoverRichTextEditor v-model="model.location" :font-size="`${letterElementStyles.address.size}px`" :color="letterElementStyles.address.color" :font-weight="letterElementStyles.address.weight" />
+          <HoverRichTextEditor v-model="model.date" :font-size="`${letterElementStyles.date.size}px`" :color="letterElementStyles.date.color" :font-weight="letterElementStyles.date.weight" :font-family="textFontFamily('date')" />
+          <HoverRichTextEditor v-model="model.location" :font-size="`${letterElementStyles.address.size}px`" :color="letterElementStyles.address.color" :font-weight="letterElementStyles.address.weight" :font-family="textFontFamily('address')" />
         </div>
         <div class="hero-row" :class="{ 'hero-row--layout-right': isLayoutRight }">
           <div class="avatar-upload hero-avatar photo-shell" :style="{ width: `${imageSize}px`, height: `${imageSize}px`, borderRadius: imageShape === 'circle' ? '999px' : '12px' }" @click="openPhotoUpload">
@@ -324,25 +316,26 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
               <v-img :src="model.photoUrl" alt="profile" cover />
             </div>
           </div>
-          <HoverRichTextEditor v-model="model.fullName" class="hero-name"/>
-          <HoverRichTextEditor v-model="model.role" class="hero-role"/>
+          <HoverRichTextEditor v-model="model.fullName" class="hero-name" :font-family="textFontFamily('fullName', 'serif')"/>
+          <HoverRichTextEditor v-model="model.role" class="hero-role" :font-family="textFontFamily('role')"/>
         </div>
       </header>
       <section class="letter-body">
-        <HoverRichTextEditor v-model="model.heading" class="letter-heading" />
-        <HoverRichTextEditor v-model="model.companyParagraph" />
-        <HoverRichTextEditor v-model="model.summary" />
-        <HoverRichTextEditor v-model="model.email" />
-        <HoverRichTextEditor v-model="model.phone" />
+        <HoverRichTextEditor v-model="model.heading" class="letter-heading" :font-family="textFontFamily('heading', 'serif')" />
+        <HoverRichTextEditor v-model="model.companyParagraph" :font-family="textFontFamily('body')" />
+        <HoverRichTextEditor v-model="model.summary" :font-family="textFontFamily('body')" />
+        <HoverRichTextEditor v-model="model.email" :font-family="textFontFamily('email')" />
+        <HoverRichTextEditor v-model="model.phone" :font-family="textFontFamily('phone', 'serif')" />
       </section>
       <footer v-if="signatureDataUrl" class="signature-footer"><img :src="signatureDataUrl" alt="signature" class="signature-image"/></footer>
-    </main></div>
+    </main><ResumePreviewPageBreak :page-number="1" /></div>
     <input ref="photoInput" type="file" accept="image/*" class="d-none" @change="onPhotoUpload">
     <v-dialog v-model="signatureDialogOpen" max-width="760"><v-card><v-card-title>Signature</v-card-title><v-card-text><canvas ref="signatureCanvas" style="width:100%;height:200px;border:1px solid rgba(0,0,0,.15);border-radius:10px"/></v-card-text></v-card></v-dialog>
   </v-container>
 </div>
 </template>
 <style scoped>
+.preview-single-page-frame{position:relative;flex-direction:column;align-items:center}
 .capture-cover-letter{position:relative;overflow:hidden;width:850px;min-height:1123px;padding:64px 72px;background:var(--cp-bg);color:var(--cp-text)}.hero{border-left:var(--bar-primary-width) solid var(--cp-primary);padding-left:24px;padding-top:6px;margin-bottom:42px;border-radius:var(--bar-radius);position:relative;min-height:140px}.meta-top-right{position:absolute;top:0;right:0;display:flex;flex-direction:column;align-items:flex-end;gap:2px;text-align:right}.meta-top-right--layout-right{right:auto;left:0;text-align:left;align-items:flex-start}.hero-row{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding-top:8px}.hero-avatar{align-self:flex-start}.hero-avatar--right{align-self:flex-end}.hero--photo-right{padding-top:8px}.hero--ribbon{padding-top:16px;padding-bottom:12px}
 .hero--no-bar{border-left:0!important;border-right:0!important;padding-left:0;padding-right:0}.hero--double::before{content:'';position:absolute;left:calc(var(--bar-primary-width) + 6px);top:0;bottom:0;width:var(--bar-secondary-width);background:var(--cp-secondary);border-radius:var(--bar-radius)}.hero--layout-right{border-left:0;border-right:var(--bar-primary-width) solid var(--cp-primary);padding-left:0;padding-right:24px;text-align:right}.hero--layout-right.hero--double::before{left:auto;right:calc(var(--bar-primary-width) + 6px)}.hero-row--layout-right{align-items:flex-end}.hero-row--layout-right .hero-avatar{align-self:flex-end}.avatar-upload{cursor:pointer;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px');overflow:visible}.photo-shell{display:block;position:relative}.photo-quick-trigger{position:absolute;top:-10px;left:-10px;z-index:30;opacity:0;transition:opacity .15s ease;background:#fff;border:1px solid rgba(15,23,42,.2)}.photo-shell:hover .photo-quick-trigger,.photo-shell:focus-within .photo-quick-trigger,.photo-quick-trigger:focus-visible{opacity:1}.photo-quick-menu{border:1px solid rgba(148,163,184,.4)}.photo-shell__img{width:100%;height:100%;overflow:hidden;border-radius:inherit}.photo-shell__img :deep(img){width:100%;height:100%;object-fit:cover;border-radius:inherit}.hero-name :deep(p){margin:2px 0 0;font-size:44px;font-weight:700;color:var(--cp-text);line-height:1.05}.hero-role :deep(p){margin:0;font-size:24px;color:var(--cp-muted)}p{font-size:var(--body-size);color:var(--body-color);line-height:1.55;margin:0 0 18px}.letter-heading :deep(p){font-weight:700;color:var(--cp-text);margin-bottom:24px}section{border-top:2px var(--section-divider-style) var(--section-divider-color);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.decor-square{border-radius:10px}.decor-diamond{border-radius:8px;transform:translate(-50%,-50%) rotate(45deg)}.decor-star{-webkit-clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}.decor-triangle{-webkit-clip-path:polygon(50% 0%,0 100%,100% 100%);clip-path:polygon(50% 0%,0 100%,100% 100%)}.decor-pill{border-radius:999px}.decor-bar{border-radius:999px}.preview-toolbar-wrap{position:sticky;top:76px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background: rgba(var(--v-theme-primary))}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}</style>
 
