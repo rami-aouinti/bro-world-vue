@@ -239,16 +239,29 @@ function isLeveledSection() {
 
 .cv-rich-editor :deep(.hover-editor__toolbar) {
   position: absolute;
-  top: calc(100% + 4px);
+  top: auto;
+  bottom: calc(100% - 1px);
   left: 0;
   z-index: 20;
   width: max-content;
   max-width: min(560px, 92vw);
   margin-bottom: 0;
-  background: color-mix(in srgb, Canvas 92%, transparent);
+  background: rgb(var(--v-theme-surface));
+  color: rgb(var(--v-theme-on-surface));
+  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-on-surface)) 14%, transparent);
   border-radius: 8px;
   padding: 4px;
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+.cv-rich-editor :deep(.toolbar-size) {
+  background: rgb(var(--v-theme-surface));
+  color: rgb(var(--v-theme-on-surface));
+  border-color: color-mix(in srgb, rgb(var(--v-theme-on-surface)) 22%, transparent);
+}
+
+.cv-rich-editor :deep(.v-btn) {
+  color: rgb(var(--v-theme-on-surface));
 }
 
 .cv-rich-editor--period,
