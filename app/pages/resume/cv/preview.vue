@@ -162,8 +162,8 @@ const sectionIconMap: Record<string, string> = {
   projects: 'mdi-folder-outline',
 }
 
-function toSectionKey(section: string) {
-  const key = section.toLowerCase()
+function toSectionKey(section?: string) {
+  const key = String(section || "").toLowerCase()
   if (key === "certification") return "certifications"
   if (key === "hobby") return "hobbies"
   return key
