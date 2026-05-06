@@ -970,13 +970,9 @@ onMounted(async () => {
 
 .cv-header-editor,
 .cv-section-title-editor {
+  position: relative;
   min-width: 0;
   color: inherit;
-}
-
-.cv-header-editor :deep(.hover-editor),
-.cv-section-title-editor :deep(.hover-editor) {
-  position: relative;
 }
 
 .cv-header-editor :deep(.hover-editor__content p),

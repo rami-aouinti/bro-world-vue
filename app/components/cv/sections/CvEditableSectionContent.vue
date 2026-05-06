@@ -225,12 +225,9 @@ function isLeveledSection() {
 }
 
 .cv-rich-editor {
+  position: relative;
   min-width: 0;
   color: inherit;
-}
-
-.cv-rich-editor :deep(.hover-editor) {
-  position: relative;
 }
 
 .cv-rich-editor :deep(.hover-editor__content p) {
