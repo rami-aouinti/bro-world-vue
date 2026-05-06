@@ -59,6 +59,9 @@ const { loggedIn } = useUserSession()
 const myResumes = ref<ResumeApiItem[]>([])
 const selectedTemplate = ref(GENERATED_RESUME_TEMPLATES[0]?.id || 'tpl-001')
 const layoutMenuOpen = ref(false)
+const signatureDataUrl = ref('')
+const signatureDialogOpen = ref(false)
+const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 
 const activeTemplate = computed(() =>
   GENERATED_RESUME_TEMPLATES.find((template) => template.id === selectedTemplate.value) || GENERATED_RESUME_TEMPLATES[0],
@@ -554,11 +557,62 @@ function applyPreviewTemplate(templateId: string) {
 }
 
 function saveFromPreview() {
-  localStorage.setItem('resume-cv-preview', JSON.stringify({ template: selectedTemplate.value }))
+  localStorage.setItem('resume-cv-preview', JSON.stringify({ template: selectedTemplate.value, signature: signatureDataUrl.value }))
 }
 
-function goToCapture() {
-  navigateTo(`/resume/template-capture/cv/${selectedTemplate.value}`)
+function goToCreateResume() {
+  navigateTo('/resume/preview')
+}
+
+async function downloadPdf() {
+  const node = document.querySelector('.cv-preview-shell') as HTMLElement | null
+  if (!node) return
+  const printWindow = window.open('', '_blank', 'width=900,height=1300')
+  if (!printWindow) return
+  const headStyles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]')).map((el) => el.outerHTML).join('')
+  printWindow.document.write(`<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.cv-preview-shell{width:210mm;box-sizing:border-box;margin:0}.cv-page-break{display:none!important}.cv-section-toolbar,.cv-photo-menu-btn{display:none!important}</style></head><body>${node.outerHTML}</body></html>`)
+  printWindow.document.close()
+  await new Promise((resolve) => setTimeout(resolve, 900))
+  printWindow.focus()
+  printWindow.print()
+  printWindow.close()
+}
+
+function openSignatureDialog() {
+  signatureDialogOpen.value = true
+  nextTick(initCanvas)
+}
+
+function initCanvas() {
+  const canvas = signatureCanvas.value
+  if (!canvas) return
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return
+  canvas.width = canvas.clientWidth || 680
+  canvas.height = 200
+  ctx.lineWidth = 2
+  ctx.lineCap = 'round'
+  let drawing = false
+  const pointer = (event: PointerEvent) => {
+    const rect = canvas.getBoundingClientRect()
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top }
+  }
+  canvas.onpointerdown = (event) => {
+    drawing = true
+    const point = pointer(event)
+    ctx.beginPath()
+    ctx.moveTo(point.x, point.y)
+  }
+  canvas.onpointermove = (event) => {
+    if (!drawing) return
+    const point = pointer(event)
+    ctx.lineTo(point.x, point.y)
+    ctx.stroke()
+  }
+  canvas.onpointerup = () => {
+    drawing = false
+    signatureDataUrl.value = canvas.toDataURL('image/png')
+  }
 }
 
 onMounted(async () => {
@@ -614,32 +668,18 @@ onMounted(async () => {
     </AppPageDrawers>
 
     <v-container fluid>
-      <div class="preview-toolbar-wrap">
-        <div class="preview-toolbar-row">
-          <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-content-save-cog-outline" @click="saveFromPreview">Save</v-btn>
-          <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-camera-outline" @click="goToCapture">Capture</v-btn>
-          <v-menu v-model="layoutMenuOpen" location="bottom center" origin="top center">
-            <template #activator="{ props }">
-              <v-btn class="preview-toolbar-btn" size="small" variant="text" prepend-icon="mdi-view-grid-outline" v-bind="props">Templates</v-btn>
-            </template>
-            <v-card class="template-menu-card">
-              <div class="template-menu-grid">
-                <v-card
-                  v-for="template in GENERATED_RESUME_TEMPLATES"
-                  :key="`cv-preview-${template.id}`"
-                  class="template-menu-item"
-                  :class="{ 'template-menu-item--active': selectedTemplate === template.id }"
-                  variant="outlined"
-                  @click="applyPreviewTemplate(template.id)"
-                >
-                  <v-img :src="`/img/cv/generated/${template.id}.png`" height="96" cover />
-                  <v-card-text class="py-2 text-caption">{{ template.name }}</v-card-text>
-                </v-card>
-              </div>
-            </v-card>
-          </v-menu>
-        </div>
-      </div>
+      <ResumePreviewToolbar
+        v-model:menu-open="layoutMenuOpen"
+        :templates="GENERATED_RESUME_TEMPLATES"
+        :selected-template="selectedTemplate"
+        :get-template-image="(template) => `/img/cv/generated/${template.id}.png`"
+        template-key-prefix="cv-preview"
+        @save="saveFromPreview"
+        @ai="goToCreateResume"
+        @signature="openSignatureDialog"
+        @pdf="downloadPdf"
+        @select-template="applyPreviewTemplate"
+      />
 
       <div class="py-8">
         <div
@@ -752,6 +792,9 @@ onMounted(async () => {
             <div v-else class="empty-state">
               <p class="text-medium-emphasis">Aucune section CV affichée pour le moment.</p>
             </div>
+            <footer v-if="signatureDataUrl" class="signature-footer">
+              <img :src="signatureDataUrl" alt="signature" class="signature-image">
+            </footer>
           </template>
           </component>
           <div
@@ -765,6 +808,15 @@ onMounted(async () => {
         </div>
       </div>
     </v-container>
+
+    <v-dialog v-model="signatureDialogOpen" max-width="760">
+      <v-card>
+        <v-card-title>Signature</v-card-title>
+        <v-card-text>
+          <canvas ref="signatureCanvas" class="signature-canvas" />
+        </v-card-text>
+      </v-card>
+    </v-dialog>
 
     <AppModal v-model="sectionModalOpen" title="Ajouter un élément" max-width="520">
       <v-card-text>
@@ -950,6 +1002,22 @@ onMounted(async () => {
 .cv-section-row:hover .cv-section-toolbar{opacity:1;pointer-events:auto}
 .cv-section-toolbar :deep(.v-field){min-height:28px}
 .cv-section-toolbar{width:180px;display:flex;align-items:center;gap:1px;justify-content:flex-end}
+
+.signature-footer {
+  margin-top: 32px;
+}
+
+.signature-image {
+  height: 68px;
+  object-fit: contain;
+}
+
+.signature-canvas {
+  width: 100%;
+  height: 200px;
+  border: 1px solid rgba(0, 0, 0, .15);
+  border-radius: 10px;
+}
 
 .template-menu-card {
   width: min(860px, calc(100vw - 48px));
