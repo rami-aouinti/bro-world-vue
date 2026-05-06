@@ -18,6 +18,7 @@
     "check:football": "pnpm run typecheck && pnpm run lint:football",
     "check:resume-presets": "vitest run test/nuxt/resume-presets-validation.test.ts",
     "capture:resume-thumbnails": "node scripts/capture-resume-thumbnails.mjs",
+    "capture:cv-thumbnails": "node scripts/capture-cv-thumbnails.mjs",
     "capture:cover-letter-thumbnails": "node scripts/capture-cover-letter-thumbnails.mjs",
     "capture:cover-page-thumbnails": "node scripts/capture-cover-page-thumbnails.mjs"
   },
