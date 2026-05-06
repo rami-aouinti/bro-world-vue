@@ -431,7 +431,7 @@ onMounted(() => {
           color="primary"
           variant="tonal"
           prepend-icon="mdi-file-account-outline"
-          to="/resume/preview"
+          to="/resume/cv/preview"
         >
           Build your resume
         </v-btn>

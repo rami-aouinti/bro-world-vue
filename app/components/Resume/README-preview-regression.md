@@ -14,7 +14,7 @@
 1. Lancer l’app locale:
    - `pnpm dev`
 2. Ouvrir l’éditeur CV:
-   - `http://localhost:3000/resume/preview`
+   - `http://localhost:3000/resume/cv/preview`
 3. Vérifier qu’un CV d’exemple est chargé.
 
 ## Checklist d’exécution
