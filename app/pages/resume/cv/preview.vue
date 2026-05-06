@@ -364,14 +364,14 @@ onMounted(() => {
                   </div>
                 </div>
                 <div class="cv-header-identity cv-col-4">
-                  <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker"><v-menu v-model="photoMenuOpen" location="bottom end"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"/></div></v-card></v-menu></div>
+                  <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker"><v-menu v-model="photoMenuOpen" location="bottom end" :close-on-content-click="false"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"/></div></v-card></v-menu></div>
                   <strong>{{ headerProfile.fullName }}</strong>
                   <span>{{ headerProfile.role }}</span>
                 </div>
               </template>
               <template v-else-if="headerType === 'header-right'">
                 <div class="cv-header-identity cv-col-4">
-                  <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker"><v-menu v-model="photoMenuOpen" location="bottom end"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"/></div></v-card></v-menu></div>
+                  <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker"><v-menu v-model="photoMenuOpen" location="bottom end" :close-on-content-click="false"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"/></div></v-card></v-menu></div>
                   <strong>{{ headerProfile.fullName }}</strong>
                   <span>{{ headerProfile.role }}</span>
                 </div>
@@ -390,7 +390,7 @@ onMounted(() => {
               <template v-else>
                 <div class="cv-col-6 cv-header-split-left">
                   <div class="cv-col-3">
-                    <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker"><v-menu v-model="photoMenuOpen" location="bottom end"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"/></div></v-card></v-menu></div>
+                    <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker"><v-menu v-model="photoMenuOpen" location="bottom end" :close-on-content-click="false"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"/></div></v-card></v-menu></div>
                   </div>
                   <div class="cv-col-3 cv-header-identity cv-header-identity--split">
                     <strong>{{ headerProfile.fullName }}</strong>
@@ -554,10 +554,10 @@ onMounted(() => {
   background: transparent;
 }
 .cv-section-row > strong{display:block;margin-bottom:6px;padding-right:120px}
-.cv-section-toolbar{position:absolute;top:4px;right:4px;opacity:0;pointer-events:none;transition:opacity .15s ease;z-index:2}
+.cv-section-toolbar{position:absolute;top:0;right:0;opacity:0;pointer-events:none;transition:opacity .15s ease;z-index:2}
 .cv-section-row:hover .cv-section-toolbar{opacity:1;pointer-events:auto}
 .cv-section-toolbar :deep(.v-field){min-height:28px}
-.cv-section-toolbar{width:220px;display:flex;align-items:center;gap:2px}
+.cv-section-toolbar{width:180px;display:flex;align-items:center;gap:1px;justify-content:flex-end}
 
 .template-menu-card {
   width: min(860px, calc(100vw - 48px));
@@ -595,7 +595,7 @@ onMounted(() => {
 .cv-aside-section-item > strong{color:color-mix(in srgb, var(--cv-primary,#1d4ed8) 55%, white)}
 
 
-.cv-section-toolbar .v-btn{min-width:20px!important;width:20px;height:20px;padding:0}
+.cv-section-toolbar .v-btn{min-width:16px!important;width:16px;height:16px;padding:0}
 .cv-variant-select{max-width:30px;min-width:30px}
 .cv-variant-select :deep(.v-field__input){display:none}
 .cv-variant-select :deep(.v-field__prepend-inner){padding-inline-end:0}
