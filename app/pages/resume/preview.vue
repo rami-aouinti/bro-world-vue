@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-90.json'
+import GENERATED_CV_TEMPLATES from '~/data/resume-templates/generated-20-resume.json'
 import ResumeLayoutAside from '~/components/resume/layouts/ResumeLayoutAside.vue'
 import ResumeLayoutAsideLeft from '~/components/resume/layouts/ResumeLayoutAsideLeft.vue'
 import ResumeLayoutAsideRight from '~/components/resume/layouts/ResumeLayoutAsideRight.vue'
@@ -593,6 +594,12 @@ watch(
   { deep: true },
 )
 onMounted(async () => {
+  const templateId = String(route.query.template || '')
+  if (templateId && GENERATED_CV_TEMPLATES.some((template) => template.id === templateId)) {
+    await navigateTo({ path: '/resume/cv/preview', query: { ...route.query } })
+    return
+  }
+
   if (!loggedIn.value) return
   loadingResumes.value = true
   resumesError.value = ''
