@@ -4,6 +4,12 @@ import LeftDrawerRandomGames from '~/components/Home/LeftDrawerRandomGames.vue'
 
 definePageMeta({
   title: 'Blog post',
+  description:
+    'Read a Bro World blog post with community updates, shared content, discussions, reactions, and comments.',
+  keywords:
+    'Bro World blog, community post, social post, discussions, comments, updates',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'weekly', priority: 0.5 },
 })
 
 type UnknownRecord = Record<string, unknown>

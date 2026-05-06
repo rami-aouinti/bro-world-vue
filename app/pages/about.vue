@@ -43,7 +43,22 @@ const { locale, _t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 const publicPagesStore = usePublicPagesStore()
 
-definePageMeta({ _title: 'appbar.about' })
+definePageMeta({
+  title: 'appbar.about',
+  description:
+    'Learn about Bro World Space, the collaborative platform for CRM, jobs, learning, games, quizzes, sports, and online services.',
+  keywords:
+    'about Bro World Space, collaborative platform, social network, CRM, jobs, learning, games, online services',
+  robots: {
+    index: true,
+    follow: true,
+    'max-image-preview': 'large',
+  },
+  sitemap: {
+    changefreq: 'daily',
+    priority: 0.7,
+  },
+})
 
 const asyncKey = computed(() => `public-page-about-${locale.value}`)
 

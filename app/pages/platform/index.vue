@@ -64,7 +64,18 @@ const { loggedIn } = useUserSession()
 definePageMeta({
   title: 'appbar.platform',
   description:
-    'Explore Bro World platform applications: social network, business tools, AI modules, and collaborative experiences.',
+    'Explore Bro World platform applications: social networking, business tools, CRM modules, learning apps, shop tools, and collaborative experiences.',
+  keywords:
+    'Bro World platform, platform applications, business tools, CRM modules, collaborative apps, social network',
+  robots: {
+    index: true,
+    follow: true,
+    'max-image-preview': 'large',
+  },
+  sitemap: {
+    changefreq: 'daily',
+    priority: 0.7,
+  },
 })
 
 const searchTerm = ref('')

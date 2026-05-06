@@ -91,6 +91,10 @@ const { isPageSkeletonVisible } = usePageSkeleton()
 
 definePageMeta({
   title: 'appbar.calendar',
+  description:
+    'Private Bro World calendar for authenticated users to manage events, schedules, and Google Calendar sync.',
+  robots: { index: false, follow: false },
+  sitemap: false,
   middleware: 'auth',
 })
 

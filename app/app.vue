@@ -9,9 +9,10 @@ provide(
 
 const route = useRoute()
 
-const hideCookieConsent = computed(() =>
-  route.path.startsWith('/resume/preview') ||
-  route.path.startsWith('/resume/template-capture'),
+const hideCookieConsent = computed(
+  () =>
+    route.path.startsWith('/resume/preview') ||
+    route.path.startsWith('/resume/template-capture'),
 )
 const { locale, t } = useI18n()
 const runtimeConfig = useRuntimeConfig()
@@ -84,8 +85,6 @@ const metaDescriptionByLocale = {
   },
 } as const
 
-
-
 const metaDescription = computed(() => {
   const routeDescription =
     typeof route.meta?.description === 'string' ? route.meta.description : ''
@@ -104,6 +103,25 @@ const metaDescription = computed(() => {
   }
 
   return localeDescription.fallback
+})
+
+const defaultKeywords =
+  'Bro World, social network, CRM, jobs, learning, games, quiz, sports, online tools, collaborative platform'
+
+const metaKeywords = computed(() => {
+  const routeKeywords = route.meta?.keywords
+
+  if (Array.isArray(routeKeywords)) {
+    return routeKeywords
+      .filter((keyword) => typeof keyword === 'string')
+      .join(', ')
+  }
+
+  if (typeof routeKeywords === 'string') {
+    return routeKeywords
+  }
+
+  return defaultKeywords
 })
 
 useHead({
@@ -154,6 +172,7 @@ if (isTrackingEnabled) {
 useSeoMeta({
   viewport: 'width=device-width, initial-scale=1',
   description: metaDescription,
+  keywords: metaKeywords,
   ogTitle: title,
   ogDescription: metaDescription,
   ogUrl: canonicalUrl,

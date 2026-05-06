@@ -7,7 +7,16 @@ import type {
   RecruitWorkMode,
 } from '~/types/world/jobs'
 
-definePageMeta({ layout: 'job', title: 'Jobs Offers' })
+definePageMeta({
+  layout: 'job',
+  title: 'Jobs Offers',
+  description:
+    'Search Bro World Jobs offers by role, contract, experience level, work mode, and recruitment criteria.',
+  keywords:
+    'Bro World Jobs offers, job board, recruitment, job search, contract jobs, remote jobs',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'daily', priority: 0.7 },
+})
 
 const { t } = useI18n()
 const { scopedRecruitPath } = useRecruitScopedApi()

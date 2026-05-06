@@ -3,6 +3,12 @@ import { Notify } from '~/stores/notification'
 
 definePageMeta({
   title: 'appbar.games',
+  description:
+    'Open a Bro World game page to view game details, create or join multiplayer sessions, and play online.',
+  keywords:
+    'Bro World game, play online, multiplayer room, game session, online gaming',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'weekly', priority: 0.6 },
 })
 
 const route = useRoute()

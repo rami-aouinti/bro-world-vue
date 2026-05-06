@@ -1,7 +1,12 @@
 <script setup lang="ts">
 definePageMeta({
   title: 'Terms of Service',
-  description: 'Terms of Service for using Bro World products and services.',
+  description:
+    'Review the Bro World Terms of Service for using accounts, content, platform tools, services, and connected products.',
+  keywords:
+    'Bro World terms, terms of service, user agreement, platform rules, legal terms',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'yearly', priority: 0.4 },
 })
 </script>
 

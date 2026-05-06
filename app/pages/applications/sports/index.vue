@@ -4,7 +4,11 @@ import { SPORTS } from '~/types/sports'
 definePageMeta({
   title: 'appbar.sports',
   description:
-    'Follow sports on Bro World: standings, matches, results, and dedicated pages by discipline.',
+    'Follow sports on Bro World with standings, matches, results, fixtures, and dedicated pages by discipline.',
+  keywords:
+    'Bro World sports, live sports, standings, fixtures, results, football, basketball',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'daily', priority: 0.7 },
 })
 
 const { t } = useI18n()

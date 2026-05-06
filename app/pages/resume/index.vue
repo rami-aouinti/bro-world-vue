@@ -4,6 +4,12 @@ import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-90.jso
 definePageMeta({
   title: 'resumeBuilder.meta.indexTitle',
   layout: 'resume',
+  description:
+    'Create professional resumes, CVs, cover letters, and cover pages online with modern Bro World templates.',
+  keywords:
+    'resume builder, CV builder, cover letter builder, resume templates, ATS resume, professional CV',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'weekly', priority: 0.8 },
 })
 
 const { t } = useI18n()
@@ -31,39 +37,26 @@ useHead({
   link: [{ rel: 'canonical', href: pageUrl }],
 })
 
-const {
-  allTemplates,
-  coverPageTemplates,
-  coverLetterTemplates,
-} = useResumeTemplates()
+const { allTemplates, coverPageTemplates, coverLetterTemplates } =
+  useResumeTemplates()
 
 const activeTemplateTab = ref<'resume' | 'cover-page' | 'cover-letter'>(
   'resume',
 )
 const selectedLayoutFilter = ref<string | null>(null)
 
-
 const generatedResumeTemplates = computed(() =>
   GENERATED_RESUME_TEMPLATES.map((template) => ({
     id: template.id,
     title: `Resume · ${template.name}`,
-    image: template.id ? `/img/cv/generated/${template.id}.png` : '/img/cv/resume-modern.sv',
+    image: template.id
+      ? `/img/cv/generated/${template.id}.png`
+      : '/img/cv/resume-modern.sv',
     type: 'resume' as const,
     templateId: template.id,
     layout: template.layout,
   })),
 )
-
-const layoutFilterOptions = computed(() => {
-  const layouts = Array.from(
-    new Set(generatedResumeTemplates.value.map((template) => template.layout)),
-  )
-
-  return layouts.map((layout) => ({
-    title: layout,
-    value: layout,
-  }))
-})
 
 const documentTabs = computed(() => [
   {
@@ -88,7 +81,9 @@ const displayedTemplates = computed(() => {
     })
   }
 
-  return allTemplates.value.filter((template) => template.type === activeTemplateTab.value)
+  return allTemplates.value.filter(
+    (template) => template.type === activeTemplateTab.value,
+  )
 })
 
 const selectedTemplateId = ref<string>('')
@@ -148,17 +143,35 @@ onUnmounted(() => {
       <template #left>
         <h3>{{ t('resumeBuilder.index.heroTitle') }}</h3>
         <p class="hero-subtitle">{{ t('resumeBuilder.index.heroSubtitle') }}</p>
-        <v-btn color="primary" variant="tonal" size="large" to="/resume/preview" class="mt-3">
+        <v-btn
+          color="primary"
+          variant="tonal"
+          size="large"
+          to="/resume/preview"
+          class="mt-3"
+        >
           {{ t('resumeBuilder.index.journey.steps.template.cta') }}
         </v-btn>
       </template>
       <template #right>
         <h3>{{ t('coverBuilder.index.heroTitle') }}</h3>
         <p class="hero-subtitle">{{ t('resumeBuilder.index.heroSubtitle') }}</p>
-        <v-btn color="primary" variant="tonal" size="large" to="/resume/cover-page/preview" class="mt-3">
+        <v-btn
+          color="primary"
+          variant="tonal"
+          size="large"
+          to="/resume/cover-page/preview"
+          class="mt-3"
+        >
           {{ t('resumeBuilder.index.journey.steps.template.cta-page') }}
         </v-btn>
-        <v-btn color="primary" variant="tonal" size="large" to="/resume/cover-letter/preview" class="mt-3">
+        <v-btn
+          color="primary"
+          variant="tonal"
+          size="large"
+          to="/resume/cover-letter/preview"
+          class="mt-3"
+        >
           {{ t('resumeBuilder.index.journey.steps.template.cta-letter') }}
         </v-btn>
       </template>
@@ -202,7 +215,13 @@ onUnmounted(() => {
                   size="small"
                   prepend-icon="mdi-eye-outline"
                   class="template-action-btn"
-                  :to="templateCard.type === 'resume' ? `/resume/preview?template=${templateCard.id}` : templateCard.type === 'cover-page' ? `/resume/cover-page/preview?template=${templateCard.id}` : `/resume/cover-letter/preview?template=${templateCard.id}`"
+                  :to="
+                    templateCard.type === 'resume'
+                      ? `/resume/preview?template=${templateCard.id}`
+                      : templateCard.type === 'cover-page'
+                        ? `/resume/cover-page/preview?template=${templateCard.id}`
+                        : `/resume/cover-letter/preview?template=${templateCard.id}`
+                  "
                   @click.stop
                 >
                   Preview

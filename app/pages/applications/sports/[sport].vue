@@ -26,6 +26,12 @@ import { getBasketballLeaguePriority } from '~/constants/sports'
 
 definePageMeta({
   title: 'appbar.sports',
+  description:
+    'View a Bro World sports page with fixtures, standings, results, teams, players, and live sport-specific updates.',
+  keywords:
+    'Bro World sports page, sports fixtures, sports standings, match results, teams, players',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'daily', priority: 0.6 },
 })
 
 const { t } = useI18n()

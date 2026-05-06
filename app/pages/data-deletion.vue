@@ -1,7 +1,12 @@
 <script setup lang="ts">
 definePageMeta({
   title: 'Data Deletion',
-  description: 'Instructions to request personal data deletion on Bro World.',
+  description:
+    'Learn how to request deletion of your Bro World account data and understand the privacy request process.',
+  keywords:
+    'Bro World data deletion, delete account data, privacy request, personal data removal, user rights',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'yearly', priority: 0.4 },
 })
 </script>
 

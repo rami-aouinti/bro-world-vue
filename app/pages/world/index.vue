@@ -1,5 +1,13 @@
 <script setup lang="ts">
-definePageMeta({ title: 'World' })
+definePageMeta({
+  title: 'World',
+  description:
+    'Open Bro World business domains for CRM, jobs, learning, shop, projects, courses, recruitment, and online operations.',
+  keywords:
+    'Bro World, CRM, jobs, learning, shop, business domains, online operations, project management',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'weekly', priority: 0.7 },
+})
 
 const { t } = useI18n()
 

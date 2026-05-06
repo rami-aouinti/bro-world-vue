@@ -612,6 +612,10 @@ async function fetchUpcomingEvents() {
 
 definePageMeta({
   title: 'appbar.profile',
+  description:
+    'Private Bro World profile dashboard for authenticated users, applications, posts, resumes, coins, and account activity.',
+  robots: { index: false, follow: false },
+  sitemap: false,
   middleware: 'auth',
   layout: 'profile',
 })

@@ -9,7 +9,11 @@ import type {
 definePageMeta({
   title: 'appbar.quiz',
   description:
-    'Test your knowledge with Bro World quizzes: choose a category, a level, and improve your score.',
+    'Test your knowledge with Bro World quizzes: choose a category, select a difficulty level, answer questions, and improve your score.',
+  keywords:
+    'Bro World quiz, online quiz, trivia, knowledge test, quiz categories, learning games',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'weekly', priority: 0.7 },
 })
 
 type QuizStep = 'select-category' | 'select-level' | 'in-quiz' | 'finished'

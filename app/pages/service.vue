@@ -39,7 +39,13 @@ const { isPageSkeletonVisible } = usePageSkeleton()
 const publicPagesStore = usePublicPagesStore()
 
 definePageMeta({
-  _title: 'appbar.service',
+  title: 'appbar.service',
+  description:
+    'Discover Bro World services for collaboration, CRM workflows, recruitment, learning, shop management, games, and digital tools.',
+  keywords:
+    'Bro World services, CRM services, recruitment tools, learning platform, shop management, collaboration services',
+  robots: { index: true, follow: true, 'max-image-preview': 'large' },
+  sitemap: { changefreq: 'weekly', priority: 0.7 },
 })
 
 const asyncKey = computed(() => `public-page-home-${locale.value}`)

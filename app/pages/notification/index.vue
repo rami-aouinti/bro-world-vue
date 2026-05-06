@@ -7,6 +7,10 @@ await inboxNotificationsStore.fetchNotifications()
 
 definePageMeta({
   title: 'appbar.notifications',
+  description:
+    'Private Bro World notifications page for authenticated account updates and alerts.',
+  robots: { index: false, follow: false },
+  sitemap: false,
   middleware: 'auth',
   layout: 'profile',
 })
