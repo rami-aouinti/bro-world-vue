@@ -129,7 +129,16 @@ const sectionTypeOverrides = reactive<Record<string, string>>({})
 
 
 const hiddenSections = reactive<Record<string, boolean>>({})
-const sectionExtraItems = reactive<Record<string, string[]>>({})
+const sectionExtraItems = reactive<Record<string, any[]>>({})
+const languageOption = ref<any | null>(null)
+const languageStars = ref(3)
+const languageCatalog = [
+  { title: "🇫🇷 Français", name: "Français", countryCode: "FR", flag: "🇫🇷" },
+  { title: "🇬🇧 English", name: "English", countryCode: "GB", flag: "🇬🇧" },
+  { title: "🇩🇪 Deutsch", name: "Deutsch", countryCode: "DE", flag: "🇩🇪" },
+  { title: "🇪🇸 Español", name: "Español", countryCode: "ES", flag: "🇪🇸" },
+  { title: "🇮🇹 Italiano", name: "Italiano", countryCode: "IT", flag: "🇮🇹" }
+]
 const sectionModalOpen = ref(false)
 const sectionModalKey = ref('')
 const sectionModalValue = ref('')
@@ -139,12 +148,25 @@ function addSectionItem(section: string) {
   sectionModalKey.value = section
   sectionModalValue.value = ''
   sectionModalOpen.value = true
+  languageOption.value = null
+  languageStars.value = 3
 }
 function confirmAddSectionItem() {
   const key = sectionModalKey.value
-  const value = sectionModalValue.value.trim()
-  if (!key || !value) return
-  sectionExtraItems[key] = [...(sectionExtraItems[key] || []), value]
+  if (!key) return
+  if (key === 'languages') {
+    if (!languageOption.value) return
+    sectionExtraItems[key] = [...(sectionExtraItems[key] || []), {
+      name: languageOption.value.name,
+      level: Number(languageStars.value) * 20,
+      countryCode: languageOption.value.countryCode,
+      flag: languageOption.value.flag,
+    }]
+  } else {
+    const value = sectionModalValue.value.trim()
+    if (!value) return
+    sectionExtraItems[key] = [...(sectionExtraItems[key] || []), value]
+  }
   sectionModalOpen.value = false
 }
 function isSectionVisible(section: string) { return !hiddenSections[section] }
@@ -193,7 +215,7 @@ function getSectionItems(rawSection: string): string[] {
   if (key === 'education') return [...(data.educations || []).map((item: any) => { const from = formatShortDate(item.startDate); const to = formatShortDate(item.endDate); const date = from ? `${from}${to ? ` - ${to}` : ''}` : ''; const schoolLine = `${item.school || ''}${item.location ? `, ${item.location}` : ''}`; return `${item.title || 'Degree'}§${schoolLine}§${date}§${item.description || 'Description...'}` }), ...extra]
   if (key === 'projects') return [...(data.projects || []).map((item: any) => `${item.title || 'Project'}${item.description ? ` · ${item.description}` : ''}`), ...extra]
   if (key === 'skills') return [...(data.skills || []).map((item: any) => typeof item === 'string' ? item : `${item.name || item.title || 'Skill'}${item.level ? ` (${item.level}%)` : ''}`).filter(Boolean), ...extra]
-  if (key === 'languages') return (data.languages || []).map((item: any) => { if (typeof item === 'string') return item; const display = item.languageType === 'flag' && item.flag ? item.flag : (item.name || item.title || 'Language'); return `${display}${item.level ? ` (${item.level}%)` : ''}` })
+  if (key === 'languages') return [...(data.languages || []), ...extra].map((item: any) => { if (typeof item === 'string') return item; const display = item.languageType === 'flag' && item.flag ? item.flag : (item.name || item.title || 'Language'); return `${display}${item.level ? ` (${item.level}%)` : ''}` })
   if (key === 'certifications') return [...(data.certifications || []).map((item: any) => typeof item === 'string' ? item : item.title).filter(Boolean), ...extra]
   if (key === 'references') return [...(data.references || []).map((item: any) => typeof item === 'string' ? item : item.title).filter(Boolean), ...extra]
   if (key === 'hobbies') return [...(data.hobbies || []).map((item: any) => typeof item === 'string' ? item : item.title).filter(Boolean), ...extra]
@@ -462,7 +484,11 @@ onMounted(() => {
 
     <AppModal v-model="sectionModalOpen" title="Ajouter un élément" max-width="520">
       <v-card-text>
-        <v-text-field v-model="sectionModalValue" label="Nouveau contenu"/>
+        <template v-if="sectionModalKey === 'languages'">
+          <AppSelect v-model="languageOption" :items="languageCatalog" item-title="title" label="Language" return-object class="mb-3"/>
+          <v-rating v-model="languageStars" length="5" density="compact" color="amber"/>
+        </template>
+        <v-text-field v-else v-model="sectionModalValue" label="Nouveau contenu"/>
       </v-card-text>
       <v-card-actions class="justify-end">
         <v-btn variant="text" @click="sectionModalOpen = false">Cancel</v-btn>
