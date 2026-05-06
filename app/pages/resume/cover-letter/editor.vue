@@ -171,7 +171,7 @@ const hydrateFromResume = (resume: ResumeApiItem | null | undefined) => {
 }
 
 const goToImportFlow = async () => {
-  await router.push('/resume/preview?tab=import')
+  await router.push('/resume/cv/preview?tab=import')
 }
 
 onMounted(async () => {

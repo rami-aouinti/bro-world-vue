@@ -212,6 +212,33 @@ const sectionTypeOverrides = reactive<Record<string, string>>({})
 
 const hiddenSections = reactive<Record<string, boolean>>({})
 const sectionExtraItems = reactive<Record<string, any[]>>({})
+const sectionLineOffsets = reactive<Record<string, number>>({})
+const CV_SECTION_LINE_OFFSET_PX = 18
+const CV_SECTION_MAX_LINE_OFFSET = 24
+
+function sectionOffsetKey(orderKey: keyof typeof sectionOrders, section: string) {
+  return `${orderKey}:${normalizeSectionKey(section)}`
+}
+
+function sectionOffsetStyle(orderKey: keyof typeof sectionOrders, section: string) {
+  const lines = sectionLineOffsets[sectionOffsetKey(orderKey, section)] || 0
+  return lines > 0 ? { marginTop: `${lines * CV_SECTION_LINE_OFFSET_PX}px` } : undefined
+}
+
+function shiftSectionByLine(orderKey: keyof typeof sectionOrders, section: string, direction: 'up' | 'down') {
+  const key = sectionOffsetKey(orderKey, section)
+  const current = sectionLineOffsets[key] || 0
+  const next = direction === 'down'
+    ? Math.min(CV_SECTION_MAX_LINE_OFFSET, current + 1)
+    : Math.max(0, current - 1)
+
+  sectionLineOffsets[key] = next
+  scheduleCvPreviewMeasure()
+}
+
+function canShiftSectionUp(orderKey: keyof typeof sectionOrders, section: string) {
+  return (sectionLineOffsets[sectionOffsetKey(orderKey, section)] || 0) > 0
+}
 const languageOption = ref<any | null>(null)
 const languageStars = ref(3)
 const languageCatalog = [
@@ -561,7 +588,7 @@ function saveFromPreview() {
 }
 
 function goToCreateResume() {
-  navigateTo('/resume/preview')
+  navigateTo('/resume/cv/preview')
 }
 
 async function downloadPdf() {
