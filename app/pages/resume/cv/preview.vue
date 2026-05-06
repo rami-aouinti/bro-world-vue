@@ -142,6 +142,9 @@ const languageCatalog = [
 const sectionModalOpen = ref(false)
 const sectionModalKey = ref('')
 const sectionModalValue = ref('')
+const sectionModalTitle = ref('')
+const sectionModalDescription = ref('')
+const sectionModalFiles = ref<File[]>([])
 
 function hideSection(section: string) { hiddenSections[section] = true }
 function addSectionItem(section: string) {
@@ -150,6 +153,9 @@ function addSectionItem(section: string) {
   sectionModalOpen.value = true
   languageOption.value = null
   languageStars.value = 3
+  sectionModalTitle.value = ''
+  sectionModalDescription.value = ''
+  sectionModalFiles.value = []
 }
 function confirmAddSectionItem() {
   const key = sectionModalKey.value
@@ -161,6 +167,22 @@ function confirmAddSectionItem() {
       level: Number(languageStars.value) * 20,
       countryCode: languageOption.value.countryCode,
       flag: languageOption.value.flag,
+    }]
+
+  } else if (key === 'certifications') {
+    const title = sectionModalTitle.value.trim()
+    if (!title) return
+    sectionExtraItems[key] = [...(sectionExtraItems[key] || []), {
+      title,
+      description: sectionModalDescription.value.trim(),
+      attachments: sectionModalFiles.value.map((f: any) => ({ name: f?.name || 'file' })),
+    }]
+  } else if (key === 'references') {
+    const title = sectionModalTitle.value.trim()
+    if (!title) return
+    sectionExtraItems[key] = [...(sectionExtraItems[key] || []), {
+      title,
+      description: sectionModalDescription.value.trim(),
     }]
   } else {
     const value = sectionModalValue.value.trim()
@@ -216,8 +238,8 @@ function getSectionItems(rawSection: string): string[] {
   if (key === 'projects') return [...(data.projects || []).map((item: any) => `${item.title || 'Project'}${item.description ? ` · ${item.description}` : ''}`), ...extra]
   if (key === 'skills') return [...(data.skills || []).map((item: any) => typeof item === 'string' ? item : `${item.name || item.title || 'Skill'}${item.level ? ` (${item.level}%)` : ''}`).filter(Boolean), ...extra]
   if (key === 'languages') return [...(data.languages || []), ...extra].map((item: any) => { if (typeof item === 'string') return item; const display = item.languageType === 'flag' && item.flag ? item.flag : (item.name || item.title || 'Language'); return `${display}${item.level ? ` (${item.level}%)` : ''}` })
-  if (key === 'certifications') return [...(data.certifications || []).map((item: any) => typeof item === 'string' ? item : item.title).filter(Boolean), ...extra]
-  if (key === 'references') return [...(data.references || []).map((item: any) => typeof item === 'string' ? item : item.title).filter(Boolean), ...extra]
+  if (key === 'certifications') return [...(data.certifications || []).map((item: any) => typeof item === 'string' ? item : `${item.title || ''}${item.description ? ` · ${item.description}` : ''}`).filter(Boolean), ...extra.map((item: any) => typeof item === 'string' ? item : `${item.title || ''}${item.description ? ` · ${item.description}` : ''}`)].filter(Boolean)
+  if (key === 'references') return [...(data.references || []).map((item: any) => typeof item === 'string' ? item : `${item.title || ''}${item.description ? ` · ${item.description}` : ''}`).filter(Boolean), ...extra.map((item: any) => typeof item === 'string' ? item : `${item.title || ''}${item.description ? ` · ${item.description}` : ''}`)].filter(Boolean)
   if (key === 'hobbies') return [...(data.hobbies || []).map((item: any) => typeof item === 'string' ? item : item.title).filter(Boolean), ...extra]
   if (key === 'profile') return [String(data.resumeInformation?.profileText || data.profileDescription || ''), ...extra].filter(Boolean)
   return []
@@ -487,6 +509,15 @@ onMounted(() => {
         <template v-if="sectionModalKey === 'languages'">
           <AppSelect v-model="languageOption" :items="languageCatalog" item-title="title" label="Language" return-object class="mb-3"/>
           <v-rating v-model="languageStars" length="5" density="compact" color="amber"/>
+        </template>
+        <template v-else-if="sectionModalKey === 'certifications'">
+          <v-text-field v-model="sectionModalTitle" label="Title" class="mb-2"/>
+          <v-textarea v-model="sectionModalDescription" label="Description" rows="3" class="mb-2"/>
+          <v-file-input v-model="sectionModalFiles" label="Attachments" multiple chips show-size/>
+        </template>
+        <template v-else-if="sectionModalKey === 'references'">
+          <v-text-field v-model="sectionModalTitle" label="Title" class="mb-2"/>
+          <v-textarea v-model="sectionModalDescription" label="Description" rows="3"/>
         </template>
         <v-text-field v-else v-model="sectionModalValue" label="Nouveau contenu"/>
       </v-card-text>
