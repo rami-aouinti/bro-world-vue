@@ -115,6 +115,45 @@ function visibleOrderedSections(orderKey: keyof typeof sectionOrders, fallback: 
   })
 }
 
+const CV_PREVIEW_PDF_PAGE_HEIGHT = 1100
+const cvPreviewRef = ref<HTMLElement | null>(null)
+const cvPreviewPageCount = ref(1)
+let cvPreviewMeasureTimer: ReturnType<typeof setTimeout> | undefined
+let cvPreviewResizeObserver: ResizeObserver | undefined
+
+const cvPreviewHeight = computed(
+  () => cvPreviewPageCount.value * CV_PREVIEW_PDF_PAGE_HEIGHT,
+)
+
+const cvPreviewPageBreaks = computed(() =>
+  Array.from({ length: Math.max(0, cvPreviewPageCount.value - 1) }, (_, index) => index + 1),
+)
+
+function measureCvPreviewHeight() {
+  if (!import.meta.client) return
+  const preview = cvPreviewRef.value?.querySelector<HTMLElement>('.cv-preview-page')
+  if (!preview) return
+
+  const neededHeight = Math.max(
+    CV_PREVIEW_PDF_PAGE_HEIGHT,
+    preview.scrollHeight,
+    Math.ceil(preview.getBoundingClientRect().height),
+  )
+  cvPreviewPageCount.value = Math.max(
+    1,
+    Math.ceil(neededHeight / CV_PREVIEW_PDF_PAGE_HEIGHT),
+  )
+}
+
+function scheduleCvPreviewMeasure(reset = false) {
+  if (!import.meta.client) return
+  if (reset) cvPreviewPageCount.value = 1
+  if (cvPreviewMeasureTimer) window.clearTimeout(cvPreviewMeasureTimer)
+  cvPreviewMeasureTimer = window.setTimeout(() => {
+    cvPreviewMeasureTimer = undefined
+    measureCvPreviewHeight()
+  }, 80)
+}
 
 const dragSection = ref<string>('')
 const dragOrderKey = ref<keyof typeof sectionOrders | ''>('')
@@ -488,6 +527,19 @@ watch(activeTemplate, (template) => {
   asideRadius.value = parsePx(template?.aside?.radius, 0)
 }, { immediate: true })
 
+watch(selectedTemplate, () => scheduleCvPreviewMeasure(true))
+watch(sectionTypeOverrides, () => scheduleCvPreviewMeasure(true), { deep: true })
+watch(sectionExtraItems, () => scheduleCvPreviewMeasure(true), { deep: true })
+watch(hiddenSections, () => scheduleCvPreviewMeasure(true), { deep: true })
+watch(hiddenSectionsByZone, () => scheduleCvPreviewMeasure(true), { deep: true })
+watch([asideWidth, asideHeight, asideRadius, photoSize, photoRadius, photoBorderWidth], () => scheduleCvPreviewMeasure(true))
+
+onUpdated(() => scheduleCvPreviewMeasure())
+onBeforeUnmount(() => {
+  if (cvPreviewMeasureTimer) window.clearTimeout(cvPreviewMeasureTimer)
+  cvPreviewResizeObserver?.disconnect()
+})
+
 
 function textFontPreset(kind: 'fullName'|'sectionLabel'|'entryTitle'|'body') {
   const style = String((activeTemplate.value as any)?.textStyles?.[kind] || 'sans')
@@ -522,6 +574,13 @@ onMounted(async () => {
   const queryTemplate = typeof route.query.template === 'string' ? route.query.template : ''
   if (queryTemplate && GENERATED_RESUME_TEMPLATES.some((template) => template.id === queryTemplate)) {
     selectedTemplate.value = queryTemplate
+  }
+
+  await nextTick()
+  scheduleCvPreviewMeasure(true)
+  if (import.meta.client && 'ResizeObserver' in window && cvPreviewRef.value) {
+    cvPreviewResizeObserver = new ResizeObserver(() => scheduleCvPreviewMeasure())
+    cvPreviewResizeObserver.observe(cvPreviewRef.value)
   }
 })
 </script>
@@ -583,7 +642,15 @@ onMounted(async () => {
       </div>
 
       <div class="py-8">
-        <component :is="activeLayoutComponent" class="w-100" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-secondary': activeTemplate?.theme?.palette?.secondary || '#93C5FD', '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body'), '--cv-header-text': headerTextColor, '--cv-header-muted': headerMutedColor }">
+        <div
+          ref="cvPreviewRef"
+          class="cv-preview-shell"
+          :style="{
+            '--cv-preview-page-height': `${CV_PREVIEW_PDF_PAGE_HEIGHT}px`,
+            '--cv-preview-total-height': `${cvPreviewHeight}px`,
+          }"
+        >
+          <component :is="activeLayoutComponent" class="w-100 cv-preview-page" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', height: 'auto', minHeight: `${cvPreviewHeight}px`, overflow: 'visible', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-secondary': activeTemplate?.theme?.palette?.secondary || '#93C5FD', '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body'), '--cv-header-text': headerTextColor, '--cv-header-muted': headerMutedColor }">
           <template #header>
             <div class="cv-header-layout" :class="`cv-header-layout--${headerType}`">
               <template v-if="headerType === 'header-left'">
@@ -686,7 +753,16 @@ onMounted(async () => {
               <p class="text-medium-emphasis">Aucune section CV affichée pour le moment.</p>
             </div>
           </template>
-        </component>
+          </component>
+          <div
+            v-for="pageBreak in cvPreviewPageBreaks"
+            :key="`cv-page-break-${pageBreak}`"
+            class="cv-page-break"
+            :style="{ top: `${pageBreak * CV_PREVIEW_PDF_PAGE_HEIGHT}px` }"
+          >
+            <span>Fin page {{ pageBreak }}</span>
+          </div>
+        </div>
       </div>
     </v-container>
 
@@ -746,6 +822,49 @@ onMounted(async () => {
 
 <style scoped>
 
+.cv-preview-shell {
+  position: relative;
+  min-height: var(--cv-preview-total-height, 1100px);
+}
+
+.cv-preview-page {
+  height: auto !important;
+  min-height: var(--cv-preview-total-height, 1100px) !important;
+  overflow: visible !important;
+}
+
+.cv-page-break {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+  color: color-mix(in srgb, var(--cv-primary, #1d4ed8) 70%, #64748b);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: translateY(-50%);
+}
+
+.cv-page-break::before,
+.cv-page-break::after {
+  content: '';
+  height: 1px;
+  flex: 1;
+  border-top: 1px dashed currentColor;
+  opacity: 0.75;
+}
+
+.cv-page-break span {
+  padding: 3px 8px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cv-primary, #1d4ed8) 8%, white);
+}
 
 .cv-header-layout { display: grid; gap: 12px; align-items: center; }
 .cv-header-layout--header-left { grid-template-columns: 2fr 1fr; }
