@@ -48,12 +48,12 @@ const barRadius = ref(0)
 const barLayout = ref<'none' | 'single' | 'double'>('single')
 
 const elementStyles = reactive({
-  fullName: { size: 58, color: '#111827', weight: '700' },
-  role: { size: 30, color: '#475569', weight: '500' },
-  heading: { size: 32, color: '#0F4C81', weight: '600' },
-  summary: { size: 24, color: '#475569', weight: '400' },
-  email: { size: 16, color: '#475569', weight: '400' },
-  phone: { size: 16, color: '#475569', weight: '400' },
+  fullName: { size: 48, color: '#111827', weight: '700' },
+  role: { size: 24, color: '#475569', weight: '500' },
+  heading: { size: 28, color: '#0F4C81', weight: '600' },
+  summary: { size: 18, color: '#475569', weight: '400' },
+  email: { size: 15, color: '#475569', weight: '400' },
+  phone: { size: 15, color: '#475569', weight: '400' },
 })
 const fontWeightMap: Record<string, string> = { regular: '400', medium: '500', semibold: '600', bold: '700' }
 const primaryBarWidth = ref(10)
@@ -164,7 +164,7 @@ watch(() => activeColors.value.primary, (primaryColor) => {
   elementStyles.heading.color = primaryColor
 }, { immediate: true })
 
-watch(activeTemplate, (tpl) => { applyTemplateDefaults(tpl); editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); selectedDividerType.value = String(tpl?.decor?.divider || 'line'); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; imageShape.value = ((tpl as any)?.designConfig?.photoType === 'square' ? 'square' : 'circle'); imageSize.value = Number((tpl as any)?.designConfig?.photoSize ?? imageSize.value); const items=(tpl as any)?.items||{}; const designConfig = (tpl as any)?.designConfig || defaultBarDesignConfig; barRadius.value = designConfig?.barRadius?.min ?? defaultBarDesignConfig.barRadius.min; primaryBarWidth.value = designConfig?.barWidth?.min ?? defaultBarDesignConfig.barWidth.min; secondaryBarWidth.value = designConfig?.secondaryBarWidth?.min ?? defaultBarDesignConfig.secondaryBarWidth.min; barLayout.value = Array.isArray(designConfig?.barLayout) && designConfig.barLayout.includes('double') ? 'double' : (designConfig.barLayout.includes('single') ? 'single' : 'none'); for (const key of ['fullName','role','heading','summary','email','phone']) { const b=items[key]?.size; if (b) elementStyles[key].size=Math.round((b.min+b.max)/2); if (items[key]?.colors?.[0]) elementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) elementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
+watch(activeTemplate, (tpl) => { applyTemplateDefaults(tpl); editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj:any)=>normalizeDecorObject(obj)); selectedDividerType.value = String(tpl?.decor?.divider || 'line'); photoPosition.value = tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'; imageShape.value = ((tpl as any)?.designConfig?.photoType === 'square' ? 'square' : 'circle'); imageSize.value = Number((tpl as any)?.designConfig?.photoSize ?? imageSize.value); const items=(tpl as any)?.items||{}; const designConfig = (tpl as any)?.designConfig || defaultBarDesignConfig; barRadius.value = designConfig?.barRadius?.min ?? defaultBarDesignConfig.barRadius.min; primaryBarWidth.value = designConfig?.barWidth?.min ?? defaultBarDesignConfig.barWidth.min; secondaryBarWidth.value = designConfig?.secondaryBarWidth?.min ?? defaultBarDesignConfig.secondaryBarWidth.min; barLayout.value = Array.isArray(designConfig?.barLayout) && designConfig.barLayout.includes('double') ? 'double' : (designConfig.barLayout.includes('single') ? 'single' : 'none'); for (const key of ['fullName','role','heading','summary','email','phone']) { const b=items[key]?.size; if (b) elementStyles[key].size=Math.round(((b.min+b.max)/2)*0.78); if (items[key]?.colors?.[0]) elementStyles[key].color=items[key].colors[0]; if (items[key]?.styles?.[0]) elementStyles[key].weight=fontWeightMap[items[key].styles[0]]||'400' } }, { immediate: true })
 function addDecorObject(){ editableDecorObjects.value.push({ type:'circle', x:'50%', y:'50%', size:'120', opacity:0.15 }) }
 function removeDecorObject(i:number){ editableDecorObjects.value.splice(i,1) }
 function goToCreateResume(){ navigateTo('/resume/preview') }
@@ -320,9 +320,10 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
 .capture-cover-page{
   position:relative;
   overflow:hidden;
-  width:850px;
+  box-sizing:border-box;
+  width:min(100%, 850px);
   min-height:1123px;
-  padding:80px;
+  padding:64px;
   background:var(--cp-bg);
   color:var(--cp-text)
 }
@@ -354,7 +355,7 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
 .app-page-drawers{
   display:none !important
 }
-@media print{.preview-toolbar-wrap,.app-page-drawers,.avatar-overlay{display:none !important}}h1{font-size:58px;margin:0}p{font-size:var(--body-size);color:var(--body-color)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:40px;margin:0 0 16px}section{border-top:3px var(--section-divider-style) var(--section-divider-color);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.decor-square{border-radius:10px}.decor-diamond{border-radius:8px;transform:translate(-50%,-50%) rotate(45deg)}.decor-star{-webkit-clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}.decor-triangle{-webkit-clip-path:polygon(50% 0%,0 100%,100% 100%);clip-path:polygon(50% 0%,0 100%,100% 100%)}.decor-pill{border-radius:999px}.decor-bar{border-radius:999px}.preview-toolbar-wrap{position:sticky;top:76px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background:rgba(var(--v-theme-primary))}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}
+@media print{.preview-toolbar-wrap,.app-page-drawers,.avatar-overlay{display:none !important}}h1{font-size:48px;margin:0}p{font-size:var(--body-size);color:var(--body-color)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:32px;margin:0 0 16px}section{border-top:3px var(--section-divider-style) var(--section-divider-color);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.decor-square{border-radius:10px}.decor-diamond{border-radius:8px;transform:translate(-50%,-50%) rotate(45deg)}.decor-star{-webkit-clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}.decor-triangle{-webkit-clip-path:polygon(50% 0%,0 100%,100% 100%);clip-path:polygon(50% 0%,0 100%,100% 100%)}.decor-pill{border-radius:999px}.decor-bar{border-radius:999px}.preview-toolbar-wrap{position:sticky;top:76px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background:rgba(var(--v-theme-primary))}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}
 
 @media (prefers-color-scheme: dark) {
   .capture-cover-page,
