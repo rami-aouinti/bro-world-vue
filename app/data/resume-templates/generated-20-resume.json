@@ -290,7 +290,7 @@
     "sectionBar": {
       "show": true,
       "height": 3,
-      "width": 44,
+      "width": "flex",
       "raduis": 999
     }
   },
@@ -585,7 +585,7 @@
     "sectionBar": {
       "show": true,
       "height": 3,
-      "width": 44,
+      "width": "flex",
       "raduis": 999
     }
   },
@@ -897,7 +897,7 @@
     "sectionBar": {
       "show": true,
       "height": 3,
-      "width": 44,
+      "width": "flex",
       "raduis": 999
     }
   },
@@ -1208,7 +1208,7 @@
     "sectionBar": {
       "show": true,
       "height": 3,
-      "width": 44,
+      "width": "flex",
       "raduis": 999
     }
   },
@@ -1519,7 +1519,7 @@
     "sectionBar": {
       "show": true,
       "height": 3,
-      "width": 44,
+      "width": "flex",
       "raduis": 999
     }
   },
@@ -1830,7 +1830,7 @@
     "sectionBar": {
       "show": true,
       "height": 3,
-      "width": 44,
+      "width": "flex",
       "raduis": 999
     }
   },
@@ -2141,7 +2141,7 @@
     "sectionBar": {
       "show": true,
       "height": 3,
-      "width": 44,
+      "width": "flex",
       "raduis": 999
     }
   },
@@ -2452,7 +2452,7 @@
     "sectionBar": {
       "show": true,
       "height": 3,
-      "width": 44,
+      "width": "flex",
       "raduis": 999
     }
   },
@@ -2763,7 +2763,7 @@
     "sectionBar": {
       "show": true,
       "height": 3,
-      "width": 44,
+      "width": "flex",
       "raduis": 999
     }
   },
@@ -3074,7 +3074,7 @@
     "sectionBar": {
       "show": true,
       "height": 3,
-      "width": 44,
+      "width": "flex",
       "raduis": 999
     }
   },
@@ -3365,7 +3365,7 @@
     "sectionBar": {
       "show": true,
       "height": 3,
-      "width": 44,
+      "width": "flex",
       "raduis": 999
     }
   },
@@ -3656,7 +3656,7 @@
     "sectionBar": {
       "show": true,
       "height": 3,
-      "width": 44,
+      "width": "flex",
       "raduis": 999
     }
   },
@@ -3967,7 +3967,7 @@
     "sectionBar": {
       "show": true,
       "height": 3,
-      "width": 44,
+      "width": "flex",
       "raduis": 999
     }
   },
@@ -4278,7 +4278,7 @@
     "sectionBar": {
       "show": true,
       "height": 3,
-      "width": 44,
+      "width": "flex",
       "raduis": 999
     }
   }

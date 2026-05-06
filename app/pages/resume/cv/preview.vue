@@ -62,7 +62,7 @@ const activeColors = computed(() => {
   if (selected && selected.value !== 'template') return { ...palette, primary: selected.primary, secondary: selected.dark, pageBackground: selected.light }
   return palette
 })
-const sectionBarConfig = reactive({ show: true, height: 3, width: 44, radius: 999 })
+const sectionBarConfig = reactive({ show: true, widthType: 'flex', height: 3, radius: 999 })
 
 function toPercentNumber(value: unknown, fallback = 50): number {
   if (typeof value === 'number' && Number.isFinite(value)) return Math.min(100, Math.max(0, value))
@@ -735,8 +735,8 @@ watch(activeTemplate, (template) => {
   editableDecorObjects.value = ((template as any)?.decor?.objects || []).map((obj: any) => normalizeDecorObject(obj))
   const raw = (template as any)?.sectionBar || {}
   sectionBarConfig.show = raw.show !== false
+  sectionBarConfig.widthType = raw.width === 'complete' ? 'complete' : 'flex'
   sectionBarConfig.height = Number(raw.height ?? 3)
-  sectionBarConfig.width = Number(raw.width ?? 44)
   sectionBarConfig.radius = Number(raw.radius ?? raw.raduis ?? 999)
 }, { immediate: true })
 </script>
@@ -779,8 +779,8 @@ watch(activeTemplate, (template) => {
           <v-slider v-model="asideRadius" label="Aside radius (px)" :min="0" :max="90" :step="1" hide-details/>
           <v-divider class="my-3" />
           <v-switch v-model="sectionBarConfig.show" label="Section bar" hide-details inset />
-          <v-slider v-model="sectionBarConfig.height" label="Bar height (px)" :min="1" :max="12" :step="1" hide-details class="mt-2"/>
-          <v-slider v-model="sectionBarConfig.width" label="Bar width (px)" :min="12" :max="120" :step="1" hide-details class="mt-2"/>
+          <AppSelect v-model="sectionBarConfig.widthType" :items="[{title:'Flex', value:'flex'},{title:'Complet', value:'complete'}]" label="Bar width mode" hide-details class="mt-2"/>
+          <v-slider v-model="sectionBarConfig.height" label="Bar height (px)" :min="1" :max="18" :step="1" hide-details class="mt-2"/>
           <v-slider v-model="sectionBarConfig.radius" label="Bar radius (px)" :min="0" :max="999" :step="1" hide-details class="mt-2"/>
         </v-card-text>
       </template>
@@ -822,7 +822,7 @@ watch(activeTemplate, (template) => {
           }"
         >
           <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
-          <component :is="activeLayoutComponent" class="w-100 cv-preview-page" :style="{ background: activeColors?.pageBackground || '#ffffff', height: 'auto', minHeight: `${cvPreviewHeight}px`, overflow: 'visible', '--cv-primary': activeColors?.primary || '#1d4ed8', '--cv-secondary': activeColors?.secondary || '#93C5FD', '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body'), '--cv-header-text': headerTextColor, '--cv-header-muted': headerMutedColor, '--cv-section-bar-width': `${sectionBarConfig.width}px`, '--cv-section-bar-height': `${sectionBarConfig.height}px`, '--cv-section-bar-radius': `${sectionBarConfig.radius}px`, '--cv-section-bar-display': sectionBarConfig.show ? 'block' : 'none' }">
+          <component :is="activeLayoutComponent" class="w-100 cv-preview-page" :style="{ background: activeColors?.pageBackground || '#ffffff', height: 'auto', minHeight: `${cvPreviewHeight}px`, overflow: 'visible', '--cv-primary': activeColors?.primary || '#1d4ed8', '--cv-secondary': activeColors?.secondary || '#93C5FD', '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body'), '--cv-header-text': headerTextColor, '--cv-header-muted': headerMutedColor, '--cv-section-bar-height': `${sectionBarConfig.height}px`, '--cv-section-bar-radius': `${sectionBarConfig.radius}px`, '--cv-section-bar-display': sectionBarConfig.show ? 'block' : 'none', '--cv-section-title-width': sectionBarConfig.widthType === 'complete' ? '100%' : 'fit-content', '--cv-section-bar-width': '100%' }">
           <template #header>
             <div class="cv-header-layout" :class="`cv-header-layout--${headerType}`">
               <template v-if="headerType === 'header-left'">
@@ -1325,6 +1325,8 @@ watch(activeTemplate, (template) => {
   align-items: center;
   gap: 6px;
   flex-wrap: nowrap;
+  width: var(--cv-section-title-width, fit-content);
+  margin-bottom: calc(var(--cv-section-bar-height, 3px) + 8px);
 }
 .cv-section-row > strong::after,
 .cv-aside-section-item > strong::after {
@@ -1332,7 +1334,7 @@ watch(activeTemplate, (template) => {
   display: var(--cv-section-bar-display, block);
   width: var(--cv-section-bar-width, 44px);
   height: var(--cv-section-bar-height, 3px);
-  border-radius: var(--cv-section-bar-radius, 999px);
+  border-radius: var(--cv-section-bar-radius, 999px) 0 0 var(--cv-section-bar-radius, 999px);
   position: absolute;
   left: 0;
   top: calc(100% + 6px);
