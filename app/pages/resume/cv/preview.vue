@@ -1319,7 +1319,13 @@ watch(activeTemplate, (template) => {
 .cv-section-row > strong{color:color-mix(in srgb, var(--cv-primary,#1d4ed8) 78%, #0f172a)}
 .cv-aside-section-item > strong{color:color-mix(in srgb, var(--cv-primary,#1d4ed8) 55%, white)}
 .cv-section-row > strong,
-.cv-aside-section-item > strong { position: relative; display: inline-flex; flex-direction: column; align-items: flex-start; }
+.cv-aside-section-item > strong {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
 .cv-section-row > strong::after,
 .cv-aside-section-item > strong::after {
   content: '';
@@ -1327,7 +1333,9 @@ watch(activeTemplate, (template) => {
   width: var(--cv-section-bar-width, 44px);
   height: var(--cv-section-bar-height, 3px);
   border-radius: var(--cv-section-bar-radius, 999px);
-  margin-top: 6px;
+  position: absolute;
+  left: 0;
+  top: calc(100% + 6px);
   background: var(--cv-primary, #1d4ed8);
 }
 .palette-dot { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgb(var(--v-theme-on-surface), 0.2); }
