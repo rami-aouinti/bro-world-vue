@@ -211,6 +211,14 @@ watch(activeTemplate, (template) => {
   asideRadius.value = parsePx(template?.aside?.radius, 0)
 }, { immediate: true })
 
+
+function textFontPreset(kind: 'fullName'|'sectionLabel'|'entryTitle'|'body') {
+  const style = String((activeTemplate.value as any)?.textStyles?.[kind] || 'sans')
+  if (style === 'serif') return 'Georgia, "Times New Roman", serif'
+  if (style === 'mono') return '"Fira Code", "Courier New", monospace'
+  return 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif'
+}
+
 function applyPreviewTemplate(templateId: string) {
   selectedTemplate.value = templateId
   layoutMenuOpen.value = false
@@ -288,7 +296,7 @@ onMounted(() => {
       </div>
 
       <div class="py-8">
-        <component :is="activeLayoutComponent" class="w-100" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-secondary': activeTemplate?.theme?.palette?.secondary || '#93C5FD', '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px` }">
+        <component :is="activeLayoutComponent" class="w-100" :style="{ background: activeTemplate?.theme?.palette?.pageBackground || '#ffffff', '--cv-primary': activeTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-secondary': activeTemplate?.theme?.palette?.secondary || '#93C5FD', '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body') }">
           <template #header>
             <div class="cv-header-layout" :class="`cv-header-layout--${headerType}`">
               <template v-if="headerType === 'header-left'">
@@ -509,4 +517,10 @@ onMounted(() => {
 .template-menu-item--active {
   border: 2px solid rgb(var(--v-theme-primary));
 }
+
+.cv-header-identity strong{font-family:var(--cv-text-fullname)}
+.cv-section-row > strong,.cv-aside-section-item > strong{font-family:var(--cv-text-section-label)}
+.cv-section-row :deep(.cv-entry strong), .cv-aside-section-item :deep(.cv-entry strong){font-family:var(--cv-text-entry-title)}
+.cv-section-row :deep(.cv-sec), .cv-aside-section-item :deep(.cv-sec), .cv-section-row :deep(.cv-item), .cv-aside-section-item :deep(.cv-item){font-family:var(--cv-text-body)}
+
 </style>
