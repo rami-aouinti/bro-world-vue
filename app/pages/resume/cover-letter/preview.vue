@@ -9,6 +9,7 @@ const route = useRoute()
 const { coverLetterTemplates } = useResumeTemplates()
 const selectedTemplate = ref(coverLetterTemplates.value[0]?.id || GENERATED_COVER_LETTER_TEMPLATES[0]?.id || '')
 const decorShapeOptions = ['circle', 'ring', 'blob', 'square', 'diamond', 'star', 'triangle', 'pill', 'bar']
+const decorColorOptions = ['#0EA5E9', '#2563EB', '#7C3AED', '#EC4899', '#F97316', '#EAB308', '#22C55E', '#14B8A6', '#64748B', '#111827']
 const photoOptions = ['/img/team-1.jpg', '/img/team-2.jpg', '/img/team-3.jpg', '/img/team-4.jpg', '/img/team-5.jpg', '/img/team-9.jpeg']
 const imageShape = ref<'circle' | 'square'>('circle')
 const imageSize = ref(84)
@@ -263,7 +264,10 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
           </template>
           <v-card class="pa-3" min-width="260" @click.stop>
             <AppSelect v-model="obj.type" :items="decorShapeOptions.map((s)=>({title:s,value:s}))" label="Type" hide-details/>
-            <v-text-field v-model="obj.color" label="Color" placeholder="#0ea5e9" hide-details class="mt-3"/>
+            <p class="text-caption mt-3 mb-1">Color</p>
+            <div class="d-flex flex-wrap ga-2">
+              <v-btn v-for="color in decorColorOptions" :key="`decor-color-${i}-${color}`" icon size="x-small" :style="{ backgroundColor: color, border: obj.color === color ? '2px solid #111827' : '1px solid #cbd5e1' }" @click="obj.color = color"/>
+            </div>
             <v-slider v-model="obj.size" label="Size" min="20" max="420" step="1" hide-details class="mt-3"/>
             <v-slider v-model="obj.opacity" label="Opacity" min="0.02" max="0.4" step="0.01" hide-details class="mt-3"/>
             <v-slider v-model="obj.x" label="X slider" min="0" max="100" step="1" hide-details class="mt-3"/>
