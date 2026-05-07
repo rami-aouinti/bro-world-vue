@@ -1319,6 +1319,16 @@ watch(
 
       <template #right>
         <v-btn
+          v-if="userResumeData"
+          class="mt-4"
+          color="primary"
+          variant="outlined"
+          block
+          @click="matchOfferModalOpen = true"
+        >
+          Correspondence with Offer
+        </v-btn>
+        <v-btn
           class="mt-3"
           size="small"
           variant="outlined"
@@ -2653,7 +2663,7 @@ v-if="!isCaptureMode"
     </AppModal>
     <AppModal
       v-model="matchOfferModalOpen"
-      title="Correspondance with Offer"
+      title="Correspondence with Offer"
       :max-width="760"
     >
       <p class="mb-3">
