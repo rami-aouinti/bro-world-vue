@@ -1080,6 +1080,7 @@ watch(activeTemplate, (template) => {
           </template>
           </component>
           <ResumePreviewPageBreak
+            v-if="!isCaptureMode"
             v-for="pageBreak in cvPreviewPageBreaks"
             :key="`cv-page-break-${pageBreak}`"
             :page-number="pageBreak"
