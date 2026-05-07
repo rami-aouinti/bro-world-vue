@@ -1312,7 +1312,7 @@ watch(
           v-if="userResumeData"
           class="mt-4"
           color="primary"
-          variant="outlined"
+          variant="tonal"
           block
           @click="matchOfferModalOpen = true"
         >
