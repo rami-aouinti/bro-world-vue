@@ -30,6 +30,7 @@ const signatureDataUrl = ref('')
 const signatureDialogOpen = ref(false)
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const decorShapeOptions = ['circle', 'ring', 'blob', 'square', 'diamond', 'star', 'triangle', 'pill', 'bar']
+const decorColorOptions = ['#0EA5E9', '#2563EB', '#7C3AED', '#EC4899', '#F97316', '#EAB308', '#22C55E', '#14B8A6', '#64748B', '#111827']
 const editableDecorObjects = ref<any[]>([])
 const decorMenuOpenIndex = ref<number | null>(null)
 
@@ -822,7 +823,17 @@ watch(activeTemplate, (template) => {
             </template>
             <v-card class="pa-3" min-width="260" @click.stop>
               <AppSelect v-model="obj.type" :items="decorShapeOptions.map((s)=>({title:s,value:s}))" label="Type" hide-details/>
-              <v-text-field v-model="obj.color" label="Color" placeholder="#0ea5e9" hide-details class="mt-3"/>
+              <p class="text-caption mt-3 mb-1">Color</p>
+              <div class="d-flex flex-wrap ga-2">
+                <v-btn
+                  v-for="color in decorColorOptions"
+                  :key="`decor-color-${i}-${color}`"
+                  icon
+                  size="x-small"
+                  :style="{ backgroundColor: color, border: obj.color === color ? '2px solid #111827' : '1px solid #cbd5e1' }"
+                  @click="obj.color = color"
+                />
+              </div>
               <v-slider v-model="obj.size" label="Size" :min="20" :max="420" :step="2" hide-details class="mt-3"/>
               <v-slider v-model="obj.opacity" label="Opacity" :min="0.02" :max="0.35" :step="0.01" hide-details class="mt-3"/>
               <v-slider v-model="obj.x" label="X slider" :min="0" :max="100" :step="1" hide-details class="mt-3"/>
