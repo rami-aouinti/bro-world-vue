@@ -96,9 +96,9 @@ const headerContactFields = computed(() => {
     { key: 'email', infoKey: 'email', icon: 'mdi-email-outline', label: 'Email', value: normalize(info?.email), href: normalize(info?.email) ? `mailto:${normalize(info?.email)}` : undefined },
     { key: 'birthDate', infoKey: 'birthDate', icon: 'mdi-cake-variant-outline', label: 'Birth date', value: normalize(info?.birthDate) },
     { key: 'phone', infoKey: 'phone', icon: 'mdi-phone-outline', label: 'Phone', value: normalize(info?.phone), href: normalize(info?.phone) ? `tel:${normalize(info?.phone).replace(/\s+/g, '')}` : undefined },
-    { key: 'address', infoKey: 'adresse', icon: 'mdi-map-marker-outline', label: 'Address', value: normalize(info?.adresse) },
-    { key: 'homepage', infoKey: 'homepage', icon: 'mdi-web', label: 'Homepage', value: normalize(info?.homepage), href: normalize(info?.homepage) || undefined },
-    { key: 'repo', infoKey: 'repo_profile', icon: 'mdi-source-repository', label: 'Repo', value: normalize(info?.repo_profile), href: normalize(info?.repo_profile) || undefined },
+    { key: 'location', infoKey: 'location', icon: 'mdi-map-marker-outline', label: 'Location', value: normalize(info?.location || info?.adresse) },
+    { key: 'homepage', infoKey: 'homepage', icon: 'mdi-web-outline', label: 'Homepage', value: normalize(info?.homepage), href: normalize(info?.homepage) || undefined },
+    { key: 'repo', infoKey: 'repo_profile', icon: 'mdi-source-repository-outline', label: 'Repo', value: normalize(info?.repo_profile), href: normalize(info?.repo_profile) || undefined },
   ].filter((field) => field.value.length > 0)
 })
 
@@ -259,7 +259,7 @@ onBeforeUnmount(() => {
           :model-value="field.value"
           :placeholder="field.label"
           font-size="0.89em"
-          font-weight="400"
+          font-weight="700"
           font-family="var(--font-family, inherit)"
           color="inherit"
           @update:model-value="updateResumeInformation(field.infoKey, $event)"

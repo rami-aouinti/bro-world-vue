@@ -33,10 +33,10 @@ const contactFields = computed<ContactField[]>(() => {
   return [
     { key: 'email', infoKey: 'email', label: 'Email', icon: 'mdi-email-outline', value: normalize(info?.email) },
     { key: 'phone', infoKey: 'phone', label: 'Phone', icon: 'mdi-phone-outline', value: normalize(info?.phone) },
-    { key: 'address', infoKey: 'adresse', label: 'Address', icon: 'mdi-map-marker-outline', value: normalize(info?.adresse) },
+    { key: 'location', infoKey: 'location', label: 'Location', icon: 'mdi-map-marker-outline', value: normalize(info?.location || info?.adresse) },
     { key: 'birthDate', infoKey: 'birthDate', label: 'Birth date', icon: 'mdi-cake-variant-outline', value: normalize(info?.birthDate) },
-    { key: 'homepage', infoKey: 'homepage', label: 'Homepage', icon: 'mdi-web', value: normalize(info?.homepage) },
-    { key: 'repo', infoKey: 'repo_profile', label: 'Repo', icon: 'mdi-source-repository', value: normalize(info?.repo_profile) },
+    { key: 'homepage', infoKey: 'homepage', label: 'Homepage', icon: 'mdi-web-outline', value: normalize(info?.homepage) },
+    { key: 'repo', infoKey: 'repo_profile', label: 'Repo', icon: 'mdi-source-repository-outline', value: normalize(info?.repo_profile) },
   ].filter((field) => field.value.length > 0)
 })
 
