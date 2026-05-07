@@ -14,10 +14,16 @@ import { resolveResumeTextFont, useResumeGoogleFonts } from '~/composables/useRe
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 import CvEditableSectionContent from '~/components/cv/sections/CvEditableSectionContent.vue'
 
+const { t } = useI18n()
+
 definePageMeta({
   title: 'Resume · CV Preview',
   layout: 'resume',
 })
+
+useHead(() => ({
+  title: t('resumePreview.cv.metaTitle'),
+}))
 
 const route = useRoute()
 const { loggedIn } = useUserSession()

@@ -5,6 +5,10 @@ import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-
 import { resolveResumeTextFont, useResumeGoogleFonts } from '~/composables/useResumeGoogleFonts'
 
 definePageMeta({ title: 'Resume · Cover Letter Preview' })
+const { t } = useI18n()
+useHead(() => ({
+  title: t('resumePreview.coverLetter.metaTitle'),
+}))
 const route = useRoute()
 const { coverLetterTemplates } = useResumeTemplates()
 const selectedTemplate = ref(coverLetterTemplates.value[0]?.id || GENERATED_COVER_LETTER_TEMPLATES[0]?.id || '')

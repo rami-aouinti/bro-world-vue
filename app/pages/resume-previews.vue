@@ -1,15 +1,29 @@
 <script setup lang="ts">
 import { RESUME_TEMPLATES_CATALOG } from '~/constants/resumeTemplates.catalog'
 
+const { t } = useI18n()
+
 definePageMeta({
   title: 'Resume Template Previews',
-  description:
-    'Preview Bro World resume templates by layout, style, density, and professional CV design options.',
-  keywords:
-    'resume templates, CV templates, resume preview, professional CV, Bro World resume builder',
+  description: 'Resume template previews',
+  keywords: 'resume templates',
   robots: { index: true, follow: true, 'max-image-preview': 'large' },
   sitemap: { changefreq: 'weekly', priority: 0.6 },
 })
+
+useHead(() => ({
+  title: t('resumePreview.templates.metaTitle'),
+  meta: [
+    {
+      name: 'description',
+      content: t('resumePreview.templates.metaDescription'),
+    },
+    {
+      name: 'keywords',
+      content: t('resumePreview.templates.metaKeywords'),
+    },
+  ],
+}))
 
 const allResumeTemplates = RESUME_TEMPLATES_CATALOG.filter(
   (template) => template.type === 'resume',
@@ -50,39 +64,39 @@ const filteredResumeTemplates = computed(() =>
 
 <template>
   <main class="resume-previews-page">
-    <h1>Resume template previews</h1>
-    <p>Visual checks for template thumbnails and main settings.</p>
+    <h1>{{ t('resumePreview.templates.heading') }}</h1>
+    <p>{{ t('resumePreview.templates.subheading') }}</p>
 
     <section class="filters">
       <label>
-        Layout
+        {{ t('resumePreview.templates.filters.layout') }}
         <select v-model="layoutFilter">
-          <option value="all">All</option>
-          <option value="aside">Aside</option>
-          <option value="no-aside">No Aside</option>
-          <option value="aside-left">Aside Left</option>
-          <option value="aside-right">Aside Right</option>
-          <option value="bar-left">Bar Left</option>
-          <option value="bar-light">Bar Light</option>
-          <option value="aside-split">Aside Split</option>
-          <option value="no-aside-split">No Aside Split</option>
+          <option value="all">{{ t('resumePreview.templates.filters.all') }}</option>
+          <option value="aside">{{ t('resumePreview.templates.filters.layoutAside') }}</option>
+          <option value="no-aside">{{ t('resumePreview.templates.filters.layoutNoAside') }}</option>
+          <option value="aside-left">{{ t('resumePreview.templates.filters.layoutAsideLeft') }}</option>
+          <option value="aside-right">{{ t('resumePreview.templates.filters.layoutAsideRight') }}</option>
+          <option value="bar-left">{{ t('resumePreview.templates.filters.layoutBarLeft') }}</option>
+          <option value="bar-light">{{ t('resumePreview.templates.filters.layoutBarLight') }}</option>
+          <option value="aside-split">{{ t('resumePreview.templates.filters.layoutAsideSplit') }}</option>
+          <option value="no-aside-split">{{ t('resumePreview.templates.filters.layoutNoAsideSplit') }}</option>
         </select>
       </label>
       <label>
-        Theme line
+        {{ t('resumePreview.templates.filters.themeLine') }}
         <select v-model="lineFilter">
-          <option value="all">All</option>
-          <option value="soft">Soft</option>
-          <option value="none">None</option>
-          <option value="block">Block</option>
+          <option value="all">{{ t('resumePreview.templates.filters.all') }}</option>
+          <option value="soft">{{ t('resumePreview.templates.filters.lineSoft') }}</option>
+          <option value="none">{{ t('resumePreview.templates.filters.lineNone') }}</option>
+          <option value="block">{{ t('resumePreview.templates.filters.lineBlock') }}</option>
         </select>
       </label>
       <label>
-        Theme density
+        {{ t('resumePreview.templates.filters.themeDensity') }}
         <select v-model="densityFilter">
-          <option value="all">All</option>
-          <option value="comfortable">Comfortable</option>
-          <option value="compact">Compact</option>
+          <option value="all">{{ t('resumePreview.templates.filters.all') }}</option>
+          <option value="comfortable">{{ t('resumePreview.templates.filters.densityComfortable') }}</option>
+          <option value="compact">{{ t('resumePreview.templates.filters.densityCompact') }}</option>
         </select>
       </label>
     </section>
@@ -101,15 +115,15 @@ const filteredResumeTemplates = computed(() =>
         <h2>{{ template.label }}</h2>
         <p>{{ template.subtitle }}</p>
         <ul>
-          <li><strong>Structure:</strong> {{ template.structureId }}</li>
-          <li><strong>Layout:</strong> {{ template.layoutId }}</li>
-          <li><strong>Skin:</strong> {{ template.skinId }}</li>
+          <li><strong>{{ t('resumePreview.templates.labels.structure') }}:</strong> {{ template.structureId }}</li>
+          <li><strong>{{ t('resumePreview.templates.labels.layout') }}:</strong> {{ template.layoutId }}</li>
+          <li><strong>{{ t('resumePreview.templates.labels.skin') }}:</strong> {{ template.skinId }}</li>
           <li>
-            <strong>Line:</strong>
+            <strong>{{ t('resumePreview.templates.labels.line') }}:</strong>
             {{ (template as any).theme?.line ?? (template as any).line ?? '-' }}
           </li>
           <li>
-            <strong>Density:</strong>
+            <strong>{{ t('resumePreview.templates.labels.density') }}:</strong>
             {{
               (template as any).theme?.density ??
               (template as any).density ??

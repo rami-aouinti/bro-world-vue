@@ -127,6 +127,11 @@
           "jobs": "Track offers, applications, and personal hiring workflows."
         }
       }
+    },
+    "resumeEditor": {
+      "resume": "Resume",
+      "coverPage": "Cover page",
+      "coverLetter": "Cover letter"
     }
   },
   "common": {
@@ -3327,6 +3332,50 @@
         }
       },
       "previewTitle": "Resume Preview"
+    }
+  },
+  "resumePreview": {
+    "cv": {
+      "metaTitle": "Resume · CV Preview"
+    },
+    "coverPage": {
+      "metaTitle": "Resume · Cover Page Preview"
+    },
+    "coverLetter": {
+      "metaTitle": "Resume · Cover Letter Preview"
+    },
+    "templates": {
+      "metaTitle": "Resume Template Previews",
+      "metaDescription": "Preview Bro World resume templates by layout, style, density, and professional CV design options.",
+      "metaKeywords": "resume templates, CV templates, resume preview, professional CV, Bro World resume builder",
+      "heading": "Resume template previews",
+      "subheading": "Visual checks for template thumbnails and main settings.",
+      "filters": {
+        "layout": "Layout",
+        "all": "All",
+        "layoutAside": "Aside",
+        "layoutNoAside": "No Aside",
+        "layoutAsideLeft": "Aside Left",
+        "layoutAsideRight": "Aside Right",
+        "layoutBarLeft": "Bar Left",
+        "layoutBarLight": "Bar Light",
+        "layoutAsideSplit": "Aside Split",
+        "layoutNoAsideSplit": "No Aside Split",
+        "themeLine": "Theme line",
+        "lineSoft": "Soft",
+        "lineNone": "None",
+        "lineBlock": "Block",
+        "themeDensity": "Theme density",
+        "densityComfortable": "Comfortable",
+        "densityCompact": "Compact"
+      },
+      "labels": {
+        "structure": "Structure",
+        "layout": "Layout",
+        "skin": "Skin",
+        "line": "Line",
+        "density": "Density"
+      }
     }
   }
 }
