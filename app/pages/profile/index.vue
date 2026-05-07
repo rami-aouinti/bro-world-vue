@@ -91,6 +91,7 @@ const selectedResumeTemplate = ref<ResumeTemplate>('modern')
 const selectedResume = ref<RecruitResume | null>(null)
 const createLoading = ref(false)
 const updateLoading = ref(false)
+const activateResumeLoadingId = ref<string | null>(null)
 const resumeUploadFile = ref<File | null>(null)
 const coverPages = ref<RecruitCoverPage[]>([])
 const coverLetters = ref<RecruitCoverLetter[]>([])
@@ -460,6 +461,29 @@ function openResumeEdit(resume: RecruitResume) {
   selectedResume.value = resume
   populateResumeFormFromResume(resume)
   resumeEditorOpen.value = true
+}
+
+async function activateResume(resume: RecruitResume) {
+  if (resume.active || activateResumeLoadingId.value) return
+  activateResumeLoadingId.value = resume.id
+  resumesError.value = ''
+  try {
+    const response = await privateApi.request<{ id: string; active: boolean }>(
+      scopedRecruitPath(
+        `/private/me/resumes/${encodeURIComponent(resume.id)}/activate`,
+      ),
+      { method: 'POST' },
+    )
+
+    resumes.value = resumes.value.map((item) => ({
+      ...item,
+      active: item.id === response.id,
+    }))
+  } catch {
+    resumesError.value = 'Unable to activate this resume.'
+  } finally {
+    activateResumeLoadingId.value = null
+  }
 }
 
 
@@ -861,13 +885,33 @@ onUnmounted(() => {
                       >
                         {{ resume.documentUrl ? 'PDF' : 'Data CV' }}
                       </v-chip>
-                      <v-btn
-                        v-if="!resume.documentUrl"
-                        size="small"
-                        icon="mdi-pencil-outline"
-                        variant="text"
-                        @click.stop="openResumeEdit(resume)"
-                      />
+                      <div class="d-flex align-center ga-1">
+                        <v-switch
+                          :model-value="Boolean(resume.active)"
+                          color="success"
+                          density="compact"
+                          hide-details
+                          inset
+                          :loading="activateResumeLoadingId === resume.id"
+                          :disabled="
+                            activateResumeLoadingId !== null &&
+                            activateResumeLoadingId !== resume.id
+                          "
+                          @click.stop
+                          @update:model-value="
+                            (value) => {
+                              if (value) activateResume(resume)
+                            }
+                          "
+                        />
+                        <v-btn
+                          v-if="!resume.documentUrl"
+                          size="small"
+                          icon="mdi-pencil-outline"
+                          variant="text"
+                          @click.stop="openResumeEdit(resume)"
+                        />
+                      </div>
                     </div>
                     <h3 class="text-subtitle-1 font-weight-bold mb-2">
                       CV #{{ resume.id.slice(0, 8) }}
