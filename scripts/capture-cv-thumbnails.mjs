@@ -47,11 +47,11 @@ const browser = await launchBrowser()
 const page = await browser.newPage({ viewport: { width: 1200, height: 1500 } })
 
 for (const tpl of generatedCvTemplates) {
-  const url = `${baseUrl}/resume/template-capture/cv/${encodeURIComponent(tpl.id)}`
+  const url = `${baseUrl}/resume/cv/preview?template=${encodeURIComponent(tpl.id)}&capture=1&palette=night`
   await page.goto(url, { waitUntil: 'networkidle' })
   await page.keyboard.press('Escape').catch(() => {})
 
-  const captureCanvas = page.locator('.capture-cv-page').first()
+  const captureCanvas = page.locator('.cv-preview-page').first()
   await captureCanvas.waitFor({ state: 'visible' })
   await captureCanvas.screenshot({
     path: path.join(outDir, `${tpl.id}.png`),
