@@ -150,6 +150,38 @@
           "#6B7280",
           "#0F4C81"
         ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
       }
     },
     "designConfig": {
@@ -406,6 +438,38 @@
         "colors": [
           "#111827",
           "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#7C3AED"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
           "#7C3AED"
         ]
       }
@@ -671,6 +735,38 @@
           "#6B7280",
           "#BE123C"
         ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#BE123C"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#BE123C"
+        ]
       }
     },
     "designConfig": {
@@ -927,6 +1023,38 @@
         "colors": [
           "#111827",
           "#6B7280",
+          "#065F46"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#065F46"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
           "#065F46"
         ]
       }
@@ -1192,6 +1320,38 @@
           "#6B7280",
           "#9A3412"
         ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#9A3412"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#9A3412"
+        ]
       }
     },
     "designConfig": {
@@ -1448,6 +1608,38 @@
         "colors": [
           "#111827",
           "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
           "#0F4C81"
         ]
       }
@@ -1713,6 +1905,38 @@
           "#6B7280",
           "#7C3AED"
         ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#7C3AED"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#7C3AED"
+        ]
       }
     },
     "designConfig": {
@@ -1969,6 +2193,38 @@
         "colors": [
           "#111827",
           "#6B7280",
+          "#BE123C"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#BE123C"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
           "#BE123C"
         ]
       }
@@ -2234,6 +2490,38 @@
           "#6B7280",
           "#065F46"
         ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#065F46"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#065F46"
+        ]
       }
     },
     "designConfig": {
@@ -2492,6 +2780,38 @@
           "#6B7280",
           "#9A3412"
         ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#9A3412"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#9A3412"
+        ]
       }
     },
     "designConfig": {
@@ -2734,6 +3054,38 @@
           "#6B7280",
           "#0F4C81"
         ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
       }
     },
     "designConfig": {
@@ -2967,6 +3319,38 @@
         "colors": [
           "#111827",
           "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
           "#0F4C81"
         ]
       }
