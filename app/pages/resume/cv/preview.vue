@@ -50,11 +50,36 @@ const cvLayoutComponentMap = {
 
 const activeLayoutComponent = computed(() => cvLayoutComponentMap[activeTemplate.value?.layout as keyof typeof cvLayoutComponentMap] || CvLayoutNoAside)
 const palettePresetOptions = computed(() => [
-  { title: 'Template', value: 'template', primary: activeTemplate.value?.theme?.palette?.primary, dark: activeTemplate.value?.theme?.palette?.secondary, light: activeTemplate.value?.theme?.palette?.pageBackground },
-  { title: 'Ocean', value: 'ocean', primary: '#0ea5e9', dark: '#0f172a', light: '#f0f9ff' },
-  { title: 'Emerald', value: 'emerald', primary: '#10b981', dark: '#064e3b', light: '#ecfdf5' },
-  { title: 'Sunset', value: 'sunset', primary: '#f97316', dark: '#7c2d12', light: '#fff7ed' },
-  { title: 'Violet', value: 'violet', primary: '#8b5cf6', dark: '#312e81', light: '#f5f3ff' },
+  { title: 'Template', value: 'template', primary: activeTemplate.value.theme.palette.primary, dark: activeTemplate.value.theme.palette.secondary, light: activeTemplate.value.theme.palette.pageBackground },
+  { title: 'Ocean', value: 'ocean', primary: '#2563EB', dark: '#1D4ED8', light: '#EFF6FF' },
+  { title: 'Indigo', value: 'indigo', primary: '#4F46E5', dark: '#3730A3', light: '#EEF2FF' },
+  { title: 'Violet', value: 'violet', primary: '#7C3AED', dark: '#5B21B6', light: '#F5F3FF' },
+  { title: 'Slate', value: 'slate', primary: '#334155', dark: '#1E293B', light: '#F8FAFC' },
+  { title: 'Olive', value: 'olive', primary: '#A3A86C', dark: '#7E8A5B', light: '#F7F8EE' },
+  { title: 'Sage', value: 'sage', primary: '#8AA07A', dark: '#647860', light: '#F3F7F1' },
+  { title: 'Emerald', value: 'emerald', primary: '#059669', dark: '#047857', light: '#ECFDF5' },
+  { title: 'Rose', value: 'rose', primary: '#E11D48', dark: '#BE123C', light: '#FFF1F2' },
+  { title: 'Sky', value: 'sky', primary: '#0EA5E9', dark: '#0284C7', light: '#F0F9FF' },
+  { title: 'Sunset', value: 'sunset', primary: '#C2410C', dark: '#9A3412', light: '#FFF7ED' },
+  { title: 'Amber', value: 'amber', primary: '#D97706', dark: '#B45309', light: '#FFFBEB' },
+  { title: 'Charcoal', value: 'charcoal', primary: '#3F3F46', dark: '#27272A', light: '#FAFAFA' },
+  { title: 'Plum', value: 'plum', primary: '#7E3F8F', dark: '#5B2C6F', light: '#FAF5FF' },
+  { title: 'Teal', value: 'teal', primary: '#0F766E', dark: '#115E59', light: '#F0FDFA' },
+  { title: 'Cobalt', value: 'cobalt', primary: '#1D4ED8', dark: '#1E3A8A', light: '#EFF6FF' },
+  { title: 'Coral', value: 'coral', primary: '#F97316', dark: '#C2410C', light: '#FFF7ED' },
+  { title: 'Mint', value: 'mint', primary: '#10B981', dark: '#047857', light: '#ECFDF5' },
+  { title: 'Lavender', value: 'lavender', primary: '#A78BFA', dark: '#6D28D9', light: '#F5F3FF' },
+  { title: 'Ruby', value: 'ruby', primary: '#DC2626', dark: '#991B1B', light: '#FEF2F2' },
+  { title: 'Forest', value: 'forest', primary: '#166534', dark: '#14532D', light: '#F0FDF4' },
+  { title: 'Sand', value: 'sand', primary: '#B45309', dark: '#92400E', light: '#FFFBEB' },
+  { title: 'Aqua', value: 'aqua', primary: '#0891B2', dark: '#155E75', light: '#ECFEFF' },
+  { title: 'Magenta', value: 'magenta', primary: '#C026D3', dark: '#86198F', light: '#FDF4FF' },
+  { title: 'Steel', value: 'steel', primary: '#64748B', dark: '#334155', light: '#F8FAFC' },
+  { title: 'Night', value: 'night', primary: '#0F172A', dark: '#020617', light: '#E2E8F0' },
+  { title: 'Peach', value: 'peach', primary: '#FB7185', dark: '#BE123C', light: '#FFF1F2' },
+  { title: 'Lime', value: 'lime', primary: '#65A30D', dark: '#3F6212', light: '#F7FEE7' },
+  { title: 'Orchid', value: 'orchid', primary: '#9333EA', dark: '#6B21A8', light: '#FAF5FF' },
+  { title: 'Graphite', value: 'graphite', primary: '#374151', dark: '#111827', light: '#F9FAFB' },
 ])
 const activeColors = computed(() => {
   const palette = activeTemplate.value?.theme?.palette || {}
@@ -750,30 +775,6 @@ watch(activeTemplate, (template) => {
           <h3 class="text-subtitle-2 font-weight-bold mb-2">Template actif</h3>
           <p class="text-body-2 mb-1">{{ activeTemplate?.name }}</p>
           <p class="text-caption text-medium-emphasis mb-3">{{ activeTemplate?.id }} · {{ activeTemplate?.layout }}</p>
-          <v-menu v-model="paletteMenuOpen" :close-on-content-click="true">
-            <template #activator="{ props }">
-              <v-btn v-bind="props" variant="outlined" block justify="space-between" prepend-icon="mdi-palette" class="mb-3">Palette</v-btn>
-            </template>
-            <v-card class="pa-3" min-width="260">
-              <div class="palette-grid">
-                <button
-                  v-for="option in palettePresetOptions"
-                  :key="option.value"
-                  type="button"
-                  class="palette-swatch-btn"
-                  :class="{ 'palette-swatch-btn--active': selectedPalette === option.value }"
-                  @click="selectedPalette = option.value"
-                >
-                  <span class="d-flex ga-2 align-center mb-1">
-                    <span class="palette-dot" :style="{ backgroundColor: option.primary }" />
-                    <span class="palette-dot" :style="{ backgroundColor: option.dark }" />
-                    <span class="palette-dot" :style="{ backgroundColor: option.light }" />
-                  </span>
-                  <span class="text-caption">{{ option.title }}</span>
-                </button>
-              </div>
-            </v-card>
-          </v-menu>
           <v-slider v-model="asideWidth" label="Aside width (px)" :min="240" :max="1200" :step="2" hide-details class="mb-2"/>
           <v-slider v-model="asideHeight" label="Aside height (px)" :min="120" :max="2600" :step="2" hide-details class="mb-2"/>
           <v-slider v-model="asideRadius" label="Aside radius (px)" :min="0" :max="90" :step="1" hide-details/>
@@ -801,6 +802,10 @@ watch(activeTemplate, (template) => {
     <v-container fluid>
       <ResumePreviewToolbar
         v-model:menu-open="layoutMenuOpen"
+      v-model:palette-menu-open="paletteMenuOpen"
+      :palettes="palettePresetOptions"
+      :selected-palette="selectedPalette"
+      :palette-columns="5"
         :templates="GENERATED_RESUME_TEMPLATES"
         :selected-template="selectedTemplate"
         :get-template-image="(template) => `/img/cv/generated/${template.id}.png`"
@@ -810,6 +815,7 @@ watch(activeTemplate, (template) => {
         @signature="openSignatureDialog"
         @pdf="downloadPdf"
         @select-template="applyPreviewTemplate"
+      @select-palette="selectedPalette = $event"
       />
 
       <div class="py-8">
@@ -1346,9 +1352,6 @@ watch(activeTemplate, (template) => {
   background: var(--cv-primary, #1d4ed8);
 }
 .palette-dot { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgb(var(--v-theme-on-surface), 0.2); }
-.palette-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-.palette-swatch-btn { border: 1px solid rgba(148, 163, 184, 0.35); border-radius: 12px; background: transparent; padding: 8px; }
-.palette-swatch-btn--active { border-color: rgb(var(--v-theme-primary)); }
 
 
 .cv-section-toolbar :deep(.v-btn) {
