@@ -24,7 +24,7 @@ import CvEditableSectionContent from '~/components/cv/sections/CvEditableSection
 const { t } = useI18n()
 
 definePageMeta({
-  title: 'Resume · CV Preview',
+  title: 'resumePreview.cv.metaTitle',
   layout: 'resume',
 })
 

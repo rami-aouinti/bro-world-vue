@@ -152,6 +152,15 @@ onUnmounted(() => {
         >
           {{ t('resumeBuilder.index.journey.steps.template.cta') }}
         </v-btn>
+        <v-btn
+          color="warning"
+          variant="tonal"
+          size="large"
+          to="/resume/cv/template-create"
+          class="mt-3"
+        >
+          Create CV Template
+        </v-btn>
       </template>
       <template #right>
         <h3>{{ t('coverBuilder.index.heroTitle') }}</h3>
@@ -173,6 +182,24 @@ onUnmounted(() => {
           class="mt-3"
         >
           {{ t('resumeBuilder.index.journey.steps.template.cta-letter') }}
+        </v-btn>
+        <v-btn
+          color="warning"
+          variant="tonal"
+          size="large"
+          to="/resume/cover-page/template-create"
+          class="mt-3"
+        >
+          Create Cover Page Template
+        </v-btn>
+        <v-btn
+          color="warning"
+          variant="tonal"
+          size="large"
+          to="/resume/cover-letter/template-create"
+          class="mt-3"
+        >
+          Create Cover Letter Template
         </v-btn>
       </template>
     </AppPageDrawers>
