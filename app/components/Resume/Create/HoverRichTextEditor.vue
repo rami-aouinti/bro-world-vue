@@ -48,6 +48,43 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
+
+function clearContent() {
+  editor.value?.commands.clearContent()
+  emit('update:modelValue', '')
+}
+
+function addLineBreak() {
+  editor.value?.chain().focus().setHardBreak().run()
+}
+
+function removeLastLineBreak() {
+  const current = editor.value?.getText({ blockSeparator: '\n' }) || ''
+  const next = current.replace(/\n+$/, '')
+  editor.value?.commands.setContent(next || '<p></p>')
+  emit('update:modelValue', next)
+}
+
+function onDragStart(event: DragEvent) {
+  event.dataTransfer?.setData('application/x-resume-editor-id', editorInstanceId)
+  event.dataTransfer?.effectAllowed = 'move'
+  event.dataTransfer?.setDragImage((event.currentTarget as HTMLElement), 10, 10)
+}
+
+function onDrop(event: DragEvent) {
+  event.preventDefault()
+  const sourceId = event.dataTransfer?.getData('application/x-resume-editor-id')
+  if (!sourceId || sourceId === editorInstanceId) return
+
+  const sourceElement = document.querySelector<HTMLElement>(`[data-editor-id="${sourceId}"]`)
+  const targetElement = rootElement.value
+
+  if (!sourceElement || !targetElement || !targetElement.parentElement || sourceElement === targetElement) return
+
+  targetElement.parentElement.insertBefore(sourceElement, targetElement.nextSibling)
+}
+const editorInstanceId = `hover-editor-${Math.random().toString(36).slice(2, 11)}`
+const rootElement = ref<HTMLElement | null>(null)
 const hover = ref(false)
 const selectedColor = ref('#0f172a')
 const selectedSize = ref('24px')
@@ -91,9 +128,13 @@ watch(() => props.fontWeight, (value) => {
 
 <template>
   <div
+    ref="rootElement"
     class="hover-editor"
+    :data-editor-id="editorInstanceId"
     @mouseenter="hover = true"
     @mouseleave="hover = false"
+    @dragover.prevent
+    @drop="onDrop"
   >
     <label v-if="label" class="text-body-2 mb-2 d-inline-block">{{ label }}</label>
     <div v-show="hover" class="hover-editor__toolbar">
@@ -134,39 +175,10 @@ watch(() => props.fontWeight, (value) => {
         @click="editor?.chain().focus().toggleItalic().run()"
         >I</v-btn
       >
-      <v-btn
-        size="x-small"
-        variant="text"
-        :active="editor?.isActive('strike')"
-        @click="editor?.chain().focus().toggleStrike().run()"
-        >S</v-btn
-      >
-      <v-btn
-        size="x-small"
-        variant="text"
-        :active="editor?.isActive('orderedList')"
-        @click="editor?.chain().focus().toggleOrderedList().run()"
-        >1.</v-btn
-      >
-      <v-btn
-        size="x-small"
-        variant="text"
-        @click="editor?.chain().focus().undo().run()"
-        >↶</v-btn
-      >
-      <v-btn
-        size="x-small"
-        variant="text"
-        @click="editor?.chain().focus().redo().run()"
-        >↷</v-btn
-      >
-      <v-btn
-        size="x-small"
-        variant="text"
-        :active="editor?.isActive('bulletList')"
-        @click="editor?.chain().focus().toggleBulletList().run()"
-        >•</v-btn
-      >
+      <v-btn size="x-small" variant="text" icon="mdi-trash-can-outline" @click="clearContent" />
+      <v-btn size="x-small" variant="text" icon="mdi-arrow-up" @click="removeLastLineBreak" />
+      <v-btn size="x-small" variant="text" icon="mdi-arrow-down" @click="addLineBreak" />
+      <v-btn size="x-small" variant="text" icon="mdi-drag" class="toolbar-drag" draggable="true" @dragstart="onDragStart" />
     </div>
     <div
       class="hover-editor__surface"
@@ -185,6 +197,7 @@ watch(() => props.fontWeight, (value) => {
 .hover-editor__toolbar {
   display: flex;
   gap: 4px;
+  padding: 2px 0;
   margin-bottom: 6px;
   align-items: center;
 }
@@ -217,5 +230,7 @@ watch(() => props.fontWeight, (value) => {
 :deep(.hover-editor__content p) {
   font-family: var(--editor-font-family);
 }
+.toolbar-drag { cursor: grab; }
+.toolbar-drag:active { cursor: grabbing; }
 
 </style>
