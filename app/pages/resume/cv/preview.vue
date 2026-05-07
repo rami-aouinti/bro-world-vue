@@ -695,7 +695,7 @@ const headerMutedColor = computed(() => (isHeaderLightLayout.value ? '#CBD5E1' :
 
 watch(activeTemplate, (template) => {
   asideWidth.value = parsePx(template?.aside?.width, 850)
-  asideHeight.value = parsePx(template?.aside?.height, 1100)
+  asideHeight.value = parsePx(template?.aside?.height, 1500)
   asideRadius.value = parsePx(template?.aside?.radius, 0)
 }, { immediate: true })
 
@@ -734,7 +734,7 @@ function goToCreateResume() {
 async function downloadPdf() {
   const node = document.querySelector('.cv-preview-shell') as HTMLElement | null
   if (!node) return
-  const printWindow = window.open('', '_blank', 'width=900,height=1300')
+  const printWindow = window.open('', '_blank', 'width=900,height=1500')
   if (!printWindow) return
   const headStyles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]')).map((el) => el.outerHTML).join('')
   printWindow.document.write(`<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.cv-preview-shell{width:210mm;box-sizing:border-box;margin:0}.resume-preview-page-break{display:none!important}.cv-section-toolbar,.cv-photo-menu-btn{display:none!important}</style></head><body>${node.outerHTML}</body></html>`)
@@ -756,7 +756,7 @@ function initCanvas() {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   canvas.width = canvas.clientWidth || 680
-  canvas.height = 200
+  canvas.height = 400
   ctx.lineWidth = 2
   ctx.lineCap = 'round'
   let drawing = false
@@ -1080,6 +1080,7 @@ watch(activeTemplate, (template) => {
           </template>
           </component>
           <ResumePreviewPageBreak
+            v-if="!isCaptureMode"
             v-for="pageBreak in cvPreviewPageBreaks"
             :key="`cv-page-break-${pageBreak}`"
             :page-number="pageBreak"

@@ -45,16 +45,25 @@ async function launchBrowser() {
 
 const browser = await launchBrowser()
 const page = await browser.newPage({ viewport: { width: 1200, height: 1500 } })
+const CAPTURE_MAX_HEIGHT = 1000
 
 for (const tpl of generatedCvTemplates) {
-  const url = `${baseUrl}/resume/cv/preview?template=${encodeURIComponent(tpl.id)}&capture=1&palette=night`
+  const url = `${baseUrl}/resume/cv/preview?template=${encodeURIComponent(tpl.id)}&capture=1`
   await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 90_000 })
   await page.keyboard.press('Escape').catch(() => {})
 
   const captureCanvas = page.locator('.cv-preview-page').first()
   await captureCanvas.waitFor({ state: 'visible', timeout: 60_000 })
-  await captureCanvas.screenshot({
+  const box = await captureCanvas.boundingBox()
+  if (!box) throw new Error(`Capture target not measurable for ${tpl.id}`)
+  await page.screenshot({
     path: path.join(outDir, `${tpl.id}.png`),
+    clip: {
+      x: Math.max(0, box.x),
+      y: Math.max(0, box.y),
+      width: box.width,
+      height: Math.min(box.height, CAPTURE_MAX_HEIGHT),
+    },
   })
 
   console.log(`Captured ${tpl.id}`)

@@ -117,6 +117,7 @@ onUnmounted(() => {
         <slot />
       </v-main>
       <v-defaults-provider
+        v-if="!isCaptureMode"
         :defaults="{ VBtn: { variant: 'text', size: 'x-small' } }"
       >
         <AppSettings />
