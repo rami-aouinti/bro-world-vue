@@ -8,6 +8,26 @@ import type { _SessionUser } from '~/types/session'
 import type { RecruitResume, RecruitResumeSection } from '~/types/world/jobs'
 import { privateApi } from '~/utils/http/privateApi'
 
+interface RecruitTemplateRef {
+  name: string
+}
+
+interface RecruitCoverPage {
+  id: string
+  template: RecruitTemplateRef
+  fullName?: string | null
+  role?: string | null
+  header?: string | null
+}
+
+interface RecruitCoverLetter {
+  id: string
+  template: RecruitTemplateRef
+  fullName?: string | null
+  role?: string | null
+  header?: string | null
+}
+
 interface UpcomingCalendarEvent {
   id: string
   title: string
@@ -72,6 +92,12 @@ const selectedResume = ref<RecruitResume | null>(null)
 const createLoading = ref(false)
 const updateLoading = ref(false)
 const resumeUploadFile = ref<File | null>(null)
+const coverPages = ref<RecruitCoverPage[]>([])
+const coverLetters = ref<RecruitCoverLetter[]>([])
+const coverPagesLoading = ref(false)
+const coverLettersLoading = ref(false)
+const coverPagesError = ref('')
+const coverLettersError = ref('')
 
 function createEmptyResumeSection(): ResumeSectionForm {
   return {
@@ -125,6 +151,8 @@ const proverbTexts = computed(() => [
 
 const hasUpcomingEvents = computed(() => upcomingEvents.value.length > 0)
 const hasResumes = computed(() => resumes.value.length > 0)
+const hasCoverPages = computed(() => coverPages.value.length > 0)
+const hasCoverLetters = computed(() => coverLetters.value.length > 0)
 const resumeTemplateOptions = [
   { value: 'modern', label: 'Modern Pro' },
   { value: 'elegant', label: 'Executive' },
@@ -434,6 +462,40 @@ function openResumeEdit(resume: RecruitResume) {
   resumeEditorOpen.value = true
 }
 
+
+
+function openCoverPage(coverPage: RecruitCoverPage) {
+  navigateTo(`/profile/cover-page/${coverPage.template.name}?id=${encodeURIComponent(coverPage.id)}`)
+}
+
+function openCoverLetter(coverLetter: RecruitCoverLetter) {
+  navigateTo(`/profile/cover-letter/${coverLetter.template.name}?id=${encodeURIComponent(coverLetter.id)}`)
+}
+
+async function fetchCoverPages() {
+  coverPagesLoading.value = true
+  coverPagesError.value = ''
+  try {
+    coverPages.value = await privateApi.request<RecruitCoverPage[]>('/api/recruit/private/me/cover-pages')
+  } catch {
+    coverPagesError.value = 'Unable to load your cover pages.'
+  } finally {
+    coverPagesLoading.value = false
+  }
+}
+
+async function fetchCoverLetters() {
+  coverLettersLoading.value = true
+  coverLettersError.value = ''
+  try {
+    coverLetters.value = await privateApi.request<RecruitCoverLetter[]>('/api/recruit/private/me/cover-letters')
+  } catch {
+    coverLettersError.value = 'Unable to load your cover letters.'
+  } finally {
+    coverLettersLoading.value = false
+  }
+}
+
 async function fetchResumes() {
   resumesLoading.value = true
   resumesError.value = ''
@@ -626,6 +688,8 @@ onMounted(async () => {
     fetchUpcomingEvents(),
     fetchCoinProducts(),
     fetchResumes(),
+    fetchCoverPages(),
+    fetchCoverLetters(),
   ])
   startTypewriter()
 })
@@ -820,7 +884,54 @@ onUnmounted(() => {
               </v-col>
             </v-row>
           </v-card-text>
+        
+
+        <v-card class="postcard-gradient-card mt-6" rounded="xl">
+          <v-card-title><span>My Cover Pages</span></v-card-title>
+          <v-divider />
+          <v-card-text>
+            <v-alert v-if="coverPagesError" type="error" variant="tonal" class="mb-4">{{ coverPagesError }}</v-alert>
+            <v-skeleton-loader v-if="coverPagesLoading" type="list-item-three-line" />
+            <v-empty-state v-else-if="!hasCoverPages" icon="mdi-file-account-outline" title="No cover pages yet" />
+            <v-row v-else>
+              <v-col v-for="coverPage in coverPages" :key="coverPage.id" cols="12" md="6" lg="4">
+                <v-card
+class="h-100 postcard-gradient-card resume-card" rounded="xl" role="button" tabindex="0"
+                  @click="openCoverPage(coverPage)">
+                  <v-card-text>
+                    <h3 class="text-subtitle-1 font-weight-bold mb-2">{{ coverPage.header || 'My Cover Page' }}</h3>
+                    <p class="text-body-2 text-medium-emphasis mb-1">{{ coverPage.fullName }} · {{ coverPage.role }}</p>
+                    <p class="text-body-2 text-medium-emphasis mb-0">Template: {{ coverPage.template.name }}</p>
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-card-text>
         </v-card>
+
+        <v-card class="postcard-gradient-card mt-6" rounded="xl">
+          <v-card-title><span>My Cover Letter</span></v-card-title>
+          <v-divider />
+          <v-card-text>
+            <v-alert v-if="coverLettersError" type="error" variant="tonal" class="mb-4">{{ coverLettersError }}</v-alert>
+            <v-skeleton-loader v-if="coverLettersLoading" type="list-item-three-line" />
+            <v-empty-state v-else-if="!hasCoverLetters" icon="mdi-email-outline" title="No cover letters yet" />
+            <v-row v-else>
+              <v-col v-for="coverLetter in coverLetters" :key="coverLetter.id" cols="12" md="6" lg="4">
+                <v-card
+class="h-100 postcard-gradient-card resume-card" rounded="xl" role="button" tabindex="0"
+                  @click="openCoverLetter(coverLetter)">
+                  <v-card-text>
+                    <h3 class="text-subtitle-1 font-weight-bold mb-2">{{ coverLetter.header || 'My Cover Letter' }}</h3>
+                    <p class="text-body-2 text-medium-emphasis mb-1">{{ coverLetter.fullName }} · {{ coverLetter.role }}</p>
+                    <p class="text-body-2 text-medium-emphasis mb-0">Template: {{ coverLetter.template.name }}</p>
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+</v-card>
       </template>
     </v-container>
 
