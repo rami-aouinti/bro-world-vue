@@ -32,10 +32,29 @@ function isComplexItem(raw: string) {
 }
 
 function splitLeveledItem(raw: string) {
-  const match = String(raw || '').match(/^(.*)\s\((\d+)%\)$/)
-  return match
-    ? { label: match[1], value: Number(match[2]) }
-    : { label: String(raw || ''), value: 0 }
+  const input = String(raw || '').trim()
+  const percentMatch = input.match(/^(.*)\s\((\d+)%\)$/)
+  if (percentMatch) {
+    return { label: percentMatch[1], value: Number(percentMatch[2]) }
+  }
+
+  const levelMatch = input.match(/^(.*)\s\(([^)]+)\)$/)
+  if (levelMatch) {
+    const label = levelMatch[1].trim()
+    const level = levelMatch[2].trim().toLowerCase()
+    const mappedLevels: Record<string, number> = {
+      beginner: 30,
+      intermediate: 60,
+      advanced: 85,
+      expert: 95,
+    }
+    return {
+      label,
+      value: mappedLevels[level] ?? 0,
+    }
+  }
+
+  return { label: input, value: 0 }
 }
 
 function updateSimpleItem(index: number, value: string) {

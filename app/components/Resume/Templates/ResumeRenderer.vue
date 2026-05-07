@@ -1570,6 +1570,7 @@ function updateText(path: string, value: string) {
   position: relative;
   overflow: hidden;
 }
+
 .resume-skin__decorative-layer {
   position: absolute;
   inset: 0;

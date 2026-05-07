@@ -1,0 +1,101 @@
+# Component usage audit (conservative)
+
+This report is generated with a conservative static scan: it only checks direct imports (`~/...`) and explicit template tags (`<ComponentName>`).
+
+- Total components scanned: 193
+- Potentially unreferenced components: 90
+
+## Potentially unreferenced components
+
+- `app/components/IndexPage.vue`
+- `app/components/DialogConfirm.vue`
+- `app/components/App/PageDrawers.vue`
+- `app/components/App/AppDrawerItem.vue`
+- `app/components/App/AppFooter.vue`
+- `app/components/App/LeftDrawerUserEntry.vue`
+- `app/components/Admin/ModuleDrawers.vue`
+- `app/components/World/CrmAdminSectionPage.vue`
+- `app/components/World/JobsPipelineBoard.vue`
+- `app/components/World/WorldFeatureScaffold.vue`
+- `app/components/Showcase/ActionModal.vue`
+- `app/components/Showcase/DesignCards.vue`
+- `app/components/Blog/CommentComposer.vue`
+- `app/components/Blog/PostFeed.vue`
+- `app/components/Blog/PostCard.vue`
+- `app/components/Blog/CommentThread.vue`
+- `app/components/Blog/NewPostLauncher.vue`
+- `app/components/Blog/PostActionsBar.vue`
+- `app/components/Blog/NewPostDialog.vue`
+- `app/components/Blog/NewPostCard.vue`
+- `app/components/Blog/ReactionSummary.vue`
+- `app/components/Blog/NewPostAddToPostRow.vue`
+- `app/components/Blog/NewPostAudienceChip.vue`
+- `app/components/Blog/StoriesCarousel.vue`
+- `app/components/Skeleton/DrawerRight.vue`
+- `app/components/Skeleton/PageContent.vue`
+- `app/components/Skeleton/DrawerLeft.vue`
+- `app/components/Chart/ChartPie.vue`
+- `app/components/Chart/ChartLine.vue`
+- `app/components/Chart/ChartRadar.vue`
+- `app/components/Chart/ChartBar.vue`
+- `app/components/Resume/Templates/ResumeTemplateAurora.vue`
+- `app/components/Resume/Templates/ResumeTemplateTerra.vue`
+- `app/components/Resume/Templates/ResumeTemplateClassic.vue`
+- `app/components/Resume/Templates/ResumeTemplateModern.vue`
+- `app/components/Resume/Templates/ResumeTemplateCorporateBlue.vue`
+- `app/components/Resume/Templates/ResumeTemplateCreative.vue`
+- `app/components/Resume/Templates/ResumeTemplateTraditional.vue`
+- `app/components/Resume/Templates/ResumeTemplateExecutive.vue`
+- `app/components/Resume/Templates/ResumeTemplateProfessional.vue`
+- `app/components/Resume/Templates/ResumeTemplateOceanSplit.vue`
+- `app/components/Resume/Templates/ResumeTemplateMinimalist.vue`
+- `app/components/cv/sections/ProjectsList.vue`
+- `app/components/cv/sections/HobbiesDot.vue`
+- `app/components/cv/sections/ExperienceDot.vue`
+- `app/components/cv/sections/ExperienceTimeline.vue`
+- `app/components/cv/sections/EducationTimeline.vue`
+- `app/components/cv/sections/HobbiesCards.vue`
+- `app/components/cv/sections/LanguagesStars.vue`
+- `app/components/cv/sections/LanguagesProgressCircle.vue`
+- `app/components/cv/sections/CertificationsDot.vue`
+- `app/components/cv/sections/LanguagesProgressLine.vue`
+- `app/components/cv/sections/ProfileClassic.vue`
+- `app/components/cv/sections/SkillsProgressCircle.vue`
+- `app/components/cv/sections/SkillsClassic.vue`
+- `app/components/cv/sections/ExperienceList.vue`
+- `app/components/cv/sections/HobbiesClassic.vue`
+- `app/components/cv/sections/ProjectsTimeline.vue`
+- `app/components/cv/sections/ReferencesList.vue`
+- `app/components/cv/sections/LanguagesClassic.vue`
+- `app/components/cv/sections/CertificationsCards.vue`
+- `app/components/cv/sections/ReferencesDot.vue`
+- `app/components/cv/sections/CertificationsClassic.vue`
+- `app/components/cv/sections/HobbiesList.vue`
+- `app/components/cv/sections/EducationList.vue`
+- `app/components/cv/sections/ProjectsClassic.vue`
+- `app/components/cv/sections/ExperienceCards.vue`
+- `app/components/cv/sections/SkillsDots.vue`
+- `app/components/cv/sections/LanguagesDots.vue`
+- `app/components/cv/sections/EducationCards.vue`
+- `app/components/cv/sections/EducationDot.vue`
+- `app/components/cv/sections/ReferencesCards.vue`
+- `app/components/cv/sections/ReferencesClassic.vue`
+- `app/components/cv/sections/CertificationsList.vue`
+- `app/components/cv/sections/ExperienceClassic.vue`
+- `app/components/cv/sections/SkillsProgressLine.vue`
+- `app/components/cv/sections/SkillsStars.vue`
+- `app/components/cv/sections/ProjectsDot.vue`
+- `app/components/cv/sections/ProjectsCards.vue`
+- `app/components/cv/sections/EducationClassic.vue`
+- `app/components/games/drawers/RightPanel.vue`
+- `app/components/games/drawers/LeftPanel.vue`
+- `app/components/resume/sections/ResumeSectionBlock.vue`
+- `app/components/resume/sections/ResumeSectionProfile.vue`
+- `app/components/resume/sections/ResumeSectionHeader.vue`
+- `app/components/resume/sections/ResumeSectionContact.vue`
+- `app/components/crm/repositories/RepositoryCollaboratorsCard.vue`
+- `app/components/crm/repositories/RepositoryWorkflowRunsCard.vue`
+- `app/components/crm/repositories/RepositoryWorkflowsCard.vue`
+- `app/components/Sports/Football/FixtureDetailsWidget.vue`
+
+> Note: this list can include false positives when components are resolved dynamically.

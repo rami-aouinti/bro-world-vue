@@ -2,6 +2,8 @@
 import GENERATED_COVER_PAGE_TEMPLATES from '~/data/resume-templates/generated-20-cover-page.json'
 import { listMyResumes } from '~/services/resumeApi'
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
+import ResumePreviewToolbar from '~/components/ResumePreviewToolbar.vue'
+import ResumePreviewPageBreak from '~/components/ResumePreviewPageBreak.vue'
 import { resolveResumeTextFont, useResumeGoogleFonts } from '~/composables/useResumeGoogleFonts'
 
 definePageMeta({ title: 'Resume · Cover Page Preview' })
@@ -211,6 +213,10 @@ function onPhotoUpload(event: Event) {
   reader.readAsDataURL(file)
 }
 function openSignatureDialog(){ signatureDialogOpen.value=true; nextTick(initCanvas) }
+function closeSignatureDialog(){ signatureDialogOpen.value=false }
+function saveSignatureFromCanvas(){ const c=signatureCanvas.value; if(!c) return; signatureDataUrl.value=c.toDataURL('image/png'); signatureDialogOpen.value=false }
+function clearSignatureCanvas(){ const c=signatureCanvas.value; const ctx=c?.getContext('2d'); if(!c||!ctx) return; ctx.clearRect(0,0,c.width,c.height) }
+function deleteSignature(){ signatureDataUrl.value=''; signatureDialogOpen.value=false }
 function initCanvas(){ const c=signatureCanvas.value; if(!c) return; const ctx=c.getContext('2d'); if(!ctx) return; c.width=c.clientWidth||680; c.height=200; ctx.lineWidth=2; ctx.lineCap='round'; let draw=false; const p=(e:PointerEvent)=>{const r=c.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}; c.onpointerdown=(e)=>{draw=true;const x=p(e);ctx.beginPath();ctx.moveTo(x.x,x.y)}; c.onpointermove=(e)=>{if(!draw)return;const x=p(e);ctx.lineTo(x.x,x.y);ctx.stroke()}; c.onpointerup=()=>{draw=false;signatureDataUrl.value=c.toDataURL('image/png')} }
 onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query.template:''; if(q&&coverPageTemplates.value.some((t)=>t.id===q)) selectedTemplate.value=q
   try {
@@ -334,10 +340,10 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
         <HoverRichTextEditor v-model="model.email" :font-size="`${elementStyles.email.size}px`" :color="elementStyles.email.color" :font-weight="elementStyles.email.weight" :font-family="textFontFamily('email')" />
         <HoverRichTextEditor v-model="model.phone" :font-size="`${elementStyles.phone.size}px`" :color="elementStyles.phone.color" :font-weight="elementStyles.phone.weight" :font-family="textFontFamily('phone')" />
       </section>
-      <footer v-if="signatureDataUrl" class="signature-footer"><img :src="signatureDataUrl" alt="signature" class="signature-image"/></footer>
+      <footer v-if="signatureDataUrl" class="signature-footer"><div class="signature-box"><img :src="signatureDataUrl" alt="signature" class="signature-image"/><v-menu location="bottom end"><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-dots-vertical" size="x-small" class="signature-menu-btn"/></template><v-list density="compact"><v-list-item prepend-icon="mdi-pencil" title="Edit" @click="openSignatureDialog"/><v-list-item prepend-icon="mdi-delete" title="Delete" @click="deleteSignature"/></v-list></v-menu></div></footer>
     </main><ResumePreviewPageBreak :page-number="1" /></div>
     <input ref="photoInput" type="file" accept="image/*" class="d-none" @change="onPhotoUpload">
-    <v-dialog v-model="signatureDialogOpen" max-width="760"><v-card><v-card-title>Signature</v-card-title><v-card-text><canvas ref="signatureCanvas" style="width:100%;height:200px;border:1px solid rgba(0,0,0,.15);border-radius:10px"/></v-card-text></v-card></v-dialog>
+    <AppModal v-model="signatureDialogOpen" title="Signature" :max-width="760"><canvas ref="signatureCanvas" style="width:100%;height:200px;border:1px solid rgba(0,0,0,.15);border-radius:10px"/><div class="d-flex justify-end ga-2 mt-3"><v-btn variant="text" @click="clearSignatureCanvas">Clear</v-btn><v-btn variant="tonal" @click="closeSignatureDialog">Cancel</v-btn><v-btn color="primary" @click="saveSignatureFromCanvas">Save</v-btn></div></AppModal>
   </v-container>
 </div>
 </template>
@@ -382,7 +388,7 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
 .app-page-drawers{
   display:none !important
 }
-@media print{.preview-toolbar-wrap,.app-page-drawers,.avatar-overlay{display:none !important}}h1{font-size:48px;margin:0}p{font-size:var(--body-size);color:var(--body-color)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:32px;margin:0 0 16px}section{border-top:3px var(--section-divider-style) var(--section-divider-color);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.decor-square{border-radius:10px}.decor-diamond{border-radius:8px;transform:translate(-50%,-50%) rotate(45deg)}.decor-star{-webkit-clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}.decor-triangle{-webkit-clip-path:polygon(50% 0%,0 100%,100% 100%);clip-path:polygon(50% 0%,0 100%,100% 100%)}.decor-pill{border-radius:999px}.decor-bar{border-radius:999px}.preview-toolbar-wrap{position:sticky;top:76px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background:rgba(var(--v-theme-primary))}.signature-footer{margin-top:32px}.signature-image{height:68px;object-fit:contain}
+@media print{.preview-toolbar-wrap,.app-page-drawers,.avatar-overlay{display:none !important}}h1{font-size:48px;margin:0}p{font-size:var(--body-size);color:var(--body-color)}.meta{font-size:16px}h2{color:var(--cp-primary);font-size:32px;margin:0 0 16px}section{border-top:3px var(--section-divider-style) var(--section-divider-color);padding-top:24px;margin-top:var(--section-spacing)}.decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}.decor-circle{border-radius:999px}.decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}.decor-blob{border-radius:40% 60% 55% 45% / 50% 35% 65% 50%}.decor-square{border-radius:10px}.decor-diamond{border-radius:8px;transform:translate(-50%,-50%) rotate(45deg)}.decor-star{-webkit-clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}.decor-triangle{-webkit-clip-path:polygon(50% 0%,0 100%,100% 100%);clip-path:polygon(50% 0%,0 100%,100% 100%)}.decor-pill{border-radius:999px}.decor-bar{border-radius:999px}.preview-toolbar-wrap{position:sticky;top:76px;z-index:20;display:flex;justify-content:center}.preview-toolbar-row{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1px solid rgba(148,163,184,.35);border-radius:999px;background:rgba(var(--v-theme-primary))}.signature-footer{margin-top:32px;display:flex;justify-content:flex-end}.signature-box{position:relative;display:inline-flex;align-items:flex-end}.signature-menu-btn{position:absolute;top:-10px;right:-10px;opacity:0;transition:opacity .15s ease}.signature-box:hover .signature-menu-btn,.signature-box:focus-within .signature-menu-btn{opacity:1}.signature-image{height:68px;object-fit:contain}
 
 @media (prefers-color-scheme: dark) {
   .capture-cover-page,
