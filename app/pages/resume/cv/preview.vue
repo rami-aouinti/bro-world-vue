@@ -727,7 +727,7 @@ async function downloadPdf() {
   const printWindow = window.open('', '_blank', 'width=900,height=1300')
   if (!printWindow) return
   const headStyles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]')).map((el) => el.outerHTML).join('')
-  printWindow.document.write(`<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.cv-preview-shell{width:210mm;box-sizing:border-box;margin:0}.resume-preview-page-break{display:none!important}.cv-section-toolbar,.cv-photo-menu-btn{display:none!important}.hover-editor__toolbar,.hover-editor__placeholder{display:none!important}.hover-editor__surface,[contenteditable='true'],.hover-editor__content{border:none!important;outline:none!important;box-shadow:none!important}</style></head><body>${node.outerHTML}</body></html>`)
+  printWindow.document.write(`<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.cv-preview-shell{width:210mm;box-sizing:border-box;margin:0}.resume-preview-page-break{display:none!important}.cv-section-toolbar,.cv-photo-menu-btn{display:none!important}</style></head><body>${node.outerHTML}</body></html>`)
   printWindow.document.close()
   await new Promise((resolve) => setTimeout(resolve, 900))
   printWindow.focus()
