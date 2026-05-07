@@ -150,6 +150,7 @@ export type RecruitResumeInformation = {
 export type RecruitResume = {
   id: string
   documentUrl: string | null
+  active?: boolean
   resumeInformation?: RecruitResumeInformation | null
   experiences: RecruitResumeSection[]
   educations: RecruitResumeSection[]
