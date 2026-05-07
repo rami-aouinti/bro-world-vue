@@ -48,6 +48,38 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
+
+function clearContent() {
+  editor.value?.commands.clearContent()
+  emit('update:modelValue', '')
+}
+
+function addLineBreak() {
+  editor.value?.chain().focus().setHardBreak().run()
+}
+
+function removeLastLineBreak() {
+  const current = editor.value?.getText({ blockSeparator: '\n' }) || ''
+  const next = current.replace(/\n+$/, '')
+  editor.value?.commands.setContent(next || '<p></p>')
+  emit('update:modelValue', next)
+}
+
+function onDragStart(event: DragEvent) {
+  const text = editor.value?.getText({ blockSeparator: '\n' }) || ''
+  event.dataTransfer?.setData('text/plain', text)
+  event.dataTransfer?.setData('application/x-resume-editor-text', text)
+  event.dataTransfer?.setData('application/x-resume-editor-origin', props.modelValue || '')
+  event.dataTransfer?.setDragImage((event.currentTarget as HTMLElement), 10, 10)
+}
+
+function onDrop(event: DragEvent) {
+  event.preventDefault()
+  const droppedText = event.dataTransfer?.getData('application/x-resume-editor-text')
+    || event.dataTransfer?.getData('text/plain')
+  if (!droppedText) return
+  editor.value?.chain().focus().insertContent(droppedText).run()
+}
 const hover = ref(false)
 const selectedColor = ref('#0f172a')
 const selectedSize = ref('24px')
@@ -94,6 +126,8 @@ watch(() => props.fontWeight, (value) => {
     class="hover-editor"
     @mouseenter="hover = true"
     @mouseleave="hover = false"
+    @dragover.prevent
+    @drop="onDrop"
   >
     <label v-if="label" class="text-body-2 mb-2 d-inline-block">{{ label }}</label>
     <div v-show="hover" class="hover-editor__toolbar">
@@ -134,39 +168,10 @@ watch(() => props.fontWeight, (value) => {
         @click="editor?.chain().focus().toggleItalic().run()"
         >I</v-btn
       >
-      <v-btn
-        size="x-small"
-        variant="text"
-        :active="editor?.isActive('strike')"
-        @click="editor?.chain().focus().toggleStrike().run()"
-        >S</v-btn
-      >
-      <v-btn
-        size="x-small"
-        variant="text"
-        :active="editor?.isActive('orderedList')"
-        @click="editor?.chain().focus().toggleOrderedList().run()"
-        >1.</v-btn
-      >
-      <v-btn
-        size="x-small"
-        variant="text"
-        @click="editor?.chain().focus().undo().run()"
-        >↶</v-btn
-      >
-      <v-btn
-        size="x-small"
-        variant="text"
-        @click="editor?.chain().focus().redo().run()"
-        >↷</v-btn
-      >
-      <v-btn
-        size="x-small"
-        variant="text"
-        :active="editor?.isActive('bulletList')"
-        @click="editor?.chain().focus().toggleBulletList().run()"
-        >•</v-btn
-      >
+      <v-btn size="x-small" variant="text" icon="mdi-trash-can-outline" @click="clearContent" />
+      <v-btn size="x-small" variant="text" icon="mdi-arrow-up" @click="removeLastLineBreak" />
+      <v-btn size="x-small" variant="text" icon="mdi-arrow-down" @click="addLineBreak" />
+      <v-btn size="x-small" variant="text" icon="mdi-drag" class="toolbar-drag" draggable="true" @dragstart="onDragStart" />
     </div>
     <div
       class="hover-editor__surface"
@@ -185,6 +190,7 @@ watch(() => props.fontWeight, (value) => {
 .hover-editor__toolbar {
   display: flex;
   gap: 4px;
+  padding: 2px 0;
   margin-bottom: 6px;
   align-items: center;
 }
@@ -217,5 +223,7 @@ watch(() => props.fontWeight, (value) => {
 :deep(.hover-editor__content p) {
   font-family: var(--editor-font-family);
 }
+.toolbar-drag { cursor: grab; }
+.toolbar-drag:active { cursor: grabbing; }
 
 </style>
