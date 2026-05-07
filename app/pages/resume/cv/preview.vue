@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-20-resume.json'
 import PALETTE_PRESETS from '~/data/resume-templates/palettes.json'
+import { buildToolbarPaletteOptions } from '~/modules/resume/theme/paletteOptions'
 import CvLayoutAside from '~/components/cv/layouts/CvLayoutAside.vue'
 import CvLayoutNoAside from '~/components/cv/layouts/CvLayoutNoAside.vue'
 import CvLayoutAsideLeft from '~/components/cv/layouts/CvLayoutAsideLeft.vue'
@@ -62,22 +63,7 @@ const cvLayoutComponentMap = {
 } as const
 
 const activeLayoutComponent = computed(() => cvLayoutComponentMap[activeTemplate.value?.layout as keyof typeof cvLayoutComponentMap] || CvLayoutNoAside)
-const palettePresetOptions = computed(() => [
-  {
-    title: 'Template',
-    value: 'template',
-    primary: activeTemplate.value.theme.palette.primary,
-    secondary: activeTemplate.value.theme.palette.secondary,
-    light: activeTemplate.value.theme.palette.pageBackground,
-  },
-  ...PALETTE_PRESETS.map((palette) => ({
-    title: palette.name,
-    value: palette.name,
-    primary: palette.primary,
-    secondary: palette.secondary,
-    light: palette.pageBackground,
-  })),
-])
+const palettePresetOptions = computed(() => buildToolbarPaletteOptions(activeTemplate.value.theme.palette, PALETTE_PRESETS, 100))
 const activeColors = computed(() => {
   const palette = activeTemplate.value?.theme?.palette || {}
   const selected = palettePresetOptions.value.find((option) => option.value === selectedPalette.value)
@@ -887,7 +873,7 @@ watch(activeTemplate, (template) => {
       v-model:palette-menu-open="paletteMenuOpen"
       :palettes="palettePresetOptions"
       :selected-palette="selectedPalette"
-      :palette-columns="5"
+      :palette-columns="10"
         :templates="GENERATED_RESUME_TEMPLATES"
         :selected-template="selectedTemplate"
         :get-template-image="(template) => `/img/cv/generated/${template.id}.png`"

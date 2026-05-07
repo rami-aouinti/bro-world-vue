@@ -4,6 +4,8 @@ import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.
 import ResumePreviewToolbar from '~/components/ResumePreviewToolbar.vue'
 import ResumePreviewPageBreak from '~/components/ResumePreviewPageBreak.vue'
 import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-20-cover-letter.json'
+import PALETTE_PRESETS from '~/data/resume-templates/palettes.json'
+import { buildToolbarPaletteOptions } from '~/modules/resume/theme/paletteOptions'
 import { resolveResumeTextFont, useResumeGoogleFonts } from '~/composables/useResumeGoogleFonts'
 
 definePageMeta({ title: 'Resume · Cover Letter Preview' })
@@ -24,38 +26,7 @@ const imageBorderColor = ref('#0f172a')
 const photoPosition = ref<'left' | 'right'>('left')
 const selectedPalette = ref<string>('template')
 const paletteMenuOpen = ref(false)
-const palettePresetOptions = computed(() => [
-  { title: 'Template', value: 'template', primary: activeTemplate.value.theme.palette.primary, dark: activeTemplate.value.theme.palette.secondary, light: activeTemplate.value.theme.palette.pageBackground },
-  { title: 'Ocean', value: 'ocean', primary: '#2563EB', dark: '#1D4ED8', light: '#EFF6FF' },
-  { title: 'Indigo', value: 'indigo', primary: '#4F46E5', dark: '#3730A3', light: '#EEF2FF' },
-  { title: 'Violet', value: 'violet', primary: '#7C3AED', dark: '#5B21B6', light: '#F5F3FF' },
-  { title: 'Slate', value: 'slate', primary: '#334155', dark: '#1E293B', light: '#F8FAFC' },
-  { title: 'Olive', value: 'olive', primary: '#A3A86C', dark: '#7E8A5B', light: '#F7F8EE' },
-  { title: 'Sage', value: 'sage', primary: '#8AA07A', dark: '#647860', light: '#F3F7F1' },
-  { title: 'Emerald', value: 'emerald', primary: '#059669', dark: '#047857', light: '#ECFDF5' },
-  { title: 'Rose', value: 'rose', primary: '#E11D48', dark: '#BE123C', light: '#FFF1F2' },
-  { title: 'Sky', value: 'sky', primary: '#0EA5E9', dark: '#0284C7', light: '#F0F9FF' },
-  { title: 'Sunset', value: 'sunset', primary: '#C2410C', dark: '#9A3412', light: '#FFF7ED' },
-  { title: 'Amber', value: 'amber', primary: '#D97706', dark: '#B45309', light: '#FFFBEB' },
-  { title: 'Charcoal', value: 'charcoal', primary: '#3F3F46', dark: '#27272A', light: '#FAFAFA' },
-  { title: 'Plum', value: 'plum', primary: '#7E3F8F', dark: '#5B2C6F', light: '#FAF5FF' },
-  { title: 'Teal', value: 'teal', primary: '#0F766E', dark: '#115E59', light: '#F0FDFA' },
-  { title: 'Cobalt', value: 'cobalt', primary: '#1D4ED8', dark: '#1E3A8A', light: '#EFF6FF' },
-  { title: 'Coral', value: 'coral', primary: '#F97316', dark: '#C2410C', light: '#FFF7ED' },
-  { title: 'Mint', value: 'mint', primary: '#10B981', dark: '#047857', light: '#ECFDF5' },
-  { title: 'Lavender', value: 'lavender', primary: '#A78BFA', dark: '#6D28D9', light: '#F5F3FF' },
-  { title: 'Ruby', value: 'ruby', primary: '#DC2626', dark: '#991B1B', light: '#FEF2F2' },
-  { title: 'Forest', value: 'forest', primary: '#166534', dark: '#14532D', light: '#F0FDF4' },
-  { title: 'Sand', value: 'sand', primary: '#B45309', dark: '#92400E', light: '#FFFBEB' },
-  { title: 'Aqua', value: 'aqua', primary: '#0891B2', dark: '#155E75', light: '#ECFEFF' },
-  { title: 'Magenta', value: 'magenta', primary: '#C026D3', dark: '#86198F', light: '#FDF4FF' },
-  { title: 'Steel', value: 'steel', primary: '#64748B', dark: '#334155', light: '#F8FAFC' },
-  { title: 'Night', value: 'night', primary: '#0F172A', dark: '#020617', light: '#E2E8F0' },
-  { title: 'Peach', value: 'peach', primary: '#FB7185', dark: '#BE123C', light: '#FFF1F2' },
-  { title: 'Lime', value: 'lime', primary: '#65A30D', dark: '#3F6212', light: '#F7FEE7' },
-  { title: 'Orchid', value: 'orchid', primary: '#9333EA', dark: '#6B21A8', light: '#FAF5FF' },
-  { title: 'Graphite', value: 'graphite', primary: '#374151', dark: '#111827', light: '#F9FAFB' },
-])
+const palettePresetOptions = computed(() => buildToolbarPaletteOptions(activeTemplate.value.theme.palette, PALETTE_PRESETS, 100))
 const borderColorOptions = ['#0f172a', '#0F4C81', '#166534', '#C2410C', '#7C3AED', '#1D4ED8', '#DC2626']
 const dividerTypeOptions = [
   { title: 'Line', value: 'line' },
@@ -350,7 +321,7 @@ onBeforeUnmount(() => {
       v-model:palette-menu-open="paletteMenuOpen"
       :palettes="palettePresetOptions"
       :selected-palette="selectedPalette"
-      :palette-columns="5"
+      :palette-columns="10"
       :templates="coverLetterTemplates"
       :selected-template="selectedTemplate"
       template-key-prefix="cover-letter-preview"
