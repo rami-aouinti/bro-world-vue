@@ -55,13 +55,30 @@ function clearContent() {
 }
 
 function addLineBreak() {
-  const next = `${editor.value?.getText({ blockSeparator: '\n' }) || ''}\n`.trimEnd()
-  emit('update:modelValue', next ? `${next}\n` : '\n')
+  editor.value?.chain().focus().setHardBreak().run()
 }
 
 function removeLastLineBreak() {
   const current = editor.value?.getText({ blockSeparator: '\n' }) || ''
-  emit('update:modelValue', current.replace(/\n+$/, ''))
+  const next = current.replace(/\n+$/, '')
+  editor.value?.commands.setContent(next || '<p></p>')
+  emit('update:modelValue', next)
+}
+
+function onDragStart(event: DragEvent) {
+  const text = editor.value?.getText({ blockSeparator: '\n' }) || ''
+  event.dataTransfer?.setData('text/plain', text)
+  event.dataTransfer?.setData('application/x-resume-editor-text', text)
+  event.dataTransfer?.setData('application/x-resume-editor-origin', props.modelValue || '')
+  event.dataTransfer?.setDragImage((event.currentTarget as HTMLElement), 10, 10)
+}
+
+function onDrop(event: DragEvent) {
+  event.preventDefault()
+  const droppedText = event.dataTransfer?.getData('application/x-resume-editor-text')
+    || event.dataTransfer?.getData('text/plain')
+  if (!droppedText) return
+  editor.value?.chain().focus().insertContent(droppedText).run()
 }
 const hover = ref(false)
 const selectedColor = ref('#0f172a')
@@ -109,6 +126,8 @@ watch(() => props.fontWeight, (value) => {
     class="hover-editor"
     @mouseenter="hover = true"
     @mouseleave="hover = false"
+    @dragover.prevent
+    @drop="onDrop"
   >
     <label v-if="label" class="text-body-2 mb-2 d-inline-block">{{ label }}</label>
     <div v-show="hover" class="hover-editor__toolbar">
@@ -152,7 +171,7 @@ watch(() => props.fontWeight, (value) => {
       <v-btn size="x-small" variant="text" icon="mdi-trash-can-outline" @click="clearContent" />
       <v-btn size="x-small" variant="text" icon="mdi-arrow-up" @click="removeLastLineBreak" />
       <v-btn size="x-small" variant="text" icon="mdi-arrow-down" @click="addLineBreak" />
-      <v-btn size="x-small" variant="text" icon="mdi-drag" class="toolbar-drag" draggable="true" />
+      <v-btn size="x-small" variant="text" icon="mdi-drag" class="toolbar-drag" draggable="true" @dragstart="onDragStart" />
     </div>
     <div
       class="hover-editor__surface"
