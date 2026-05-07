@@ -357,8 +357,18 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
   width:min(100%, 850px);
   min-height:1123px;
   padding:64px;
+  padding-bottom:74px;
   background:var(--cp-bg);
   color:var(--cp-text)
+}
+.capture-cover-page::after{
+  content:'';
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:10px;
+  background:#fff;
 }
 .hero{
   border-left:var(--bar-primary-width) solid var(--cp-primary);
