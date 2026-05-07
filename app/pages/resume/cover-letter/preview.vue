@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { listMyResumes } from '~/services/resumeApi'
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
+import ResumePreviewToolbar from '~/components/ResumePreviewToolbar.vue'
+import ResumePreviewPageBreak from '~/components/ResumePreviewPageBreak.vue'
 import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-20-cover-letter.json'
 import { resolveResumeTextFont, useResumeGoogleFonts } from '~/composables/useResumeGoogleFonts'
 

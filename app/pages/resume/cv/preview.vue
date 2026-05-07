@@ -12,6 +12,8 @@ import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 import { resolveResumeTextFont, useResumeGoogleFonts } from '~/composables/useResumeGoogleFonts'
 
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
+import ResumePreviewToolbar from '~/components/ResumePreviewToolbar.vue'
+import ResumePreviewPageBreak from '~/components/ResumePreviewPageBreak.vue'
 import CvEditableSectionContent from '~/components/cv/sections/CvEditableSectionContent.vue'
 
 const { t } = useI18n()
