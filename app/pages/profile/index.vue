@@ -130,12 +130,12 @@ const resumeForm = reactive<Record<ResumeSectionKey, ResumeSectionForm[]>>({
 
 const fullName = computed(() => {
   const _user = profile.value
-  if (!user) {
+  if (!_user) {
     return ''
   }
 
   return (
-    [user.firstName, _user.lastName].filter(Boolean).join(' ') || _user.username
+    [_user.firstName, _user.lastName].filter(Boolean).join(' ') || _user.username
   )
 })
 
