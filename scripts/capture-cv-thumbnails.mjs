@@ -76,7 +76,7 @@ for (const tpl of generatedCvTemplates) {
       x: box.x,
       y: box.y,
       width: box.width,
-      height: 850,
+      height: 820,
     },
   })
 
