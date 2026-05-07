@@ -67,7 +67,13 @@ function paletteValue(palette: PaletteOption) {
               @click="emit('select-template', templateId(template))"
             >
               <img v-if="getTemplateImage" :src="getTemplateImage(template)" :alt="templateLabel(template)">
-              <span>{{ templateLabel(template) }}</span>
+              <div class="template-option__meta">
+                <v-avatar class="template-option__avatar" size="24">
+                  <img v-if="getTemplateImage" :src="getTemplateImage(template)" :alt="templateLabel(template)">
+                  <span v-else>{{ templateLabel(template).slice(0, 1).toUpperCase() }}</span>
+                </v-avatar>
+                <span>{{ templateLabel(template) }}</span>
+              </div>
             </button>
           </div>
         </v-card>
@@ -85,7 +91,7 @@ function paletteValue(palette: PaletteOption) {
               class="palette-dot"
               :class="{ 'palette-dot--active': selectedPalette === paletteValue(palette) }"
               :title="paletteLabel(palette)"
-              :style="{ background: palette.primary || palette.light || '#cbd5e1' }"
+              :style="{ '--palette-primary': palette.primary || '#cbd5e1', '--palette-secondary': palette.secondary || palette.dark || '#94a3b8', '--palette-light': palette.light || '#e2e8f0' }"
               @click="emit('select-palette', paletteValue(palette))"
             />
           </div>
@@ -127,13 +133,25 @@ function paletteValue(palette: PaletteOption) {
 }
 
 .template-option {
-  border: 1px solid #cbd5e1;
+  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-on-surface)) 18%, transparent);
   border-radius: 10px;
-  background: #fff;
+  background: rgb(var(--v-theme-surface));
   padding: 8px;
   text-align: left;
   display: grid;
   gap: 6px;
+}
+
+.template-option__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgb(var(--v-theme-on-surface));
+}
+
+.template-option__avatar {
+  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-on-surface)) 16%, transparent);
+  background: color-mix(in srgb, rgb(var(--v-theme-primary)) 24%, rgb(var(--v-theme-surface)));
 }
 
 .template-option img {
@@ -155,10 +173,19 @@ function paletteValue(palette: PaletteOption) {
 }
 
 .palette-dot {
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   border-radius: 999px;
-  border: 1px solid #94a3b8;
+  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-on-surface)) 18%, transparent);
+  background: linear-gradient(
+    135deg,
+    var(--palette-primary) 0%,
+    var(--palette-primary) 33%,
+    var(--palette-secondary) 33%,
+    var(--palette-secondary) 66%,
+    var(--palette-light) 66%,
+    var(--palette-light) 100%
+  );
 }
 
 .palette-dot--active {
