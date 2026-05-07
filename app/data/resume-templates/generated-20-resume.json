@@ -292,6 +292,149 @@
       "height": 3,
       "width": "flex",
       "raduis": 999
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 34,
+          "max": 54
+        },
+        "styles": [
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#111827"
+        ]
+      },
+      "title": {
+        "size": {
+          "min": 18,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "sectionTitle": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#64748B"
+        ]
+      },
+      "entryTitle": {
+        "size": {
+          "min": 14,
+          "max": 22
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#64748B"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "description": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      },
+      "bullet": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      },
+      "contact": {
+        "size": {
+          "min": 11,
+          "max": 16
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      }
     }
   },
   {
@@ -587,6 +730,149 @@
       "height": 3,
       "width": "flex",
       "raduis": 999
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 34,
+          "max": 54
+        },
+        "styles": [
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#111827"
+        ]
+      },
+      "title": {
+        "size": {
+          "min": 18,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "sectionTitle": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "entryTitle": {
+        "size": {
+          "min": 14,
+          "max": 22
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "description": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "bullet": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "contact": {
+        "size": {
+          "min": 11,
+          "max": 16
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      }
     }
   },
   {
@@ -899,6 +1185,149 @@
       "height": 3,
       "width": "flex",
       "raduis": 999
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 34,
+          "max": 54
+        },
+        "styles": [
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#111827"
+        ]
+      },
+      "title": {
+        "size": {
+          "min": 18,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "sectionTitle": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#64748B"
+        ]
+      },
+      "entryTitle": {
+        "size": {
+          "min": 14,
+          "max": 22
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#64748B"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "description": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      },
+      "bullet": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      },
+      "contact": {
+        "size": {
+          "min": 11,
+          "max": 16
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      }
     }
   },
   {
@@ -1210,6 +1639,149 @@
       "height": 3,
       "width": "flex",
       "raduis": 999
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 34,
+          "max": 54
+        },
+        "styles": [
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#111827"
+        ]
+      },
+      "title": {
+        "size": {
+          "min": 18,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "sectionTitle": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "entryTitle": {
+        "size": {
+          "min": 14,
+          "max": 22
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "description": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "bullet": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "contact": {
+        "size": {
+          "min": 11,
+          "max": 16
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      }
     }
   },
   {
@@ -1521,6 +2093,149 @@
       "height": 3,
       "width": "flex",
       "raduis": 999
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 34,
+          "max": 54
+        },
+        "styles": [
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#111827"
+        ]
+      },
+      "title": {
+        "size": {
+          "min": 18,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "sectionTitle": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#64748B"
+        ]
+      },
+      "entryTitle": {
+        "size": {
+          "min": 14,
+          "max": 22
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#64748B"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "description": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      },
+      "bullet": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      },
+      "contact": {
+        "size": {
+          "min": 11,
+          "max": 16
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      }
     }
   },
   {
@@ -1832,6 +2547,149 @@
       "height": 3,
       "width": "flex",
       "raduis": 999
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 34,
+          "max": 54
+        },
+        "styles": [
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#111827"
+        ]
+      },
+      "title": {
+        "size": {
+          "min": 18,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "sectionTitle": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "entryTitle": {
+        "size": {
+          "min": 14,
+          "max": 22
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "description": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "bullet": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "contact": {
+        "size": {
+          "min": 11,
+          "max": 16
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      }
     }
   },
   {
@@ -2143,6 +3001,149 @@
       "height": 3,
       "width": "flex",
       "raduis": 999
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 34,
+          "max": 54
+        },
+        "styles": [
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#111827"
+        ]
+      },
+      "title": {
+        "size": {
+          "min": 18,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "sectionTitle": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#64748B"
+        ]
+      },
+      "entryTitle": {
+        "size": {
+          "min": 14,
+          "max": 22
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#64748B"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "description": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      },
+      "bullet": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      },
+      "contact": {
+        "size": {
+          "min": 11,
+          "max": 16
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      }
     }
   },
   {
@@ -2454,6 +3455,149 @@
       "height": 3,
       "width": "flex",
       "raduis": 999
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 34,
+          "max": 54
+        },
+        "styles": [
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#111827"
+        ]
+      },
+      "title": {
+        "size": {
+          "min": 18,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "sectionTitle": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "entryTitle": {
+        "size": {
+          "min": 14,
+          "max": 22
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "description": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "bullet": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "contact": {
+        "size": {
+          "min": 11,
+          "max": 16
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      }
     }
   },
   {
@@ -2765,6 +3909,149 @@
       "height": 3,
       "width": "flex",
       "raduis": 999
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 34,
+          "max": 54
+        },
+        "styles": [
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#111827"
+        ]
+      },
+      "title": {
+        "size": {
+          "min": 18,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "sectionTitle": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#64748B"
+        ]
+      },
+      "entryTitle": {
+        "size": {
+          "min": 14,
+          "max": 22
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#64748B"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "description": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      },
+      "bullet": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      },
+      "contact": {
+        "size": {
+          "min": 11,
+          "max": 16
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      }
     }
   },
   {
@@ -3076,6 +4363,149 @@
       "height": 3,
       "width": "flex",
       "raduis": 999
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 34,
+          "max": 54
+        },
+        "styles": [
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#111827"
+        ]
+      },
+      "title": {
+        "size": {
+          "min": 18,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "sectionTitle": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "entryTitle": {
+        "size": {
+          "min": 14,
+          "max": 22
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "description": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "bullet": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "contact": {
+        "size": {
+          "min": 11,
+          "max": 16
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      }
     }
   },
   {
@@ -3367,6 +4797,149 @@
       "height": 3,
       "width": "flex",
       "raduis": 999
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 34,
+          "max": 54
+        },
+        "styles": [
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#111827"
+        ]
+      },
+      "title": {
+        "size": {
+          "min": 18,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "sectionTitle": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#64748B"
+        ]
+      },
+      "entryTitle": {
+        "size": {
+          "min": 14,
+          "max": 22
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#64748B"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "description": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      },
+      "bullet": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      },
+      "contact": {
+        "size": {
+          "min": 11,
+          "max": 16
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      }
     }
   },
   {
@@ -3658,6 +5231,149 @@
       "height": 3,
       "width": "flex",
       "raduis": 999
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 34,
+          "max": 54
+        },
+        "styles": [
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#111827"
+        ]
+      },
+      "title": {
+        "size": {
+          "min": 18,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "sectionTitle": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "entryTitle": {
+        "size": {
+          "min": 14,
+          "max": 22
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "description": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "bullet": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "contact": {
+        "size": {
+          "min": 11,
+          "max": 16
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      }
     }
   },
   {
@@ -3969,6 +5685,149 @@
       "height": 3,
       "width": "flex",
       "raduis": 999
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 34,
+          "max": 54
+        },
+        "styles": [
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#111827"
+        ]
+      },
+      "title": {
+        "size": {
+          "min": 18,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "sectionTitle": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#64748B"
+        ]
+      },
+      "entryTitle": {
+        "size": {
+          "min": 14,
+          "max": 22
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#64748B"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "description": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      },
+      "bullet": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      },
+      "contact": {
+        "size": {
+          "min": 11,
+          "max": 16
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      }
     }
   },
   {
@@ -4280,6 +6139,149 @@
       "height": 3,
       "width": "flex",
       "raduis": 999
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 34,
+          "max": 54
+        },
+        "styles": [
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#111827"
+        ]
+      },
+      "title": {
+        "size": {
+          "min": 18,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "sectionTitle": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "entryTitle": {
+        "size": {
+          "min": 14,
+          "max": 22
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#1F2937",
+          "#7C3AED"
+        ]
+      },
+      "description": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "bullet": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "contact": {
+        "size": {
+          "min": 11,
+          "max": 16
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#1F2937",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      }
     }
   }
 ]

@@ -66,20 +66,27 @@ function removeLastLineBreak() {
 }
 
 function onDragStart(event: DragEvent) {
-  const text = editor.value?.getText({ blockSeparator: '\n' }) || ''
-  event.dataTransfer?.setData('text/plain', text)
-  event.dataTransfer?.setData('application/x-resume-editor-text', text)
-  event.dataTransfer?.setData('application/x-resume-editor-origin', props.modelValue || '')
-  event.dataTransfer?.setDragImage((event.currentTarget as HTMLElement), 10, 10)
+  const dataTransfer = event.dataTransfer
+  if (!dataTransfer) return
+  dataTransfer.setData('application/x-resume-editor-id', editorInstanceId)
+  dataTransfer.effectAllowed = 'move'
+  dataTransfer.setDragImage((event.currentTarget as HTMLElement), 10, 10)
 }
 
 function onDrop(event: DragEvent) {
   event.preventDefault()
-  const droppedText = event.dataTransfer?.getData('application/x-resume-editor-text')
-    || event.dataTransfer?.getData('text/plain')
-  if (!droppedText) return
-  editor.value?.chain().focus().insertContent(droppedText).run()
+  const sourceId = event.dataTransfer?.getData('application/x-resume-editor-id')
+  if (!sourceId || sourceId === editorInstanceId) return
+
+  const sourceElement = document.querySelector<HTMLElement>(`[data-editor-id="${sourceId}"]`)
+  const targetElement = rootElement.value
+
+  if (!sourceElement || !targetElement || !targetElement.parentElement || sourceElement === targetElement) return
+
+  targetElement.parentElement.insertBefore(sourceElement, targetElement.nextSibling)
 }
+const editorInstanceId = `hover-editor-${Math.random().toString(36).slice(2, 11)}`
+const rootElement = ref<HTMLElement | null>(null)
 const hover = ref(false)
 const selectedColor = ref('#0f172a')
 const selectedSize = ref('24px')
@@ -123,7 +130,9 @@ watch(() => props.fontWeight, (value) => {
 
 <template>
   <div
+    ref="rootElement"
     class="hover-editor"
+    :data-editor-id="editorInstanceId"
     @mouseenter="hover = true"
     @mouseleave="hover = false"
     @dragover.prevent

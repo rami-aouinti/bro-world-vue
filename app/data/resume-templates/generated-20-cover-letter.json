@@ -255,6 +255,54 @@
           "#0F172A",
           "#BE123C"
         ]
+      },
+      "companyParagraph": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#BE123C"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#BE123C"
+        ]
+      },
+      "body": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#BE123C"
+        ]
       }
     },
     "designConfig": {
@@ -581,6 +629,54 @@
           "medium",
           "semibold",
           "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#065F46"
+        ]
+      },
+      "companyParagraph": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#065F46"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#065F46"
+        ]
+      },
+      "body": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
         ],
         "colors": [
           "#0F172A",
@@ -924,6 +1020,54 @@
           "#64748B",
           "#9A3412"
         ]
+      },
+      "companyParagraph": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#9A3412"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#9A3412"
+        ]
+      },
+      "body": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#9A3412"
+        ]
       }
     },
     "designConfig": {
@@ -1250,6 +1394,54 @@
           "medium",
           "semibold",
           "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#0F4C81"
+        ]
+      },
+      "companyParagraph": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#0F4C81"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#0F4C81"
+        ]
+      },
+      "body": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
         ],
         "colors": [
           "#0F172A",
@@ -1593,6 +1785,54 @@
           "#64748B",
           "#7C3AED"
         ]
+      },
+      "companyParagraph": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#7C3AED"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#7C3AED"
+        ]
+      },
+      "body": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#7C3AED"
+        ]
       }
     },
     "designConfig": {
@@ -1919,6 +2159,54 @@
           "medium",
           "semibold",
           "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#BE123C"
+        ]
+      },
+      "companyParagraph": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#BE123C"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#BE123C"
+        ]
+      },
+      "body": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
         ],
         "colors": [
           "#0F172A",
@@ -2262,6 +2550,54 @@
           "#64748B",
           "#065F46"
         ]
+      },
+      "companyParagraph": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#065F46"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#065F46"
+        ]
+      },
+      "body": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#065F46"
+        ]
       }
     },
     "designConfig": {
@@ -2593,6 +2929,54 @@
           "medium",
           "semibold",
           "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#9A3412"
+        ]
+      },
+      "companyParagraph": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#9A3412"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#9A3412"
+        ]
+      },
+      "body": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
         ],
         "colors": [
           "#0F172A",
@@ -2936,6 +3320,54 @@
           "#64748B",
           "#0F4C81"
         ]
+      },
+      "companyParagraph": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#0F4C81"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#0F4C81"
+        ]
+      },
+      "body": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#0F4C81"
+        ]
       }
     },
     "designConfig": {
@@ -3267,6 +3699,54 @@
           "medium",
           "semibold",
           "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#7C3AED"
+        ]
+      },
+      "companyParagraph": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#7C3AED"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#7C3AED"
+        ]
+      },
+      "body": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
         ],
         "colors": [
           "#0F172A",
@@ -3640,6 +4120,54 @@
           "#0F172A",
           "#BE123C"
         ]
+      },
+      "companyParagraph": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#BE123C"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#BE123C"
+        ]
+      },
+      "body": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#BE123C"
+        ]
       }
     },
     "designConfig": {
@@ -3998,6 +4526,54 @@
         "colors": [
           "#64748B",
           "#0F172A",
+          "#BE123C"
+        ]
+      },
+      "companyParagraph": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#BE123C"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#BE123C"
+        ]
+      },
+      "body": {
+        "size": {
+          "min": 16,
+          "max": 24
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
           "#BE123C"
         ]
       }
