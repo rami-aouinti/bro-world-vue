@@ -10,7 +10,6 @@ import CvLayoutAsideFullLeft from '~/components/cv/layouts/CvLayoutAsideFullLeft
 import CvLayoutAsideFullRight from '~/components/cv/layouts/CvLayoutAsideFullRight.vue'
 import CvLayoutAsideBarLeft from '~/components/cv/layouts/CvLayoutAsideBarLeft.vue'
 import CvLayoutAsideBarRight from '~/components/cv/layouts/CvLayoutAsideBarRight.vue'
-import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 import {
   resolveResumeTextFont,
   useResumeGoogleFonts,
@@ -24,7 +23,7 @@ import CvEditableSectionContent from '~/components/cv/sections/CvEditableSection
 const { t } = useI18n()
 
 definePageMeta({
-  title: 'resumePreview.cv.metaTitle',
+  title: 'Resume · CV Preview',
   layout: 'resume',
 })
 
@@ -37,8 +36,6 @@ const queryTemplateId =
   typeof route.query.template === 'string' ? route.query.template : ''
 const queryPaletteId =
   typeof route.query.palette === 'string' ? route.query.palette : ''
-const { loggedIn, user } = useUserSession()
-const myResumes = ref<ResumeApiItem[]>([])
 const selectedTemplate = ref(GENERATED_RESUME_TEMPLATES[0]?.id || 'tpl-001')
 const layoutMenuOpen = ref(false)
 const paletteMenuOpen = ref(false)
@@ -448,8 +445,7 @@ const headerType = computed(() =>
 const templateFakeData = computed(
   () => (activeTemplate.value as any)?.fakeData || {},
 )
-const userResumeData = computed<any>(() => myResumes.value[0] || null)
-const fakeData = computed(() => userResumeData.value || templateFakeData.value)
+const fakeData = computed(() => templateFakeData.value)
 const sectionType = (
   key: keyof ReturnType<(typeof sectionVariantMap)['value']>,
 ) => sectionVariantMap.value[key] || 'classic'
@@ -1106,7 +1102,7 @@ function openAiModal() {
 
 async function generateResumeOfferMatch() {
   if (!matchOfferText.value.trim() || matchOfferLoading.value) return
-  const token = user.value?.token?.trim()
+  const token = ''
   if (!token) return
   matchOfferLoading.value = true
   matchOfferResult.value = null
@@ -1216,16 +1212,6 @@ function initCanvas() {
 }
 
 onMounted(async () => {
-  if (loggedIn.value && !isCaptureMode.value) {
-    try {
-      const resumes = await listMyResumes()
-      if (Array.isArray(resumes) && resumes.length > 0)
-        myResumes.value = resumes
-    } catch {
-      // keep template fake data fallback
-    }
-  }
-
   await nextTick()
   scheduleCvPreviewMeasure(true)
   if (import.meta.client && 'ResizeObserver' in window && cvPreviewRef.value) {

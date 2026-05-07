@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { listMyResumes } from '~/services/resumeApi'
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 import ResumePreviewToolbar from '~/components/ResumePreviewToolbar.vue'
 import ResumePreviewPageBreak from '~/components/ResumePreviewPageBreak.vue'
@@ -11,7 +10,7 @@ import {
   useResumeGoogleFonts,
 } from '~/composables/useResumeGoogleFonts'
 
-definePageMeta({ title: 'resumePreview.coverLetter.metaTitle' })
+definePageMeta({ title: 'Resume · Cover Letter Template Create' })
 const { t } = useI18n()
 useHead(() => ({
   title: t('resumePreview.coverLetter.metaTitle'),
@@ -579,18 +578,6 @@ onMounted(async () => {
   const q = typeof route.query.template === 'string' ? route.query.template : ''
   if (q && coverLetterTemplates.value.some((t) => t.id === q))
     selectedTemplate.value = q
-  try {
-    const resumes = await listMyResumes()
-    const info = resumes?.[0]?.resumeInformation
-    if (info?.fullName) {
-      model.fullName = info.fullName
-      model.phone = info.fullName
-    }
-    if (info?.title) model.role = info.title
-    if (info?.photo) model.photoUrl = info.photo
-  } catch {
-    /* noop */
-  }
 })
 
 watch(
@@ -1020,7 +1007,7 @@ watch(aiModalOpen, (isOpen) => {
                 class="hero-role"
                 :font-family="textFontFamily('role')"
               />
-              <span class="hero-location">{{ model.location }}</span>
+              <v-text class="hero-location">{{ model.location }}</v-text>
             </div>
           </header>
           <section class="letter-body">

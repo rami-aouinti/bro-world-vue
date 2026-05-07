@@ -2,7 +2,6 @@
 import GENERATED_COVER_PAGE_TEMPLATES from '~/data/resume-templates/generated-20-cover-page.json'
 import PALETTE_PRESETS from '~/data/resume-templates/palettes.json'
 import { buildToolbarPaletteOptions } from '~/modules/resume/theme/paletteOptions'
-import { listMyResumes } from '~/services/resumeApi'
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 import ResumePreviewToolbar from '~/components/ResumePreviewToolbar.vue'
 import ResumePreviewPageBreak from '~/components/ResumePreviewPageBreak.vue'
@@ -11,7 +10,7 @@ import {
   useResumeGoogleFonts,
 } from '~/composables/useResumeGoogleFonts'
 
-definePageMeta({ title: 'resumePreview.coverPage.metaTitle' })
+definePageMeta({ title: 'Resume · Cover Page Template Create' })
 const { t } = useI18n()
 useHead(() => ({
   title: t('resumePreview.coverPage.metaTitle'),
@@ -562,18 +561,6 @@ onMounted(async () => {
   const q = typeof route.query.template === 'string' ? route.query.template : ''
   if (q && coverPageTemplates.value.some((t) => t.id === q))
     selectedTemplate.value = q
-  try {
-    const resumes = await listMyResumes()
-    const info = resumes?.[0]?.resumeInformation
-    if (info?.fullName) model.fullName = info.fullName
-    if (info?.title) model.role = info.title
-    if (info?.profileText) model.summary = info.profileText
-    if (info?.email) model.email = info.email
-    if (info?.phone) model.phone = info.phone
-    if (info?.photo) model.photoUrl = info.photo
-  } catch {
-    /* noop */
-  }
 })
 
 watch(
@@ -978,7 +965,7 @@ watch(aiModalOpen, (isOpen) => {
                 :font-weight="elementStyles.role.weight"
                 :font-family="textFontFamily('role')"
               />
-              <span class="hero-location">{{ model.location }}</span>
+              <v-text class="hero-location">{{ model.location }}</v-text>
             </div>
           </header>
           <section>
