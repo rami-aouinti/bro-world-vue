@@ -789,22 +789,23 @@ watch(activeTemplate, (template) => {
     <AppPageDrawers>
       <template #left>
         <v-card-text>
-          <h3 class="text-subtitle-2 font-weight-bold mb-2">Template actif</h3>
-          <p class="text-body-2 mb-1">{{ activeTemplate?.name }}</p>
-          <p class="text-caption text-medium-emphasis mb-3">{{ activeTemplate?.id }} · {{ activeTemplate?.layout }}</p>
-          <v-slider v-model="asideWidth" label="Aside width (px)" :min="240" :max="1200" :step="2" hide-details class="mb-2"/>
-          <v-slider v-model="asideHeight" label="Aside height (px)" :min="120" :max="2600" :step="2" hide-details class="mb-2"/>
-          <v-slider v-model="asideRadius" label="Aside radius (px)" :min="0" :max="90" :step="1" hide-details/>
-          <v-divider class="my-3" />
-          <v-switch v-model="sectionBarConfig.show" label="Section bar" hide-details inset />
-          <AppSelect v-model="sectionBarConfig.widthType" :items="[{title:'Flex', value:'flex'},{title:'Complet', value:'complete'}]" label="Bar width mode" hide-details class="mt-2"/>
-          <v-slider v-model="sectionBarConfig.height" label="Bar height (px)" :min="1" :max="18" :step="1" hide-details class="mt-2"/>
-          <v-slider v-model="sectionBarConfig.radius" label="Bar radius (px)" :min="0" :max="999" :step="1" hide-details class="mt-2"/>
+          <p class="text-body-2" >Aside width</p>
+          <v-slider v-model="asideWidth" :min="240" :max="1200" :step="2" hide-details class="mb-2"/>
+          <p class="text-body-2" >Aside height</p>
+          <v-slider v-model="asideHeight" :min="120" :max="2600" :step="2" hide-details class="mb-2"/>
+          <p class="text-body-2" >Aside radius</p>
+          <v-slider v-model="asideRadius" :min="0" :max="90" :step="1" hide-details/>
+          <p class="text-body-2" >Bar heighth</p>
+          <v-slider v-model="sectionBarConfig.height" :min="1" :max="18" :step="1" hide-details class="mt-2"/>
+          <p class="text-body-2" >Bar radius</p>
+          <v-slider v-model="sectionBarConfig.radius" :min="0" :max="999" :step="1" hide-details class="mt-2"/>
         </v-card-text>
       </template>
 
       <template #right>
         <v-btn class="mt-3" size="small" variant="outlined" @click="addDecorObject">Add decor</v-btn>
+        <v-switch v-model="sectionBarConfig.show" label="Section bar" hide-details inset />
+        <AppSelect v-model="sectionBarConfig.widthType" :items="[{title:'Flex', value:'flex'},{title:'Complet', value:'complete'}]" label="Bar width mode" hide-details class="mt-2"/>
         <div class="mt-3 d-flex flex-column ga-2">
           <v-menu
             v-for="(obj,i) in editableDecorObjects"
