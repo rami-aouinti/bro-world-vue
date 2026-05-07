@@ -51,7 +51,7 @@ function hasText(value: unknown) {
 export function isSectionEmpty(resume: ResumeApiItem, sectionId: string) {
   if (sectionId === 'contact') {
     const info = resume.resumeInformation
-    return ![info?.email, info?.phone, info?.adresse, info?.birthDate, info?.homepage, info?.repo_profile].some(hasText)
+    return ![info?.email, info?.phone, info?.location, info?.adresse, info?.birthDate, info?.homepage, info?.repo_profile].some(hasText)
   }
   if (sectionId === 'profile') return !hasText(resume.resumeInformation?.profileText)
   if (sectionId === 'experience') return !(resume.experiences?.length)
