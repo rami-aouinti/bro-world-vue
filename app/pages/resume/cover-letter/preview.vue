@@ -33,6 +33,21 @@ const palettePresetOptions = computed(() => [
   { title: 'Charcoal', value: 'charcoal', primary: '#3F3F46', dark: '#27272A', light: '#FAFAFA' },
   { title: 'Plum', value: 'plum', primary: '#7E3F8F', dark: '#5B2C6F', light: '#FAF5FF' },
   { title: 'Teal', value: 'teal', primary: '#0F766E', dark: '#115E59', light: '#F0FDFA' },
+  { title: 'Cobalt', value: 'cobalt', primary: '#1D4ED8', dark: '#1E3A8A', light: '#EFF6FF' },
+  { title: 'Coral', value: 'coral', primary: '#F97316', dark: '#C2410C', light: '#FFF7ED' },
+  { title: 'Mint', value: 'mint', primary: '#10B981', dark: '#047857', light: '#ECFDF5' },
+  { title: 'Lavender', value: 'lavender', primary: '#A78BFA', dark: '#6D28D9', light: '#F5F3FF' },
+  { title: 'Ruby', value: 'ruby', primary: '#DC2626', dark: '#991B1B', light: '#FEF2F2' },
+  { title: 'Forest', value: 'forest', primary: '#166534', dark: '#14532D', light: '#F0FDF4' },
+  { title: 'Sand', value: 'sand', primary: '#B45309', dark: '#92400E', light: '#FFFBEB' },
+  { title: 'Aqua', value: 'aqua', primary: '#0891B2', dark: '#155E75', light: '#ECFEFF' },
+  { title: 'Magenta', value: 'magenta', primary: '#C026D3', dark: '#86198F', light: '#FDF4FF' },
+  { title: 'Steel', value: 'steel', primary: '#64748B', dark: '#334155', light: '#F8FAFC' },
+  { title: 'Night', value: 'night', primary: '#0F172A', dark: '#020617', light: '#E2E8F0' },
+  { title: 'Peach', value: 'peach', primary: '#FB7185', dark: '#BE123C', light: '#FFF1F2' },
+  { title: 'Lime', value: 'lime', primary: '#65A30D', dark: '#3F6212', light: '#F7FEE7' },
+  { title: 'Orchid', value: 'orchid', primary: '#9333EA', dark: '#6B21A8', light: '#FAF5FF' },
+  { title: 'Graphite', value: 'graphite', primary: '#374151', dark: '#111827', light: '#F9FAFB' },
 ])
 const borderColorOptions = ['#0f172a', '#0F4C81', '#166534', '#C2410C', '#7C3AED', '#1D4ED8', '#DC2626']
 const dividerTypeOptions = [
@@ -196,37 +211,6 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
   <AppPageDrawers>
     <template #left>
      <v-card-text>
-       <div class="mt-3">
-         <v-menu v-model="paletteMenuOpen" :close-on-content-click="true">
-           <template #activator="{ props }">
-             <v-btn v-bind="props" variant="outlined" block justify="space-between" prepend-icon="mdi-palette">
-               Palette
-               <v-icon icon="mdi-chevron-down" />
-             </v-btn>
-           </template>
-           <v-list min-width="320">
-             <v-list-item title="Template palette" />
-             <v-list-item>
-               <div class="palette-grid">
-                 <button
-                   v-for="option in palettePresetOptions"
-                   :key="option.value"
-                   type="button"
-                   class="palette-swatch-btn"
-                   :class="{ 'palette-swatch-btn--active': selectedPalette === option.value }"
-                   @click="selectedPalette = option.value"
-                 >
-                   <div class="d-flex ga-1">
-                     <span class="palette-dot" :style="{ backgroundColor: option.primary }" />
-                     <span class="palette-dot" :style="{ backgroundColor: option.dark }" />
-                     <span class="palette-dot" :style="{ backgroundColor: option.light }" />
-                   </div>
-                 </button>
-               </div>
-             </v-list-item>
-           </v-list>
-         </v-menu>
-       </div>
        <AppSelect v-model="selectedDividerType" :items="dividerTypeOptions" label="Divider type" hide-details class="mt-3"/>
        <v-slider v-model="barRadius" label="Bar radius" :min="activeBarDesignConfig.barRadius.min" :max="activeBarDesignConfig.barRadius.max" step="1" hide-details class="mt-3"/>
        <AppSelect v-model="barLayout" :items="[{ title: 'No bar', value: 'none' }, { title: 'Single bar', value: 'single' }, { title: 'Double bars', value: 'double' }]" label="Bar layout" hide-details class="mt-3"/>
@@ -263,6 +247,10 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
   <v-container fluid>
     <ResumePreviewToolbar
       v-model:menu-open="layoutMenuOpen"
+      v-model:palette-menu-open="paletteMenuOpen"
+      :palettes="palettePresetOptions"
+      :selected-palette="selectedPalette"
+      :palette-columns="5"
       :templates="coverLetterTemplates"
       :selected-template="selectedTemplate"
       template-key-prefix="cover-letter-preview"
@@ -271,6 +259,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
       @signature="openSignatureDialog"
       @pdf="downloadPdf"
       @select-template="applyPreviewTemplate"
+      @select-palette="selectedPalette = $event"
     />
     <div class="py-8 d-flex justify-center preview-single-page-frame"><main class="capture-cover-letter" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-divider-color':sectionDividerColor,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
@@ -379,7 +368,4 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
 
 <style scoped>
 .palette-dot { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgb(var(--v-theme-on-surface), 0.2); }
-.palette-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
-.palette-swatch-btn { border: 1px solid rgba(148, 163, 184, 0.35); border-radius: 12px; background: transparent; padding: 8px; }
-.palette-swatch-btn--active { border-color: rgb(var(--v-theme-primary)); }
 </style>
