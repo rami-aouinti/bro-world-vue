@@ -292,6 +292,10 @@ const aiAboutText = ref('')
 const aiGenerating = ref(false)
 const aiProgress = ref(0)
 let aiProgressTimer: ReturnType<typeof setInterval> | undefined
+const aiFullName = ref('')
+const aiRole = ref('')
+const aiLocation = ref('')
+const aiPhotoUrl = ref('')
 
 const COVER_PREVIEW_PDF_PAGE_HEIGHT = 1100
 const coverPreviewRef = ref<HTMLElement | null>(null)
@@ -398,11 +402,14 @@ function openAiModal() {
 async function generateCoverLetterWithAi() {
   if (!aiAboutText.value.trim() || aiGenerating.value) return
   aiGenerating.value = true
-  aiProgress.value = 8
+  aiProgress.value = 1
+  const startedAt = Date.now()
   if (aiProgressTimer) window.clearInterval(aiProgressTimer)
   aiProgressTimer = window.setInterval(() => {
-    aiProgress.value = Math.min(92, aiProgress.value + 4)
-  }, 220)
+    const elapsed = Date.now() - startedAt
+    const targetProgress = Math.floor((elapsed / 120000) * 100)
+    aiProgress.value = Math.min(95, Math.max(aiProgress.value, targetProgress))
+  }, 1000)
   try {
     const response = await $fetch<{ textArea?: string }>(
       'https://bro-world.org/api/v1/recruit/cover-letters/generate',
@@ -412,8 +419,11 @@ async function generateCoverLetterWithAi() {
       },
     )
     const generatedText = response?.textArea?.trim()
+    if (aiFullName.value.trim()) model.fullName = aiFullName.value.trim()
+    if (aiRole.value.trim()) model.role = aiRole.value.trim()
+    if (aiLocation.value.trim()) model.location = aiLocation.value.trim()
+    if (aiPhotoUrl.value.trim()) model.photoUrl = aiPhotoUrl.value.trim()
     if (generatedText) {
-      model.summary = generatedText
       model.companyParagraph = generatedText
     }
     aiProgress.value = 100
@@ -428,6 +438,16 @@ async function generateCoverLetterWithAi() {
       aiProgress.value = 0
     }, 260)
   }
+}
+function onAiPhotoUpload(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  const reader = new FileReader()
+  reader.onload = () => {
+    aiPhotoUrl.value = String(reader.result || '')
+  }
+  reader.readAsDataURL(file)
 }
 function resetAiPromptTyping() {
   if (aiTypingTimer) window.clearInterval(aiTypingTimer)
@@ -617,7 +637,13 @@ onBeforeUnmount(() => {
   coverPreviewResizeObserver = undefined
 })
 watch(aiModalOpen, (isOpen) => {
-  if (isOpen) resetAiPromptTyping()
+  if (isOpen) {
+    aiFullName.value = model.fullName
+    aiRole.value = model.role
+    aiLocation.value = model.location
+    aiPhotoUrl.value = model.photoUrl
+    resetAiPromptTyping()
+  }
 })
 </script>
 <template>
@@ -985,6 +1011,7 @@ watch(aiModalOpen, (isOpen) => {
                 class="hero-role"
                 :font-family="textFontFamily('role')"
               />
+              <v-text class="hero-location">{{ model.location }}</v-text>
             </div>
           </header>
           <section class="letter-body">
@@ -995,10 +1022,6 @@ watch(aiModalOpen, (isOpen) => {
             />
             <HoverRichTextEditor
               v-model="model.companyParagraph"
-              :font-family="textFontFamily('body')"
-            />
-            <HoverRichTextEditor
-              v-model="model.summary"
               :font-family="textFontFamily('body')"
             />
             <HoverRichTextEditor
@@ -1055,10 +1078,13 @@ watch(aiModalOpen, (isOpen) => {
         <p class="mb-4">{{ aiPromptProgress }}</p>
         <v-row>
           <v-col cols="12" md="6"
-            ><v-text-field label="Full name" variant="outlined" hide-details
+            ><v-text-field v-model="aiFullName" label="Full name" variant="outlined" hide-details
           /></v-col>
           <v-col cols="12" md="6"
-            ><v-text-field label="Role" variant="outlined" hide-details
+            ><v-text-field v-model="aiRole" label="Role" variant="outlined" hide-details
+          /></v-col>
+          <v-col cols="12" md="6"
+            ><v-text-field v-model="aiLocation" label="Location" variant="outlined" hide-details
           /></v-col>
           <v-col cols="12" md="6"
             ><v-text-field label="Email" variant="outlined" hide-details
@@ -1082,6 +1108,7 @@ watch(aiModalOpen, (isOpen) => {
               variant="outlined"
               prepend-icon="mdi-image-plus"
               hide-details
+              @change="onAiPhotoUpload"
           /></v-col>
           <v-col cols="12"
             ><v-textarea
@@ -1275,6 +1302,10 @@ watch(aiModalOpen, (isOpen) => {
 .hero-role :deep(p) {
   margin: 0;
   font-size: 21px;
+  color: var(--cp-muted);
+}
+.hero-location {
+  margin-top: 4px;
   color: var(--cp-muted);
 }
 p {

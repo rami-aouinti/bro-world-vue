@@ -1304,6 +1304,16 @@ watch(
             hide-details
             class="mt-2"
           />
+          <v-btn
+            v-if="userResumeData"
+            class="mt-4"
+            color="primary"
+            variant="outlined"
+            block
+            @click="matchOfferModalOpen = true"
+          >
+            Correspondance with Offer
+          </v-btn>
         </v-card-text>
       </template>
 
