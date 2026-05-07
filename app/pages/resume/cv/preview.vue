@@ -31,6 +31,7 @@ const signatureDialogOpen = ref(false)
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const decorShapeOptions = ['circle', 'ring', 'blob', 'square', 'diamond', 'star', 'triangle', 'pill', 'bar']
 const editableDecorObjects = ref<any[]>([])
+const decorMenuOpenIndex = ref<number | null>(null)
 
 const activeTemplate = computed(() =>
   GENERATED_RESUME_TEMPLATES.find((template) => template.id === selectedTemplate.value) || GENERATED_RESUME_TEMPLATES[0],
@@ -88,6 +89,7 @@ function normalizeDecorObject(obj: any) {
     y: toPercentNumber(obj?.y, 50),
     size: toNumber(obj?.size, 120),
     opacity: toNumber(obj?.opacity, 0.15),
+    color: String(obj?.color ?? ''),
   }
 }
 
@@ -98,6 +100,14 @@ function decorObjectStyle(obj: any) {
   const opacity = toNumber(obj?.opacity, 0.15)
   const type = String(obj?.type ?? 'circle')
   const base: Record<string, string | number> = { left: `${x}%`, top: `${y}%`, opacity, width: `${size}px`, height: `${size}px` }
+  const color = String(obj?.color ?? '').trim()
+  if (color) base.backgroundColor = color
+
+  if (type === 'ring' && color) {
+    base.backgroundColor = 'transparent'
+    base.borderColor = color
+  }
+
   if (type === 'bar') {
     base.width = `${Math.round(size * 1.8)}px`
     base.height = `${Math.max(8, Math.round(size * 0.22))}px`
@@ -109,8 +119,15 @@ function decorObjectStyle(obj: any) {
   return base
 }
 
-function addDecorObject() { editableDecorObjects.value.push(normalizeDecorObject({ type: 'circle', x: 50, y: 50, size: 120, opacity: 0.15 })) }
-function removeDecorObject(index: number) { editableDecorObjects.value.splice(index, 1) }
+function addDecorObject() {
+  editableDecorObjects.value.push(normalizeDecorObject({ type: 'circle', x: 50, y: 50, size: 120, opacity: 0.15, color: '' }))
+  decorMenuOpenIndex.value = editableDecorObjects.value.length - 1
+}
+function removeDecorObject(index: number) {
+  editableDecorObjects.value.splice(index, 1)
+  if (decorMenuOpenIndex.value === index) decorMenuOpenIndex.value = null
+  if (decorMenuOpenIndex.value !== null && decorMenuOpenIndex.value > index) decorMenuOpenIndex.value -= 1
+}
 
 const structureOneSections = ['Profile', 'Experience', 'Education', 'Skills', 'Projects', 'Languages', 'Certification', 'References', 'Hobby']
 const structureTwoTopSections = ['Profile', 'Experience', 'Education']
@@ -787,14 +804,31 @@ watch(activeTemplate, (template) => {
 
       <template #right>
         <v-btn class="mt-3" size="small" variant="outlined" @click="addDecorObject">Add decor</v-btn>
-        <v-card v-for="(obj,i) in editableDecorObjects" :key="`obj-${i}`" class="mt-3 pa-2" variant="outlined">
-          <AppSelect v-model="obj.type" :items="decorShapeOptions.map((s)=>({title:s,value:s}))" label="Shape" hide-details class="mt-3"/>
-          <v-slider v-model="obj.x" label="X %" :min="0" :max="100" :step="1" hide-details class="mt-2"/>
-          <v-slider v-model="obj.y" label="Y %" :min="0" :max="100" :step="1" hide-details class="mt-2"/>
-          <v-slider v-model="obj.size" label="Size" :min="20" :max="420" :step="2" hide-details class="mt-2"/>
-          <v-slider v-model="obj.opacity" label="Opacity" :min="0.02" :max="0.35" :step="0.01" hide-details class="mt-2"/>
-          <v-btn size="x-small" color="error" variant="text" @click="removeDecorObject(i)">remove</v-btn>
-        </v-card>
+        <div class="mt-3 d-flex flex-column ga-2">
+          <v-menu
+            v-for="(obj,i) in editableDecorObjects"
+            :key="`obj-${i}`"
+            :model-value="decorMenuOpenIndex === i"
+            :close-on-content-click="false"
+            location="left start"
+            @update:model-value="(isOpen) => { decorMenuOpenIndex = isOpen ? i : (decorMenuOpenIndex === i ? null : decorMenuOpenIndex) }"
+          >
+            <template #activator="{ props }">
+              <v-btn v-bind="props" size="small" variant="tonal" class="justify-space-between" block>
+                Decor {{ i + 1 }} · {{ obj.type }}
+              </v-btn>
+            </template>
+            <v-card class="pa-3" min-width="260" @click.stop>
+              <AppSelect v-model="obj.type" :items="decorShapeOptions.map((s)=>({title:s,value:s}))" label="Type" hide-details/>
+              <v-text-field v-model="obj.color" label="Color" placeholder="#0ea5e9" hide-details class="mt-3"/>
+              <v-slider v-model="obj.size" label="Size" :min="20" :max="420" :step="2" hide-details class="mt-3"/>
+              <v-slider v-model="obj.opacity" label="Opacity" :min="0.02" :max="0.35" :step="0.01" hide-details class="mt-3"/>
+              <v-slider v-model="obj.x" label="X slider" :min="0" :max="100" :step="1" hide-details class="mt-3"/>
+              <v-slider v-model="obj.y" label="Y slider" :min="0" :max="100" :step="1" hide-details class="mt-3"/>
+              <v-btn size="x-small" color="error" variant="text" class="mt-2" @click="removeDecorObject(i)">remove</v-btn>
+            </v-card>
+          </v-menu>
+        </div>
       </template>
     </AppPageDrawers>
 

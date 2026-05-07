@@ -57,6 +57,7 @@ function textFontFamily(key: string, fallback: 'sans' | 'serif' | 'mono' | 'disp
   return resolveResumeTextFont((activeTemplate.value as any)?.textStyles?.[key], fallback)
 }
 const editableDecorObjects = ref<any[]>([])
+const decorMenuOpenIndex = ref<number | null>(null)
 const defaultDecorPresets = [
   { type: 'circle', x: 8, y: 6, size: 80, opacity: 0.08 },
   { type: 'diamond', x: 70, y: 75, size: 120, opacity: 0.08 },
@@ -101,6 +102,7 @@ function normalizeDecorObject(obj: any) {
     y: toPercentNumber(obj?.y, 50),
     size: toNumber(obj?.size, 120),
     opacity: toNumber(obj?.opacity, 0.15),
+    color: String(obj?.color ?? ''),
   }
 }
 
@@ -117,6 +119,14 @@ function decorObjectStyle(obj: any) {
     opacity,
     width: `${size}px`,
     height: `${size}px`,
+  }
+
+  const color = String(obj?.color ?? '').trim()
+  if (color) base.backgroundColor = color
+
+  if (type === 'ring' && color) {
+    base.backgroundColor = 'transparent'
+    base.borderColor = color
   }
 
   if (type === 'bar') {
@@ -250,14 +260,31 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
         </div>
       </v-card>
       <v-btn class="mt-3" size="small" variant="outlined" @click="addDecorObject">Add decor</v-btn>
-      <v-card v-for="(obj,i) in editableDecorObjects" :key="`obj-${i}`" class="mt-3 pa-2" variant="outlined">
-        <AppSelect v-model="obj.type" :items="decorShapeOptions.map((s)=>({title:s,value:s}))" label="Shape" hide-details class="mt-3"/>
-        <v-slider v-model="obj.size" label="Size" min="20" max="420" step="1" hide-details class="mt-3"/>
-        <v-slider v-model="obj.opacity" label="Opacity" min="0.02" max="0.4" step="0.01" hide-details class="mt-3"/>
-        <v-slider v-model="obj.x" label="X (%)" min="0" max="100" step="1" hide-details class="mt-3"/>
-        <v-slider v-model="obj.y" label="Y (%)" min="0" max="100" step="1" hide-details class="mt-3"/>
-        <v-btn size="x-small" color="error" variant="text" @click="removeDecorObject(i)">remove</v-btn>
-      </v-card>
+      <div class="mt-3 d-flex flex-column ga-2">
+        <v-menu
+          v-for="(obj,i) in editableDecorObjects"
+          :key="`obj-${i}`"
+          :model-value="decorMenuOpenIndex === i"
+          :close-on-content-click="false"
+          location="left start"
+          @update:model-value="(isOpen) => { decorMenuOpenIndex = isOpen ? i : (decorMenuOpenIndex === i ? null : decorMenuOpenIndex) }"
+        >
+          <template #activator="{ props }">
+            <v-btn v-bind="props" size="small" variant="tonal" class="justify-space-between" block>
+              Decor {{ i + 1 }} · {{ obj.type }}
+            </v-btn>
+          </template>
+          <v-card class="pa-3" min-width="260" @click.stop>
+            <AppSelect v-model="obj.type" :items="decorShapeOptions.map((s)=>({title:s,value:s}))" label="Type" hide-details/>
+            <v-text-field v-model="obj.color" label="Color" placeholder="#0ea5e9" hide-details class="mt-3"/>
+            <v-slider v-model="obj.size" label="Size" min="20" max="420" step="1" hide-details class="mt-3"/>
+            <v-slider v-model="obj.opacity" label="Opacity" min="0.02" max="0.4" step="0.01" hide-details class="mt-3"/>
+            <v-slider v-model="obj.x" label="X slider" min="0" max="100" step="1" hide-details class="mt-3"/>
+            <v-slider v-model="obj.y" label="Y slider" min="0" max="100" step="1" hide-details class="mt-3"/>
+            <v-btn size="x-small" color="error" variant="text" class="mt-2" @click="removeDecorObject(i)">remove</v-btn>
+          </v-card>
+        </v-menu>
+      </div>
     </template>
   </AppPageDrawers>
   <v-container fluid>
