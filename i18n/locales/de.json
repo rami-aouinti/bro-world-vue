@@ -127,6 +127,11 @@
           "jobs": "Verfolge Stellenangebote, Bewerbungen und persönliche Hiring-Workflows."
         }
       }
+    },
+    "resumeEditor": {
+      "resume": "Lebenslauf",
+      "coverPage": "Deckblatt",
+      "coverLetter": "Anschreiben"
     }
   },
   "common": {
@@ -3088,6 +3093,50 @@
         }
       },
       "previewTitle": "Resume Preview"
+    }
+  },
+  "resumePreview": {
+    "cv": {
+      "metaTitle": "Lebenslauf · Vorschau"
+    },
+    "coverPage": {
+      "metaTitle": "Lebenslauf · Deckblatt-Vorschau"
+    },
+    "coverLetter": {
+      "metaTitle": "Lebenslauf · Anschreiben-Vorschau"
+    },
+    "templates": {
+      "metaTitle": "Vorschau für Lebenslauf-Vorlagen",
+      "metaDescription": "Vorschau der Bro World Lebenslauf-Vorlagen nach Layout, Stil, Dichte und professionellen Designoptionen.",
+      "metaKeywords": "Lebenslaufvorlagen, CV-Vorlagen, Vorschau Lebenslauf, professioneller CV, Bro World Lebenslauf-Builder",
+      "heading": "Vorschau für Lebenslauf-Vorlagen",
+      "subheading": "Visuelle Prüfung von Vorlagenbildern und Haupteinstellungen.",
+      "filters": {
+        "layout": "Layout",
+        "all": "Alle",
+        "layoutAside": "Seitenleiste",
+        "layoutNoAside": "Ohne Seitenleiste",
+        "layoutAsideLeft": "Seitenleiste links",
+        "layoutAsideRight": "Seitenleiste rechts",
+        "layoutBarLeft": "Leiste links",
+        "layoutBarLight": "Leichte Leiste",
+        "layoutAsideSplit": "Geteilte Seitenleiste",
+        "layoutNoAsideSplit": "Ohne geteilte Seitenleiste",
+        "themeLine": "Themenlinie",
+        "lineSoft": "Weich",
+        "lineNone": "Keine",
+        "lineBlock": "Block",
+        "themeDensity": "Themendichte",
+        "densityComfortable": "Komfortabel",
+        "densityCompact": "Kompakt"
+      },
+      "labels": {
+        "structure": "Struktur",
+        "layout": "Layout",
+        "skin": "Skin",
+        "line": "Linie",
+        "density": "Dichte"
+      }
     }
   }
 }

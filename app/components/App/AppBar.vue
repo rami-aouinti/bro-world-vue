@@ -161,11 +161,11 @@ const resumeEditorRoutes = [
   '/resume/cover-page/preview',
   '/resume/cover-letter/preview',
 ] as const
-const resumeEditorNavButtons = [
-  { label: 'Resume', to: '/resume/cv/preview' },
-  { label: 'Cover page', to: '/resume/cover-page/preview' },
-  { label: 'Cover letter', to: '/resume/cover-letter/preview' },
-] as const
+const resumeEditorNavButtons = computed(() => [
+  { label: t('appbar.resumeEditor.resume'), to: '/resume/cv/preview' },
+  { label: t('appbar.resumeEditor.coverPage'), to: '/resume/cover-page/preview' },
+  { label: t('appbar.resumeEditor.coverLetter'), to: '/resume/cover-letter/preview' },
+])
 const isResumeEditorRoute = computed(() =>
   resumeEditorRoutes.includes(
     route.path as (typeof resumeEditorRoutes)[number],

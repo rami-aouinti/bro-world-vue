@@ -5,6 +5,10 @@ import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.
 import { resolveResumeTextFont, useResumeGoogleFonts } from '~/composables/useResumeGoogleFonts'
 
 definePageMeta({ title: 'Resume · Cover Page Preview' })
+const { t } = useI18n()
+useHead(() => ({
+  title: t('resumePreview.coverPage.metaTitle'),
+}))
 const route = useRoute()
 const { coverPageTemplates } = useResumeTemplates()
 const selectedTemplate = ref(coverPageTemplates.value[0]?.id || GENERATED_COVER_PAGE_TEMPLATES[0]?.id || '')

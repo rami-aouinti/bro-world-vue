@@ -127,6 +127,11 @@
           "jobs": "Haz seguimiento de ofertas, postulaciones y flujos de contratación."
         }
       }
+    },
+    "resumeEditor": {
+      "resume": "Currículum",
+      "coverPage": "Portada",
+      "coverLetter": "Carta de presentación"
     }
   },
   "common": {
@@ -3060,6 +3065,50 @@
         }
       },
       "previewTitle": "Resume Preview"
+    }
+  },
+  "resumePreview": {
+    "cv": {
+      "metaTitle": "Currículum · Vista previa"
+    },
+    "coverPage": {
+      "metaTitle": "Currículum · Vista previa de portada"
+    },
+    "coverLetter": {
+      "metaTitle": "Currículum · Vista previa de carta de presentación"
+    },
+    "templates": {
+      "metaTitle": "Vistas previas de plantillas de currículum",
+      "metaDescription": "Previsualiza las plantillas de currículum de Bro World por diseño, estilo, densidad y opciones profesionales.",
+      "metaKeywords": "plantillas de currículum, plantillas CV, vista previa currículum, CV profesional, creador de currículum Bro World",
+      "heading": "Vistas previas de plantillas de currículum",
+      "subheading": "Comprobaciones visuales de miniaturas y ajustes principales.",
+      "filters": {
+        "layout": "Diseño",
+        "all": "Todos",
+        "layoutAside": "Lateral",
+        "layoutNoAside": "Sin lateral",
+        "layoutAsideLeft": "Lateral izquierda",
+        "layoutAsideRight": "Lateral derecha",
+        "layoutBarLeft": "Barra izquierda",
+        "layoutBarLight": "Barra ligera",
+        "layoutAsideSplit": "Lateral dividido",
+        "layoutNoAsideSplit": "Sin lateral dividido",
+        "themeLine": "Línea del tema",
+        "lineSoft": "Suave",
+        "lineNone": "Ninguna",
+        "lineBlock": "Bloque",
+        "themeDensity": "Densidad del tema",
+        "densityComfortable": "Cómoda",
+        "densityCompact": "Compacta"
+      },
+      "labels": {
+        "structure": "Estructura",
+        "layout": "Diseño",
+        "skin": "Skin",
+        "line": "Línea",
+        "density": "Densidad"
+      }
     }
   }
 }
