@@ -198,6 +198,35 @@ const photoInput = ref<HTMLInputElement | null>(null)
 const layoutMenuOpen = ref(false)
 const photoQuickMenuOpen = ref(false)
 
+const COVER_PREVIEW_PDF_PAGE_HEIGHT = 1100
+const coverPreviewRef = ref<HTMLElement | null>(null)
+const showCoverPreviewPageBreak = ref(false)
+let coverPreviewMeasureTimer: ReturnType<typeof setTimeout> | undefined
+let coverPreviewResizeObserver: ResizeObserver | undefined
+
+function measureCoverPreviewOverflow() {
+  if (!import.meta.client) return
+  const preview = coverPreviewRef.value?.querySelector<HTMLElement>('.capture-cover-page, .capture-cover-letter')
+  if (!preview) return
+
+  const neededHeight = Math.max(
+    COVER_PREVIEW_PDF_PAGE_HEIGHT,
+    preview.scrollHeight,
+    Math.ceil(preview.getBoundingClientRect().height),
+  )
+  showCoverPreviewPageBreak.value = neededHeight > COVER_PREVIEW_PDF_PAGE_HEIGHT
+}
+
+function scheduleCoverPreviewMeasure(reset = false) {
+  if (!import.meta.client) return
+  if (reset) showCoverPreviewPageBreak.value = false
+  if (coverPreviewMeasureTimer) window.clearTimeout(coverPreviewMeasureTimer)
+  coverPreviewMeasureTimer = window.setTimeout(() => {
+    coverPreviewMeasureTimer = undefined
+    measureCoverPreviewOverflow()
+  }, 80)
+}
+
 watch(() => activeColors.value.primary, (primaryColor) => {
   imageBorderColor.value = primaryColor
 }, { immediate: true })
@@ -225,7 +254,34 @@ function saveSignatureFromCanvas(){ const c=signatureCanvas.value; if(!c) return
 function clearSignatureCanvas(){ const c=signatureCanvas.value; const ctx=c?.getContext('2d'); if(!c||!ctx) return; ctx.clearRect(0,0,c.width,c.height) }
 function deleteSignature(){ signatureDataUrl.value=''; signatureDialogOpen.value=false }
 function initCanvas(){ const c=signatureCanvas.value; if(!c) return; const ctx=c.getContext('2d'); if(!ctx) return; c.width=c.clientWidth||680; c.height=200; ctx.lineWidth=2; ctx.lineCap='round'; let draw=false; const p=(e:PointerEvent)=>{const r=c.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}; c.onpointerdown=(e)=>{draw=true;const x=p(e);ctx.beginPath();ctx.moveTo(x.x,x.y)}; c.onpointermove=(e)=>{if(!draw)return;const x=p(e);ctx.lineTo(x.x,x.y);ctx.stroke()}; c.onpointerup=()=>{draw=false;signatureDataUrl.value=c.toDataURL('image/png')} }
-onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query.template:''; if(q&&coverLetterTemplates.value.some((t)=>t.id===q)) selectedTemplate.value=q; try { const resumes = await listMyResumes(); const info = resumes?.[0]?.resumeInformation; if (info?.fullName) { model.fullName = info.fullName; model.phone = info.fullName } if (info?.title) model.role = info.title; if (info?.photo) model.photoUrl = info.photo } catch { /* noop */ } })
+onMounted(async ()=>{
+  scheduleCoverPreviewMeasure(true)
+  const q=typeof route.query.template==='string'?route.query.template:''; if(q&&coverLetterTemplates.value.some((t)=>t.id===q)) selectedTemplate.value=q; try { const resumes = await listMyResumes(); const info = resumes?.[0]?.resumeInformation; if (info?.fullName) { model.fullName = info.fullName; model.phone = info.fullName } if (info?.title) model.role = info.title; if (info?.photo) model.photoUrl = info.photo } catch { /* noop */ } })
+
+watch([activeTemplate, activeColors, selectedDividerType, textFontSize, textColor, barRadius, barLayout, primaryBarWidth, secondaryBarWidth], () => {
+  scheduleCoverPreviewMeasure(true)
+}, { deep: true })
+
+watch(model, () => {
+  scheduleCoverPreviewMeasure()
+}, { deep: true })
+
+watch(editableDecorObjects, () => {
+  scheduleCoverPreviewMeasure()
+}, { deep: true })
+
+onMounted(() => {
+  if (!import.meta.client) return
+  coverPreviewResizeObserver = new ResizeObserver(() => scheduleCoverPreviewMeasure())
+  const preview = coverPreviewRef.value?.querySelector<HTMLElement>('.capture-cover-page, .capture-cover-letter')
+  if (preview) coverPreviewResizeObserver.observe(preview)
+})
+
+onBeforeUnmount(() => {
+  if (coverPreviewMeasureTimer) window.clearTimeout(coverPreviewMeasureTimer)
+  coverPreviewResizeObserver?.disconnect()
+  coverPreviewResizeObserver = undefined
+})
 </script>
 <template>
 <div>
@@ -305,7 +361,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
       @select-template="applyPreviewTemplate"
       @select-palette="selectedPalette = $event"
     />
-    <div class="py-8 d-flex justify-center preview-single-page-frame"><main class="capture-cover-letter" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-divider-color':sectionDividerColor,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
+    <div ref="coverPreviewRef" class="py-8 d-flex justify-center preview-single-page-frame"><main class="capture-cover-letter" :style="{'--cp-primary':activeColors.primary,'--cp-secondary':activeColors.secondary,'--cp-text':activeColors.text,'--cp-muted':activeColors.muted,'--cp-bg':activeColors.pageBackground,'--section-divider-style':sectionDividerStyle,'--section-divider-color':sectionDividerColor,'--section-spacing':sectionSpacing,'--body-size':`${textFontSize}px`,'--body-color':textColor,'--bar-radius':`${barRadius}px`,'--bar-primary-width':`${primaryBarWidth}px`,'--bar-secondary-width':`${secondaryBarWidth}px`}">
       <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
       <header
 class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barLayout === 'double', 'hero--photo-right': photoPosition === 'right', 'hero--ribbon': activeTemplate?.decor?.headerStyle === 'ribbon', 'hero--layout-right': isLayoutRight}"
@@ -359,7 +415,7 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
         <HoverRichTextEditor v-model="model.phone" :font-family="textFontFamily('phone', 'serif')" />
       </section>
       <footer v-if="signatureDataUrl" class="signature-footer"><div class="signature-box"><img :src="signatureDataUrl" alt="signature" class="signature-image"/><v-menu location="bottom end"><template #activator="{ props }"><v-btn v-bind="props" icon="mdi-dots-vertical" size="x-small" class="signature-menu-btn"/></template><v-list density="compact"><v-list-item prepend-icon="mdi-pencil" title="Edit" @click="openSignatureDialog"/><v-list-item prepend-icon="mdi-delete" title="Delete" @click="deleteSignature"/></v-list></v-menu></div></footer>
-    </main><ResumePreviewPageBreak :page-number="1" /></div>
+    </main><ResumePreviewPageBreak v-if="showCoverPreviewPageBreak" :page-number="1" /></div>
     <input ref="photoInput" type="file" accept="image/*" class="d-none" @change="onPhotoUpload">
     <AppModal v-model="signatureDialogOpen" title="Signature" :max-width="760"><canvas ref="signatureCanvas" style="width:100%;height:200px;border:1px solid rgba(0,0,0,.15);border-radius:10px"/><div class="d-flex justify-end ga-2 mt-3"><v-btn variant="text" @click="clearSignatureCanvas">Clear</v-btn><v-btn variant="tonal" @click="closeSignatureDialog">Cancel</v-btn><v-btn color="primary" @click="saveSignatureFromCanvas">Save</v-btn></div></AppModal>
   </v-container>
