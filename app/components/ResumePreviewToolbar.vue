@@ -105,13 +105,17 @@ function paletteValue(palette: PaletteOption) {
 <style scoped>
 .resume-preview-toolbar {
   position: sticky;
-  top: 12px;
+  top: 76px;
   z-index: 40;
   width: 100%;
   padding: 10px 12px;
   border: 1px solid color-mix(in srgb, rgb(var(--v-theme-on-surface)) 14%, transparent);
   border-radius: 12px;
-  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 90%, white);
+  background: linear-gradient(
+    240deg,
+    rgba(var(--v-theme-primary), 0.48) 0%,
+    transparent 70%
+  );
   backdrop-filter: blur(8px);
   box-shadow: 0 12px 26px rgba(15, 23, 42, 0.14);
 }
