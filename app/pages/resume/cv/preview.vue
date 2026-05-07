@@ -30,6 +30,7 @@ const signatureDataUrl = ref('')
 const signatureDialogOpen = ref(false)
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const decorShapeOptions = ['circle', 'ring', 'blob', 'square', 'diamond', 'star', 'triangle', 'pill', 'bar']
+const decorColorOptions = ['#0EA5E9', '#2563EB', '#7C3AED', '#EC4899', '#F97316', '#EAB308', '#22C55E', '#14B8A6', '#64748B', '#111827']
 const editableDecorObjects = ref<any[]>([])
 const decorMenuOpenIndex = ref<number | null>(null)
 
@@ -540,10 +541,25 @@ function getSectionItems(rawSection: string): string[] {
     const description = String(item?.description || '').trim()
     return description ? `${title} · ${description}` : title
   }
-  const toLeveledItem = (item: any, fallback: string, preferFlag = false) => {
+  const toLevelText = (level: number, sectionKey: 'skills' | 'languages') => {
+    if (level >= 100) return sectionKey === 'languages' ? 'Fluent' : 'Expert'
+    if (level >= 75) return 'Advanced'
+    if (level >= 50) return 'Intermediate'
+    if (level >= 25) return 'Basic'
+    return 'Beginner'
+  }
+
+  const toLeveledItem = (item: any, fallback: string, sectionKey: 'skills' | 'languages', preferFlag = false) => {
     if (typeof item === 'string') return item
     const level = Number(item?.level)
-    const suffix = Number.isFinite(level) ? ` (${Math.max(0, Math.min(100, level))}%)` : ''
+    const normalizedLevel = Number.isFinite(level) ? Math.max(0, Math.min(100, level)) : null
+    const variant = effectiveSectionType(sectionKey, sectionType(sectionKey as any))
+    const showTextLevel = variant === 'classic' || variant === 'text'
+    const suffix = normalizedLevel === null
+      ? ''
+      : showTextLevel
+        ? ` (${toLevelText(normalizedLevel, sectionKey)})`
+        : ` (${normalizedLevel}%)`
     const label = preferFlag && item?.languageType === 'flag' && item?.flag
       ? String(item.flag)
       : String(item?.name || item?.title || fallback)
@@ -553,8 +569,8 @@ function getSectionItems(rawSection: string): string[] {
   if (key === 'experience') return [...(data.experiences || []).map((item: any) => { const from = formatShortDate(item.startDate); const to = item.endDate ? formatShortDate(item.endDate) : 'Present'; const date = from ? `${from} - ${to}` : ''; return `${item.title || 'Role'}§${item.company || ''}§${date}§${item.description || 'Description...'}` }), ...extra.map((item: any) => { const from = formatShortDate(item.startDate); const to = item.endDate ? formatShortDate(item.endDate) : 'Present'; const date = from ? `${from} - ${to}` : ''; return `${item.title || 'Role'}§${item.company || ''}§${date}§${item.description || 'Description...'}` })]
   if (key === 'education') return [...(data.educations || []).map((item: any) => { const from = formatShortDate(item.startDate); const to = formatShortDate(item.endDate); const date = from ? `${from}${to ? ` - ${to}` : ''}` : ''; const schoolLine = `${item.school || ''}${item.location ? `, ${item.location}` : ''}`; return `${item.title || 'Degree'}§${schoolLine}§${date}§${item.description || 'Description...'}` }), ...extra.map((item: any) => { const from = formatShortDate(item.startDate); const to = formatShortDate(item.endDate); const date = from ? `${from}${to ? ` - ${to}` : ''}` : ''; const schoolLine = `${item.school || ''}${item.location ? `, ${item.location}` : ''}`; return `${item.title || 'Degree'}§${schoolLine}§${date}§${item.description || 'Description...'}` })]
   if (key === 'projects') return [...(data.projects || []).map((item: any) => toTitleDesc(item, 'Project')), ...extra.map((item: any) => toTitleDesc(item, 'Project'))].filter(Boolean)
-  if (key === 'skills') return [...(data.skills || []).map((item: any) => toLeveledItem(item, 'Skill')), ...extra.map((item: any) => toLeveledItem(item, 'Skill'))].filter(Boolean)
-  if (key === 'languages') return [...(data.languages || []), ...extra].map((item: any) => toLeveledItem(item, 'Language', true)).filter(Boolean)
+  if (key === 'skills') return [...(data.skills || []).map((item: any) => toLeveledItem(item, 'Skill', 'skills')), ...extra.map((item: any) => toLeveledItem(item, 'Skill', 'skills'))].filter(Boolean)
+  if (key === 'languages') return [...(data.languages || []), ...extra].map((item: any) => toLeveledItem(item, 'Language', 'languages', true)).filter(Boolean)
   if (key === 'certifications') return [...(data.certifications || []).map((item: any) => toTitleDesc(item, 'Certification')), ...extra.map((item: any) => toTitleDesc(item, 'Certification'))].filter(Boolean)
   if (key === 'references') return [...(data.references || []).map((item: any) => toTitleDesc(item, 'Reference')), ...extra.map((item: any) => toTitleDesc(item, 'Reference'))].filter(Boolean)
   if (key === 'hobbies') return [...(data.hobbies || []).map((item: any) => toTitleDesc(item, 'Hobby')), ...extra.map((item: any) => toTitleDesc(item, 'Hobby'))].filter(Boolean)
@@ -822,7 +838,17 @@ watch(activeTemplate, (template) => {
             </template>
             <v-card class="pa-3" min-width="260" @click.stop>
               <AppSelect v-model="obj.type" :items="decorShapeOptions.map((s)=>({title:s,value:s}))" label="Type" hide-details/>
-              <v-text-field v-model="obj.color" label="Color" placeholder="#0ea5e9" hide-details class="mt-3"/>
+              <p class="text-caption mt-3 mb-1">Color</p>
+              <div class="d-flex flex-wrap ga-2">
+                <v-btn
+                  v-for="color in decorColorOptions"
+                  :key="`decor-color-${i}-${color}`"
+                  icon
+                  size="x-small"
+                  :style="{ backgroundColor: color, border: obj.color === color ? '2px solid #111827' : '1px solid #cbd5e1' }"
+                  @click="obj.color = color"
+                />
+              </div>
               <v-slider v-model="obj.size" label="Size" :min="20" :max="420" :step="2" hide-details class="mt-3"/>
               <v-slider v-model="obj.opacity" label="Opacity" :min="0.02" :max="0.35" :step="0.01" hide-details class="mt-3"/>
               <v-slider v-model="obj.x" label="X slider" :min="0" :max="100" :step="1" hide-details class="mt-3"/>
