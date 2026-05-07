@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { listMyResumes } from '~/services/resumeApi'
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 import ResumePreviewToolbar from '~/components/ResumePreviewToolbar.vue'
 import ResumePreviewPageBreak from '~/components/ResumePreviewPageBreak.vue'
@@ -11,13 +10,12 @@ import {
   useResumeGoogleFonts,
 } from '~/composables/useResumeGoogleFonts'
 
-definePageMeta({ title: 'Resume · Cover Letter Preview' })
+definePageMeta({ title: 'Resume · Cover Letter Template Create' })
 const { t } = useI18n()
 useHead(() => ({
   title: t('resumePreview.coverLetter.metaTitle'),
 }))
 const route = useRoute()
-const { user } = useUserSession()
 const { coverLetterTemplates } = useResumeTemplates()
 const selectedTemplate = ref(
   coverLetterTemplates.value[0]?.id ||
@@ -468,34 +466,24 @@ function applyPreviewTemplate(id: string) {
   layoutMenuOpen.value = false
 }
 async function saveFromPreview() {
-  const templatePayload = JSON.parse(JSON.stringify(activeTemplate.value || {}))
-  templatePayload.name =
-    templatePayload.name || templatePayload.id || 'preview-template'
-  templatePayload.version = Number(templatePayload.version || 1)
-  templatePayload.customize = {
+  const payload = JSON.parse(JSON.stringify(activeTemplate.value || {}))
+  payload.name = payload.name || payload.id || 'customize-template'
+  payload.version = Number(payload.version || 1)
+  payload.customize = {
     selectedPalette: selectedPalette.value,
     signature: signatureDataUrl.value,
-    model,
   }
-  const templateResponse = await $fetch<{ id: string }>(
+  const response = await $fetch<{ id: string }>(
     'https://bro-world.org/api/v1/recruit/templates/cover-letters',
-    { method: 'POST', body: templatePayload },
-  )
-  const token = user.value?.token?.trim()
-  if (!token) return
-  await $fetch('https://bro-world.org/api/v1/recruit/private/me/cover-letters', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body: {
-      fullName: model.fullName,
-      role: model.role,
-      location: model.location,
-      header: model.heading,
-      description1: model.companyParagraph,
-      description2: model.summary,
-      templateId: templateResponse.id,
+    {
+      method: 'POST',
+      body: payload,
     },
-  })
+  )
+  localStorage.setItem(
+    'resume-cover-letter-template-create',
+    JSON.stringify({ id: response.id, payload }),
+  )
 }
 async function downloadPdf() {
   const node = document.querySelector(
@@ -590,18 +578,6 @@ onMounted(async () => {
   const q = typeof route.query.template === 'string' ? route.query.template : ''
   if (q && coverLetterTemplates.value.some((t) => t.id === q))
     selectedTemplate.value = q
-  try {
-    const resumes = await listMyResumes()
-    const info = resumes?.[0]?.resumeInformation
-    if (info?.fullName) {
-      model.fullName = info.fullName
-      model.phone = info.fullName
-    }
-    if (info?.title) model.role = info.title
-    if (info?.photo) model.photoUrl = info.photo
-  } catch {
-    /* noop */
-  }
 })
 
 watch(
@@ -844,6 +820,7 @@ watch(aiModalOpen, (isOpen) => {
     </AppPageDrawers>
     <v-container fluid>
       <ResumePreviewToolbar
+        :show-ai="false"
         v-model:menu-open="layoutMenuOpen"
         v-model:palette-menu-open="paletteMenuOpen"
         :palettes="palettePresetOptions"
@@ -853,7 +830,6 @@ watch(aiModalOpen, (isOpen) => {
         :selected-template="selectedTemplate"
         template-key-prefix="cover-letter-preview"
         @save="saveFromPreview"
-        @ai="openAiModal"
         @signature="openSignatureDialog"
         @pdf="downloadPdf"
         @select-template="applyPreviewTemplate"

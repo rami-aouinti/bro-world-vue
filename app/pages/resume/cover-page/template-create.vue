@@ -1,29 +1,35 @@
 <script setup lang="ts">
-import { listMyResumes } from '~/services/resumeApi'
+import GENERATED_COVER_PAGE_TEMPLATES from '~/data/resume-templates/generated-20-cover-page.json'
+import PALETTE_PRESETS from '~/data/resume-templates/palettes.json'
+import { buildToolbarPaletteOptions } from '~/modules/resume/theme/paletteOptions'
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 import ResumePreviewToolbar from '~/components/ResumePreviewToolbar.vue'
 import ResumePreviewPageBreak from '~/components/ResumePreviewPageBreak.vue'
-import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-20-cover-letter.json'
-import PALETTE_PRESETS from '~/data/resume-templates/palettes.json'
-import { buildToolbarPaletteOptions } from '~/modules/resume/theme/paletteOptions'
 import {
   resolveResumeTextFont,
   useResumeGoogleFonts,
 } from '~/composables/useResumeGoogleFonts'
 
-definePageMeta({ title: 'Resume · Cover Letter Preview' })
+definePageMeta({ title: 'Resume · Cover Page Template Create' })
 const { t } = useI18n()
 useHead(() => ({
-  title: t('resumePreview.coverLetter.metaTitle'),
+  title: t('resumePreview.coverPage.metaTitle'),
 }))
 const route = useRoute()
-const { user } = useUserSession()
-const { coverLetterTemplates } = useResumeTemplates()
+const { coverPageTemplates } = useResumeTemplates()
 const selectedTemplate = ref(
-  coverLetterTemplates.value[0]?.id ||
-    GENERATED_COVER_LETTER_TEMPLATES[0]?.id ||
+  coverPageTemplates.value[0]?.id ||
+    GENERATED_COVER_PAGE_TEMPLATES[0]?.id ||
     '',
 )
+const photoOptions = [
+  '/img/team-1.jpg',
+  '/img/team-2.jpg',
+  '/img/team-3.jpg',
+  '/img/team-4.jpg',
+  '/img/team-5.jpg',
+  '/img/team-9.jpeg',
+]
 const decorShapeOptions = [
   'circle',
   'ring',
@@ -46,14 +52,6 @@ const decorColorOptions = [
   '#14B8A6',
   '#64748B',
   '#111827',
-]
-const photoOptions = [
-  '/img/team-1.jpg',
-  '/img/team-2.jpg',
-  '/img/team-3.jpg',
-  '/img/team-4.jpg',
-  '/img/team-5.jpg',
-  '/img/team-9.jpeg',
 ]
 const imageShape = ref<'circle' | 'square'>('circle')
 const imageSize = ref(84)
@@ -89,9 +87,14 @@ const textFontSize = ref(24)
 const textColor = ref('#475569')
 const barRadius = ref(0)
 const barLayout = ref<'none' | 'single' | 'double'>('single')
-const letterElementStyles = reactive({
-  date: { size: 18, color: '#475569', weight: '400' },
-  address: { size: 18, color: '#334155', weight: '400' },
+
+const elementStyles = reactive({
+  fullName: { size: 48, color: '#111827', weight: '700' },
+  role: { size: 24, color: '#475569', weight: '500' },
+  heading: { size: 28, color: '#0F4C81', weight: '600' },
+  summary: { size: 18, color: '#475569', weight: '400' },
+  email: { size: 15, color: '#475569', weight: '400' },
+  phone: { size: 15, color: '#475569', weight: '400' },
 })
 const fontWeightMap: Record<string, string> = {
   regular: '400',
@@ -104,22 +107,20 @@ const secondaryBarWidth = ref(5)
 const model = reactive({
   fullName: 'Alex Martin',
   role: 'Senior Full Stack Developer',
-  location: 'Paris, France',
-  date: new Date().toLocaleDateString('en-US'),
-  heading: 'Dear Hiring Manager,',
-  companyParagraph:
-    'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.',
   summary:
-    'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.',
-  email: 'Sincerely,',
-  phone: 'Alex Martin',
+    'Driven engineer delivering robust products with strong UX and clean architecture.',
+  location: 'Paris, France',
+  email: 'alex@example.com',
+  phone: '+33 6 00 00 00 00',
+  date: new Date().toLocaleDateString('en-US'),
   photoUrl: photoOptions[0],
+  heading: 'About Me',
 })
 const activeTemplate = computed(
   () =>
-    GENERATED_COVER_LETTER_TEMPLATES.find(
+    GENERATED_COVER_PAGE_TEMPLATES.find(
       (tpl) => tpl.id === selectedTemplate.value,
-    ) || GENERATED_COVER_LETTER_TEMPLATES[0],
+    ) || GENERATED_COVER_PAGE_TEMPLATES[0],
 )
 useResumeGoogleFonts(activeTemplate)
 function textFontFamily(
@@ -131,23 +132,6 @@ function textFontFamily(
     fallback,
   )
 }
-const editableDecorObjects = ref<any[]>([])
-const decorMenuOpenIndex = ref<number | null>(null)
-const defaultDecorPresets = [
-  { type: 'circle', x: 8, y: 6, size: 80, opacity: 0.08 },
-  { type: 'diamond', x: 70, y: 75, size: 120, opacity: 0.08 },
-  { type: 'star', x: 14, y: 84, size: 28, opacity: 0.1 },
-  { type: 'square', x: 82, y: 10, size: 24, opacity: 0.08 },
-]
-const templateDecorPresets = computed(() => {
-  const fromTemplate = (activeTemplate.value?.decor?.objects || []).map(
-    (obj: any) => normalizeDecorObject(obj),
-  )
-  return fromTemplate.length
-    ? fromTemplate
-    : defaultDecorPresets.map((obj) => normalizeDecorObject(obj))
-})
-
 const defaultBarDesignConfig = {
   barRadius: { min: 0, max: 30 },
   barLayout: ['', 'single', 'double'],
@@ -160,6 +144,8 @@ const activeTemplateDesignConfig = computed(
 const activeBarDesignConfig = computed(
   () => activeTemplateDesignConfig.value || defaultBarDesignConfig,
 )
+const editableDecorObjects = ref<any[]>([])
+const decorMenuOpenIndex = ref<number | null>(null)
 
 function toPercentNumber(value: unknown, fallback = 50): number {
   if (typeof value === 'number' && Number.isFinite(value))
@@ -229,18 +215,10 @@ function decorObjectStyle(obj: any) {
 
 function applyTemplateDefaults(tpl: any) {
   const defaults = tpl?.defaultValues || {}
-  if (defaults.fullName) {
-    model.fullName = String(defaults.fullName)
-    model.phone = String(defaults.fullName)
-  }
+  if (defaults.fullName) model.fullName = String(defaults.fullName)
   if (defaults.role) model.role = String(defaults.role)
+  if (defaults.description) model.summary = String(defaults.description)
   if (defaults.image) model.photoUrl = String(defaults.image)
-  if (defaults.date) model.date = String(defaults.date)
-  if (defaults.location) model.location = String(defaults.location)
-  if (defaults.heading) model.heading = String(defaults.heading)
-  if (defaults.companyParagraph)
-    model.companyParagraph = String(defaults.companyParagraph)
-  if (defaults.summary) model.summary = String(defaults.summary)
 }
 const sectionDividerStyle = computed(() => {
   const showDivider = activeTemplate.value?.layoutOptions?.showDivider ?? true
@@ -286,7 +264,7 @@ const layoutMenuOpen = ref(false)
 const photoQuickMenuOpen = ref(false)
 const aiModalOpen = ref(false)
 const aiPrompt =
-  'Tell us about yourself and the target position. Add accurate context so AI can generate a compelling and personalized cover letter profile.'
+  'Tell us about yourself and about the job you are applying for. The more precise details you provide, the better AI can generate a strong and relevant profile for your cover page.'
 const aiPromptProgress = ref('')
 let aiTypingTimer: ReturnType<typeof setInterval> | undefined
 const aiAboutText = ref('')
@@ -333,6 +311,7 @@ watch(
   () => activeColors.value.primary,
   (primaryColor) => {
     imageBorderColor.value = primaryColor
+    elementStyles.heading.color = primaryColor
   },
   { immediate: true },
 )
@@ -368,31 +347,32 @@ watch(
         : designConfig.barLayout.includes('single')
           ? 'single'
           : 'none'
-    for (const key of ['date', 'address']) {
+    for (const key of [
+      'fullName',
+      'role',
+      'heading',
+      'summary',
+      'email',
+      'phone',
+    ]) {
       const b = items[key]?.size
-      if (b) letterElementStyles[key].size = Math.round((b.min + b.max) / 2)
+      if (b) elementStyles[key].size = Math.round(((b.min + b.max) / 2) * 0.78)
       if (items[key]?.colors?.[0])
-        letterElementStyles[key].color = items[key].colors[0]
+        elementStyles[key].color = items[key].colors[0]
       if (items[key]?.styles?.[0])
-        letterElementStyles[key].weight =
-          fontWeightMap[items[key].styles[0]] || '400'
+        elementStyles[key].weight = fontWeightMap[items[key].styles[0]] || '400'
     }
   },
   { immediate: true },
 )
 function addDecorObject() {
-  editableDecorObjects.value.push(
-    normalizeDecorObject({
-      type: 'circle',
-      x: 50,
-      y: 50,
-      size: 120,
-      opacity: 0.15,
-    }),
-  )
-}
-function addDecorObjectFromPreset(preset: any) {
-  editableDecorObjects.value.push(normalizeDecorObject({ ...preset }))
+  editableDecorObjects.value.push({
+    type: 'circle',
+    x: '50%',
+    y: '50%',
+    size: '120',
+    opacity: 0.15,
+  })
 }
 function removeDecorObject(i: number) {
   editableDecorObjects.value.splice(i, 1)
@@ -400,7 +380,7 @@ function removeDecorObject(i: number) {
 function openAiModal() {
   aiModalOpen.value = true
 }
-async function generateCoverLetterWithAi() {
+async function generateCoverPageWithAi() {
   if (!aiAboutText.value.trim() || aiGenerating.value) return
   aiGenerating.value = true
   aiProgress.value = 1
@@ -413,7 +393,7 @@ async function generateCoverLetterWithAi() {
   }, 1000)
   try {
     const response = await $fetch<{ textArea?: string }>(
-      'https://bro-world.org/api/v1/recruit/cover-letters/generate',
+      'https://bro-world.org/api/v1/recruit/cover-pages/about-me/generate',
       {
         method: 'POST',
         body: { text: aiAboutText.value.trim() },
@@ -425,7 +405,8 @@ async function generateCoverLetterWithAi() {
     if (aiLocation.value.trim()) model.location = aiLocation.value.trim()
     if (aiPhotoUrl.value.trim()) model.photoUrl = aiPhotoUrl.value.trim()
     if (generatedText) {
-      model.companyParagraph = generatedText
+      model.summary = generatedText
+      aiAboutText.value = generatedText
     }
     aiProgress.value = 100
     aiModalOpen.value = false
@@ -468,38 +449,28 @@ function applyPreviewTemplate(id: string) {
   layoutMenuOpen.value = false
 }
 async function saveFromPreview() {
-  const templatePayload = JSON.parse(JSON.stringify(activeTemplate.value || {}))
-  templatePayload.name =
-    templatePayload.name || templatePayload.id || 'preview-template'
-  templatePayload.version = Number(templatePayload.version || 1)
-  templatePayload.customize = {
+  const payload = JSON.parse(JSON.stringify(activeTemplate.value || {}))
+  payload.name = payload.name || payload.id || 'customize-template'
+  payload.version = Number(payload.version || 1)
+  payload.customize = {
     selectedPalette: selectedPalette.value,
     signature: signatureDataUrl.value,
-    model,
   }
-  const templateResponse = await $fetch<{ id: string }>(
-    'https://bro-world.org/api/v1/recruit/templates/cover-letters',
-    { method: 'POST', body: templatePayload },
-  )
-  const token = user.value?.token?.trim()
-  if (!token) return
-  await $fetch('https://bro-world.org/api/v1/recruit/private/me/cover-letters', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body: {
-      fullName: model.fullName,
-      role: model.role,
-      location: model.location,
-      header: model.heading,
-      description1: model.companyParagraph,
-      description2: model.summary,
-      templateId: templateResponse.id,
+  const response = await $fetch<{ id: string }>(
+    'https://bro-world.org/api/v1/recruit/templates/cover-pages',
+    {
+      method: 'POST',
+      body: payload,
     },
-  })
+  )
+  localStorage.setItem(
+    'resume-cover-page-template-create',
+    JSON.stringify({ id: response.id, payload }),
+  )
 }
 async function downloadPdf() {
   const node = document.querySelector(
-    '.capture-cover-letter',
+    '.capture-cover-page',
   ) as HTMLElement | null
   if (!node) return
   const w = window.open('', '_blank', 'width=900,height=1300')
@@ -510,7 +481,7 @@ async function downloadPdf() {
     .map((el) => el.outerHTML)
     .join('')
   w.document.write(
-    `<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.capture-cover-letter{width:210mm;min-height:297mm;box-sizing:border-box;margin:0}</style></head><body>${node.outerHTML}</body></html>`,
+    `<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.capture-cover-page{width:210mm;min-height:297mm;box-sizing:border-box;margin:0}</style></head><body>${node.outerHTML}</body></html>`,
   )
   w.document.close()
   await new Promise((r) => setTimeout(r, 900))
@@ -588,20 +559,8 @@ function initCanvas() {
 onMounted(async () => {
   scheduleCoverPreviewMeasure(true)
   const q = typeof route.query.template === 'string' ? route.query.template : ''
-  if (q && coverLetterTemplates.value.some((t) => t.id === q))
+  if (q && coverPageTemplates.value.some((t) => t.id === q))
     selectedTemplate.value = q
-  try {
-    const resumes = await listMyResumes()
-    const info = resumes?.[0]?.resumeInformation
-    if (info?.fullName) {
-      model.fullName = info.fullName
-      model.phone = info.fullName
-    }
-    if (info?.title) model.role = info.title
-    if (info?.photo) model.photoUrl = info.photo
-  } catch {
-    /* noop */
-  }
 })
 
 watch(
@@ -707,7 +666,9 @@ watch(aiModalOpen, (isOpen) => {
             hide-details
             class="mt-3"
           />
-          <p class="text-body-2" v-if="barLayout === 'double'">Sec bar width</p>
+          <p v-if="barLayout === 'double'" class="text-body-2">
+            Sec Bar width"
+          </p>
           <v-slider
             v-if="barLayout === 'double'"
             v-model="secondaryBarWidth"
@@ -720,20 +681,6 @@ watch(aiModalOpen, (isOpen) => {
         </v-card-text>
       </template>
       <template #right>
-        <v-card class="mt-3 pa-3" variant="outlined">
-          <div class="text-caption mb-2">Template decor presets</div>
-          <div class="d-flex flex-wrap ga-2">
-            <v-btn
-              v-for="(preset, presetIndex) in templateDecorPresets"
-              :key="`preset-${presetIndex}`"
-              size="x-small"
-              variant="tonal"
-              @click="addDecorObjectFromPreset(preset)"
-            >
-              {{ preset.type }}
-            </v-btn>
-          </div>
-        </v-card>
         <v-btn
           class="mt-3"
           size="small"
@@ -844,16 +791,16 @@ watch(aiModalOpen, (isOpen) => {
     </AppPageDrawers>
     <v-container fluid>
       <ResumePreviewToolbar
+        :show-ai="false"
         v-model:menu-open="layoutMenuOpen"
         v-model:palette-menu-open="paletteMenuOpen"
         :palettes="palettePresetOptions"
         :selected-palette="selectedPalette"
         :palette-columns="10"
-        :templates="coverLetterTemplates"
+        :templates="coverPageTemplates"
         :selected-template="selectedTemplate"
-        template-key-prefix="cover-letter-preview"
+        template-key-prefix="cover-page-preview"
         @save="saveFromPreview"
-        @ai="openAiModal"
         @signature="openSignatureDialog"
         @pdf="downloadPdf"
         @select-template="applyPreviewTemplate"
@@ -864,7 +811,7 @@ watch(aiModalOpen, (isOpen) => {
         class="py-8 d-flex justify-center preview-single-page-frame"
       >
         <main
-          class="capture-cover-letter"
+          class="capture-cover-page"
           :style="{
             '--cp-primary': activeColors.primary,
             '--cp-secondary': activeColors.secondary,
@@ -907,30 +854,11 @@ watch(aiModalOpen, (isOpen) => {
             "
           >
             <div
-              class="meta-top-right"
-              :class="{ 'meta-top-right--layout-right': isLayoutRight }"
-            >
-              <HoverRichTextEditor
-                v-model="model.date"
-                :font-size="`${letterElementStyles.date.size}px`"
-                :color="letterElementStyles.date.color"
-                :font-weight="letterElementStyles.date.weight"
-                :font-family="textFontFamily('date')"
-              />
-              <HoverRichTextEditor
-                v-model="model.location"
-                :font-size="`${letterElementStyles.address.size}px`"
-                :color="letterElementStyles.address.color"
-                :font-weight="letterElementStyles.address.weight"
-                :font-family="textFontFamily('address')"
-              />
-            </div>
-            <div
               class="hero-row"
               :class="{ 'hero-row--layout-right': isLayoutRight }"
             >
               <div
-                class="avatar-upload hero-avatar photo-shell"
+                class="mb-4 avatar-upload hero-avatar photo-shell"
                 :style="{
                   width: `${imageSize}px`,
                   height: `${imageSize}px`,
@@ -949,7 +877,6 @@ watch(aiModalOpen, (isOpen) => {
                       icon="mdi-dots-vertical"
                       size="x-small"
                       class="photo-quick-trigger"
-                      variant="elevated"
                       @click.stop
                     />
                   </template>
@@ -971,7 +898,7 @@ watch(aiModalOpen, (isOpen) => {
                       v-model="imageBorderWidth"
                       label="Border width"
                       min="0"
-                      max="12"
+                      max="8"
                       step="1"
                       hide-details
                       class="mt-3"
@@ -1017,40 +944,58 @@ watch(aiModalOpen, (isOpen) => {
                     />
                   </v-card>
                 </v-menu>
-                <div class="photo-shell__img">
-                  <v-img :src="model.photoUrl" alt="profile" cover />
-                </div>
+                <v-img
+                  :src="model.photoUrl"
+                  cover
+                  class="photo-shell__img"
+                  @click.stop="openPhotoUpload"
+                />
               </div>
               <HoverRichTextEditor
                 v-model="model.fullName"
-                class="hero-name"
+                :font-size="`${elementStyles.fullName.size}px`"
+                :color="elementStyles.fullName.color"
+                :font-weight="elementStyles.fullName.weight"
                 :font-family="textFontFamily('fullName', 'serif')"
               />
               <HoverRichTextEditor
                 v-model="model.role"
-                class="hero-role"
+                :font-size="`${elementStyles.role.size}px`"
+                :color="elementStyles.role.color"
+                :font-weight="elementStyles.role.weight"
                 :font-family="textFontFamily('role')"
               />
               <v-text class="hero-location">{{ model.location }}</v-text>
             </div>
           </header>
-          <section class="letter-body">
+          <section>
             <HoverRichTextEditor
               v-model="model.heading"
-              class="letter-heading"
+              :font-size="`${elementStyles.heading.size}px`"
+              :color="elementStyles.heading.color"
+              :font-weight="elementStyles.heading.weight"
               :font-family="textFontFamily('heading', 'serif')"
             />
             <HoverRichTextEditor
-              v-model="model.companyParagraph"
-              :font-family="textFontFamily('body')"
+              v-model="model.summary"
+              :font-size="`${elementStyles.summary.size}px`"
+              :color="elementStyles.summary.color"
+              :font-weight="elementStyles.summary.weight"
+              :font-family="textFontFamily('summary')"
             />
             <HoverRichTextEditor
               v-model="model.email"
+              :font-size="`${elementStyles.email.size}px`"
+              :color="elementStyles.email.color"
+              :font-weight="elementStyles.email.weight"
               :font-family="textFontFamily('email')"
             />
             <HoverRichTextEditor
               v-model="model.phone"
-              :font-family="textFontFamily('phone', 'serif')"
+              :font-size="`${elementStyles.phone.size}px`"
+              :color="elementStyles.phone.color"
+              :font-weight="elementStyles.phone.weight"
+              :font-family="textFontFamily('phone')"
             />
           </section>
           <footer v-if="signatureDataUrl" class="signature-footer">
@@ -1092,7 +1037,7 @@ watch(aiModalOpen, (isOpen) => {
       />
       <AppModal
         v-model="aiModalOpen"
-        title="AI Cover Letter Assistant"
+        title="AI Cover Page Assistant"
         :max-width="760"
       >
         <p class="mb-4">{{ aiPromptProgress }}</p>
@@ -1112,15 +1057,6 @@ watch(aiModalOpen, (isOpen) => {
           <v-col cols="12" md="6"
             ><v-text-field label="Phone" variant="outlined" hide-details
           /></v-col>
-          <v-col cols="12" md="6"
-            ><v-text-field label="Company name" variant="outlined" hide-details
-          /></v-col>
-          <v-col cols="12" md="6"
-            ><v-text-field
-              label="Requested position"
-              variant="outlined"
-              hide-details
-          /></v-col>
           <v-col cols="12"
             ><v-file-input
               label="Upload profile image"
@@ -1133,7 +1069,7 @@ watch(aiModalOpen, (isOpen) => {
           <v-col cols="12"
             ><v-textarea
               v-model="aiAboutText"
-              label="Describe yourself and why you fit this role"
+              label="Tell us about yourself and the position"
               rows="5"
               variant="outlined"
               hide-details
@@ -1152,7 +1088,7 @@ watch(aiModalOpen, (isOpen) => {
             color="primary"
             :loading="aiGenerating"
             :disabled="!aiAboutText.trim()"
-            @click="generateCoverLetterWithAi"
+            @click="generateCoverPageWithAi"
           >
             Generate
           </v-btn>
@@ -1177,30 +1113,39 @@ watch(aiModalOpen, (isOpen) => {
     </v-container>
   </div>
 </template>
+
 <style scoped>
 .preview-single-page-frame {
   position: relative;
   flex-direction: column;
   align-items: center;
 }
-.capture-cover-letter {
+.capture-cover-page {
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
   width: min(100%, 850px);
   min-height: 1123px;
-  padding: 56px 64px;
+  padding: 64px;
+  padding-bottom: 74px;
   background: var(--cp-bg);
   color: var(--cp-text);
+}
+.capture-cover-page::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 10px;
+  background: #fff;
 }
 .hero {
   border-left: var(--bar-primary-width) solid var(--cp-primary);
   padding-left: 24px;
-  padding-top: 6px;
-  margin-bottom: 42px;
+  margin-bottom: 48px;
   border-radius: var(--bar-radius);
   position: relative;
-  min-height: 140px;
 }
 .meta-top-right {
   position: absolute;
@@ -1209,21 +1154,15 @@ watch(aiModalOpen, (isOpen) => {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 2px;
+  gap: 6px;
   text-align: right;
-}
-.meta-top-right--layout-right {
-  right: auto;
-  left: 0;
-  text-align: left;
-  align-items: flex-start;
+  color: var(--cp-muted);
 }
 .hero-row {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
-  padding-top: 8px;
+  gap: 8px;
 }
 .hero-avatar {
   align-self: flex-start;
@@ -1271,6 +1210,10 @@ watch(aiModalOpen, (isOpen) => {
 .hero-row--layout-right .hero-avatar {
   align-self: flex-end;
 }
+.hero-location {
+  margin-top: 4px;
+  color: var(--cp-muted);
+}
 .avatar-upload {
   cursor: pointer;
   border-style: solid;
@@ -1306,41 +1249,44 @@ watch(aiModalOpen, (isOpen) => {
   overflow: hidden;
   border-radius: inherit;
 }
-.photo-shell__img :deep(img) {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.photo-shell__img :deep(.v-img__img) {
   border-radius: inherit;
+  object-fit: cover;
 }
-.hero-name :deep(p) {
-  margin: 2px 0 0;
-  font-size: 38px;
-  font-weight: 700;
-  color: var(--cp-text);
-  line-height: 1.05;
+.avatar-overlay {
+  display: none;
 }
-.hero-role :deep(p) {
+:global(body.print-cover-mode) .preview-toolbar-wrap,
+:global(body.print-cover-mode) .v-navigation-drawer,
+:global(body.print-cover-mode) .v-app-bar,
+:global(body.print-cover-mode) .app-page-drawers {
+  display: none !important;
+}
+@media print {
+  .preview-toolbar-wrap,
+  .app-page-drawers,
+  .avatar-overlay {
+    display: none !important;
+  }
+}
+h1 {
+  font-size: 48px;
   margin: 0;
-  font-size: 21px;
-  color: var(--cp-muted);
-}
-.hero-location {
-  margin-top: 4px;
-  color: var(--cp-muted);
 }
 p {
-  font-size: calc(var(--body-size) * 0.92);
+  font-size: var(--body-size);
   color: var(--body-color);
-  line-height: 1.55;
-  margin: 0 0 18px;
 }
-.letter-heading :deep(p) {
-  font-weight: 700;
-  color: var(--cp-text);
-  margin-bottom: 24px;
+.meta {
+  font-size: 16px;
+}
+h2 {
+  color: var(--cp-primary);
+  font-size: 32px;
+  margin: 0 0 16px;
 }
 section {
-  border-top: 2px var(--section-divider-style) var(--section-divider-color);
+  border-top: 3px var(--section-divider-style) var(--section-divider-color);
   padding-top: 24px;
   margin-top: var(--section-spacing);
 }
@@ -1444,9 +1390,7 @@ section {
   height: 68px;
   object-fit: contain;
 }
-</style>
 
-<style scoped>
 @media (prefers-color-scheme: dark) {
   .capture-cover-page,
   .capture-cover-letter {

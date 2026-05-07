@@ -13,6 +13,7 @@ withDefaults(
     palettes?: PaletteOption[]
     selectedPalette?: string
     paletteColumns?: number
+    showAi?: boolean
   }>(),
   {
     menuOpen: false,
@@ -24,6 +25,7 @@ withDefaults(
     palettes: () => [],
     selectedPalette: '',
     paletteColumns: 5,
+    showAi: true,
   },
 )
 
@@ -101,7 +103,7 @@ function paletteValue(palette: PaletteOption) {
 
     <div class="d-flex align-center ga-2 flex-wrap justify-end">
       <v-btn variant="tonal" prepend-icon="mdi-content-save" @click="emit('save')">Save</v-btn>
-      <v-btn variant="tonal" prepend-icon="mdi-robot" @click="emit('ai')">AI</v-btn>
+      <v-btn v-if="showAi" variant="tonal" prepend-icon="mdi-robot" @click="emit('ai')">AI</v-btn>
       <v-btn variant="tonal" prepend-icon="mdi-draw" @click="emit('signature')">Signature</v-btn>
       <v-btn color="primary" prepend-icon="mdi-file-pdf-box" @click="emit('pdf')">PDF</v-btn>
     </div>

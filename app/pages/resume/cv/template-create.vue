@@ -10,7 +10,6 @@ import CvLayoutAsideFullLeft from '~/components/cv/layouts/CvLayoutAsideFullLeft
 import CvLayoutAsideFullRight from '~/components/cv/layouts/CvLayoutAsideFullRight.vue'
 import CvLayoutAsideBarLeft from '~/components/cv/layouts/CvLayoutAsideBarLeft.vue'
 import CvLayoutAsideBarRight from '~/components/cv/layouts/CvLayoutAsideBarRight.vue'
-import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 import {
   resolveResumeTextFont,
   useResumeGoogleFonts,
@@ -37,8 +36,6 @@ const queryTemplateId =
   typeof route.query.template === 'string' ? route.query.template : ''
 const queryPaletteId =
   typeof route.query.palette === 'string' ? route.query.palette : ''
-const { loggedIn, user } = useUserSession()
-const myResumes = ref<ResumeApiItem[]>([])
 const selectedTemplate = ref(GENERATED_RESUME_TEMPLATES[0]?.id || 'tpl-001')
 const layoutMenuOpen = ref(false)
 const paletteMenuOpen = ref(false)
@@ -448,8 +445,7 @@ const headerType = computed(() =>
 const templateFakeData = computed(
   () => (activeTemplate.value as any)?.fakeData || {},
 )
-const userResumeData = computed<any>(() => myResumes.value[0] || null)
-const fakeData = computed(() => userResumeData.value || templateFakeData.value)
+const fakeData = computed(() => templateFakeData.value)
 const sectionType = (
   key: keyof ReturnType<(typeof sectionVariantMap)['value']>,
 ) => sectionVariantMap.value[key] || 'classic'
@@ -1086,38 +1082,18 @@ function applyPreviewTemplate(templateId: string) {
 }
 
 async function saveFromPreview() {
-  const templatePayload = JSON.parse(JSON.stringify(activeTemplate.value || {}))
-  templatePayload.name =
-    templatePayload.name || templatePayload.id || 'preview-template'
-  templatePayload.version = Number(templatePayload.version || 1)
-  templatePayload.customize = {
+  const payload = JSON.parse(JSON.stringify(activeTemplate.value || {}))
+  payload.name = payload.name || payload.id || 'customize-template'
+  payload.version = Number(payload.version || 1)
+  payload.customize = {
     selectedPalette: selectedPalette.value,
     signature: signatureDataUrl.value,
   }
-  const templateResponse = await $fetch<{ id: string }>(
-    'https://bro-world.org/api/v1/recruit/templates/resumes',
-    { method: 'POST', body: templatePayload },
-  )
-
-  const token = user.value?.token?.trim()
-  if (!token) return
-  const data: any = fakeData.value || {}
-  await $fetch('https://bro-world.org/api/v1/recruit/resumes', {
+  const response = await $fetch<{ id: string }>('https://bro-world.org/api/v1/recruit/templates/resumes', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body: {
-      templateId: templateResponse.id,
-      resumeInformation: data.resumeInformation || {},
-      experiences: data.experiences || [],
-      educations: data.educations || [],
-      skills: data.skills || [],
-      languages: data.languages || [],
-      certifications: data.certifications || [],
-      references: data.references || [],
-      projects: data.projects || [],
-      hobbies: data.hobbies || [],
-    },
+    body: payload,
   })
+  localStorage.setItem('resume-cv-template-create', JSON.stringify({ id: response.id, payload }))
 }
 
 function openAiModal() {
@@ -1126,7 +1102,7 @@ function openAiModal() {
 
 async function generateResumeOfferMatch() {
   if (!matchOfferText.value.trim() || matchOfferLoading.value) return
-  const token = user.value?.token?.trim()
+  const token = ''
   if (!token) return
   matchOfferLoading.value = true
   matchOfferResult.value = null
@@ -1236,16 +1212,6 @@ function initCanvas() {
 }
 
 onMounted(async () => {
-  if (loggedIn.value && !isCaptureMode.value) {
-    try {
-      const resumes = await listMyResumes()
-      if (Array.isArray(resumes) && resumes.length > 0)
-        myResumes.value = resumes
-    } catch {
-      // keep template fake data fallback
-    }
-  }
-
   await nextTick()
   scheduleCvPreviewMeasure(true)
   if (import.meta.client && 'ResizeObserver' in window && cvPreviewRef.value) {
@@ -1470,6 +1436,7 @@ watch(
 
     <v-container fluid>
       <ResumePreviewToolbar
+        :show-ai="false"
 v-if="!isCaptureMode"
         v-model:menu-open="layoutMenuOpen"
         v-model:palette-menu-open="paletteMenuOpen"
@@ -1483,7 +1450,6 @@ v-if="!isCaptureMode"
         "
         template-key-prefix="cv-preview"
         @save="saveFromPreview"
-        @ai="openAiModal"
         @signature="openSignatureDialog"
         @pdf="downloadPdf"
         @select-template="applyPreviewTemplate"
