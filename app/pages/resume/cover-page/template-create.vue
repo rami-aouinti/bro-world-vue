@@ -11,7 +11,7 @@ import {
   useResumeGoogleFonts,
 } from '~/composables/useResumeGoogleFonts'
 
-definePageMeta({ title: 'Resume · Cover Page Template Create' })
+definePageMeta({ title: 'resumePreview.coverPage.metaTitle' })
 const { t } = useI18n()
 useHead(() => ({
   title: t('resumePreview.coverPage.metaTitle'),
@@ -978,7 +978,7 @@ watch(aiModalOpen, (isOpen) => {
                 :font-weight="elementStyles.role.weight"
                 :font-family="textFontFamily('role')"
               />
-              <v-text class="hero-location">{{ model.location }}</v-text>
+              <span class="hero-location">{{ model.location }}</span>
             </div>
           </header>
           <section>
