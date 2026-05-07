@@ -46,9 +46,7 @@ const activeTemplateTab = ref<'resume' | 'cover-page' | 'cover-letter'>(
 const selectedLayoutFilter = ref<string | null>(null)
 
 const generatedResumeTemplates = computed(() =>
-  GENERATED_RESUME_TEMPLATES.filter(
-    (template) => !['aside-bar-left', 'aside-bar-right'].includes(template.layout),
-  ).map((template) => ({
+  GENERATED_RESUME_TEMPLATES.map((template) => ({
     id: template.id,
     title: `Resume · ${template.name}`,
     image: template.id
