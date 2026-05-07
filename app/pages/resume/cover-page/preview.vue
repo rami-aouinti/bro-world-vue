@@ -270,11 +270,11 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
         <div class="hero-row" :class="{ 'hero-row--layout-right': isLayoutRight }">
 
           <div class="mb-4 avatar-upload hero-avatar photo-shell" :style="{ width: `${imageSize}px`, height: `${imageSize}px`, borderRadius: imageShape === 'circle' ? '999px' : '12px' }" @click="openPhotoUpload">
-            <v-menu v-model="photoQuickMenuOpen" location="bottom start">
+            <v-menu v-model="photoQuickMenuOpen" location="right start" :close-on-content-click="false">
               <template #activator="{ props }">
                 <v-btn
                   v-bind="props"
-                  icon="mdi-tune-variant"
+                  icon="mdi-dots-vertical"
                   size="x-small"
                   class="photo-quick-trigger"
                   @click.stop
@@ -283,7 +283,7 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
               <v-card class="pa-3 photo-quick-menu" min-width="240" @click.stop>
                 <v-slider v-model="imageSize" label="Image size" min="48" max="180" step="1" hide-details class="mt-1"/>
                 <v-slider v-model="imageBorderWidth" label="Border width" min="0" max="8" step="1" hide-details class="mt-3"/>
-                <v-menu location="bottom start">
+                <v-menu location="right start">
                   <template #activator="{ props }">
                     <v-btn v-bind="props" class="mt-3" variant="outlined" block>Border color</v-btn>
                   </template>
@@ -341,7 +341,7 @@ class="hero" :class="{'hero--no-bar': barLayout === 'none', 'hero--double': barL
 .hero--no-bar{border-left:0!important;border-right:0!important;padding-left:0;padding-right:0}.hero--double::before{content:'';position:absolute;left:calc(var(--bar-primary-width) + 6px);top:0;bottom:0;width:var(--bar-secondary-width);background:var(--cp-secondary);border-radius:var(--bar-radius)}.hero--layout-right{border-left:0;border-right:var(--bar-primary-width) solid var(--cp-primary);padding-left:0;padding-right:24px;text-align:right}.hero--layout-right.hero--double::before{left:auto;right:calc(var(--bar-primary-width) + 6px)}.hero-row--layout-right{align-items:flex-end}.hero-row--layout-right .hero-avatar{align-self:flex-end}
 .avatar-upload{cursor:pointer;border-style:solid;border-color:v-bind(imageBorderColor);border-width:v-bind(imageBorderWidth + 'px');overflow:visible}
 .photo-shell{display:block;position:relative}
-.photo-quick-trigger{position:absolute;top:-10px;left:-10px;z-index:30;opacity:0;transition:opacity .15s ease;background:#fff;border:1px solid rgba(15,23,42,.2)}
+.photo-quick-trigger{position:absolute;top:-8px;right:-8px;z-index:30;opacity:0;transition:opacity .15s ease;background:#fff;border:1px solid rgba(15,23,42,.2)}
 .photo-shell:hover .photo-quick-trigger,.photo-shell:focus-within .photo-quick-trigger,.photo-quick-trigger:focus-visible{opacity:1}
 .photo-quick-menu{border:1px solid rgba(148,163,184,.4)}
 .photo-shell__img{width:100%;height:100%;overflow:hidden;border-radius:inherit}
