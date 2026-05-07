@@ -230,7 +230,7 @@ onMounted(async ()=>{ const q=typeof route.query.template==='string'?route.query
        <p class="text-body-2" >Bar radius</p>
        <v-slider v-model="barRadius" :min="activeBarDesignConfig.barRadius.min" :max="activeBarDesignConfig.barRadius.max" step="1" hide-details class="mt-3"/>
        <p class="text-body-2" >Bar width</p>
-       <v-slider v-model="primaryBarWidth" l:min="activeBarDesignConfig.barWidth.min" :max="activeBarDesignConfig.barWidth.max" step="1" hide-details class="mt-3"/>
+       <v-slider v-model="primaryBarWidth" :min="activeBarDesignConfig.barWidth.min" :max="activeBarDesignConfig.barWidth.max" step="1" hide-details class="mt-3"/>
        <p v-if="barLayout==='double'" class="text-body-2" >Sec Bar width"</p>
        <v-slider v-if="barLayout==='double'" v-model="secondaryBarWidth" :min="activeBarDesignConfig.secondaryBarWidth.min" :max="activeBarDesignConfig.secondaryBarWidth.max" step="1" hide-details class="mt-3"/>
      </v-card-text>
