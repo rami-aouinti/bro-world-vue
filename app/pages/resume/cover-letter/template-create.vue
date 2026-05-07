@@ -11,7 +11,7 @@ import {
   useResumeGoogleFonts,
 } from '~/composables/useResumeGoogleFonts'
 
-definePageMeta({ title: 'Resume · Cover Letter Template Create' })
+definePageMeta({ title: 'resumePreview.coverLetter.metaTitle' })
 const { t } = useI18n()
 useHead(() => ({
   title: t('resumePreview.coverLetter.metaTitle'),
@@ -1020,7 +1020,7 @@ watch(aiModalOpen, (isOpen) => {
                 class="hero-role"
                 :font-family="textFontFamily('role')"
               />
-              <v-text class="hero-location">{{ model.location }}</v-text>
+              <span class="hero-location">{{ model.location }}</span>
             </div>
           </header>
           <section class="letter-body">
