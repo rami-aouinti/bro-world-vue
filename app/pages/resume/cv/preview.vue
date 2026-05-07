@@ -2663,7 +2663,7 @@ v-if="!isCaptureMode"
     </AppModal>
     <AppModal
       v-model="matchOfferModalOpen"
-      title="Correspondence with Offer"
+      title="Correspondance with Offer"
       :max-width="760"
     >
       <p class="mb-3">

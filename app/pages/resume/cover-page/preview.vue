@@ -410,6 +410,7 @@ async function generateCoverPageWithAi() {
       aiAboutText.value = generatedText
     }
     aiProgress.value = 100
+    aiModalOpen.value = false
   } catch {
     /* noop */
   } finally {
