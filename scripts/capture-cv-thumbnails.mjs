@@ -47,7 +47,7 @@ const browser = await launchBrowser()
 const page = await browser.newPage({ viewport: { width: 1200, height: 1500 } })
 
 for (const tpl of generatedCvTemplates) {
-  const url = `${baseUrl}/resume/template-capture/${encodeURIComponent(tpl.id)}`
+  const url = `${baseUrl}/resume/template-capture/cv/${encodeURIComponent(tpl.id)}`
   await page.goto(url, { waitUntil: 'networkidle' })
   await page.keyboard.press('Escape').catch(() => {})
 
