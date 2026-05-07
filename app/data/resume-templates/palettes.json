@@ -1,11 +1,314 @@
 [
-  { "name": "ocean", "primary": "#0F4C81", "secondary": "#5FA8D3", "text": "#0F172A", "muted": "#64748B", "pageBackground": "#F8FAFC" },
-  { "name": "forest", "primary": "#1B5E20", "secondary": "#66BB6A", "text": "#102A16", "muted": "#5F7A65", "pageBackground": "#F6FBF7" },
-  { "name": "sunset", "primary": "#C2410C", "secondary": "#FB923C", "text": "#3A1A0A", "muted": "#8A5A44", "pageBackground": "#FFF8F3" },
-  { "name": "royal", "primary": "#4C1D95", "secondary": "#8B5CF6", "text": "#1F1147", "muted": "#6D5A99", "pageBackground": "#FAF7FF" },
-  { "name": "slate", "primary": "#334155", "secondary": "#94A3B8", "text": "#111827", "muted": "#6B7280", "pageBackground": "#F9FAFB" },
-  { "name": "rose", "primary": "#BE185D", "secondary": "#F472B6", "text": "#3B0A23", "muted": "#8B5A70", "pageBackground": "#FFF6FA" },
-  { "name": "teal", "primary": "#0F766E", "secondary": "#2DD4BF", "text": "#0B2E2A", "muted": "#5B7F7B", "pageBackground": "#F4FFFD" },
-  { "name": "amber", "primary": "#B45309", "secondary": "#FBBF24", "text": "#3A2305", "muted": "#8B6B2E", "pageBackground": "#FFFBF2" },
-  { "name": "mono", "primary": "#111827", "secondary": "#6B7280", "text": "#111827", "muted": "#6B7280", "pageBackground": "#FFFFFF" }
+  {
+    "name": "ocean",
+    "primary": "#0F4C81",
+    "secondary": "#5FA8D3",
+    "text": "#0F172A",
+    "muted": "#64748B",
+    "pageBackground": "#F8FAFC"
+  },
+  {
+    "name": "forest",
+    "primary": "#1B5E20",
+    "secondary": "#66BB6A",
+    "text": "#102A16",
+    "muted": "#5F7A65",
+    "pageBackground": "#F6FBF7"
+  },
+  {
+    "name": "sunset",
+    "primary": "#C2410C",
+    "secondary": "#FB923C",
+    "text": "#3A1A0A",
+    "muted": "#8A5A44",
+    "pageBackground": "#FFF8F3"
+  },
+  {
+    "name": "royal",
+    "primary": "#4C1D95",
+    "secondary": "#8B5CF6",
+    "text": "#1F1147",
+    "muted": "#6D5A99",
+    "pageBackground": "#FAF7FF"
+  },
+  {
+    "name": "slate",
+    "primary": "#334155",
+    "secondary": "#94A3B8",
+    "text": "#111827",
+    "muted": "#6B7280",
+    "pageBackground": "#F9FAFB"
+  },
+  {
+    "name": "rose",
+    "primary": "#BE185D",
+    "secondary": "#F472B6",
+    "text": "#3B0A23",
+    "muted": "#8B5A70",
+    "pageBackground": "#FFF6FA"
+  },
+  {
+    "name": "teal",
+    "primary": "#0F766E",
+    "secondary": "#2DD4BF",
+    "text": "#0B2E2A",
+    "muted": "#5B7F7B",
+    "pageBackground": "#F4FFFD"
+  },
+  {
+    "name": "amber",
+    "primary": "#B45309",
+    "secondary": "#FBBF24",
+    "text": "#3A2305",
+    "muted": "#8B6B2E",
+    "pageBackground": "#FFFBF2"
+  },
+  {
+    "name": "mono",
+    "primary": "#111827",
+    "secondary": "#6B7280",
+    "text": "#111827",
+    "muted": "#6B7280",
+    "pageBackground": "#FFFFFF"
+  },
+  {
+    "name": "indigo",
+    "primary": "#3730A3",
+    "secondary": "#818CF8",
+    "text": "#111827",
+    "muted": "#6B7280",
+    "pageBackground": "#EEF2FF"
+  },
+  {
+    "name": "violet",
+    "primary": "#6D28D9",
+    "secondary": "#C4B5FD",
+    "text": "#1F1147",
+    "muted": "#6D5A99",
+    "pageBackground": "#F5F3FF"
+  },
+  {
+    "name": "cobalt",
+    "primary": "#1D4ED8",
+    "secondary": "#60A5FA",
+    "text": "#0F172A",
+    "muted": "#64748B",
+    "pageBackground": "#EFF6FF"
+  },
+  {
+    "name": "coral",
+    "primary": "#EA580C",
+    "secondary": "#FDBA74",
+    "text": "#3A1A0A",
+    "muted": "#8A5A44",
+    "pageBackground": "#FFF7ED"
+  },
+  {
+    "name": "mint",
+    "primary": "#059669",
+    "secondary": "#6EE7B7",
+    "text": "#052E2B",
+    "muted": "#4B746C",
+    "pageBackground": "#ECFDF5"
+  },
+  {
+    "name": "lavender",
+    "primary": "#8B5CF6",
+    "secondary": "#DDD6FE",
+    "text": "#2E1065",
+    "muted": "#6D5A99",
+    "pageBackground": "#F5F3FF"
+  },
+  {
+    "name": "ruby",
+    "primary": "#B91C1C",
+    "secondary": "#FCA5A5",
+    "text": "#3F0B0B",
+    "muted": "#8C5C5C",
+    "pageBackground": "#FEF2F2"
+  },
+  {
+    "name": "sand",
+    "primary": "#A16207",
+    "secondary": "#FCD34D",
+    "text": "#422006",
+    "muted": "#8B6B2E",
+    "pageBackground": "#FFFBEB"
+  },
+  {
+    "name": "aqua",
+    "primary": "#0E7490",
+    "secondary": "#67E8F9",
+    "text": "#083344",
+    "muted": "#4D7885",
+    "pageBackground": "#ECFEFF"
+  },
+  {
+    "name": "magenta",
+    "primary": "#A21CAF",
+    "secondary": "#F0ABFC",
+    "text": "#3B0A3F",
+    "muted": "#8A5A8F",
+    "pageBackground": "#FDF4FF"
+  },
+  {
+    "name": "steel",
+    "primary": "#475569",
+    "secondary": "#94A3B8",
+    "text": "#0F172A",
+    "muted": "#64748B",
+    "pageBackground": "#F8FAFC"
+  },
+  {
+    "name": "night",
+    "primary": "#111827",
+    "secondary": "#374151",
+    "text": "#E5E7EB",
+    "muted": "#9CA3AF",
+    "pageBackground": "#030712"
+  },
+  {
+    "name": "peach",
+    "primary": "#FB7185",
+    "secondary": "#FECDD3",
+    "text": "#4C0519",
+    "muted": "#9F6B74",
+    "pageBackground": "#FFF1F2"
+  },
+  {
+    "name": "lime",
+    "primary": "#4D7C0F",
+    "secondary": "#BEF264",
+    "text": "#1A2E05",
+    "muted": "#6E7F45",
+    "pageBackground": "#F7FEE7"
+  },
+  {
+    "name": "orchid",
+    "primary": "#7E22CE",
+    "secondary": "#D8B4FE",
+    "text": "#2E1065",
+    "muted": "#7C5A99",
+    "pageBackground": "#FAF5FF"
+  },
+  {
+    "name": "graphite",
+    "primary": "#374151",
+    "secondary": "#6B7280",
+    "text": "#F3F4F6",
+    "muted": "#9CA3AF",
+    "pageBackground": "#111827"
+  },
+  {
+    "name": "denim",
+    "primary": "#1E40AF",
+    "secondary": "#93C5FD",
+    "text": "#172554",
+    "muted": "#5C6F99",
+    "pageBackground": "#EFF6FF"
+  },
+  {
+    "name": "bronze",
+    "primary": "#92400E",
+    "secondary": "#F59E0B",
+    "text": "#3A1D05",
+    "muted": "#8A6B44",
+    "pageBackground": "#FFFBEB"
+  },
+  {
+    "name": "pine",
+    "primary": "#14532D",
+    "secondary": "#4ADE80",
+    "text": "#052E16",
+    "muted": "#4D7A60",
+    "pageBackground": "#F0FDF4"
+  },
+  {
+    "name": "wine",
+    "primary": "#881337",
+    "secondary": "#FB7185",
+    "text": "#500724",
+    "muted": "#9C6078",
+    "pageBackground": "#FFF1F2"
+  },
+  {
+    "name": "storm",
+    "primary": "#334155",
+    "secondary": "#64748B",
+    "text": "#E2E8F0",
+    "muted": "#94A3B8",
+    "pageBackground": "#0F172A"
+  },
+  {
+    "name": "ice",
+    "primary": "#0369A1",
+    "secondary": "#7DD3FC",
+    "text": "#082F49",
+    "muted": "#4F7A92",
+    "pageBackground": "#F0F9FF"
+  },
+  {
+    "name": "clay",
+    "primary": "#9A3412",
+    "secondary": "#FDBA74",
+    "text": "#431407",
+    "muted": "#9B6A56",
+    "pageBackground": "#FFF7ED"
+  },
+  {
+    "name": "iris",
+    "primary": "#4338CA",
+    "secondary": "#A5B4FC",
+    "text": "#1E1B4B",
+    "muted": "#6670A8",
+    "pageBackground": "#EEF2FF"
+  },
+  {
+    "name": "moss",
+    "primary": "#3F6212",
+    "secondary": "#A3E635",
+    "text": "#1A2E05",
+    "muted": "#6B7F45",
+    "pageBackground": "#F7FEE7"
+  },
+  {
+    "name": "cherry",
+    "primary": "#BE123C",
+    "secondary": "#FDA4AF",
+    "text": "#4C0519",
+    "muted": "#9D5E68",
+    "pageBackground": "#FFF1F2"
+  },
+  {
+    "name": "oasis",
+    "primary": "#0F766E",
+    "secondary": "#5EEAD4",
+    "text": "#042F2E",
+    "muted": "#4F8580",
+    "pageBackground": "#F0FDFA"
+  },
+  {
+    "name": "gold",
+    "primary": "#B45309",
+    "secondary": "#FDE68A",
+    "text": "#451A03",
+    "muted": "#9B7A3D",
+    "pageBackground": "#FFFBEB"
+  },
+  {
+    "name": "plum",
+    "primary": "#6B21A8",
+    "secondary": "#C084FC",
+    "text": "#3B0764",
+    "muted": "#7F5A99",
+    "pageBackground": "#FAF5FF"
+  },
+  {
+    "name": "smoke",
+    "primary": "#525252",
+    "secondary": "#A3A3A3",
+    "text": "#F5F5F5",
+    "muted": "#A3A3A3",
+    "pageBackground": "#171717"
+  }
 ]
