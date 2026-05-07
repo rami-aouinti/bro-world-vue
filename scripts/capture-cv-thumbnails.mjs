@@ -45,7 +45,8 @@ async function launchBrowser() {
 
 const browser = await launchBrowser()
 const page = await browser.newPage({ viewport: { width: 1200, height: 1500 } })
-const CAPTURE_MAX_HEIGHT = 1000
+const CAPTURE_MAX_HEIGHT = 1500
+const CAPTURE_MAX_WIDTH = 1200
 
 for (const tpl of generatedCvTemplates) {
   const url = `${baseUrl}/resume/cv/preview?template=${encodeURIComponent(tpl.id)}&capture=1`
@@ -61,7 +62,7 @@ for (const tpl of generatedCvTemplates) {
     clip: {
       x: Math.max(0, box.x),
       y: Math.max(0, box.y),
-      width: box.width,
+      width: Math.min(box.width, CAPTURE_MAX_WIDTH),
       height: Math.min(box.height, CAPTURE_MAX_HEIGHT),
     },
   })

@@ -20,11 +20,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#1D4ED8",
-        "secondary": "#93C5FD",
+        "primary": "#1E2630",
+        "secondary": "#324762",
         "text": "#0F172A",
         "muted": "#64748B",
-        "pageBackground": "#F8FAFC"
+        "pageBackground": "#B7C5D7"
       },
       "line": "soft",
       "density": "comfortable",
@@ -458,11 +458,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#7C3AED",
-        "secondary": "#C4B5FD",
+        "primary": "#1C0B1F",
+        "secondary": "#9237A2",
         "text": "#1F2937",
         "muted": "#6B7280",
-        "pageBackground": "#FAF5FF"
+        "pageBackground": "#C299C9"
       },
       "line": "strong",
       "density": "compact",
