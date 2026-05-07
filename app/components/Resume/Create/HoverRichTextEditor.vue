@@ -66,9 +66,11 @@ function removeLastLineBreak() {
 }
 
 function onDragStart(event: DragEvent) {
-  event.dataTransfer?.setData('application/x-resume-editor-id', editorInstanceId)
-  event.dataTransfer?.effectAllowed = 'move'
-  event.dataTransfer?.setDragImage((event.currentTarget as HTMLElement), 10, 10)
+  const dataTransfer = event.dataTransfer
+  if (!dataTransfer) return
+  dataTransfer.setData('application/x-resume-editor-id', editorInstanceId)
+  dataTransfer.effectAllowed = 'move'
+  dataTransfer.setDragImage((event.currentTarget as HTMLElement), 10, 10)
 }
 
 function onDrop(event: DragEvent) {
