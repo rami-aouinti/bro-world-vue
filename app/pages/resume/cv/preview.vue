@@ -1426,7 +1426,7 @@ v-if="!isCaptureMode"
             '--cv-preview-total-height': `${cvPreviewHeight}px`,
           }"
         >
-          <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
+          <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"></div>
           <component :is="activeLayoutComponent" class="w-100 cv-preview-page" :style="{ background: activeColors?.pageBackground || '#ffffff', height: 'auto', minHeight: `${cvPreviewHeight}px`, overflow: 'visible', '--cv-primary': activeColors?.primary || '#1d4ed8', '--cv-secondary': activeColors?.secondary || '#93C5FD', '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body'), '--cv-header-text': headerTextColor, '--cv-header-muted': headerMutedColor, '--cv-section-bar-height': `${sectionBarConfig.height}px`, '--cv-section-bar-radius': `${sectionBarConfig.radius}px`, '--cv-section-bar-display': sectionBarConfig.show ? 'block' : 'none', '--cv-section-title-width': sectionBarConfig.widthType === 'complete' ? '100%' : 'fit-content', '--cv-section-bar-width': sectionBarConfig.widthType === 'complete' ? '100%' : 'calc(100% + 18px)' }">
           <template #header>
             <div class="cv-header-layout" :class="`cv-header-layout--${headerType}`">
@@ -1469,7 +1469,7 @@ v-if="!isCaptureMode"
                   </div>
                 </div>
                 <div class="cv-header-identity cv-col-4">
-                  <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker"><v-menu v-model="photoMenuOpen" location="right start" :close-on-content-click="false"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"/></div></v-card></v-menu></div>
+                  <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker"><v-menu v-model="photoMenuOpen" location="right start" :close-on-content-click="false"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"></button></div></v-card></v-menu></div>
                   <HoverRichTextEditor
                     class="cv-header-editor cv-header-editor--name"
                     :model-value="headerProfile.fullName"
@@ -1494,7 +1494,7 @@ v-if="!isCaptureMode"
               </template>
               <template v-else-if="headerType === 'header-right'">
                 <div class="cv-header-identity cv-col-4">
-                  <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker"><v-menu v-model="photoMenuOpen" location="right start" :close-on-content-click="false"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"/></div></v-card></v-menu></div>
+                  <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker"><v-menu v-model="photoMenuOpen" location="right start" :close-on-content-click="false"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"></button></div></v-card></v-menu></div>
                   <HoverRichTextEditor
                     class="cv-header-editor cv-header-editor--name"
                     :model-value="headerProfile.fullName"
@@ -1574,7 +1574,8 @@ v-if="!isCaptureMode"
                       @update:model-value="updateHeaderField('role', $event)"
                     />
                   </div>
-                </template>
+                </div>
+              </template>
                 <template v-else-if="headerType === 'header-right'">
                   <div class="cv-header-identity cv-col-4">
                     <div class="cv-photo-wrap">
@@ -1630,7 +1631,7 @@ v-if="!isCaptureMode"
                               class="cv-color-dot"
                               :style="{ background: c }"
                               @click="photoBorderColor = c"
-                            /></div></v-card
+                            ></button></div></v-card
                       ></v-menu>
                     </div>
                     <HoverRichTextEditor
