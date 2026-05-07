@@ -884,8 +884,7 @@ onUnmounted(() => {
               </v-col>
             </v-row>
           </v-card-text>
-        
-
+        </v-card>
         <v-card class="postcard-gradient-card mt-6" rounded="xl">
           <v-card-title><span>My Cover Pages</span></v-card-title>
           <v-divider />
@@ -896,7 +895,7 @@ onUnmounted(() => {
             <v-row v-else>
               <v-col v-for="coverPage in coverPages" :key="coverPage.id" cols="12" md="6" lg="4">
                 <v-card
-class="h-100 postcard-gradient-card resume-card" rounded="xl" role="button" tabindex="0"
+                  class="h-100 postcard-gradient-card resume-card" rounded="xl" role="button" tabindex="0"
                   @click="openCoverPage(coverPage)">
                   <v-card-text>
                     <h3 class="text-subtitle-1 font-weight-bold mb-2">{{ coverPage.header || 'My Cover Page' }}</h3>
@@ -919,7 +918,7 @@ class="h-100 postcard-gradient-card resume-card" rounded="xl" role="button" tabi
             <v-row v-else>
               <v-col v-for="coverLetter in coverLetters" :key="coverLetter.id" cols="12" md="6" lg="4">
                 <v-card
-class="h-100 postcard-gradient-card resume-card" rounded="xl" role="button" tabindex="0"
+                  class="h-100 postcard-gradient-card resume-card" rounded="xl" role="button" tabindex="0"
                   @click="openCoverLetter(coverLetter)">
                   <v-card-text>
                     <h3 class="text-subtitle-1 font-weight-bold mb-2">{{ coverLetter.header || 'My Cover Letter' }}</h3>
@@ -931,7 +930,6 @@ class="h-100 postcard-gradient-card resume-card" rounded="xl" role="button" tabi
             </v-row>
           </v-card-text>
         </v-card>
-</v-card>
       </template>
     </v-container>
 
