@@ -193,11 +193,6 @@ onUnmounted(() => {
               {{ tab.label }}
             </v-tab>
           </v-tabs>
-          <p class="mt-3 text-medium-emphasis">
-            {{ generatedResumeTemplates.length }} resume ·
-            {{ coverPageTemplates.length }} cover page ·
-            {{ coverLetterTemplates.length }} cover letter
-          </p>
 
           <div class="templates-slider mt-4">
             <v-card
