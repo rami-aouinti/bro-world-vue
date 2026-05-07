@@ -268,6 +268,10 @@ const aiPrompt =
   'Tell us about yourself and about the job you are applying for. The more precise details you provide, the better AI can generate a strong and relevant profile for your cover page.'
 const aiPromptProgress = ref('')
 let aiTypingTimer: ReturnType<typeof setInterval> | undefined
+const aiAboutText = ref('')
+const aiGenerating = ref(false)
+const aiProgress = ref(0)
+let aiProgressTimer: ReturnType<typeof setInterval> | undefined
 
 const COVER_PREVIEW_PDF_PAGE_HEIGHT = 1100
 const coverPreviewRef = ref<HTMLElement | null>(null)
@@ -372,6 +376,39 @@ function removeDecorObject(i: number) {
 }
 function openAiModal() {
   aiModalOpen.value = true
+}
+async function generateCoverPageWithAi() {
+  if (!aiAboutText.value.trim() || aiGenerating.value) return
+  aiGenerating.value = true
+  aiProgress.value = 8
+  if (aiProgressTimer) window.clearInterval(aiProgressTimer)
+  aiProgressTimer = window.setInterval(() => {
+    aiProgress.value = Math.min(92, aiProgress.value + 4)
+  }, 220)
+  try {
+    const response = await $fetch<{ textArea?: string }>(
+      'https://bro-world.org/api/v1/recruit/cover-pages/about-me/generate',
+      {
+        method: 'POST',
+        body: { text: aiAboutText.value.trim() },
+      },
+    )
+    const generatedText = response?.textArea?.trim()
+    if (generatedText) {
+      model.summary = generatedText
+      aiAboutText.value = generatedText
+    }
+    aiProgress.value = 100
+  } catch {
+    /* noop */
+  } finally {
+    if (aiProgressTimer) window.clearInterval(aiProgressTimer)
+    aiProgressTimer = undefined
+    window.setTimeout(() => {
+      aiGenerating.value = false
+      aiProgress.value = 0
+    }, 260)
+  }
 }
 function resetAiPromptTyping() {
   if (aiTypingTimer) window.clearInterval(aiTypingTimer)
@@ -556,6 +593,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   if (coverPreviewMeasureTimer) window.clearTimeout(coverPreviewMeasureTimer)
   if (aiTypingTimer) window.clearInterval(aiTypingTimer)
+  if (aiProgressTimer) window.clearInterval(aiProgressTimer)
   coverPreviewResizeObserver?.disconnect()
   coverPreviewResizeObserver = undefined
 })
@@ -1001,12 +1039,31 @@ watch(aiModalOpen, (isOpen) => {
           /></v-col>
           <v-col cols="12"
             ><v-textarea
+              v-model="aiAboutText"
               label="Tell us about yourself and the position"
               rows="5"
               variant="outlined"
               hide-details
           /></v-col>
         </v-row>
+        <v-progress-linear
+          v-if="aiGenerating"
+          :model-value="aiProgress"
+          color="primary"
+          height="8"
+          rounded
+          class="mt-4"
+        />
+        <div class="d-flex justify-end mt-4">
+          <v-btn
+            color="primary"
+            :loading="aiGenerating"
+            :disabled="!aiAboutText.trim()"
+            @click="generateCoverPageWithAi"
+          >
+            Generate
+          </v-btn>
+        </div>
       </AppModal>
       <AppModal v-model="signatureDialogOpen" title="Signature" :max-width="760"
         ><canvas

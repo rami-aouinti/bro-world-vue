@@ -37,7 +37,7 @@ const queryTemplateId =
   typeof route.query.template === 'string' ? route.query.template : ''
 const queryPaletteId =
   typeof route.query.palette === 'string' ? route.query.palette : ''
-const { loggedIn } = useUserSession()
+const { loggedIn, user } = useUserSession()
 const myResumes = ref<ResumeApiItem[]>([])
 const selectedTemplate = ref(GENERATED_RESUME_TEMPLATES[0]?.id || 'tpl-001')
 const layoutMenuOpen = ref(false)
@@ -50,6 +50,12 @@ const aiPrompt =
   'You can upload your old resume or paste your content to help AI generate an improved and structured CV profile.'
 const aiPromptProgress = ref('')
 let aiTypingTimer: ReturnType<typeof setInterval> | undefined
+const matchOfferModalOpen = ref(false)
+const matchOfferText = ref('')
+const matchOfferLoading = ref(false)
+const matchOfferProgress = ref(0)
+const matchOfferResult = ref<{ percentage: number; note: string } | null>(null)
+let matchOfferTimer: ReturnType<typeof setInterval> | undefined
 const signatureCanvas = ref<HTMLCanvasElement | null>(null)
 const decorShapeOptions = [
   'circle',
@@ -1046,6 +1052,7 @@ onUpdated(() => scheduleCvPreviewMeasure())
 onBeforeUnmount(() => {
   if (cvPreviewMeasureTimer) window.clearTimeout(cvPreviewMeasureTimer)
   if (aiTypingTimer) window.clearInterval(aiTypingTimer)
+  if (matchOfferTimer) window.clearInterval(matchOfferTimer)
   cvPreviewResizeObserver?.disconnect()
 })
 watch(aiModalOpen, (isOpen) => {
@@ -1090,6 +1097,37 @@ function saveFromPreview() {
 
 function openAiModal() {
   aiModalOpen.value = true
+}
+
+async function generateResumeOfferMatch() {
+  if (!matchOfferText.value.trim() || matchOfferLoading.value) return
+  const token = user.value?.token?.trim()
+  if (!token) return
+  matchOfferLoading.value = true
+  matchOfferResult.value = null
+  matchOfferProgress.value = 6
+  if (matchOfferTimer) window.clearInterval(matchOfferTimer)
+  matchOfferTimer = window.setInterval(() => {
+    matchOfferProgress.value = Math.min(93, matchOfferProgress.value + 3)
+  }, 220)
+  try {
+    const response = await $fetch<{ percentage: number; note: string }>(
+      'https://bro-world.org/api/v1/recruit/private/me/resumes/match-offer',
+      {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: { offerText: matchOfferText.value.trim() },
+      },
+    )
+    matchOfferResult.value = response
+    matchOfferProgress.value = 100
+  } catch {
+    /* noop */
+  } finally {
+    if (matchOfferTimer) window.clearInterval(matchOfferTimer)
+    matchOfferTimer = undefined
+    matchOfferLoading.value = false
+  }
 }
 
 async function downloadPdf() {
@@ -1266,6 +1304,16 @@ watch(
             hide-details
             class="mt-2"
           />
+          <v-btn
+            v-if="userResumeData"
+            class="mt-4"
+            color="primary"
+            variant="outlined"
+            block
+            @click="matchOfferModalOpen = true"
+          >
+            Correspondance with Offer
+          </v-btn>
         </v-card-text>
       </template>
 
@@ -2602,6 +2650,53 @@ v-if="!isCaptureMode"
         variant="outlined"
         hide-details
       />
+    </AppModal>
+    <AppModal
+      v-model="matchOfferModalOpen"
+      title="Correspondance with Offer"
+      :max-width="760"
+    >
+      <p class="mb-3">
+        Paste the job offer text below. AI will compare it with your current CV and explain the match score.
+      </p>
+      <v-textarea
+        v-model="matchOfferText"
+        label="Offer text"
+        rows="6"
+        variant="outlined"
+      />
+      <div class="d-flex justify-end mt-3">
+        <v-btn
+          color="primary"
+          :loading="matchOfferLoading"
+          :disabled="!matchOfferText.trim()"
+          @click="generateResumeOfferMatch"
+        >
+          Generate
+        </v-btn>
+      </div>
+      <v-progress-linear
+        v-if="matchOfferLoading"
+        :model-value="matchOfferProgress"
+        color="primary"
+        rounded
+        height="8"
+        class="mt-4"
+      />
+      <div
+        v-if="matchOfferResult"
+        class="mt-4 d-flex flex-column align-center ga-3"
+      >
+        <v-progress-circular
+          :model-value="matchOfferResult.percentage"
+          :size="100"
+          :width="10"
+          color="primary"
+        >
+          {{ matchOfferResult.percentage }}%
+        </v-progress-circular>
+        <p class="text-body-2 w-100">{{ matchOfferResult.note }}</p>
+      </div>
     </AppModal>
 
     <AppModal
