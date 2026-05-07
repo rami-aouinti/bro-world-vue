@@ -127,6 +127,11 @@
           "jobs": "Suivez les offres, candidatures et workflows de recrutement."
         }
       }
+    },
+    "resumeEditor": {
+      "resume": "CV",
+      "coverPage": "Page de garde",
+      "coverLetter": "Lettre de motivation"
     }
   },
   "common": {
@@ -3309,6 +3314,50 @@
         }
       },
       "previewTitle": "Resume Preview"
+    }
+  },
+  "resumePreview": {
+    "cv": {
+      "metaTitle": "CV · Aperçu"
+    },
+    "coverPage": {
+      "metaTitle": "CV · Aperçu de la page de garde"
+    },
+    "coverLetter": {
+      "metaTitle": "CV · Aperçu de la lettre de motivation"
+    },
+    "templates": {
+      "metaTitle": "Aperçus des modèles de CV",
+      "metaDescription": "Prévisualisez les modèles de CV Bro World par mise en page, style, densité et options de design professionnel.",
+      "metaKeywords": "modèles CV, modèles de curriculum vitae, aperçu CV, CV professionnel, créateur de CV Bro World",
+      "heading": "Aperçus des modèles de CV",
+      "subheading": "Vérifications visuelles des miniatures et des principaux réglages.",
+      "filters": {
+        "layout": "Mise en page",
+        "all": "Tous",
+        "layoutAside": "Colonne latérale",
+        "layoutNoAside": "Sans colonne",
+        "layoutAsideLeft": "Colonne à gauche",
+        "layoutAsideRight": "Colonne à droite",
+        "layoutBarLeft": "Barre à gauche",
+        "layoutBarLight": "Barre légère",
+        "layoutAsideSplit": "Colonne scindée",
+        "layoutNoAsideSplit": "Sans colonne scindée",
+        "themeLine": "Ligne du thème",
+        "lineSoft": "Douce",
+        "lineNone": "Aucune",
+        "lineBlock": "Bloc",
+        "themeDensity": "Densité du thème",
+        "densityComfortable": "Confortable",
+        "densityCompact": "Compacte"
+      },
+      "labels": {
+        "structure": "Structure",
+        "layout": "Mise en page",
+        "skin": "Skin",
+        "line": "Ligne",
+        "density": "Densité"
+      }
     }
   }
 }
