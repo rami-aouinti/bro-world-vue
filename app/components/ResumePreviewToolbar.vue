@@ -1,6 +1,6 @@
 <script setup lang="ts">
 type PreviewTemplate = { id?: string; value?: string; label?: string; name?: string; title?: string }
-type PaletteOption = { value?: string; title?: string; name?: string; primary?: string; secondary?: string; dark?: string; light?: string }
+type PaletteOption = { value?: string; title?: string; name?: string; primary?: string; secondary?: string; tertiary?: string; quaternary?: string; text?: string; dark?: string; light?: string }
 
 withDefaults(
   defineProps<{
@@ -91,7 +91,7 @@ function paletteValue(palette: PaletteOption) {
               class="palette-dot"
               :class="{ 'palette-dot--active': selectedPalette === paletteValue(palette) }"
               :title="paletteLabel(palette)"
-              :style="{ '--palette-primary': palette.primary || '#cbd5e1', '--palette-secondary': palette.secondary || palette.dark || '#94a3b8', '--palette-light': palette.light || '#e2e8f0' }"
+              :style="{ '--palette-primary': palette.primary || '#cbd5e1', '--palette-secondary': palette.secondary || palette.dark || '#94a3b8', '--palette-tertiary': palette.tertiary || palette.text || '#475569', '--palette-quaternary': palette.quaternary || palette.light || '#e2e8f0' }"
               @click="emit('select-palette', paletteValue(palette))"
             />
           </div>
@@ -180,11 +180,13 @@ function paletteValue(palette: PaletteOption) {
   background: linear-gradient(
     135deg,
     var(--palette-primary) 0%,
-    var(--palette-primary) 33%,
-    var(--palette-secondary) 33%,
-    var(--palette-secondary) 66%,
-    var(--palette-light) 66%,
-    var(--palette-light) 100%
+    var(--palette-primary) 25%,
+    var(--palette-secondary) 25%,
+    var(--palette-secondary) 50%,
+    var(--palette-tertiary) 50%,
+    var(--palette-tertiary) 75%,
+    var(--palette-quaternary) 75%,
+    var(--palette-quaternary) 100%
   );
 }
 
