@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename)
 const root = path.resolve(__dirname, '..')
 const outDir = path.join(root, 'public/img/cv/generated')
 const templatesPath = path.join(root, 'app/data/resume-templates/generated-20-resume.json')
-const baseUrl = process.env.RESUME_CAPTURE_BASE_URL || 'https://bro-world-space.com'
+const baseUrl = process.env.RESUME_CAPTURE_BASE_URL || 'http://127.0.0.1:3000'
 
 const templatesRaw = await readFile(templatesPath, 'utf-8')
 const generatedCvTemplates = JSON.parse(templatesRaw)
@@ -47,11 +47,11 @@ const browser = await launchBrowser()
 const page = await browser.newPage({ viewport: { width: 1200, height: 1500 } })
 
 for (const tpl of generatedCvTemplates) {
-  const url = `${baseUrl}/resume/template-capture/cv/${encodeURIComponent(tpl.id)}`
+  const url = `${baseUrl}/resume/cv/preview?template=${encodeURIComponent(tpl.id)}&capture=1&palette=night`
   await page.goto(url, { waitUntil: 'networkidle' })
   await page.keyboard.press('Escape').catch(() => {})
 
-  const captureCanvas = page.locator('.capture-page').first()
+  const captureCanvas = page.locator('.cv-preview-page').first()
   await captureCanvas.waitFor({ state: 'visible' })
   await captureCanvas.screenshot({
     path: path.join(outDir, `${tpl.id}.png`),
