@@ -9068,7 +9068,7 @@
     "headerType": "header-left",
     "fakeData": {
       "id": "67f2c6f8-4cb3-48e1-a49d-4de057f48337",
-      "documentUrl": null,
+      "documentUrl": "https://portfolio.example.com",
       "resumeInformation": {
         "fullName": "Ethan Rossi",
         "email": "ethan.rossi@example.com",
@@ -9089,7 +9089,7 @@
           "description": "Led product delivery and built maintainable architecture.",
           "company": "Bro Labs",
           "startDate": "2021-01-01",
-          "endDate": null
+          "endDate": "Present"
         },
         {
           "id": "ec24f7bf-555d-440e-8e95-fb59a9c5c148",
@@ -9104,7 +9104,7 @@
         {
           "id": "e6b0c84a-c92c-4497-8be6-2a1de058bfee",
           "title": "Master in Computer Science",
-          "description": "",
+          "description": "Relevant coursework in product strategy, user research, and data-driven decision making.",
           "school": "University of Lyon",
           "startDate": "2016-09-01",
           "endDate": "2018-06-30",
@@ -9113,7 +9113,7 @@
         {
           "id": "0a42a0a4-d7e7-4804-ba2f-0dba79c41b83",
           "title": "Bachelor in Software Engineering",
-          "description": "",
+          "description": "Relevant coursework in product strategy, user research, and data-driven decision making.",
           "school": "Université Grenoble Alpes",
           "startDate": "2013-09-01",
           "endDate": "2016-06-30",
@@ -9173,13 +9173,13 @@
         {
           "id": "e28cf154-38e9-4c92-aabb-938c3d5d6d47",
           "title": "AWS Certified Developer",
-          "description": "",
+          "description": "Credential focused on practical methods and measurable outcomes.",
           "attachments": []
         },
         {
           "id": "013cd1ba-4d96-4b0a-b3f7-41ec960b58ef",
           "title": "Scrum Master",
-          "description": "",
+          "description": "Credential focused on practical methods and measurable outcomes.",
           "attachments": []
         }
       ],
@@ -9196,29 +9196,29 @@
         {
           "id": "d15c628b-ef39-476a-801f-b06902d7384c",
           "title": "Sophie Bernard · Engineering Manager",
-          "description": ""
+          "description": "Available to discuss leadership, collaboration, and delivery quality."
         },
         {
           "id": "4beef7a3-5572-4208-bf30-3437ef2b1ff0",
           "title": "Julien Roche · Product Director",
-          "description": ""
+          "description": "Available to discuss leadership, collaboration, and delivery quality."
         }
       ],
       "hobbies": [
         {
           "id": "ce50ed2d-340f-417a-ba01-3db2561611b4",
           "title": "Open-source",
-          "description": ""
+          "description": "Consistently practiced as a creative and personal development activity."
         },
         {
           "id": "cc499995-bd48-4dbd-bd72-7010f56624c5",
           "title": "Running",
-          "description": ""
+          "description": "Consistently practiced as a creative and personal development activity."
         },
         {
           "id": "c0eb6aec-ceba-4dd8-991a-8d2201bbcade",
           "title": "Photography",
-          "description": ""
+          "description": "Consistently practiced as a creative and personal development activity."
         }
       ]
     },
@@ -9521,7 +9521,7 @@
     "headerType": "header-right",
     "fakeData": {
       "id": "4cf1fa9d-2fc0-4100-81ae-878fc9949166",
-      "documentUrl": null,
+      "documentUrl": "https://portfolio.example.com",
       "resumeInformation": {
         "fullName": "Chloé Dupont",
         "email": "chloé.dupont@example.com",
@@ -9542,7 +9542,7 @@
           "description": "Led product delivery and built maintainable architecture.",
           "company": "Bro Labs",
           "startDate": "2021-01-01",
-          "endDate": null
+          "endDate": "Present"
         },
         {
           "id": "b3dda171-fa8c-4003-9c55-9be367961cf4",
@@ -9557,7 +9557,7 @@
         {
           "id": "f880f3be-5435-420b-81ae-462210ffd7d4",
           "title": "Master in Computer Science",
-          "description": "",
+          "description": "Relevant coursework in product strategy, user research, and data-driven decision making.",
           "school": "University of Lyon",
           "startDate": "2016-09-01",
           "endDate": "2018-06-30",
@@ -9566,7 +9566,7 @@
         {
           "id": "82294b88-5349-41ba-bef0-b656e1f902fb",
           "title": "Bachelor in Software Engineering",
-          "description": "",
+          "description": "Relevant coursework in product strategy, user research, and data-driven decision making.",
           "school": "Université Grenoble Alpes",
           "startDate": "2013-09-01",
           "endDate": "2016-06-30",
@@ -9626,13 +9626,13 @@
         {
           "id": "b04c0b04-3944-4a86-ac22-4cf5aaeed446",
           "title": "AWS Certified Developer",
-          "description": "",
+          "description": "Credential focused on practical methods and measurable outcomes.",
           "attachments": []
         },
         {
           "id": "8672054b-0fbb-4326-94dd-777fac5b4eb1",
           "title": "Scrum Master",
-          "description": "",
+          "description": "Credential focused on practical methods and measurable outcomes.",
           "attachments": []
         }
       ],
@@ -9649,29 +9649,29 @@
         {
           "id": "242343fc-c95c-4479-a785-9c74b58d9462",
           "title": "Sophie Bernard · Engineering Manager",
-          "description": ""
+          "description": "Available to discuss leadership, collaboration, and delivery quality."
         },
         {
           "id": "f8ff154b-b94e-4c99-b411-3d39df366dba",
           "title": "Julien Roche · Product Director",
-          "description": ""
+          "description": "Available to discuss leadership, collaboration, and delivery quality."
         }
       ],
       "hobbies": [
         {
           "id": "b33ab8d4-0bfd-4d7c-96ca-e4fdaea96211",
           "title": "Open-source",
-          "description": ""
+          "description": "Consistently practiced as a creative and personal development activity."
         },
         {
           "id": "ca85fafa-0546-4dfb-a97a-e30d3d9a56bd",
           "title": "Running",
-          "description": ""
+          "description": "Consistently practiced as a creative and personal development activity."
         },
         {
           "id": "f98d8f00-8171-4fea-b50c-1f7f8571d2bb",
           "title": "Photography",
-          "description": ""
+          "description": "Consistently practiced as a creative and personal development activity."
         }
       ]
     },
@@ -9974,7 +9974,7 @@
     "headerType": "header-split",
     "fakeData": {
       "id": "326db07e-b455-4a2b-838b-714e3432e541",
-      "documentUrl": null,
+      "documentUrl": "https://portfolio.example.com",
       "resumeInformation": {
         "fullName": "Lucas Meyer",
         "email": "lucas.meyer@example.com",
@@ -9995,7 +9995,7 @@
           "description": "Led product delivery and built maintainable architecture.",
           "company": "Bro Labs",
           "startDate": "2021-01-01",
-          "endDate": null
+          "endDate": "Present"
         },
         {
           "id": "d48d8c34-abf2-4d4e-b6a3-ae54fee802c2",
@@ -10010,7 +10010,7 @@
         {
           "id": "9f23e503-cd16-4597-a26b-e7bee813dc7a",
           "title": "Master in Computer Science",
-          "description": "",
+          "description": "Relevant coursework in product strategy, user research, and data-driven decision making.",
           "school": "University of Lyon",
           "startDate": "2016-09-01",
           "endDate": "2018-06-30",
@@ -10019,7 +10019,7 @@
         {
           "id": "968b8715-3ea5-45d4-97ca-22b02fc86894",
           "title": "Bachelor in Software Engineering",
-          "description": "",
+          "description": "Relevant coursework in product strategy, user research, and data-driven decision making.",
           "school": "Université Grenoble Alpes",
           "startDate": "2013-09-01",
           "endDate": "2016-06-30",
@@ -10079,13 +10079,13 @@
         {
           "id": "939fdefc-d288-405d-b537-bf7514c4c873",
           "title": "AWS Certified Developer",
-          "description": "",
+          "description": "Credential focused on practical methods and measurable outcomes.",
           "attachments": []
         },
         {
           "id": "5e37342a-1b29-4a3d-bea5-da1714320c72",
           "title": "Scrum Master",
-          "description": "",
+          "description": "Credential focused on practical methods and measurable outcomes.",
           "attachments": []
         }
       ],
@@ -10102,29 +10102,29 @@
         {
           "id": "03b902c5-a0ca-48e4-bc8c-3ed10fe34e5b",
           "title": "Sophie Bernard · Engineering Manager",
-          "description": ""
+          "description": "Available to discuss leadership, collaboration, and delivery quality."
         },
         {
           "id": "3c13909d-7b9d-4bae-882f-6b60e8cc1ccd",
           "title": "Julien Roche · Product Director",
-          "description": ""
+          "description": "Available to discuss leadership, collaboration, and delivery quality."
         }
       ],
       "hobbies": [
         {
           "id": "09aa6873-9922-4940-97f7-974e7f1a4288",
           "title": "Open-source",
-          "description": ""
+          "description": "Consistently practiced as a creative and personal development activity."
         },
         {
           "id": "e6aedac5-ca09-44fe-b789-69b424ce17f3",
           "title": "Running",
-          "description": ""
+          "description": "Consistently practiced as a creative and personal development activity."
         },
         {
           "id": "912c2adc-1416-42de-8cbe-b51ed463c8d8",
           "title": "Photography",
-          "description": ""
+          "description": "Consistently practiced as a creative and personal development activity."
         }
       ]
     },
@@ -10427,7 +10427,7 @@
     "headerType": "header-left",
     "fakeData": {
       "id": "30ba3bae-5337-4897-bb6d-21596cda2387",
-      "documentUrl": null,
+      "documentUrl": "https://portfolio.example.com",
       "resumeInformation": {
         "fullName": "Ava Kim",
         "email": "ava.kim@example.com",
@@ -10448,7 +10448,7 @@
           "description": "Led product delivery and built maintainable architecture.",
           "company": "Bro Labs",
           "startDate": "2021-01-01",
-          "endDate": null
+          "endDate": "Present"
         },
         {
           "id": "d8440b4e-c7d8-4dc2-90d2-6e7821e5ab08",
@@ -10463,7 +10463,7 @@
         {
           "id": "c63f1c7a-61e3-4193-b079-1d7508e2a4a2",
           "title": "Master in Computer Science",
-          "description": "",
+          "description": "Relevant coursework in product strategy, user research, and data-driven decision making.",
           "school": "University of Lyon",
           "startDate": "2016-09-01",
           "endDate": "2018-06-30",
@@ -10472,7 +10472,7 @@
         {
           "id": "5c5c8241-7574-4950-bba4-fd14dd1f48d8",
           "title": "Bachelor in Software Engineering",
-          "description": "",
+          "description": "Relevant coursework in product strategy, user research, and data-driven decision making.",
           "school": "Université Grenoble Alpes",
           "startDate": "2013-09-01",
           "endDate": "2016-06-30",
@@ -10532,13 +10532,13 @@
         {
           "id": "016213d9-5bde-41b3-9843-b5e5e3b48286",
           "title": "AWS Certified Developer",
-          "description": "",
+          "description": "Credential focused on practical methods and measurable outcomes.",
           "attachments": []
         },
         {
           "id": "9618e3c0-349d-4c44-8d3f-4ae79c33086d",
           "title": "Scrum Master",
-          "description": "",
+          "description": "Credential focused on practical methods and measurable outcomes.",
           "attachments": []
         }
       ],
@@ -10555,29 +10555,29 @@
         {
           "id": "23ae1b92-5eb4-4a46-abce-fd1e55f130b5",
           "title": "Sophie Bernard · Engineering Manager",
-          "description": ""
+          "description": "Available to discuss leadership, collaboration, and delivery quality."
         },
         {
           "id": "ae863120-d641-4f11-af37-2e3d17d0bdad",
           "title": "Julien Roche · Product Director",
-          "description": ""
+          "description": "Available to discuss leadership, collaboration, and delivery quality."
         }
       ],
       "hobbies": [
         {
           "id": "2bee2061-3139-4027-b0b2-e3ee14d18ddf",
           "title": "Open-source",
-          "description": ""
+          "description": "Consistently practiced as a creative and personal development activity."
         },
         {
           "id": "465c8a74-9035-4f5f-bb5a-bdb060643f1d",
           "title": "Running",
-          "description": ""
+          "description": "Consistently practiced as a creative and personal development activity."
         },
         {
           "id": "b9d3a3ca-5d67-4977-9ae7-6e795af50681",
           "title": "Photography",
-          "description": ""
+          "description": "Consistently practiced as a creative and personal development activity."
         }
       ]
     },
