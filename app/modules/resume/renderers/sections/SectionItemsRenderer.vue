@@ -39,9 +39,20 @@ const props = withDefaults(defineProps<ResumeSectionRendererProps>(), {
 })
 const { t } = useI18n()
 
-const hideProgressLinePercent = computed(() =>
+const showLevelLabel = computed(() =>
   props.template === 'progress-line' && ['skills', 'languages'].includes(props.sectionKey),
 )
+
+function getTextLevelLabel(sectionKey: string, level: number): string {
+  if (level >= 100) {
+    return sectionKey === 'languages' ? 'Fluent' : 'Expert'
+  }
+
+  if (level >= 75) return 'Advanced'
+  if (level >= 50) return 'Intermediate'
+  if (level >= 25) return 'Basic'
+  return 'Beginner'
+}
 
 function normalizeBulletLine(line: string): string {
   return line.replace(/^[-*•◦▪‣]+\s*/, '').trim()
@@ -387,10 +398,15 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
               </div>
 
               <p
-                v-if="template === 'progress-line' && !hideProgressLinePercent"
+                v-if="template === 'progress-line'"
                 class="renderer-period"
               >
-                {{ item.level }}%
+                <template v-if="showLevelLabel">
+                  {{ getTextLevelLabel(sectionKey, item.level) }}
+                </template>
+                <template v-else>
+                  {{ item.level }}%
+                </template>
               </p>
 
               <HoverRichTextEditor

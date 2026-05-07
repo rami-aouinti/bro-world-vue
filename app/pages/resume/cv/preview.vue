@@ -540,10 +540,25 @@ function getSectionItems(rawSection: string): string[] {
     const description = String(item?.description || '').trim()
     return description ? `${title} · ${description}` : title
   }
-  const toLeveledItem = (item: any, fallback: string, preferFlag = false) => {
+  const toLevelText = (level: number, sectionKey: 'skills' | 'languages') => {
+    if (level >= 100) return sectionKey === 'languages' ? 'Fluent' : 'Expert'
+    if (level >= 75) return 'Advanced'
+    if (level >= 50) return 'Intermediate'
+    if (level >= 25) return 'Basic'
+    return 'Beginner'
+  }
+
+  const toLeveledItem = (item: any, fallback: string, sectionKey: 'skills' | 'languages', preferFlag = false) => {
     if (typeof item === 'string') return item
     const level = Number(item?.level)
-    const suffix = Number.isFinite(level) ? ` (${Math.max(0, Math.min(100, level))}%)` : ''
+    const normalizedLevel = Number.isFinite(level) ? Math.max(0, Math.min(100, level)) : null
+    const variant = effectiveSectionType(sectionKey, sectionType(sectionKey as any))
+    const showTextLevel = variant === 'classic' || variant === 'text'
+    const suffix = normalizedLevel === null
+      ? ''
+      : showTextLevel
+        ? ` (${toLevelText(normalizedLevel, sectionKey)})`
+        : ` (${normalizedLevel}%)`
     const label = preferFlag && item?.languageType === 'flag' && item?.flag
       ? String(item.flag)
       : String(item?.name || item?.title || fallback)
@@ -553,8 +568,8 @@ function getSectionItems(rawSection: string): string[] {
   if (key === 'experience') return [...(data.experiences || []).map((item: any) => { const from = formatShortDate(item.startDate); const to = item.endDate ? formatShortDate(item.endDate) : 'Present'; const date = from ? `${from} - ${to}` : ''; return `${item.title || 'Role'}§${item.company || ''}§${date}§${item.description || 'Description...'}` }), ...extra.map((item: any) => { const from = formatShortDate(item.startDate); const to = item.endDate ? formatShortDate(item.endDate) : 'Present'; const date = from ? `${from} - ${to}` : ''; return `${item.title || 'Role'}§${item.company || ''}§${date}§${item.description || 'Description...'}` })]
   if (key === 'education') return [...(data.educations || []).map((item: any) => { const from = formatShortDate(item.startDate); const to = formatShortDate(item.endDate); const date = from ? `${from}${to ? ` - ${to}` : ''}` : ''; const schoolLine = `${item.school || ''}${item.location ? `, ${item.location}` : ''}`; return `${item.title || 'Degree'}§${schoolLine}§${date}§${item.description || 'Description...'}` }), ...extra.map((item: any) => { const from = formatShortDate(item.startDate); const to = formatShortDate(item.endDate); const date = from ? `${from}${to ? ` - ${to}` : ''}` : ''; const schoolLine = `${item.school || ''}${item.location ? `, ${item.location}` : ''}`; return `${item.title || 'Degree'}§${schoolLine}§${date}§${item.description || 'Description...'}` })]
   if (key === 'projects') return [...(data.projects || []).map((item: any) => toTitleDesc(item, 'Project')), ...extra.map((item: any) => toTitleDesc(item, 'Project'))].filter(Boolean)
-  if (key === 'skills') return [...(data.skills || []).map((item: any) => toLeveledItem(item, 'Skill')), ...extra.map((item: any) => toLeveledItem(item, 'Skill'))].filter(Boolean)
-  if (key === 'languages') return [...(data.languages || []), ...extra].map((item: any) => toLeveledItem(item, 'Language', true)).filter(Boolean)
+  if (key === 'skills') return [...(data.skills || []).map((item: any) => toLeveledItem(item, 'Skill', 'skills')), ...extra.map((item: any) => toLeveledItem(item, 'Skill', 'skills'))].filter(Boolean)
+  if (key === 'languages') return [...(data.languages || []), ...extra].map((item: any) => toLeveledItem(item, 'Language', 'languages', true)).filter(Boolean)
   if (key === 'certifications') return [...(data.certifications || []).map((item: any) => toTitleDesc(item, 'Certification')), ...extra.map((item: any) => toTitleDesc(item, 'Certification'))].filter(Boolean)
   if (key === 'references') return [...(data.references || []).map((item: any) => toTitleDesc(item, 'Reference')), ...extra.map((item: any) => toTitleDesc(item, 'Reference'))].filter(Boolean)
   if (key === 'hobbies') return [...(data.hobbies || []).map((item: any) => toTitleDesc(item, 'Hobby')), ...extra.map((item: any) => toTitleDesc(item, 'Hobby'))].filter(Boolean)
