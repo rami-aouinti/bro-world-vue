@@ -151,7 +151,7 @@ const sectionSpacing = computed(() => activeTemplate.value?.layoutOptions?.secti
 const activeColors = computed(() => {
   const palette = activeTemplate.value.theme.palette
   const selected = palettePresetOptions.value.find((option) => option.value === selectedPalette.value)
-  if (selected && selected.value !== 'template') return { ...palette, primary: selected.primary, secondary: selected.dark, pageBackground: selected.light }
+  if (selected && selected.value !== 'template') return { ...palette, primary: selected.primary, secondary: selected.secondary, text: selected.text, muted: selected.tertiary, pageBackground: selected.quaternary }
   return palette
 })
 const isLayoutRight = computed(() => activeTemplate.value?.layout === 'layout-right')

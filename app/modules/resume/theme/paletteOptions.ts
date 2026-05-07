@@ -3,13 +3,30 @@ export type ToolbarPaletteOption = {
   value: string
   primary: string
   secondary: string
+  tertiary: string
+  quaternary: string
+  text: string
   light: string
 }
 
 type TemplatePalette = {
   primary?: string
   secondary?: string
+  muted?: string
+  text?: string
   pageBackground?: string
+}
+
+function relativeLuminance(hex: string) {
+  const normalized = hex.replace('#', '')
+  if (!/^[0-9a-fA-F]{6}$/.test(normalized)) return 1
+  const rgb = [0, 2, 4].map(offset => parseInt(normalized.slice(offset, offset + 2), 16) / 255)
+  const linear = rgb.map((channel) => (channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4))
+  return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+}
+
+function resolveTextColor(background: string, fallback = '#0F172A') {
+  return relativeLuminance(background) < 0.35 ? '#F8FAFC' : fallback
 }
 
 function clamp(value: number, min: number, max: number) {
@@ -36,6 +53,9 @@ export function buildToolbarPaletteOptions(
       value: 'template',
       primary: templatePalette.primary || '#2563EB',
       secondary: templatePalette.secondary || '#1D4ED8',
+      tertiary: templatePalette.muted || adjustHex(templatePalette.secondary || '#1D4ED8', 24),
+      quaternary: templatePalette.pageBackground || '#EFF6FF',
+      text: templatePalette.text || resolveTextColor(templatePalette.pageBackground || '#EFF6FF'),
       light: templatePalette.pageBackground || '#EFF6FF',
     },
   ]
@@ -45,6 +65,9 @@ export function buildToolbarPaletteOptions(
     value: palette.value || palette.name || `palette-${index + 1}`,
     primary: palette.primary,
     secondary: palette.secondary || palette.dark || '#334155',
+    tertiary: palette.dark || palette.secondary || '#64748B',
+    quaternary: palette.pageBackground || palette.light || '#F8FAFC',
+    text: palette.text || resolveTextColor(palette.pageBackground || palette.light || '#F8FAFC'),
     light: palette.pageBackground || palette.light || '#F8FAFC',
   }))
 
@@ -59,6 +82,9 @@ export function buildToolbarPaletteOptions(
       value: `${base.value}-${cycle}-${toneStep}`,
       primary: adjustHex(base.primary, toneStep),
       secondary: adjustHex(base.secondary, Math.round(toneStep * 0.75)),
+      tertiary: adjustHex(base.tertiary, Math.round(toneStep * 0.45)),
+      quaternary: adjustHex(base.quaternary, toneStep > 0 ? toneStep : Math.round(toneStep * 0.35)),
+      text: resolveTextColor(adjustHex(base.quaternary, toneStep > 0 ? toneStep : Math.round(toneStep * 0.35)), base.text),
       light: adjustHex(base.light, toneStep > 0 ? toneStep : Math.round(toneStep * 0.4)),
     })
     variantIndex += 1
