@@ -51,7 +51,7 @@ function paletteValue(palette: PaletteOption) {
 </script>
 
 <template>
-  <div class="resume-preview-toolbar d-flex align-center justify-space-between ga-3 mb-4">
+  <div class="resume-preview-toolbar d-flex align-center justify-space-between ga-3 mb-4" role="toolbar" aria-label="Resume preview actions">
     <div class="d-flex align-center ga-2 flex-wrap">
       <v-menu :model-value="menuOpen" location="bottom start" @update:model-value="emit('update:menu-open', $event)">
         <template #activator="{ props: menuProps }">
@@ -103,12 +103,62 @@ function paletteValue(palette: PaletteOption) {
 </template>
 
 <style scoped>
-.resume-preview-toolbar { width: 100%; }
-.template-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
-.template-option { border:1px solid #cbd5e1; border-radius:10px; background:#fff; padding:8px; text-align:left; display:grid; gap:6px; }
-.template-option img { width:100%; height:74px; object-fit:cover; border-radius:6px; }
-.template-option--active { border-color: rgb(var(--v-theme-primary)); box-shadow: 0 0 0 1px rgb(var(--v-theme-primary)); }
-.palette-grid { display:grid; grid-template-columns:repeat(var(--palette-cols,5), 22px); gap:10px; }
-.palette-dot { width:22px; height:22px; border-radius:999px; border:1px solid #94a3b8; }
-.palette-dot--active { outline:2px solid rgb(var(--v-theme-primary)); outline-offset:2px; }
+.resume-preview-toolbar {
+  position: sticky;
+  top: 12px;
+  z-index: 40;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-on-surface)) 14%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, rgb(var(--v-theme-surface)) 90%, white);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.14);
+}
+
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.template-option {
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #fff;
+  padding: 8px;
+  text-align: left;
+  display: grid;
+  gap: 6px;
+}
+
+.template-option img {
+  width: 100%;
+  height: 74px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.template-option--active {
+  border-color: rgb(var(--v-theme-primary));
+  box-shadow: 0 0 0 1px rgb(var(--v-theme-primary));
+}
+
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--palette-cols, 5), 22px);
+  gap: 10px;
+}
+
+.palette-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid #94a3b8;
+}
+
+.palette-dot--active {
+  outline: 2px solid rgb(var(--v-theme-primary));
+  outline-offset: 2px;
+}
 </style>
