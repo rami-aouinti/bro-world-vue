@@ -2,6 +2,8 @@
 import GENERATED_COVER_PAGE_TEMPLATES from '~/data/resume-templates/generated-20-cover-page.json'
 import { listMyResumes } from '~/services/resumeApi'
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
+import ResumePreviewToolbar from '~/components/ResumePreviewToolbar.vue'
+import ResumePreviewPageBreak from '~/components/ResumePreviewPageBreak.vue'
 import { resolveResumeTextFont, useResumeGoogleFonts } from '~/composables/useResumeGoogleFonts'
 
 definePageMeta({ title: 'Resume · Cover Page Preview' })

@@ -12,6 +12,8 @@ import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 import { resolveResumeTextFont, useResumeGoogleFonts } from '~/composables/useResumeGoogleFonts'
 
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
+import ResumePreviewToolbar from '~/components/ResumePreviewToolbar.vue'
+import ResumePreviewPageBreak from '~/components/ResumePreviewPageBreak.vue'
 import CvEditableSectionContent from '~/components/cv/sections/CvEditableSectionContent.vue'
 
 const { t } = useI18n()
@@ -1226,9 +1228,21 @@ watch(activeTemplate, (template) => {
 }
 
 .cv-preview-page {
+  position: relative;
   height: auto !important;
   min-height: var(--cv-preview-total-height, 1100px) !important;
   overflow: visible !important;
+  padding-bottom: var(--cv-page-end-bar-height, 24px);
+}
+
+.cv-preview-page::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--cv-page-end-bar-height, 24px);
+  background: #fff;
 }
 
 .cv-header-layout { display: grid; gap: 12px; align-items: center; }
