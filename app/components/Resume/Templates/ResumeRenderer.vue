@@ -1571,14 +1571,6 @@ function updateText(path: string, value: string) {
   overflow: hidden;
 }
 
-.resume-skin::after {
-  content: '';
-  display: block;
-  width: 100%;
-  height: var(--resume-page-end-bar-height, 24px);
-  background: #fff;
-  margin-top: var(--resume-space-3, var(--cv-space-3));
-}
 .resume-skin__decorative-layer {
   position: absolute;
   inset: 0;
