@@ -752,6 +752,29 @@ function openSignatureDialog() {
   nextTick(initCanvas)
 }
 
+function closeSignatureDialog() {
+  signatureDialogOpen.value = false
+}
+
+function saveSignatureFromCanvas() {
+  const canvas = signatureCanvas.value
+  if (!canvas) return
+  signatureDataUrl.value = canvas.toDataURL('image/png')
+  signatureDialogOpen.value = false
+}
+
+function clearSignatureCanvas() {
+  const canvas = signatureCanvas.value
+  const ctx = canvas?.getContext('2d')
+  if (!canvas || !ctx) return
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+}
+
+function deleteSignature() {
+  signatureDataUrl.value = ''
+  signatureDialogOpen.value = false
+}
+
 function initCanvas() {
   const canvas = signatureCanvas.value
   if (!canvas) return
@@ -1077,7 +1100,18 @@ watch(activeTemplate, (template) => {
               <p class="text-medium-emphasis">Aucune section CV affichée pour le moment.</p>
             </div>
             <footer v-if="signatureDataUrl" class="signature-footer">
-              <img :src="signatureDataUrl" alt="signature" class="signature-image">
+              <div class="signature-box">
+                <img :src="signatureDataUrl" alt="signature" class="signature-image">
+                <v-menu location="bottom end">
+                  <template #activator="{ props }">
+                    <v-btn v-bind="props" icon="mdi-dots-vertical" size="x-small" class="signature-menu-btn" />
+                  </template>
+                  <v-list density="compact">
+                    <v-list-item prepend-icon="mdi-pencil" title="Edit" @click="openSignatureDialog" />
+                    <v-list-item prepend-icon="mdi-delete" title="Delete" @click="deleteSignature" />
+                  </v-list>
+                </v-menu>
+              </div>
             </footer>
           </template>
           </component>
@@ -1092,14 +1126,14 @@ watch(activeTemplate, (template) => {
       </div>
     </v-container>
 
-    <v-dialog v-model="signatureDialogOpen" max-width="760">
-      <v-card>
-        <v-card-title>Signature</v-card-title>
-        <v-card-text>
-          <canvas ref="signatureCanvas" class="signature-canvas" />
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+    <AppModal v-model="signatureDialogOpen" title="Signature" :max-width="760">
+      <canvas ref="signatureCanvas" class="signature-canvas" />
+      <div class="d-flex justify-end ga-2 mt-3">
+        <v-btn variant="text" @click="clearSignatureCanvas">Clear</v-btn>
+        <v-btn variant="tonal" @click="closeSignatureDialog">Cancel</v-btn>
+        <v-btn color="primary" @click="saveSignatureFromCanvas">Save</v-btn>
+      </div>
+    </AppModal>
 
     <AppModal v-model="sectionModalOpen" title="Ajouter un élément" max-width="520">
       <v-card-text>
@@ -1368,6 +1402,27 @@ watch(activeTemplate, (template) => {
 
 .signature-footer {
   margin-top: 32px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.signature-box {
+  position: relative;
+  display: inline-flex;
+  align-items: flex-end;
+}
+
+.signature-menu-btn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+
+.signature-box:hover .signature-menu-btn,
+.signature-box:focus-within .signature-menu-btn {
+  opacity: 1;
 }
 
 .signature-image {
