@@ -17,6 +17,7 @@ useHead(() => ({
   title: t('resumePreview.coverLetter.metaTitle'),
 }))
 const route = useRoute()
+const { user } = useUserSession()
 const { coverLetterTemplates } = useResumeTemplates()
 const selectedTemplate = ref(
   coverLetterTemplates.value[0]?.id ||
@@ -466,16 +467,35 @@ function applyPreviewTemplate(id: string) {
   selectedTemplate.value = id
   layoutMenuOpen.value = false
 }
-function saveFromPreview() {
-  localStorage.setItem(
-    'resume-cover-preview-letter',
-    JSON.stringify({
-      template: selectedTemplate.value,
-      model,
-      decor: editableDecorObjects.value,
-      signature: signatureDataUrl.value,
-    }),
+async function saveFromPreview() {
+  const templatePayload = JSON.parse(JSON.stringify(activeTemplate.value || {}))
+  templatePayload.name =
+    templatePayload.name || templatePayload.id || 'preview-template'
+  templatePayload.version = Number(templatePayload.version || 1)
+  templatePayload.customize = {
+    selectedPalette: selectedPalette.value,
+    signature: signatureDataUrl.value,
+    model,
+  }
+  const templateResponse = await $fetch<{ id: string }>(
+    'https://bro-world.org/api/v1/recruit/templates/cover-letters',
+    { method: 'POST', body: templatePayload },
   )
+  const token = user.value?.token?.trim()
+  if (!token) return
+  await $fetch('https://bro-world.org/api/v1/recruit/private/me/cover-letters', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: {
+      fullName: model.fullName,
+      role: model.role,
+      location: model.location,
+      header: model.heading,
+      description1: model.companyParagraph,
+      description2: model.summary,
+      templateId: templateResponse.id,
+    },
+  })
 }
 async function downloadPdf() {
   const node = document.querySelector(

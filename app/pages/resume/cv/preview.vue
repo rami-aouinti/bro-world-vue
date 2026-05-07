@@ -1085,14 +1085,39 @@ function applyPreviewTemplate(templateId: string) {
   layoutMenuOpen.value = false
 }
 
-function saveFromPreview() {
-  localStorage.setItem(
-    'resume-cv-preview',
-    JSON.stringify({
-      template: selectedTemplate.value,
-      signature: signatureDataUrl.value,
-    }),
+async function saveFromPreview() {
+  const templatePayload = JSON.parse(JSON.stringify(activeTemplate.value || {}))
+  templatePayload.name =
+    templatePayload.name || templatePayload.id || 'preview-template'
+  templatePayload.version = Number(templatePayload.version || 1)
+  templatePayload.customize = {
+    selectedPalette: selectedPalette.value,
+    signature: signatureDataUrl.value,
+  }
+  const templateResponse = await $fetch<{ id: string }>(
+    'https://bro-world.org/api/v1/recruit/templates/resumes',
+    { method: 'POST', body: templatePayload },
   )
+
+  const token = user.value?.token?.trim()
+  if (!token) return
+  const data: any = fakeData.value || {}
+  await $fetch('https://bro-world.org/api/v1/recruit/resumes', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: {
+      templateId: templateResponse.id,
+      resumeInformation: data.resumeInformation || {},
+      experiences: data.experiences || [],
+      educations: data.educations || [],
+      skills: data.skills || [],
+      languages: data.languages || [],
+      certifications: data.certifications || [],
+      references: data.references || [],
+      projects: data.projects || [],
+      hobbies: data.hobbies || [],
+    },
+  })
 }
 
 function openAiModal() {
