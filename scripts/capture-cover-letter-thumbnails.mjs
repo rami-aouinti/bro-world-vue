@@ -44,7 +44,7 @@ async function launchBrowser() {
 }
 
 const browser = await launchBrowser()
-const page = await browser.newPage({ viewport: { width: 794, height: 1123 } })
+const page = await browser.newPage({ viewport: { width: 794, height: 1000 } })
 
 for (const tpl of generatedCoverLetterTemplates) {
   const url = `${baseUrl}/resume/template-capture/cover-letter/${tpl.id}`
