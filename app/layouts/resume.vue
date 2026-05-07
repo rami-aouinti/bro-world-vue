@@ -38,11 +38,13 @@ const breadcrumbs = computed(() => {
 })
 
 const shouldShowBreadcrumbs = computed(() => breadcrumbs.value.length > 1)
+const isCaptureMode = computed(() => String(route.query.capture || '') === '1')
 const shouldRenderLeftDrawer = computed(
-  () => isLayoutReady.value && showLeftDrawer.value,
+  () => !isCaptureMode.value && isLayoutReady.value && showLeftDrawer.value,
 )
 const shouldRenderRightDrawer = computed(
   () =>
+    !isCaptureMode.value &&
     isLayoutReady.value &&
     (mobile.value ? showRightDrawerMobile.value : showRightDrawerDesktop.value),
 )
@@ -99,8 +101,8 @@ onUnmounted(() => {
       />
     </div>
 
-    <v-app :class="{ 'layout-shell--loading': !isLayoutReady }">
-      <AppBar />
+    <v-app :class="{ 'layout-shell--loading': !isLayoutReady, 'layout-shell--capture': isCaptureMode }">
+      <AppBar v-if="!isCaptureMode" />
       <ClientOnly>
         <AppDrawerLazy v-if="shouldRenderLeftDrawer" />
       </ClientOnly>
@@ -109,12 +111,13 @@ onUnmounted(() => {
       </ClientOnly>
       <v-main>
         <AppNotification />
-        <v-container fluid class="px-2 pt-0 pb-0">
+        <v-container v-if="!isCaptureMode" fluid class="px-2 pt-0 pb-0">
           <v-breadcrumbs v-if="shouldShowBreadcrumbs" :items="breadcrumbs" />
         </v-container>
         <slot />
       </v-main>
       <v-defaults-provider
+        v-if="!isCaptureMode"
         :defaults="{ VBtn: { variant: 'text', size: 'x-small' } }"
       >
         <AppSettings />
@@ -165,6 +168,9 @@ onUnmounted(() => {
   padding-top: 60px;
   overflow-y: visible;
   transition-property: padding;
+}
+.layout-shell--capture .v-main {
+  padding-top: 0;
 }
 
 @media (max-width: 960px) {

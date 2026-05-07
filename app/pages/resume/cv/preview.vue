@@ -26,6 +26,8 @@ useHead(() => ({
 }))
 
 const route = useRoute()
+const queryTemplateId = typeof route.query.template === 'string' ? route.query.template : ''
+const queryPaletteId = typeof route.query.palette === 'string' ? route.query.palette : ''
 const { loggedIn } = useUserSession()
 const myResumes = ref<ResumeApiItem[]>([])
 const selectedTemplate = ref(GENERATED_RESUME_TEMPLATES[0]?.id || 'tpl-001')
@@ -96,6 +98,14 @@ const activeColors = computed(() => {
   return palette
 })
 const sectionBarConfig = reactive({ show: true, widthType: 'flex', height: 3, radius: 999 })
+const isCaptureMode = computed(() => String(route.query.capture || '') === '1')
+
+if (queryTemplateId && GENERATED_RESUME_TEMPLATES.some((template) => template.id === queryTemplateId)) {
+  selectedTemplate.value = queryTemplateId
+}
+if (queryPaletteId && palettePresetOptions.value.some((option) => option.value === queryPaletteId)) {
+  selectedPalette.value = queryPaletteId
+}
 
 function toPercentNumber(value: unknown, fallback = 50): number {
   if (typeof value === 'number' && Number.isFinite(value)) return Math.min(100, Math.max(0, value))
@@ -773,18 +783,13 @@ function initCanvas() {
 }
 
 onMounted(async () => {
-  if (loggedIn.value) {
+  if (loggedIn.value && !isCaptureMode.value) {
     try {
       const resumes = await listMyResumes()
       if (Array.isArray(resumes) && resumes.length > 0) myResumes.value = resumes
     } catch {
       // keep template fake data fallback
     }
-  }
-
-  const queryTemplate = typeof route.query.template === 'string' ? route.query.template : ''
-  if (queryTemplate && GENERATED_RESUME_TEMPLATES.some((template) => template.id === queryTemplate)) {
-    selectedTemplate.value = queryTemplate
   }
 
   await nextTick()
@@ -807,8 +812,8 @@ watch(activeTemplate, (template) => {
 
 <template>
   <div>
-    <input ref="photoFileInput" type="file" accept="image/*" class="d-none" @change="onPhotoSelected">
-    <AppPageDrawers>
+    <input v-if="!isCaptureMode" ref="photoFileInput" type="file" accept="image/*" class="d-none" @change="onPhotoSelected">
+    <AppPageDrawers v-if="!isCaptureMode">
       <template #left>
         <v-card-text>
           <p class="text-body-2" >Aside width</p>
@@ -867,7 +872,7 @@ watch(activeTemplate, (template) => {
     </AppPageDrawers>
 
     <v-container fluid>
-      <ResumePreviewToolbar
+      <ResumePreviewToolbar v-if="!isCaptureMode"
         v-model:menu-open="layoutMenuOpen"
       v-model:palette-menu-open="paletteMenuOpen"
       :palettes="palettePresetOptions"
@@ -1075,6 +1080,7 @@ watch(activeTemplate, (template) => {
           </template>
           </component>
           <ResumePreviewPageBreak
+            v-if="!isCaptureMode"
             v-for="pageBreak in cvPreviewPageBreaks"
             :key="`cv-page-break-${pageBreak}`"
             :page-number="pageBreak"

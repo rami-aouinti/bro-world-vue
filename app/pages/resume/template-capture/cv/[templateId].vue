@@ -12,17 +12,26 @@ import CvLayoutAsideBarRight from '~/components/cv/layouts/CvLayoutAsideBarRight
 definePageMeta({ layout: false })
 
 const route = useRoute()
-const templateId = computed(() => String(route.params.templateId || 'tpl-001'))
+const templateId = computed(() => {
+  const fromParams = typeof route.params.templateId === 'string' ? route.params.templateId : ''
+  const fromQuery = typeof route.query.template === 'string' ? route.query.template : ''
+  return String(fromParams || fromQuery || 'tpl-001')
+})
 
 function resolveGeneratedTemplateId(rawTemplateId: string): string {
   const normalized = rawTemplateId.trim()
   if (!normalized) return ''
-  const exactGenerated = GENERATED_RESUME_TEMPLATES.find((template) => template.id === normalized)
+  const withoutTemplatePrefix = normalized.startsWith('template=')
+    ? normalized.slice('template='.length).trim()
+    : normalized
+
+  const exactGenerated = GENERATED_RESUME_TEMPLATES.find((template) => template.id === withoutTemplatePrefix)
   if (exactGenerated) return exactGenerated.id
-  const unprefixed = normalized.startsWith('resume-') ? normalized.slice('resume-'.length) : normalized
+
+  const unprefixed = withoutTemplatePrefix.startsWith('resume-') ? withoutTemplatePrefix.slice('resume-'.length) : withoutTemplatePrefix
   const prefixedGenerated = GENERATED_RESUME_TEMPLATES.find((template) => template.id === unprefixed)
   if (prefixedGenerated) return prefixedGenerated.id
-  const startsWithGenerated = GENERATED_RESUME_TEMPLATES.find((template) => template.id.startsWith(normalized))
+  const startsWithGenerated = GENERATED_RESUME_TEMPLATES.find((template) => template.id.startsWith(withoutTemplatePrefix))
   if (startsWithGenerated) return startsWithGenerated.id
   return ''
 }
