@@ -609,6 +609,21 @@ watch([selectedTemplate, userResumeData], () => {
   Object.keys(headerOverrides).forEach((key) => Reflect.deleteProperty(headerOverrides, key))
 }, { deep: false })
 
+
+
+const contactIconOverrides = reactive<Record<string, string>>({})
+const contactIconAlternatives: Record<string, string[]> = {
+  email: ['mdi-email-outline', 'mdi-email', 'mdi-at', 'mdi-email-open-outline'],
+  phone: ['mdi-phone-outline', 'mdi-phone', 'mdi-cellphone', 'mdi-phone-classic'],
+  birthDate: ['mdi-cake-variant-outline', 'mdi-cake-variant', 'mdi-calendar-heart', 'mdi-calendar-outline'],
+  adresse: ['mdi-map-marker-outline', 'mdi-map-marker', 'mdi-map-marker-radius', 'mdi-home-map-marker'],
+  homepage: ['mdi-home-outline', 'mdi-home', 'mdi-web', 'mdi-link-variant'],
+  repo_profile: ['mdi-github', 'mdi-git', 'mdi-source-repository', 'mdi-gitlab'],
+}
+
+function updateContactIcon(key: string, icon: string) {
+  contactIconOverrides[key] = icon
+}
 const headerProfile = computed(() => {
   const fake: any = fakeData.value || {}
   const info = fake.resumeInformation || {}
@@ -617,12 +632,12 @@ const headerProfile = computed(() => {
     role: headerOverrides.role ?? String(info.title || fake.role || 'Senior Developer'),
     image: String(info.photo || fake.image || '/img/default_avatar.svg'),
     contact: [
-      { key: 'email', icon: 'mdi-email-outline', type: 'text', label: '', value: headerOverrides.email ?? String(info.email || fake.email || 'john.doe@email.com') },
-      { key: 'phone', icon: 'mdi-phone-outline', type: 'text', label: '', value: headerOverrides.phone ?? String(info.phone || fake.phone || '+1 (555) 000-1234') },
-      { key: 'birthDate', icon: 'mdi-cake-variant-outline', type: 'text', label: '', value: headerOverrides.birthDate ?? String(info.birthDate || fake.birthday || '1992-05-12') },
-      { key: 'adresse', icon: 'mdi-map-marker-outline', type: 'text', label: '', value: headerOverrides.adresse ?? String(info.adresse || fake.location || 'Paris, France') },
-      { key: 'homepage', icon: 'mdi-home-outline', type: 'link', label: 'Home Page', value: headerOverrides.homepage ?? String(info.homepage || fake.homepage || 'https://portfolio.example.com') },
-      { key: 'repo_profile', icon: 'mdi-github', type: 'link', label: 'Repository Profile', value: headerOverrides.repo_profile ?? String(info.repo_profile || fake.repositoryPage || 'https://github.com/john-doe') },
+      { key: 'email', icon: contactIconOverrides.email || 'mdi-email-outline', type: 'text', label: '', value: headerOverrides.email ?? String(info.email || fake.email || 'john.doe@email.com') },
+      { key: 'phone', icon: contactIconOverrides.phone || 'mdi-phone-outline', type: 'text', label: '', value: headerOverrides.phone ?? String(info.phone || fake.phone || '+1 (555) 000-1234') },
+      { key: 'birthDate', icon: contactIconOverrides.birthDate || 'mdi-cake-variant-outline', type: 'text', label: '', value: headerOverrides.birthDate ?? String(info.birthDate || fake.birthday || '1992-05-12') },
+      { key: 'adresse', icon: contactIconOverrides.adresse || 'mdi-map-marker-outline', type: 'text', label: '', value: headerOverrides.adresse ?? String(info.adresse || fake.location || 'Paris, France') },
+      { key: 'homepage', icon: contactIconOverrides.homepage || 'mdi-home-outline', type: 'link', label: 'Home Page', value: headerOverrides.homepage ?? String(info.homepage || fake.homepage || 'https://portfolio.example.com') },
+      { key: 'repo_profile', icon: contactIconOverrides.repo_profile || 'mdi-github', type: 'link', label: 'Repository Profile', value: headerOverrides.repo_profile ?? String(info.repo_profile || fake.repositoryPage || 'https://github.com/john-doe') },
     ],
   }
 })
@@ -876,7 +891,8 @@ watch(activeTemplate, (template) => {
     </AppPageDrawers>
 
     <v-container fluid>
-      <ResumePreviewToolbar v-if="!isCaptureMode"
+      <ResumePreviewToolbar
+v-if="!isCaptureMode"
         v-model:menu-open="layoutMenuOpen"
       v-model:palette-menu-open="paletteMenuOpen"
       :palettes="palettePresetOptions"
@@ -911,13 +927,33 @@ watch(activeTemplate, (template) => {
                 <div class="cv-header-contact cv-col-8">
                   <div class="cv-header-contact-grid">
                     <div v-for="(item, idx) in headerProfile.contact" :key="`left-${idx}`" class="cv-contact-item">
-                      <v-icon :icon="item.icon" size="16" />
+                      <v-menu location="bottom start" :close-on-content-click="true">
+                        <template #activator="{ props }">
+                          <v-btn v-bind="props" icon size="x-small" variant="text" class="cv-contact-icon-btn">
+                            <v-icon :icon="item.icon" size="16" />
+                          </v-btn>
+                        </template>
+                        <v-list density="compact" class="cv-icon-menu-list">
+                          <v-list-item
+                            v-for="altIcon in contactIconAlternatives[item.key] || [item.icon]"
+                            :key="`${item.key}-${altIcon}`"
+                            :title="altIcon"
+                            @click="updateContactIcon(item.key, altIcon)"
+                          >
+                            <template #prepend><v-icon :icon="altIcon" size="16" /></template>
+                          </v-list-item>
+                        </v-list>
+                      </v-menu>
+                      <template v-if="item.type === 'link'">
+                        <a class="cv-contact-link" :href="item.value" target="_blank" rel="noopener noreferrer" :title="item.value">{{ item.label }}</a>
+                      </template>
                       <HoverRichTextEditor
+                        v-else
                         class="cv-header-editor cv-header-editor--contact"
                         :model-value="item.value"
                         :placeholder="item.label || 'Contact'"
                         font-size="13px"
-                        font-weight="500"
+                        font-weight="700"
                         :font-family="textFontPreset('body')"
                         color="inherit"
                         @update:model-value="updateHeaderField(item.key, $event)"
@@ -942,7 +978,7 @@ watch(activeTemplate, (template) => {
                     :model-value="headerProfile.role"
                     placeholder="Role"
                     font-size="14px"
-                    font-weight="500"
+                    font-weight="700"
                     :font-family="textFontPreset('body')"
                     color="inherit"
                     @update:model-value="updateHeaderField('role', $event)"
@@ -967,7 +1003,7 @@ watch(activeTemplate, (template) => {
                     :model-value="headerProfile.role"
                     placeholder="Role"
                     font-size="14px"
-                    font-weight="500"
+                    font-weight="700"
                     :font-family="textFontPreset('body')"
                     color="inherit"
                     @update:model-value="updateHeaderField('role', $event)"
@@ -976,13 +1012,33 @@ watch(activeTemplate, (template) => {
                 <div class="cv-header-contact cv-col-8">
                   <div class="cv-header-contact-grid">
                     <div v-for="(item, idx) in headerProfile.contact" :key="`right-${idx}`" class="cv-contact-item">
-                      <v-icon :icon="item.icon" size="16" />
+                      <v-menu location="bottom start" :close-on-content-click="true">
+                        <template #activator="{ props }">
+                          <v-btn v-bind="props" icon size="x-small" variant="text" class="cv-contact-icon-btn">
+                            <v-icon :icon="item.icon" size="16" />
+                          </v-btn>
+                        </template>
+                        <v-list density="compact" class="cv-icon-menu-list">
+                          <v-list-item
+                            v-for="altIcon in contactIconAlternatives[item.key] || [item.icon]"
+                            :key="`${item.key}-${altIcon}`"
+                            :title="altIcon"
+                            @click="updateContactIcon(item.key, altIcon)"
+                          >
+                            <template #prepend><v-icon :icon="altIcon" size="16" /></template>
+                          </v-list-item>
+                        </v-list>
+                      </v-menu>
+                      <template v-if="item.type === 'link'">
+                        <a class="cv-contact-link" :href="item.value" target="_blank" rel="noopener noreferrer" :title="item.value">{{ item.label }}</a>
+                      </template>
                       <HoverRichTextEditor
+                        v-else
                         class="cv-header-editor cv-header-editor--contact"
                         :model-value="item.value"
                         :placeholder="item.label || 'Contact'"
                         font-size="13px"
-                        font-weight="500"
+                        font-weight="700"
                         :font-family="textFontPreset('body')"
                         color="inherit"
                         @update:model-value="updateHeaderField(item.key, $event)"
@@ -1012,7 +1068,7 @@ watch(activeTemplate, (template) => {
                       :model-value="headerProfile.role"
                       placeholder="Role"
                       font-size="14px"
-                      font-weight="500"
+                      font-weight="700"
                       :font-family="textFontPreset('body')"
                       color="inherit"
                       @update:model-value="updateHeaderField('role', $event)"
@@ -1022,13 +1078,33 @@ watch(activeTemplate, (template) => {
                 <div class="cv-col-6 cv-header-contact">
                   <div class="cv-header-contact-grid">
                     <div v-for="(item, idx) in headerProfile.contact" :key="`split-${idx}`" class="cv-contact-item">
-                      <v-icon :icon="item.icon" size="16" />
+                      <v-menu location="bottom start" :close-on-content-click="true">
+                        <template #activator="{ props }">
+                          <v-btn v-bind="props" icon size="x-small" variant="text" class="cv-contact-icon-btn">
+                            <v-icon :icon="item.icon" size="16" />
+                          </v-btn>
+                        </template>
+                        <v-list density="compact" class="cv-icon-menu-list">
+                          <v-list-item
+                            v-for="altIcon in contactIconAlternatives[item.key] || [item.icon]"
+                            :key="`${item.key}-${altIcon}`"
+                            :title="altIcon"
+                            @click="updateContactIcon(item.key, altIcon)"
+                          >
+                            <template #prepend><v-icon :icon="altIcon" size="16" /></template>
+                          </v-list-item>
+                        </v-list>
+                      </v-menu>
+                      <template v-if="item.type === 'link'">
+                        <a class="cv-contact-link" :href="item.value" target="_blank" rel="noopener noreferrer" :title="item.value">{{ item.label }}</a>
+                      </template>
                       <HoverRichTextEditor
+                        v-else
                         class="cv-header-editor cv-header-editor--contact"
                         :model-value="item.value"
                         :placeholder="item.label || 'Contact'"
                         font-size="13px"
-                        font-weight="500"
+                        font-weight="700"
                         :font-family="textFontPreset('body')"
                         color="inherit"
                         @update:model-value="updateHeaderField(item.key, $event)"
@@ -1095,8 +1171,8 @@ watch(activeTemplate, (template) => {
           </template>
           </component>
           <ResumePreviewPageBreak
-            v-if="!isCaptureMode"
             v-for="pageBreak in cvPreviewPageBreaks"
+            v-if="!isCaptureMode"
             :key="`cv-page-break-${pageBreak}`"
             :page-number="pageBreak"
             :top="pageBreak * CV_PREVIEW_PDF_PAGE_HEIGHT"
@@ -1264,11 +1340,12 @@ watch(activeTemplate, (template) => {
 .cv-header-layout--header-split { grid-template-columns: 5fr 7fr; }
 .cv-header-split-left { display: grid; grid-template-columns: auto 1fr; gap: 6px; align-items: center; justify-content: start; }
 .cv-header-contact { display:flex; flex-direction:column; justify-content:center; align-items:stretch; text-align:start; }
-.cv-header-contact-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 10px; width:100%; text-align:start; }
-.cv-contact-item { display:flex; align-items:center; gap:6px; font-size:13px; }
+.cv-header-contact-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 10px; width:100%; text-align:start; }
+.cv-contact-item { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; }
+.cv-contact-icon-btn{min-width:24px;padding:0}
+.cv-contact-link{font-weight:700;color:inherit;text-decoration:none}
+.cv-contact-link:hover{text-decoration:underline}
 .cv-header-layout, .cv-contact-item, .cv-header-identity strong { color: var(--cv-header-text, #0f172a); }
-.cv-contact-link { color: inherit; text-decoration: none; font-weight: 500; }
-.cv-contact-link:hover { text-decoration: none; color: inherit; }
 .cv-header-identity { display: flex; flex-direction: column; gap: 4px; justify-content:center; align-items:center; text-align:center; }
 .cv-header-identity--split { align-items:flex-start; text-align:start; }
 .cv-header-avatar { width: 52px; height: 52px; object-fit: cover; border-radius: 999px; }
