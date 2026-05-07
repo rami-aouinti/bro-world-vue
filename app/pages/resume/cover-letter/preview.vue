@@ -288,6 +288,14 @@ const aiPrompt =
   'Tell us about yourself and the target position. Add accurate context so AI can generate a compelling and personalized cover letter profile.'
 const aiPromptProgress = ref('')
 let aiTypingTimer: ReturnType<typeof setInterval> | undefined
+const aiAboutText = ref('')
+const aiGenerating = ref(false)
+const aiProgress = ref(0)
+let aiProgressTimer: ReturnType<typeof setInterval> | undefined
+const aiFullName = ref('')
+const aiRole = ref('')
+const aiLocation = ref('')
+const aiPhotoUrl = ref('')
 
 const COVER_PREVIEW_PDF_PAGE_HEIGHT = 1100
 const coverPreviewRef = ref<HTMLElement | null>(null)
@@ -390,6 +398,56 @@ function removeDecorObject(i: number) {
 }
 function openAiModal() {
   aiModalOpen.value = true
+}
+async function generateCoverLetterWithAi() {
+  if (!aiAboutText.value.trim() || aiGenerating.value) return
+  aiGenerating.value = true
+  aiProgress.value = 1
+  const startedAt = Date.now()
+  if (aiProgressTimer) window.clearInterval(aiProgressTimer)
+  aiProgressTimer = window.setInterval(() => {
+    const elapsed = Date.now() - startedAt
+    const targetProgress = Math.floor((elapsed / 120000) * 100)
+    aiProgress.value = Math.min(95, Math.max(aiProgress.value, targetProgress))
+  }, 1000)
+  try {
+    const response = await $fetch<{ textArea?: string }>(
+      'https://bro-world.org/api/v1/recruit/cover-letters/generate',
+      {
+        method: 'POST',
+        body: { text: aiAboutText.value.trim() },
+      },
+    )
+    const generatedText = response?.textArea?.trim()
+    if (aiFullName.value.trim()) model.fullName = aiFullName.value.trim()
+    if (aiRole.value.trim()) model.role = aiRole.value.trim()
+    if (aiLocation.value.trim()) model.location = aiLocation.value.trim()
+    if (aiPhotoUrl.value.trim()) model.photoUrl = aiPhotoUrl.value.trim()
+    if (generatedText) {
+      model.companyParagraph = generatedText
+    }
+    aiProgress.value = 100
+    aiModalOpen.value = false
+  } catch {
+    /* noop */
+  } finally {
+    if (aiProgressTimer) window.clearInterval(aiProgressTimer)
+    aiProgressTimer = undefined
+    window.setTimeout(() => {
+      aiGenerating.value = false
+      aiProgress.value = 0
+    }, 260)
+  }
+}
+function onAiPhotoUpload(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  const reader = new FileReader()
+  reader.onload = () => {
+    aiPhotoUrl.value = String(reader.result || '')
+  }
+  reader.readAsDataURL(file)
 }
 function resetAiPromptTyping() {
   if (aiTypingTimer) window.clearInterval(aiTypingTimer)
@@ -574,11 +632,18 @@ onMounted(() => {
 onBeforeUnmount(() => {
   if (coverPreviewMeasureTimer) window.clearTimeout(coverPreviewMeasureTimer)
   if (aiTypingTimer) window.clearInterval(aiTypingTimer)
+  if (aiProgressTimer) window.clearInterval(aiProgressTimer)
   coverPreviewResizeObserver?.disconnect()
   coverPreviewResizeObserver = undefined
 })
 watch(aiModalOpen, (isOpen) => {
-  if (isOpen) resetAiPromptTyping()
+  if (isOpen) {
+    aiFullName.value = model.fullName
+    aiRole.value = model.role
+    aiLocation.value = model.location
+    aiPhotoUrl.value = model.photoUrl
+    resetAiPromptTyping()
+  }
 })
 </script>
 <template>
@@ -946,6 +1011,7 @@ watch(aiModalOpen, (isOpen) => {
                 class="hero-role"
                 :font-family="textFontFamily('role')"
               />
+              <v-text class="hero-location">{{ model.location }}</v-text>
             </div>
           </header>
           <section class="letter-body">
@@ -956,10 +1022,6 @@ watch(aiModalOpen, (isOpen) => {
             />
             <HoverRichTextEditor
               v-model="model.companyParagraph"
-              :font-family="textFontFamily('body')"
-            />
-            <HoverRichTextEditor
-              v-model="model.summary"
               :font-family="textFontFamily('body')"
             />
             <HoverRichTextEditor
@@ -1016,10 +1078,13 @@ watch(aiModalOpen, (isOpen) => {
         <p class="mb-4">{{ aiPromptProgress }}</p>
         <v-row>
           <v-col cols="12" md="6"
-            ><v-text-field label="Full name" variant="outlined" hide-details
+            ><v-text-field v-model="aiFullName" label="Full name" variant="outlined" hide-details
           /></v-col>
           <v-col cols="12" md="6"
-            ><v-text-field label="Role" variant="outlined" hide-details
+            ><v-text-field v-model="aiRole" label="Role" variant="outlined" hide-details
+          /></v-col>
+          <v-col cols="12" md="6"
+            ><v-text-field v-model="aiLocation" label="Location" variant="outlined" hide-details
           /></v-col>
           <v-col cols="12" md="6"
             ><v-text-field label="Email" variant="outlined" hide-details
@@ -1043,15 +1108,35 @@ watch(aiModalOpen, (isOpen) => {
               variant="outlined"
               prepend-icon="mdi-image-plus"
               hide-details
+              @change="onAiPhotoUpload"
           /></v-col>
           <v-col cols="12"
             ><v-textarea
+              v-model="aiAboutText"
               label="Describe yourself and why you fit this role"
               rows="5"
               variant="outlined"
               hide-details
           /></v-col>
         </v-row>
+        <v-progress-linear
+          v-if="aiGenerating"
+          :model-value="aiProgress"
+          color="primary"
+          height="8"
+          rounded
+          class="mt-4"
+        />
+        <div class="d-flex justify-end mt-4">
+          <v-btn
+            color="primary"
+            :loading="aiGenerating"
+            :disabled="!aiAboutText.trim()"
+            @click="generateCoverLetterWithAi"
+          >
+            Generate
+          </v-btn>
+        </div>
       </AppModal>
       <AppModal v-model="signatureDialogOpen" title="Signature" :max-width="760"
         ><canvas
@@ -1217,6 +1302,10 @@ watch(aiModalOpen, (isOpen) => {
 .hero-role :deep(p) {
   margin: 0;
   font-size: 21px;
+  color: var(--cp-muted);
+}
+.hero-location {
+  margin-top: 4px;
   color: var(--cp-muted);
 }
 p {
