@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename)
 const root = path.resolve(__dirname, '..')
 const outDir = path.join(root, 'public/img/cv/generated')
 const templatesPath = path.join(root, 'app/data/resume-templates/generated-20-resume.json')
-const baseUrl = 'https://bro-world-space.com'
+const baseUrl = process.env.RESUME_CAPTURE_BASE_URL || 'http://127.0.0.1:3000'
 
 const templatesRaw = await readFile(templatesPath, 'utf-8')
 const generatedCvTemplates = JSON.parse(templatesRaw)
@@ -47,37 +47,14 @@ const browser = await launchBrowser()
 const page = await browser.newPage({ viewport: { width: 1200, height: 1500 } })
 
 for (const tpl of generatedCvTemplates) {
-  const url = `${baseUrl}/resume/cv/preview?template=${encodeURIComponent(tpl.id)}`
+  const url = `${baseUrl}/resume/template-capture/${encodeURIComponent(tpl.id)}`
   await page.goto(url, { waitUntil: 'networkidle' })
   await page.keyboard.press('Escape').catch(() => {})
-  await page.addStyleTag({
-    content: `
-      .v-overlay-container,
-      [role="dialog"],
-      [aria-modal="true"],
-      [class*="cookie"],
-      [id*="cookie"],
-      [class*="consent"],
-      [id*="consent"] { display: none !important; visibility: hidden !important; }
-    `,
-  }).catch(() => {})
 
-  const cvCanvas = page.locator('.cv-layout').first()
-  await cvCanvas.waitFor({ state: 'visible' })
-  const box = await cvCanvas.boundingBox()
-  if (!box) {
-    console.warn(`Skip ${tpl.id}: unable to resolve canvas bounds`)
-    continue
-  }
-
-  await page.screenshot({
+  const captureCanvas = page.locator('.capture-page').first()
+  await captureCanvas.waitFor({ state: 'visible' })
+  await captureCanvas.screenshot({
     path: path.join(outDir, `${tpl.id}.png`),
-    clip: {
-      x: box.x,
-      y: box.y,
-      width: box.width,
-      height: 820,
-    },
   })
 
   console.log(`Captured ${tpl.id}`)
