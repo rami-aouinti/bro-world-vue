@@ -1,27 +1,34 @@
 <script setup lang="ts">
+import { listMyResumes } from '~/services/resumeApi'
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 import ResumePreviewToolbar from '~/components/ResumePreviewToolbar.vue'
 import ResumePreviewPageBreak from '~/components/ResumePreviewPageBreak.vue'
 import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-20-cover-letter.json'
 import PALETTE_PRESETS from '~/data/resume-templates/palettes.json'
+import {
+  applyReadablePageTextColors,
+  readableTextColorForBackground,
+} from '~/utils/resumeColorContrast'
 import { buildToolbarPaletteOptions } from '~/modules/resume/theme/paletteOptions'
 import {
   resolveResumeTextFont,
   useResumeGoogleFonts,
 } from '~/composables/useResumeGoogleFonts'
 
-definePageMeta({ layout: 'resume', title: 'Resume · Cover Letter Template Create' })
+definePageMeta({ title: 'resumePreview.coverLetter.metaTitle', layout: 'resume' })
 const { t } = useI18n()
 useHead(() => ({
   title: t('resumePreview.coverLetter.metaTitle'),
 }))
 const route = useRoute()
+const { user } = useUserSession()
 const { coverLetterTemplates } = useResumeTemplates()
 const selectedTemplate = ref(
   coverLetterTemplates.value[0]?.id ||
     GENERATED_COVER_LETTER_TEMPLATES[0]?.id ||
     '',
 )
+
 const decorShapeOptions = [
   'circle',
   'ring',
@@ -60,6 +67,8 @@ const imageBorderColor = ref('#0f172a')
 const photoPosition = ref<'left' | 'right'>('left')
 const selectedPalette = ref<string>('template')
 const paletteMenuOpen = ref(false)
+const settingsMenuOpen = ref(false)
+const decorMenuOpen = ref(false)
 const palettePresetOptions = computed(() =>
   buildToolbarPaletteOptions(
     activeTemplate.value.theme.palette,
@@ -205,7 +214,10 @@ function decorObjectStyle(obj: any) {
   }
 
   const color = String(obj?.color ?? '').trim()
-  if (color) base.backgroundColor = color
+  if (color) {
+    base.backgroundColor = color
+    base.color = color
+  }
 
   if (type === 'ring' && color) {
     base.backgroundColor = 'transparent'
@@ -263,16 +275,24 @@ const activeColors = computed(() => {
     (option) => option.value === selectedPalette.value,
   )
   if (selected && selected.value !== 'template')
-    return {
+    return applyReadablePageTextColors({
       ...palette,
       primary: selected.primary,
       secondary: selected.secondary,
       text: selected.text,
       muted: selected.tertiary,
       pageBackground: selected.quaternary,
-    }
-  return palette
+    })
+  return applyReadablePageTextColors(palette)
 })
+function readableCoverTextColor(color = '#0F172A') {
+  return readableTextColorForBackground(activeColors.value.pageBackground, color)
+}
+
+const readableBodyTextColor = computed(() =>
+  readableCoverTextColor(textColor.value),
+)
+
 const isLayoutRight = computed(
   () => activeTemplate.value?.layout === 'layout-right',
 )
@@ -296,7 +316,7 @@ const aiRole = ref('')
 const aiLocation = ref('')
 const aiPhotoUrl = ref('')
 
-const COVER_PREVIEW_PDF_PAGE_HEIGHT = 1100
+const COVER_PREVIEW_PDF_PAGE_HEIGHT = 1123
 const coverPreviewRef = ref<HTMLElement | null>(null)
 const showCoverPreviewPageBreak = ref(false)
 let coverPreviewMeasureTimer: ReturnType<typeof setTimeout> | undefined
@@ -388,12 +408,17 @@ function addDecorObject() {
       opacity: 0.15,
     }),
   )
+  decorMenuOpenIndex.value = editableDecorObjects.value.length - 1
 }
 function addDecorObjectFromPreset(preset: any) {
   editableDecorObjects.value.push(normalizeDecorObject({ ...preset }))
+  decorMenuOpenIndex.value = editableDecorObjects.value.length - 1
 }
 function removeDecorObject(i: number) {
   editableDecorObjects.value.splice(i, 1)
+  if (decorMenuOpenIndex.value === i) decorMenuOpenIndex.value = null
+  if (decorMenuOpenIndex.value !== null && decorMenuOpenIndex.value > i)
+    decorMenuOpenIndex.value -= 1
 }
 function openAiModal() {
   aiModalOpen.value = true
@@ -466,24 +491,34 @@ function applyPreviewTemplate(id: string) {
   layoutMenuOpen.value = false
 }
 async function saveFromPreview() {
-  const payload = JSON.parse(JSON.stringify(activeTemplate.value || {}))
-  payload.name = payload.name || payload.id || 'customize-template'
-  payload.version = Number(payload.version || 1)
-  payload.customize = {
+  const templatePayload = JSON.parse(JSON.stringify(activeTemplate.value || {}))
+  templatePayload.name =
+    templatePayload.name || templatePayload.id || 'preview-template'
+  templatePayload.version = Number(templatePayload.version || 1)
+  templatePayload.customize = {
     selectedPalette: selectedPalette.value,
     signature: signatureDataUrl.value,
+    model,
   }
-  const response = await $fetch<{ id: string }>(
+  const templateResponse = await $fetch<{ id: string }>(
     'https://bro-world.org/api/v1/recruit/templates/cover-letters',
-    {
-      method: 'POST',
-      body: payload,
+    { method: 'POST', body: templatePayload },
+  )
+  const token = user.value?.token?.trim()
+  if (!token) return
+  await $fetch('https://bro-world.org/api/v1/recruit/private/me/cover-letters', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: {
+      fullName: model.fullName,
+      role: model.role,
+      location: model.location,
+      header: model.heading,
+      description1: model.companyParagraph,
+      description2: model.summary,
+      templateId: templateResponse.id,
     },
-  )
-  localStorage.setItem(
-    'resume-cover-letter-template-create',
-    JSON.stringify({ id: response.id, payload }),
-  )
+  })
 }
 async function downloadPdf() {
   const node = document.querySelector(
@@ -498,7 +533,7 @@ async function downloadPdf() {
     .map((el) => el.outerHTML)
     .join('')
   w.document.write(
-    `<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.capture-cover-letter{width:210mm;min-height:297mm;box-sizing:border-box;margin:0}</style></head><body>${node.outerHTML}</body></html>`,
+    `<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.capture-cover-letter{width:794px;max-width:794px;min-height:1123px;box-sizing:border-box;margin:0}</style></head><body>${node.outerHTML}</body></html>`,
   )
   w.document.close()
   await new Promise((r) => setTimeout(r, 900))
@@ -578,6 +613,18 @@ onMounted(async () => {
   const q = typeof route.query.template === 'string' ? route.query.template : ''
   if (q && coverLetterTemplates.value.some((t) => t.id === q))
     selectedTemplate.value = q
+  try {
+    const resumes = await listMyResumes()
+    const info = resumes?.[0]?.resumeInformation
+    if (info?.fullName) {
+      model.fullName = info.fullName
+      model.phone = info.fullName
+    }
+    if (info?.title) model.role = info.title
+    if (info?.photo) model.photoUrl = info.photo
+  } catch {
+    /* noop */
+  }
 })
 
 watch(
@@ -645,7 +692,117 @@ watch(aiModalOpen, (isOpen) => {
 <template>
   <div>
     <AppPageDrawers>
-      <template #left>
+      <template #right>
+        <v-btn class="mt-1" variant="tonal" color="primary" prepend-icon="mdi-content-save" block @click="saveFromPreview">Save</v-btn>
+        <v-btn class="mt-2" variant="tonal"  color="primary" prepend-icon="mdi-file-pdf-box" block @click="downloadPdf">PDF</v-btn>
+        <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-draw" block @click="openSignatureDialog">Signature</v-btn>
+        <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-robot" block @click="openAiModal">AI</v-btn>
+        <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-plus" block to="/resume/cover-letter/template-create">Template</v-btn>
+      </template>
+    </AppPageDrawers>
+    <v-container fluid>
+      <ResumePreviewToolbar
+        v-model:menu-open="layoutMenuOpen"
+        v-model:palette-menu-open="paletteMenuOpen"
+        v-model:settings-menu-open="settingsMenuOpen"
+        v-model:decor-menu-open="decorMenuOpen"
+        :palettes="palettePresetOptions"
+        show-decor
+        show-section
+        :selected-palette="selectedPalette"
+        :palette-columns="10"
+        :templates="coverLetterTemplates"
+        :selected-template="selectedTemplate"
+        template-key-prefix="cover-letter-preview"
+                @select-template="applyPreviewTemplate"
+        @select-palette="selectedPalette = $event"
+      >
+        <template #decor>
+          <v-card class="pa-3 mb-3" variant="outlined">
+            <div class="text-caption mb-2">Template decor presets</div>
+            <div class="d-flex flex-wrap ga-2">
+              <v-btn
+                v-for="(preset, presetIndex) in templateDecorPresets"
+                :key="`preset-${presetIndex}`"
+                size="x-small"
+                variant="tonal"
+                @click.stop="addDecorObjectFromPreset(preset)"
+              >
+                {{ preset.type }}
+              </v-btn>
+            </div>
+          </v-card>
+          <v-btn
+            size="small"
+            variant="outlined"
+            prepend-icon="mdi-shape-plus"
+            block
+            @click.stop="addDecorObject"
+          >
+            Add decor
+          </v-btn>
+          <div class="mt-3 d-flex flex-column ga-2">
+            <v-menu
+              v-for="(obj, i) in editableDecorObjects"
+              :key="`obj-${i}`"
+              :model-value="decorMenuOpenIndex === i"
+              :close-on-content-click="false"
+              location="left start"
+              @update:model-value="
+                (isOpen) => {
+                  decorMenuOpenIndex = isOpen
+                    ? i
+                    : decorMenuOpenIndex === i
+                      ? null
+                      : decorMenuOpenIndex
+                }
+              "
+            >
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  size="small"
+                  variant="tonal"
+                  class="justify-space-between"
+                  block
+                >
+                  Decor {{ i + 1 }} · {{ obj.type }}
+                </v-btn>
+              </template>
+              <v-card class="pa-3" min-width="260" @click.stop>
+                <AppSelect
+                  v-model="obj.type"
+                  :items="decorShapeOptions.map((shape) => ({ title: shape, value: shape }))"
+                  label="Type"
+                  hide-details
+                />
+                <p class="text-caption mt-3 mb-1">Color</p>
+                <div class="d-flex flex-wrap ga-2">
+                  <v-btn
+                    v-for="color in decorColorOptions"
+                    :key="`decor-color-${i}-${color}`"
+                    icon
+                    size="x-small"
+                    :style="{
+                      backgroundColor: color,
+                      border:
+                        obj.color === color
+                          ? '2px solid #111827'
+                          : '1px solid #cbd5e1',
+                    }"
+                    @click.stop="obj.color = color"
+                  />
+                </div>
+                <v-slider v-model="obj.size" label="Size" min="20" max="420" step="1" hide-details class="mt-3" />
+                <v-slider v-model="obj.opacity" label="Opacity" min="0.02" max="0.4" step="0.01" hide-details class="mt-3" />
+                <v-slider v-model="obj.x" label="X slider" min="0" max="100" step="1" hide-details class="mt-3" />
+                <v-slider v-model="obj.y" label="Y slider" min="0" max="100" step="1" hide-details class="mt-3" />
+                <v-btn size="x-small" color="error" variant="text" class="mt-2" @click.stop="removeDecorObject(i)">remove</v-btn>
+              </v-card>
+            </v-menu>
+          </div>
+        </template>
+        <template #settings>
         <v-card-text>
           <AppSelect
             v-model="barLayout"
@@ -683,7 +840,7 @@ watch(aiModalOpen, (isOpen) => {
             hide-details
             class="mt-3"
           />
-          <p class="text-body-2" v-if="barLayout === 'double'">Sec bar width</p>
+          <p v-if="barLayout === 'double'" class="text-body-2">Sec bar width</p>
           <v-slider
             v-if="barLayout === 'double'"
             v-model="secondaryBarWidth"
@@ -694,150 +851,11 @@ watch(aiModalOpen, (isOpen) => {
             class="mt-3"
           />
         </v-card-text>
-      </template>
-      <template #right>
-        <v-card class="mt-3 pa-3" variant="outlined">
-          <div class="text-caption mb-2">Template decor presets</div>
-          <div class="d-flex flex-wrap ga-2">
-            <v-btn
-              v-for="(preset, presetIndex) in templateDecorPresets"
-              :key="`preset-${presetIndex}`"
-              size="x-small"
-              variant="tonal"
-              @click="addDecorObjectFromPreset(preset)"
-            >
-              {{ preset.type }}
-            </v-btn>
-          </div>
-        </v-card>
-        <v-btn
-          class="mt-3"
-          size="small"
-          variant="outlined"
-          @click="addDecorObject"
-          >Add decor</v-btn
-        >
-        <div class="mt-3 d-flex flex-column ga-2">
-          <v-menu
-            v-for="(obj, i) in editableDecorObjects"
-            :key="`obj-${i}`"
-            :model-value="decorMenuOpenIndex === i"
-            :close-on-content-click="false"
-            location="left start"
-            @update:model-value="
-              (isOpen) => {
-                decorMenuOpenIndex = isOpen
-                  ? i
-                  : decorMenuOpenIndex === i
-                    ? null
-                    : decorMenuOpenIndex
-              }
-            "
-          >
-            <template #activator="{ props }">
-              <v-btn
-                v-bind="props"
-                size="small"
-                variant="tonal"
-                class="justify-space-between"
-                block
-              >
-                Decor {{ i + 1 }} · {{ obj.type }}
-              </v-btn>
-            </template>
-            <v-card class="pa-3" min-width="260" @click.stop>
-              <AppSelect
-                v-model="obj.type"
-                :items="decorShapeOptions.map((s) => ({ title: s, value: s }))"
-                label="Type"
-                hide-details
-              />
-              <p class="text-caption mt-3 mb-1">Color</p>
-              <div class="d-flex flex-wrap ga-2">
-                <v-btn
-                  v-for="color in decorColorOptions"
-                  :key="`decor-color-${i}-${color}`"
-                  icon
-                  size="x-small"
-                  :style="{
-                    backgroundColor: color,
-                    border:
-                      obj.color === color
-                        ? '2px solid #111827'
-                        : '1px solid #cbd5e1',
-                  }"
-                  @click="obj.color = color"
-                />
-              </div>
-              <v-slider
-                v-model="obj.size"
-                label="Size"
-                min="20"
-                max="420"
-                step="1"
-                hide-details
-                class="mt-3"
-              />
-              <v-slider
-                v-model="obj.opacity"
-                label="Opacity"
-                min="0.02"
-                max="0.4"
-                step="0.01"
-                hide-details
-                class="mt-3"
-              />
-              <v-slider
-                v-model="obj.x"
-                label="X slider"
-                min="0"
-                max="100"
-                step="1"
-                hide-details
-                class="mt-3"
-              />
-              <v-slider
-                v-model="obj.y"
-                label="Y slider"
-                min="0"
-                max="100"
-                step="1"
-                hide-details
-                class="mt-3"
-              />
-              <v-btn
-                size="x-small"
-                color="error"
-                variant="text"
-                class="mt-2"
-                @click="removeDecorObject(i)"
-                >remove</v-btn
-              >
-            </v-card>
-          </v-menu>
-        </div>
-      </template>
-    </AppPageDrawers>
-    <v-container fluid>
-      <ResumePreviewToolbar
-        :show-ai="false"
-        v-model:menu-open="layoutMenuOpen"
-        v-model:palette-menu-open="paletteMenuOpen"
-        :palettes="palettePresetOptions"
-        :selected-palette="selectedPalette"
-        :palette-columns="10"
-        :templates="coverLetterTemplates"
-        :selected-template="selectedTemplate"
-        template-key-prefix="cover-letter-preview"
-        @save="saveFromPreview"
-        @signature="openSignatureDialog"
-        @pdf="downloadPdf"
-        @select-template="applyPreviewTemplate"
-        @select-palette="selectedPalette = $event"
-      />
+        </template>
+      </ResumePreviewToolbar>
       <div
         ref="coverPreviewRef"
-        class="py-8 d-flex justify-center preview-single-page-frame"
+        class="d-flex justify-center preview-single-page-frame"
       >
         <main
           class="capture-cover-letter"
@@ -854,7 +872,7 @@ watch(aiModalOpen, (isOpen) => {
             '--section-divider-color': sectionDividerColor,
             '--section-spacing': sectionSpacing,
             '--body-size': `${textFontSize}px`,
-            '--body-color': textColor,
+            '--body-color': readableBodyTextColor,
             '--bar-radius': `${barRadius}px`,
             '--bar-primary-width': `${primaryBarWidth}px`,
             '--bar-secondary-width': `${secondaryBarWidth}px`,
@@ -892,14 +910,14 @@ watch(aiModalOpen, (isOpen) => {
               <HoverRichTextEditor
                 v-model="model.date"
                 :font-size="`${letterElementStyles.date.size}px`"
-                :color="letterElementStyles.date.color"
+                :color="readableCoverTextColor(letterElementStyles.date.color)"
                 :font-weight="letterElementStyles.date.weight"
                 :font-family="textFontFamily('date')"
               />
               <HoverRichTextEditor
                 v-model="model.location"
                 :font-size="`${letterElementStyles.address.size}px`"
-                :color="letterElementStyles.address.color"
+                :color="readableCoverTextColor(letterElementStyles.address.color)"
                 :font-weight="letterElementStyles.address.weight"
                 :font-family="textFontFamily('address')"
               />
@@ -1010,7 +1028,7 @@ watch(aiModalOpen, (isOpen) => {
                 class="hero-role"
                 :font-family="textFontFamily('role')"
               />
-              <v-text class="hero-location">{{ model.location }}</v-text>
+              <span class="hero-location">{{ model.location }}</span>
             </div>
           </header>
           <section class="letter-body">
@@ -1166,7 +1184,7 @@ watch(aiModalOpen, (isOpen) => {
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
-  width: min(100%, 850px);
+  width: min(100%, 794px);
   min-height: 1123px;
   padding: 56px 64px;
   background: var(--cp-bg);
@@ -1328,7 +1346,11 @@ section {
 .decor-object {
   position: absolute;
   pointer-events: none;
+  color: var(--cp-primary);
   background: color-mix(in srgb, var(--cp-primary) 35%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, currentColor 32%, rgba(255, 255, 255, 0.72)),
+    0 4px 18px color-mix(in srgb, currentColor 28%, transparent);
 }
 .decor-circle {
   border-radius: 999px;
