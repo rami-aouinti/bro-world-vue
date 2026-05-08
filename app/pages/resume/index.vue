@@ -68,7 +68,7 @@ const randomVariants = computed(() => {
         <v-row dense>
           <v-col v-for="variant in randomVariants" :key="variant.id" cols="12">
             <v-card
-              class="preview-variant-card"
+              class="preview-variant-card postcard-gradient-card"
               :to="
                 variant.type === 'resume'
                   ? `/resume/cv/preview?template=${variant.id}`

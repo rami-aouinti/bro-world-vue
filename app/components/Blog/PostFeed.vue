@@ -330,7 +330,7 @@ async function submitEdit() {
         @filter-tag="onTagSelected"
       />
 
-      <v-card v-if="!pending && posts.length === 0" rounded="lg">
+      <v-card v-if="!pending && posts.length === 0" rounded="lg" class="postcard-gradient-card">
         <v-card-text class="text-medium-emphasis">
           {{ t('blog.post.empty') }}
         </v-card-text>
@@ -350,7 +350,7 @@ async function submitEdit() {
     </div>
 
     <v-dialog v-model="editDialog" max-width="560">
-      <v-card rounded="lg">
+      <v-card rounded="lg" class="postcard-gradient-card">
         <v-card-title>{{ t('blog.post.menu.edit') }}</v-card-title>
         <v-card-text>
           <v-textarea

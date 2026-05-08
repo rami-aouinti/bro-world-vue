@@ -95,7 +95,7 @@ const filteredItems = computed(() => {
     <AppPageDrawers>
       <template #left>
         <SkeletonDrawerLeft v-if="isPageSkeletonVisible || pending || !page" />
-        <v-card v-else rounded="xl" class="pa-3 mb-2" variant="text">
+        <v-card v-else rounded="xl" class="pa-3 mb-2 postcard-gradient-card" variant="text">
           <v-chip class="mb-3" color="primary">{{ page.hero.badge }}</v-chip>
           <h1 class="text-h3 mb-2">{{ page.hero.title }}</h1>
           <p class="mb-4">{{ page.hero.subtitle }}</p>
@@ -134,7 +134,7 @@ const filteredItems = computed(() => {
               }}</v-list-item-subtitle>
             </v-list-item>
           </v-list>
-          <v-card rounded="xl" variant="tonal" color="primary">
+          <v-card rounded="xl" variant="tonal" color="primary" class="postcard-gradient-card">
             <v-card-title class="pt-4 px-4">{{
               page.hero.primaryCta
             }}</v-card-title>

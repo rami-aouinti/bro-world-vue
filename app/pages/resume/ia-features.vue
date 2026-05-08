@@ -16,7 +16,7 @@ const benefits = computed(() => (tm('resumeResources.iaFeatures.benefits') as un
 
     <v-row>
       <v-col v-for="(section, index) in sections" :key="section.title" cols="12" md="6" lg="4">
-        <v-card class="feature-card h-100" :style="{ animationDelay: `${index * 0.08}s` }" elevation="4">
+        <v-card class="feature-card h-100 postcard-gradient-card" :style="{ animationDelay: `${index * 0.08}s` }" elevation="4">
           <v-card-item>
             <template #prepend>
               <v-avatar color="primary" variant="tonal" size="44">
@@ -37,7 +37,7 @@ const benefits = computed(() => (tm('resumeResources.iaFeatures.benefits') as un
       </v-col>
     </v-row>
 
-    <v-card class="mt-8" color="surface-variant" variant="tonal">
+    <v-card class="mt-8 postcard-gradient-card" color="surface-variant" variant="tonal">
       <v-card-title class="text-h6">Impact</v-card-title>
       <v-list bg-color="transparent">
         <v-list-item v-for="(benefit, i) in benefits" :key="i" :title="benefit" prepend-icon="mdi-check-decagram" />
