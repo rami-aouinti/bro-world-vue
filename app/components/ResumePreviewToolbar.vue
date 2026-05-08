@@ -14,7 +14,6 @@ withDefaults(
     selectedPalette?: string
     paletteColumns?: number
     showAi?: boolean
-    settingsMenuOpen?: boolean
   }>(),
   {
     menuOpen: false,
@@ -27,12 +26,11 @@ withDefaults(
     selectedPalette: '',
     paletteColumns: 5,
     showAi: true,
-    settingsMenuOpen: false,
   },
 )
 
 const emit = defineEmits<{
-  (e: 'update:menu-open' | 'update:palette-menu-open' | 'update:settings-menu-open', value: boolean): void
+  (e: 'update:menu-open' | 'update:palette-menu-open', value: boolean): void
   (e: 'select-template' | 'select-palette', value: string): void
   (e: 'save' | 'ai' | 'signature' | 'pdf'): void
 }>()
@@ -99,19 +97,6 @@ function paletteValue(palette: PaletteOption) {
               @click="emit('select-palette', paletteValue(palette))"
             />
           </div>
-        </v-card>
-      </v-menu>
-      <v-menu
-        :model-value="settingsMenuOpen"
-        location="bottom start"
-        :close-on-content-click="false"
-        @update:model-value="emit('update:settings-menu-open', $event)"
-      >
-        <template #activator="{ props: menuProps }">
-          <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-cog-outline">Settings</v-btn>
-        </template>
-        <v-card class="pa-3" min-width="320">
-          <slot name="settings" />
         </v-card>
       </v-menu>
     </div>
