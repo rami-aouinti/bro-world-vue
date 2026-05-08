@@ -40,7 +40,7 @@
       "position": "left",
       "size": "92px",
       "shape": "circle",
-      "border": "2px solid #1F2937",
+      "border": "2px solid #2563EB",
       "photoType": "circle",
       "photoSize": "92px",
       "photoBorderRadius": "999px",
@@ -458,11 +458,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#7C3AED",
-        "secondary": "#C4B5FD",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#111827"
+        "primary": "#1E40AF",
+        "secondary": "#22C55E",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#F8FAFC"
       },
       "line": "strong",
       "density": "compact",
@@ -478,7 +478,7 @@
       "position": "left",
       "size": "92px",
       "shape": "circle",
-      "border": "2px solid #1F2937",
+      "border": "2px solid #1E40AF",
       "photoType": "circle",
       "photoSize": "92px",
       "photoBorderRadius": "999px",
@@ -896,11 +896,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#BE123C",
-        "secondary": "#FDA4AF",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#2F2430"
+        "primary": "#0EA5E9",
+        "secondary": "#F97316",
+        "text": "#E2E8F0",
+        "muted": "#94A3B8",
+        "pageBackground": "#0F172A"
       },
       "line": "soft",
       "density": "comfortable",
@@ -916,7 +916,7 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81",
+      "border": "2px solid #0EA5E9",
       "photoType": "circle",
       "photoSize": "96px",
       "photoBorderRadius": "999px",
@@ -1351,11 +1351,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#047857",
-        "secondary": "#6EE7B7",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#1F2A24"
+        "primary": "#0F766E",
+        "secondary": "#EA580C",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#F5F5F4"
       },
       "line": "strong",
       "density": "compact",
@@ -1370,7 +1370,7 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81",
+      "border": "2px solid #0F766E",
       "photoType": "circle",
       "photoSize": "96px",
       "photoBorderRadius": "999px",
@@ -1805,11 +1805,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#C2410C",
-        "secondary": "#FDBA74",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#2D261F"
+        "primary": "#A855F7",
+        "secondary": "#22C55E",
+        "text": "#F3F4F6",
+        "muted": "#9CA3AF",
+        "pageBackground": "#111827"
       },
       "line": "soft",
       "density": "comfortable",
@@ -1824,7 +1824,7 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #1B5E20",
+      "border": "2px solid #A855F7",
       "photoType": "circle",
       "photoSize": "96px",
       "photoBorderRadius": "999px",
@@ -2259,11 +2259,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#0F4C81",
-        "secondary": "#7DD3FC",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#172033"
+        "primary": "#7C3AED",
+        "secondary": "#06B6D4",
+        "text": "#1F1147",
+        "muted": "#6D5A99",
+        "pageBackground": "#F5F3FF"
       },
       "line": "strong",
       "density": "compact",
@@ -2278,7 +2278,7 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #1B5E20",
+      "border": "2px solid #7C3AED",
       "photoType": "circle",
       "photoSize": "96px",
       "photoBorderRadius": "999px",
@@ -2713,11 +2713,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#4F46E5",
-        "secondary": "#A5B4FC",
+        "primary": "#2563EB",
+        "secondary": "#93C5FD",
         "text": "#F8FAFC",
         "muted": "#CBD5E1",
-        "pageBackground": "#24243A"
+        "pageBackground": "#1F2937"
       },
       "line": "soft",
       "density": "comfortable",
@@ -2732,7 +2732,7 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81",
+      "border": "2px solid #2563EB",
       "photoType": "circle",
       "photoSize": "96px",
       "photoBorderRadius": "999px",
@@ -3167,11 +3167,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#0F766E",
-        "secondary": "#99F6E4",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#1E2D2B"
+        "primary": "#1E40AF",
+        "secondary": "#22C55E",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#F8FAFC"
       },
       "line": "strong",
       "density": "compact",
@@ -3186,7 +3186,7 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81",
+      "border": "2px solid #1E40AF",
       "photoType": "circle",
       "photoSize": "96px",
       "photoBorderRadius": "999px",
@@ -3621,11 +3621,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#A16207",
-        "secondary": "#FDE68A",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#2F2A1F"
+        "primary": "#0EA5E9",
+        "secondary": "#F97316",
+        "text": "#E2E8F0",
+        "muted": "#94A3B8",
+        "pageBackground": "#0F172A"
       },
       "line": "soft",
       "density": "comfortable",
@@ -3640,7 +3640,7 @@
       "position": "right",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81",
+      "border": "2px solid #0EA5E9",
       "photoType": "circle",
       "photoSize": "96px",
       "photoBorderRadius": "999px",
@@ -4075,11 +4075,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#475569",
-        "secondary": "#CBD5E1",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#111827"
+        "primary": "#0F766E",
+        "secondary": "#EA580C",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#F5F5F4"
       },
       "line": "strong",
       "density": "compact",
@@ -4094,7 +4094,7 @@
       "position": "right",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81",
+      "border": "2px solid #0F766E",
       "photoType": "circle",
       "photoSize": "96px",
       "photoBorderRadius": "999px",
@@ -4529,11 +4529,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#2563EB",
-        "secondary": "#93C5FD",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#1F2937"
+        "primary": "#A855F7",
+        "secondary": "#22C55E",
+        "text": "#F3F4F6",
+        "muted": "#9CA3AF",
+        "pageBackground": "#111827"
       },
       "line": "soft",
       "density": "comfortable",
@@ -4548,7 +4548,7 @@
       "position": "left",
       "size": "84px",
       "shape": "square",
-      "border": "2px solid #0F4C81",
+      "border": "2px solid #A855F7",
       "photoType": "square",
       "photoSize": "84px",
       "photoBorderRadius": "8px",
@@ -4964,10 +4964,10 @@
     "theme": {
       "palette": {
         "primary": "#7C3AED",
-        "secondary": "#C4B5FD",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#111827"
+        "secondary": "#06B6D4",
+        "text": "#1F1147",
+        "muted": "#6D5A99",
+        "pageBackground": "#F5F3FF"
       },
       "line": "strong",
       "density": "compact",
@@ -4982,7 +4982,7 @@
       "position": "left",
       "size": "84px",
       "shape": "square",
-      "border": "2px solid #0F4C81",
+      "border": "2px solid #7C3AED",
       "photoType": "square",
       "photoSize": "84px",
       "photoBorderRadius": "8px",
@@ -5397,11 +5397,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#BE123C",
-        "secondary": "#FDA4AF",
+        "primary": "#2563EB",
+        "secondary": "#93C5FD",
         "text": "#F8FAFC",
         "muted": "#CBD5E1",
-        "pageBackground": "#2F2430"
+        "pageBackground": "#1F2937"
       },
       "line": "soft",
       "density": "comfortable",
@@ -5416,7 +5416,7 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81",
+      "border": "2px solid #2563EB",
       "photoType": "circle",
       "photoSize": "88px",
       "photoBorderRadius": "14px",
@@ -5851,11 +5851,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#047857",
-        "secondary": "#6EE7B7",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#1F2A24"
+        "primary": "#1E40AF",
+        "secondary": "#22C55E",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#F8FAFC"
       },
       "line": "strong",
       "density": "compact",
@@ -5870,7 +5870,7 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81",
+      "border": "2px solid #1E40AF",
       "photoType": "circle",
       "photoSize": "112px",
       "photoBorderRadius": "999px",
@@ -6305,11 +6305,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#C2410C",
-        "secondary": "#FDBA74",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#2D261F"
+        "primary": "#0EA5E9",
+        "secondary": "#F97316",
+        "text": "#E2E8F0",
+        "muted": "#94A3B8",
+        "pageBackground": "#0F172A"
       },
       "line": "soft",
       "density": "comfortable",
@@ -6325,7 +6325,7 @@
       "position": "left",
       "size": "92px",
       "shape": "circle",
-      "border": "2px solid #1F2937",
+      "border": "2px solid #0EA5E9",
       "photoType": "circle",
       "photoSize": "92px",
       "photoBorderRadius": "999px",
@@ -6744,11 +6744,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#0F4C81",
-        "secondary": "#7DD3FC",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#172033"
+        "primary": "#0F766E",
+        "secondary": "#EA580C",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#F5F5F4"
       },
       "line": "block",
       "density": "compact",
@@ -6764,7 +6764,7 @@
       "position": "left",
       "size": "92px",
       "shape": "circle",
-      "border": "2px solid #1F2937",
+      "border": "2px solid #0F766E",
       "photoType": "circle",
       "photoSize": "92px",
       "photoBorderRadius": "999px",
@@ -7183,11 +7183,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#4F46E5",
-        "secondary": "#A5B4FC",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#24243A"
+        "primary": "#A855F7",
+        "secondary": "#22C55E",
+        "text": "#F3F4F6",
+        "muted": "#9CA3AF",
+        "pageBackground": "#111827"
       },
       "line": "none",
       "density": "comfortable",
@@ -7203,7 +7203,7 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81",
+      "border": "2px solid #A855F7",
       "photoType": "circle",
       "photoSize": "96px",
       "photoBorderRadius": "999px",
@@ -7637,11 +7637,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#0F766E",
-        "secondary": "#99F6E4",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#1E2D2B"
+        "primary": "#7C3AED",
+        "secondary": "#06B6D4",
+        "text": "#1F1147",
+        "muted": "#6D5A99",
+        "pageBackground": "#F5F3FF"
       },
       "line": "soft",
       "density": "compact",
@@ -7656,7 +7656,7 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81",
+      "border": "2px solid #7C3AED",
       "photoType": "circle",
       "photoSize": "96px",
       "photoBorderRadius": "999px",
@@ -8090,11 +8090,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#A16207",
-        "secondary": "#FDE68A",
+        "primary": "#2563EB",
+        "secondary": "#93C5FD",
         "text": "#F8FAFC",
         "muted": "#CBD5E1",
-        "pageBackground": "#2F2A1F"
+        "pageBackground": "#1F2937"
       },
       "line": "block",
       "density": "comfortable",
@@ -8109,7 +8109,7 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #1B5E20",
+      "border": "2px solid #2563EB",
       "photoType": "circle",
       "photoSize": "96px",
       "photoBorderRadius": "999px",
@@ -8543,11 +8543,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#475569",
-        "secondary": "#CBD5E1",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#111827"
+        "primary": "#1E40AF",
+        "secondary": "#22C55E",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#F8FAFC"
       },
       "line": "none",
       "density": "compact",
@@ -8562,7 +8562,7 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #1B5E20",
+      "border": "2px solid #1E40AF",
       "photoType": "circle",
       "photoSize": "96px",
       "photoBorderRadius": "999px",
@@ -8996,11 +8996,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#2563EB",
-        "secondary": "#93C5FD",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#1F2937"
+        "primary": "#0EA5E9",
+        "secondary": "#F97316",
+        "text": "#E2E8F0",
+        "muted": "#94A3B8",
+        "pageBackground": "#0F172A"
       },
       "line": "soft",
       "density": "comfortable",
@@ -9015,7 +9015,7 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81",
+      "border": "2px solid #0EA5E9",
       "photoType": "circle",
       "photoSize": "96px",
       "photoBorderRadius": "999px",
@@ -9509,11 +9509,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#7C3AED",
-        "secondary": "#C4B5FD",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#111827"
+        "primary": "#0F766E",
+        "secondary": "#EA580C",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#F5F5F4"
       },
       "line": "block",
       "density": "compact",
@@ -9528,7 +9528,7 @@
       "position": "left",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81",
+      "border": "2px solid #0F766E",
       "photoType": "circle",
       "photoSize": "96px",
       "photoBorderRadius": "999px",
@@ -10022,11 +10022,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#BE123C",
-        "secondary": "#FDA4AF",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#2F2430"
+        "primary": "#A855F7",
+        "secondary": "#22C55E",
+        "text": "#F3F4F6",
+        "muted": "#9CA3AF",
+        "pageBackground": "#111827"
       },
       "line": "none",
       "density": "comfortable",
@@ -10041,7 +10041,7 @@
       "position": "right",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81",
+      "border": "2px solid #A855F7",
       "photoType": "circle",
       "photoSize": "96px",
       "photoBorderRadius": "999px",
@@ -10535,11 +10535,11 @@
     },
     "theme": {
       "palette": {
-        "primary": "#047857",
-        "secondary": "#6EE7B7",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#1F2A24"
+        "primary": "#7C3AED",
+        "secondary": "#06B6D4",
+        "text": "#1F1147",
+        "muted": "#6D5A99",
+        "pageBackground": "#F5F3FF"
       },
       "line": "soft",
       "density": "compact",
@@ -10554,7 +10554,7 @@
       "position": "right",
       "size": "96px",
       "shape": "circle",
-      "border": "2px solid #0F4C81",
+      "border": "2px solid #7C3AED",
       "photoType": "circle",
       "photoSize": "96px",
       "photoBorderRadius": "999px",
