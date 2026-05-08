@@ -1002,6 +1002,9 @@ function onPhotoSelected(event: Event) {
 const asideWidth = ref(850)
 const asideHeight = ref(1100)
 const asideRadius = ref(0)
+const headerAsideWidth = ref(120)
+const headerAsideHeight = ref(56)
+const headerAsideRadius = ref(18)
 const pageBorderEnabled = ref(true)
 const pageBorderWidth = ref(0)
 const pageBorderRadius = ref(0)
@@ -1041,6 +1044,15 @@ watch(
     asideWidth.value = parsePx(template?.aside?.width, 850)
     asideHeight.value = parsePx(template?.aside?.height, 1500)
     asideRadius.value = parsePx(template?.aside?.radius, 0)
+    headerAsideWidth.value = parsePx(
+      template?.aside?.headerWidth,
+      parsePx(template?.aside?.width, 120),
+    )
+    headerAsideHeight.value = parsePx(template?.aside?.headerHeight, 56)
+    headerAsideRadius.value = parsePx(
+      template?.aside?.headerRadius,
+      parsePx(template?.aside?.radius, 18),
+    )
     pageBorderEnabled.value = Boolean(template?.theme?.pageBorder?.enabled)
     pageBorderWidth.value = parsePx(template?.theme?.pageBorder?.width, 0)
     pageBorderRadius.value = parsePx(template?.theme?.pageBorder?.radius, 0)
@@ -1073,6 +1085,9 @@ watch(
     asideWidth,
     asideHeight,
     asideRadius,
+    headerAsideWidth,
+    headerAsideHeight,
+    headerAsideRadius,
     photoSize,
     photoRadius,
     photoBorderWidth,
@@ -1470,6 +1485,11 @@ watch(
             <v-col cols="6"><p class="text-body-2">Aside width</p><v-slider v-model="asideWidth" :min="240" :max="1200" :step="2" hide-details /></v-col>
             <v-col cols="6"><p class="text-body-2">Aside height</p><v-slider v-model="asideHeight" :min="120" :max="2600" :step="2" hide-details /></v-col>
             <v-col cols="6"><p class="text-body-2">Aside radius</p><v-slider v-model="asideRadius" :min="0" :max="90" :step="1" hide-details /></v-col>
+            <template v-if="['aside-bar-left', 'aside-bar-right'].includes(String(activeTemplate?.layout || ''))">
+              <v-col cols="6"><p class="text-body-2">Header aside width</p><v-slider v-model="headerAsideWidth" :min="40" :max="600" :step="2" hide-details /></v-col>
+              <v-col cols="6"><p class="text-body-2">Header aside height</p><v-slider v-model="headerAsideHeight" :min="8" :max="240" :step="1" hide-details /></v-col>
+              <v-col cols="6"><p class="text-body-2">Header aside radius</p><v-slider v-model="headerAsideRadius" :min="0" :max="120" :step="1" hide-details /></v-col>
+            </template>
           </v-row>
           <v-divider class="my-3" />
           <v-row dense>
@@ -1498,7 +1518,7 @@ watch(
           }"
       >
         <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
-        <component :is="activeLayoutComponent" class="w-100 cv-preview-page" :style="{ background: activeColors?.pageBackground || '#ffffff', color: activeColors?.text || '#0f172a', height: 'auto', minHeight: `${cvPreviewHeight}px`, overflow: 'visible', '--cv-primary': activeColors?.primary || '#1d4ed8', '--cv-secondary': activeColors?.secondary || '#93C5FD', '--cv-page-background': activeColors?.pageBackground || '#ffffff', '--cv-page-text': activeColors?.text || '#0f172a', '--cv-page-muted': activeColors?.muted || '#64748b', '--cv-page-border-width': pageBorderEnabled ? `${pageBorderWidth}px` : '0px', '--cv-page-border-color': pageBorderColor, '--cv-page-border-radius': `${pageBorderRadius}px`, '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body'), '--cv-header-text': headerTextColor, '--cv-header-muted': headerMutedColor, '--cv-section-bar-height': `${sectionBarConfig.height}px`, '--cv-section-bar-radius': `${sectionBarConfig.radius}px`, '--cv-section-bar-display': sectionBarConfig.show ? 'block' : 'none', '--cv-section-title-width': sectionBarConfig.widthType === 'complete' ? '100%' : 'fit-content', '--cv-section-bar-width': sectionBarConfig.widthType === 'complete' ? '100%' : 'calc(100% + 18px)' }">
+        <component :is="activeLayoutComponent" class="w-100 cv-preview-page" :style="{ background: activeColors?.pageBackground || '#ffffff', color: activeColors?.text || '#0f172a', height: 'auto', minHeight: `${cvPreviewHeight}px`, overflow: 'visible', '--cv-primary': activeColors?.primary || '#1d4ed8', '--cv-secondary': activeColors?.secondary || '#93C5FD', '--cv-page-background': activeColors?.pageBackground || '#ffffff', '--cv-page-text': activeColors?.text || '#0f172a', '--cv-page-muted': activeColors?.muted || '#64748b', '--cv-page-border-width': pageBorderEnabled ? `${pageBorderWidth}px` : '0px', '--cv-page-border-color': pageBorderColor, '--cv-page-border-radius': `${pageBorderRadius}px`, '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-header-aside-width': `${headerAsideWidth}px`, '--cv-header-aside-height': `${headerAsideHeight}px`, '--cv-header-aside-radius': `${headerAsideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body'), '--cv-header-text': headerTextColor, '--cv-header-muted': headerMutedColor, '--cv-section-bar-height': `${sectionBarConfig.height}px`, '--cv-section-bar-radius': `${sectionBarConfig.radius}px`, '--cv-section-bar-display': sectionBarConfig.show ? 'block' : 'none', '--cv-section-title-width': sectionBarConfig.widthType === 'complete' ? '100%' : 'fit-content', '--cv-section-bar-width': sectionBarConfig.widthType === 'complete' ? '100%' : 'calc(100% + 18px)' }">
           <template #header>
             <div class="cv-header-layout" :class="`cv-header-layout--${headerType}`">
               <template v-if="headerType === 'header-left'">
