@@ -1285,19 +1285,19 @@ watch(
     />
     <AppPageDrawers v-if="!isCaptureMode">
       <template #right>
-        <v-btn class="mt-1" variant="tonal" prepend-icon="mdi-content-save" block @click="saveFromPreview">Save</v-btn>
-        <v-btn class="mt-2" color="primary" prepend-icon="mdi-file-pdf-box" block @click="downloadPdf">PDF</v-btn>
-        <v-btn class="mt-2" variant="tonal" prepend-icon="mdi-draw" block @click="openSignatureDialog">Signature</v-btn>
-        <v-btn class="mt-2" variant="tonal" prepend-icon="mdi-robot" block @click="openAiModal">AI</v-btn>
+        <v-btn class="mt-1" variant="tonal" color="primary" prepend-icon="mdi-content-save" block @click="saveFromPreview">Save</v-btn>
+        <v-btn class="mt-2" variant="tonal"  color="primary" prepend-icon="mdi-file-pdf-box" block @click="downloadPdf">PDF</v-btn>
+        <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-draw" block @click="openSignatureDialog">Signature</v-btn>
+        <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-robot" block @click="openAiModal">AI</v-btn>
         <v-btn
           v-if="userResumeData"
-          class="mt-4"
+          class="mt-2"
           color="primary"
           variant="tonal"
           block
           @click="matchOfferModalOpen = true"
         >
-          Correspondence with Offer
+          Compare
         </v-btn>
         <v-btn
           class="mt-3"
