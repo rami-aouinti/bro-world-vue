@@ -62,7 +62,9 @@ const myResumes = ref<ResumeApiItem[]>([])
 const selectedTemplate = ref(GENERATED_RESUME_TEMPLATES[0]?.id || 'tpl-001')
 const layoutMenuOpen = ref(false)
 const paletteMenuOpen = ref(false)
-const settingsMenuOpen = ref(false)
+const asideMenuOpen = ref(false)
+const barMenuOpen = ref(false)
+const borderMenuOpen = ref(false)
 const decorMenuOpen = ref(false)
 const selectedPalette = ref('template')
 const signatureDataUrl = ref('')
@@ -1354,7 +1356,9 @@ watch(
         v-if="!isCaptureMode"
         v-model:menu-open="layoutMenuOpen"
         v-model:palette-menu-open="paletteMenuOpen"
-        v-model:settings-menu-open="settingsMenuOpen"
+        v-model:aside-menu-open="asideMenuOpen"
+        v-model:bar-menu-open="barMenuOpen"
+        v-model:border-menu-open="borderMenuOpen"
         v-model:decor-menu-open="decorMenuOpen"
         :palettes="palettePresetOptions"
         show-decor
@@ -1480,20 +1484,22 @@ watch(
           </v-menu>
         </div>
         </template>
-        <template #settings>
+        <template #aside>
           <v-row dense>
             <v-col cols="6"><p class="text-body-2">Aside width</p><v-slider v-model="asideWidth" :min="240" :max="1200" :step="2" hide-details /></v-col>
             <v-col cols="6"><p class="text-body-2">Aside height</p><v-slider v-model="asideHeight" :min="120" :max="2600" :step="2" hide-details /></v-col>
             <v-col cols="6"><p class="text-body-2">Aside radius</p><v-slider v-model="asideRadius" :min="0" :max="90" :step="1" hide-details /></v-col>
           </v-row>
-          <v-divider class="my-3" />
+        </template>
+        <template #bar>
           <v-row dense>
             <v-col cols="6"><v-switch v-model="sectionBarConfig.show" label="Section bar" hide-details inset class="mt-2" /></v-col>
             <v-col cols="6"><AppSelect v-model="sectionBarConfig.widthType" :items="[{ title: 'Flex', value: 'flex' },{ title: 'Complet', value: 'complete' }]" label="Bar width mode" hide-details class="mt-2"/></v-col>
             <v-col cols="6"><p class="text-body-2">Bar height</p><v-slider v-model="sectionBarConfig.height" :min="1" :max="18" :step="1" hide-details /></v-col>
             <v-col cols="6"><p class="text-body-2">Bar radius</p><v-slider v-model="sectionBarConfig.radius" :min="0" :max="999" :step="1" hide-details /></v-col>
           </v-row>
-          <v-divider class="my-3" />
+        </template>
+        <template #border>
           <v-row dense>
             <v-col cols="6"><v-switch v-model="pageBorderEnabled" label="Page border" hide-details inset class="mt-2" /></v-col>
             <v-col cols="6"><p class="text-body-2">Border width</p><v-slider v-model="pageBorderWidth" :min="0" :max="24" :step="1" hide-details /></v-col>

@@ -14,7 +14,9 @@ withDefaults(
     selectedPalette?: string
     paletteColumns?: number
     showAi?: boolean
-    settingsMenuOpen?: boolean
+    asideMenuOpen?: boolean
+    barMenuOpen?: boolean
+    borderMenuOpen?: boolean
     decorMenuOpen?: boolean
     showDecor?: boolean
     showSection?: boolean
@@ -30,7 +32,9 @@ withDefaults(
     selectedPalette: '',
     paletteColumns: 5,
     showAi: true,
-    settingsMenuOpen: false,
+    asideMenuOpen: false,
+    barMenuOpen: false,
+    borderMenuOpen: false,
     decorMenuOpen: false,
     showDecor: false,
     showSection: false,
@@ -38,7 +42,7 @@ withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'update:menu-open' | 'update:palette-menu-open' | 'update:settings-menu-open' | 'update:decor-menu-open', value: boolean): void
+  (e: 'update:menu-open' | 'update:palette-menu-open' | 'update:aside-menu-open' | 'update:bar-menu-open' | 'update:border-menu-open' | 'update:decor-menu-open', value: boolean): void
   (e: 'select-template' | 'select-palette', value: string): void
   (e: 'save' | 'ai' | 'signature' | 'pdf' | 'section'): void
 }>()
@@ -65,16 +69,50 @@ function paletteValue(palette: PaletteOption) {
     <div class="d-flex align-center ga-2 flex-wrap">
 
       <v-menu
-        :model-value="settingsMenuOpen"
+        v-if="$slots.aside"
+        :model-value="asideMenuOpen"
         location="bottom start"
         :close-on-content-click="false"
-        @update:model-value="emit('update:settings-menu-open', $event)"
+        :content-props="{ class: 'resume-toolbar-fixed-menu' }"
+        @update:model-value="emit('update:aside-menu-open', $event)"
       >
         <template #activator="{ props: menuProps }">
-          <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-cog">Settings</v-btn>
+          <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-dock-left">Aside</v-btn>
         </template>
         <v-card class="pa-3" min-width="300">
-          <slot name="settings" />
+          <slot name="aside" />
+        </v-card>
+      </v-menu>
+
+      <v-menu
+        v-if="$slots.bar"
+        :model-value="barMenuOpen"
+        location="bottom start"
+        :close-on-content-click="false"
+        :content-props="{ class: 'resume-toolbar-fixed-menu' }"
+        @update:model-value="emit('update:bar-menu-open', $event)"
+      >
+        <template #activator="{ props: menuProps }">
+          <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-view-agenda">Bar</v-btn>
+        </template>
+        <v-card class="pa-3" min-width="300">
+          <slot name="bar" />
+        </v-card>
+      </v-menu>
+
+      <v-menu
+        v-if="$slots.border"
+        :model-value="borderMenuOpen"
+        location="bottom start"
+        :close-on-content-click="false"
+        :content-props="{ class: 'resume-toolbar-fixed-menu' }"
+        @update:model-value="emit('update:border-menu-open', $event)"
+      >
+        <template #activator="{ props: menuProps }">
+          <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-border-all">Border</v-btn>
+        </template>
+        <v-card class="pa-3" min-width="300">
+          <slot name="border" />
         </v-card>
       </v-menu>
 
@@ -83,6 +121,7 @@ function paletteValue(palette: PaletteOption) {
         :model-value="decorMenuOpen"
         location="bottom start"
         :close-on-content-click="false"
+        :content-props="{ class: 'resume-toolbar-fixed-menu' }"
         @update:model-value="emit('update:decor-menu-open', $event)"
       >
         <template #activator="{ props: menuProps }">
@@ -235,5 +274,15 @@ function paletteValue(palette: PaletteOption) {
 .palette-dot--active {
   outline: 2px solid rgb(var(--v-theme-primary));
   outline-offset: 2px;
+}
+
+:deep(.resume-toolbar-fixed-menu) {
+  position: fixed !important;
+  left: 16px !important;
+  bottom: 16px !important;
+  top: auto !important;
+  transform: none !important;
+  max-height: min(72vh, 680px);
+  overflow-y: auto;
 }
 </style>
