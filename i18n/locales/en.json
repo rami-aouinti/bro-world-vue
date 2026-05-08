@@ -3107,7 +3107,8 @@
             "link": "Learn more about Premium"
           }
         }
-      }
+      },
+      "randomVariantsTitle": "3 random variants"
     },
     "create": {
       "design": {
@@ -3376,6 +3377,37 @@
         "line": "Line",
         "density": "Density"
       }
+    }
+  },
+  "resumeResources": {
+    "title": "Resume Builder Resources",
+    "subtitle": "Learn, build faster, and get better results with guided tools.",
+    "iaFeatures": {
+      "title": "AI Features",
+      "description": "Use AI to speed up writing, improve structure, and get actionable feedback before sending your application.",
+      "items": [
+        "AI generation: create professional draft content from a short profile summary.",
+        "AI review: detect missing details, weak wording, and formatting inconsistencies.",
+        "Smart recommendations: suggestions for stronger bullet points and recruiter-friendly phrasing."
+      ]
+    },
+    "help": {
+      "title": "Help Center",
+      "description": "Find quick answers for creation, editing, and export workflows.",
+      "items": [
+        "How to start a new CV, cover page, or cover letter in one click.",
+        "How to customize layout, colors, and document structure.",
+        "How to preview, iterate, and export high-quality versions."
+      ]
+    },
+    "documentation": {
+      "title": "Documentation",
+      "description": "Technical and functional references for the complete resume module.",
+      "items": [
+        "Template architecture and variant system for CV, cover page, and cover letter.",
+        "Route map for editor, preview, and template creation pages.",
+        "Best practices for multilingual content and localization."
+      ]
     }
   }
 }

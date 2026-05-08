@@ -3089,7 +3089,8 @@
             "link": "En savoir plus sur Premium"
           }
         }
-      }
+      },
+      "randomVariantsTitle": "3 variantes aléatoires"
     },
     "create": {
       "design": {
@@ -3358,6 +3359,37 @@
         "line": "Ligne",
         "density": "Densité"
       }
+    }
+  },
+  "resumeResources": {
+    "title": "Ressources du créateur de CV",
+    "subtitle": "Apprenez, créez plus vite et obtenez de meilleurs résultats grâce à des outils guidés.",
+    "iaFeatures": {
+      "title": "Fonctionnalités IA",
+      "description": "Utilisez l’IA pour accélérer la rédaction, améliorer la structure et obtenir un retour exploitable avant l’envoi de votre candidature.",
+      "items": [
+        "Génération IA : créez un brouillon professionnel à partir d’un court résumé de profil.",
+        "Revue IA : détectez les informations manquantes, les formulations faibles et les incohérences de mise en page.",
+        "Recommandations intelligentes : suggestions pour des puces plus percutantes et un style orienté recruteur."
+      ]
+    },
+    "help": {
+      "title": "Centre d’aide",
+      "description": "Trouvez des réponses rapides pour les parcours de création, d’édition et d’export.",
+      "items": [
+        "Comment démarrer un nouveau CV, une page de garde ou une lettre de motivation en un clic.",
+        "Comment personnaliser la mise en page, les couleurs et la structure du document.",
+        "Comment prévisualiser, itérer et exporter des versions de haute qualité."
+      ]
+    },
+    "documentation": {
+      "title": "Documentation",
+      "description": "Références techniques et fonctionnelles pour l’ensemble du module CV.",
+      "items": [
+        "Architecture des modèles et système de variantes pour CV, page de garde et lettre de motivation.",
+        "Cartographie des routes pour les pages d’éditeur, d’aperçu et de création de modèles.",
+        "Bonnes pratiques pour le contenu multilingue et la localisation."
+      ]
     }
   }
 }

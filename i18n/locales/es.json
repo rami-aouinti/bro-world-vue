@@ -2840,7 +2840,8 @@
             "link": "Más información sobre Premium"
           }
         }
-      }
+      },
+      "randomVariantsTitle": "3 variantes aleatorias"
     },
     "create": {
       "design": {
@@ -3109,6 +3110,37 @@
         "line": "Línea",
         "density": "Densidad"
       }
+    }
+  },
+  "resumeResources": {
+    "title": "Recursos del creador de CV",
+    "subtitle": "Aprende, crea más rápido y consigue mejores resultados con herramientas guiadas.",
+    "iaFeatures": {
+      "title": "Funciones de IA",
+      "description": "Usa IA para acelerar la redacción, mejorar la estructura y obtener comentarios accionables antes de enviar tu candidatura.",
+      "items": [
+        "Generación con IA: crea borradores profesionales a partir de un breve resumen de perfil.",
+        "Revisión con IA: detecta datos faltantes, redacción débil e inconsistencias de formato.",
+        "Recomendaciones inteligentes: sugerencias para bullets más sólidos y frases orientadas a reclutadores."
+      ]
+    },
+    "help": {
+      "title": "Centro de ayuda",
+      "description": "Encuentra respuestas rápidas para los flujos de creación, edición y exportación.",
+      "items": [
+        "Cómo iniciar un nuevo CV, portada o carta de presentación con un clic.",
+        "Cómo personalizar el diseño, los colores y la estructura del documento.",
+        "Cómo previsualizar, iterar y exportar versiones de alta calidad."
+      ]
+    },
+    "documentation": {
+      "title": "Documentación",
+      "description": "Referencias técnicas y funcionales para todo el módulo de currículum.",
+      "items": [
+        "Arquitectura de plantillas y sistema de variantes para CV, portada y carta de presentación.",
+        "Mapa de rutas para páginas de editor, vista previa y creación de plantillas.",
+        "Buenas prácticas para contenido multilingüe y localización."
+      ]
     }
   }
 }
