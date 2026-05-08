@@ -2868,7 +2868,8 @@
             "link": "Mehr über Premium erfahren"
           }
         }
-      }
+      },
+      "randomVariantsTitle": "3 zufällige Varianten"
     },
     "create": {
       "design": {
@@ -3137,6 +3138,37 @@
         "line": "Linie",
         "density": "Dichte"
       }
+    }
+  },
+  "resumeResources": {
+    "title": "Ressourcen für den Lebenslauf-Builder",
+    "subtitle": "Lerne schneller, arbeite effizienter und erziele bessere Ergebnisse mit geführten Tools.",
+    "iaFeatures": {
+      "title": "KI-Funktionen",
+      "description": "Nutze KI, um das Schreiben zu beschleunigen, die Struktur zu verbessern und verwertbares Feedback vor dem Versand deiner Bewerbung zu erhalten.",
+      "items": [
+        "KI-Generierung: Erstelle professionelle Entwürfe aus einer kurzen Profilzusammenfassung.",
+        "KI-Review: Erkenne fehlende Angaben, schwache Formulierungen und Formatierungsprobleme.",
+        "Intelligente Empfehlungen: Vorschläge für stärkere Stichpunkte und recruiter-freundliche Formulierungen."
+      ]
+    },
+    "help": {
+      "title": "Hilfezentrum",
+      "description": "Finde schnelle Antworten zu Erstellung, Bearbeitung und Export.",
+      "items": [
+        "So startest du mit einem Klick einen neuen Lebenslauf, ein Deckblatt oder ein Anschreiben.",
+        "So passt du Layout, Farben und Dokumentstruktur an.",
+        "So prüfst, iterierst und exportierst du hochwertige Versionen."
+      ]
+    },
+    "documentation": {
+      "title": "Dokumentation",
+      "description": "Technische und funktionale Referenzen für das gesamte Lebenslauf-Modul.",
+      "items": [
+        "Template-Architektur und Variantensystem für Lebenslauf, Deckblatt und Anschreiben.",
+        "Routenübersicht für Editor-, Vorschau- und Template-Erstellungsseiten.",
+        "Best Practices für mehrsprachige Inhalte und Lokalisierung."
+      ]
     }
   }
 }
