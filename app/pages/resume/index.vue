@@ -7,6 +7,7 @@ definePageMeta({
 })
 
 const { t } = useI18n()
+const { loggedIn } = useUserSession()
 const { allTemplates } = useResumeTemplates()
 
 const activeTemplateTab = ref<'resume' | 'cover-page' | 'cover-letter'>('resume')
@@ -40,18 +41,29 @@ const displayedTemplates = computed(() => {
   return allTemplates.value.filter((template) => template.type === activeTemplateTab.value)
 })
 
-const sidebarRoutes = computed(() => [
-  { label: 'Create New CV', to: '/resume/cv/preview', icon: 'mdi-file-account-outline' },
-  { label: 'Mes Files', to: '/resume/my-files', icon: 'mdi-folder-multiple-outline' },
-  { label: 'Create New Cover Page', to: '/resume/cover-page/preview', icon: 'mdi-file-document-outline' },
-  { label: 'Create New Cover Letter', to: '/resume/cover-letter/preview', icon: 'mdi-email-edit-outline' },
-  { label: 'Create CV Template', to: '/resume/cv/template-create', icon: 'mdi-palette-outline' },
-  { label: 'Create Cover Page Template', to: '/resume/cover-page/template-create', icon: 'mdi-palette-swatch-outline' },
-  { label: 'Create Cover Letter Template', to: '/resume/cover-letter/template-create', icon: 'mdi-palette-swatch-variant' },
-  { label: 'IA Features', to: '/resume/ia-features', icon: 'mdi-robot-outline' },
-  { label: 'Help', to: '/resume/help', icon: 'mdi-lifebuoy' },
-  { label: 'Documentation', to: '/resume/documentation', icon: 'mdi-book-open-page-variant-outline' },
-])
+const sidebarRoutes = computed(() => {
+  const routes = [
+    { label: 'Create New CV', to: '/resume/cv/preview', icon: 'mdi-file-account-outline' },
+    { label: 'Create New Cover Page', to: '/resume/cover-page/preview', icon: 'mdi-file-document-outline' },
+    { label: 'Create New Cover Letter', to: '/resume/cover-letter/preview', icon: 'mdi-email-edit-outline' },
+    { label: 'Create CV Template', to: '/resume/cv/template-create', icon: 'mdi-palette-outline' },
+    { label: 'Create Cover Page Template', to: '/resume/cover-page/template-create', icon: 'mdi-palette-swatch-outline' },
+    { label: 'Create Cover Letter Template', to: '/resume/cover-letter/template-create', icon: 'mdi-palette-swatch-variant' },
+    { label: 'IA Features', to: '/resume/ia-features', icon: 'mdi-robot-outline' },
+    { label: 'Help', to: '/resume/help', icon: 'mdi-lifebuoy' },
+    { label: 'Documentation', to: '/resume/documentation', icon: 'mdi-book-open-page-variant-outline' },
+  ]
+
+  if (loggedIn.value) {
+    routes.splice(1, 0, {
+      label: 'Mes Files',
+      to: '/resume/my-files',
+      icon: 'mdi-folder-multiple-outline',
+    })
+  }
+
+  return routes
+})
 
 const randomVariants = computed(() => {
   const pool = [...displayedTemplates.value]
