@@ -86,12 +86,10 @@ export function useResumeTemplates() {
     )
 
   const resumeTemplates = templatesByType('resume')
-  const coverPageTemplates = templatesByType('cover-page')
-  const coverLetterTemplates = templatesByType('cover-letter')
   const generatedCoverPageTemplates = computed<ResumeTemplate[]>(() =>
     GENERATED_COVER_PAGE_TEMPLATES.map((template) => ({
       id: template.id,
-      title: `Cover Page · ${template.name}`,
+      title: `${template.name}`,
       image: `/img/cv/generated/${template.id}.png`,
       type: 'cover-page',
       templateId: template.id,
@@ -101,7 +99,7 @@ export function useResumeTemplates() {
   const generatedCoverLetterTemplates = computed<ResumeTemplate[]>(() =>
     GENERATED_COVER_LETTER_TEMPLATES.map((template) => ({
       id: template.id,
-      title: `Cover Letter · ${template.name}`,
+      title: `${template.name}`,
       image: `/img/cv/generated/${template.id}.png`,
       type: 'cover-letter',
       templateId: template.id,
@@ -114,7 +112,7 @@ export function useResumeTemplates() {
         .filter((template) => template.type === 'resume')
         .map((template) => ({
           id: template.id,
-          title: `Resume · ${template.label}`,
+          title: `${template.label}`,
           image: template.image,
           type: template.type,
           templateId: template.templateId,

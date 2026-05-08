@@ -16,7 +16,7 @@ const selectedLayoutFilter = ref<string | null>(null)
 const generatedResumeTemplates = computed(() =>
   GENERATED_RESUME_TEMPLATES.map((template) => ({
     id: template.id,
-    title: `Resume · ${template.name}`,
+    title: `${template.name}`,
     image: template.id ? `/img/cv/generated/${template.id}.png` : '/img/cv/resume-modern.sv',
     type: 'resume' as const,
     templateId: template.id,
@@ -25,9 +25,9 @@ const generatedResumeTemplates = computed(() =>
 )
 
 const documentTabs = computed(() => [
-  { label: `Resume · ${t('resumeBuilder.index.tabs.resume')}`, value: 'resume' as const },
-  { label: `Cover Page · ${t('resumeBuilder.index.tabs.cover')}`, value: 'cover-page' as const },
-  { label: `Cover Letter · ${t('resumeBuilder.index.tabs.letter')}`, value: 'cover-letter' as const },
+  { label: ` ${t('resumeBuilder.index.tabs.resume')}`, value: 'resume' as const },
+  { label: `${t('resumeBuilder.index.tabs.cover')}`, value: 'cover-page' as const },
+  { label: ` ${t('resumeBuilder.index.tabs.letter')}`, value: 'cover-letter' as const },
 ])
 
 const displayedTemplates = computed(() => {
@@ -41,8 +41,15 @@ const displayedTemplates = computed(() => {
   return allTemplates.value.filter((template) => template.type === activeTemplateTab.value)
 })
 
+
+const templatePreviewRoute = (templateType: 'resume' | 'cover-page' | 'cover-letter', templateId: string) => {
+  if (templateType === 'resume') return `/resume/cv/preview?template=${templateId}`
+  if (templateType === 'cover-page') return `/resume/cover-page/preview?template=${templateId}`
+  return `/resume/cover-letter/preview?template=${templateId}`
+}
 const sidebarRoutes = computed(() => {
   const routes = [
+    { label: 'Catalog', to: '/resume', icon: 'mdi-apps' },
     { label: 'Create New CV', to: '/resume/cv/preview', icon: 'mdi-file-account-outline' },
     { label: 'Create New Cover Page', to: '/resume/cover-page/preview', icon: 'mdi-file-document-outline' },
     { label: 'Create New Cover Letter', to: '/resume/cover-letter/preview', icon: 'mdi-email-edit-outline' },
@@ -50,7 +57,6 @@ const sidebarRoutes = computed(() => {
     { label: 'Create Cover Page Template', to: '/resume/cover-page/template-create', icon: 'mdi-palette-swatch-outline' },
     { label: 'Create Cover Letter Template', to: '/resume/cover-letter/template-create', icon: 'mdi-palette-swatch-variant' },
     { label: 'IA Features', to: '/resume/ia-features', icon: 'mdi-robot-outline' },
-    { label: 'Help', to: '/resume/help', icon: 'mdi-lifebuoy' },
     { label: 'Documentation', to: '/resume/documentation', icon: 'mdi-book-open-page-variant-outline' },
   ]
 
@@ -64,13 +70,6 @@ const sidebarRoutes = computed(() => {
 
   return routes
 })
-
-
-const templatePreviewRoute = (templateType: 'resume' | 'cover-page' | 'cover-letter', templateId: string) => {
-  if (templateType === 'resume') return `/resume/cv/preview?template=${templateId}`
-  if (templateType === 'cover-page') return `/resume/cover-page/preview?template=${templateId}`
-  return `/resume/cover-letter/preview?template=${templateId}`
-}
 
 const randomVariants = computed(() => {
   const pool = [...displayedTemplates.value]

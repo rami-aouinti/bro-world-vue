@@ -64,6 +64,31 @@ function triggerPageSkeleton(minDuration = LAYOUT_SKELETON_MIN_DURATION) {
     Math.max(0, minDuration),
   )
 }
+const { loggedIn } = useUserSession()
+
+const sidebarRoutes = computed(() => {
+  const routes = [
+    { label: 'Catalog', to: '/resume', icon: 'mdi-apps' },
+    { label: 'Create New CV', to: '/resume/cv/preview', icon: 'mdi-file-account-outline' },
+    { label: 'Create New Cover Page', to: '/resume/cover-page/preview', icon: 'mdi-file-document-outline' },
+    { label: 'Create New Cover Letter', to: '/resume/cover-letter/preview', icon: 'mdi-email-edit-outline' },
+    { label: 'Create CV Template', to: '/resume/cv/template-create', icon: 'mdi-palette-outline' },
+    { label: 'Create Cover Page Template', to: '/resume/cover-page/template-create', icon: 'mdi-palette-swatch-outline' },
+    { label: 'Create Cover Letter Template', to: '/resume/cover-letter/template-create', icon: 'mdi-palette-swatch-variant' },
+    { label: 'IA Features', to: '/resume/ia-features', icon: 'mdi-robot-outline' },
+    { label: 'Documentation', to: '/resume/documentation', icon: 'mdi-book-open-page-variant-outline' },
+  ]
+
+  if (loggedIn.value) {
+    routes.splice(1, 0, {
+      label: 'Mes Files',
+      to: '/resume/my-files',
+      icon: 'mdi-folder-multiple-outline',
+    })
+  }
+
+  return routes
+})
 
 onMounted(async () => {
   await nextTick()
@@ -104,7 +129,17 @@ onUnmounted(() => {
     <v-app :class="{ 'layout-shell--loading': !isLayoutReady, 'layout-shell--capture': isCaptureMode }">
       <AppBar v-if="!isCaptureMode" />
       <ClientOnly>
-        <AppDrawerLazy v-if="shouldRenderLeftDrawer" />
+        <AppDrawerLazy v-if="shouldRenderLeftDrawer">
+          <v-list density="comfortable" nav>
+            <v-list-item
+              v-for="item in sidebarRoutes"
+              :key="item.to"
+              :title="item.label"
+              :to="item.to"
+              :prepend-icon="item.icon"
+            />
+          </v-list>
+        </AppDrawerLazy>
       </ClientOnly>
       <ClientOnly>
         <AppRightDrawerLazy v-if="shouldRenderRightDrawer" />

@@ -63,7 +63,7 @@ for (const tpl of generatedCvTemplates) {
       x: Math.max(0, box.x),
       y: Math.max(0, box.y),
       width: Math.min(box.width, CAPTURE_MAX_WIDTH),
-      height: Math.min(box.height, CAPTURE_MAX_HEIGHT),
+      height: 1000,
     },
   })
 

@@ -17,13 +17,37 @@ useHead(() => ({
   title: t('resumePreview.coverPage.metaTitle'),
 }))
 const route = useRoute()
-const { user } = useUserSession()
+const { loggedIn, user } = useUserSession()
 const { coverPageTemplates } = useResumeTemplates()
 const selectedTemplate = ref(
   coverPageTemplates.value[0]?.id ||
     GENERATED_COVER_PAGE_TEMPLATES[0]?.id ||
     '',
 )
+
+const sidebarRoutes = computed(() => {
+  const routes = [
+    { label: 'Catalog', to: '/resume', icon: 'mdi-apps' },
+    { label: 'Create New CV', to: '/resume/cv/preview', icon: 'mdi-file-account-outline' },
+    { label: 'Create New Cover Page', to: '/resume/cover-page/preview', icon: 'mdi-file-document-outline' },
+    { label: 'Create New Cover Letter', to: '/resume/cover-letter/preview', icon: 'mdi-email-edit-outline' },
+    { label: 'Create CV Template', to: '/resume/cv/template-create', icon: 'mdi-palette-outline' },
+    { label: 'Create Cover Page Template', to: '/resume/cover-page/template-create', icon: 'mdi-palette-swatch-outline' },
+    { label: 'Create Cover Letter Template', to: '/resume/cover-letter/template-create', icon: 'mdi-palette-swatch-variant' },
+    { label: 'IA Features', to: '/resume/ia-features', icon: 'mdi-robot-outline' },
+    { label: 'Documentation', to: '/resume/documentation', icon: 'mdi-book-open-page-variant-outline' },
+  ]
+
+  if (loggedIn.value) {
+    routes.splice(1, 0, {
+      label: 'Mes Files',
+      to: '/resume/my-files',
+      icon: 'mdi-folder-multiple-outline',
+    })
+  }
+
+  return routes
+})
 const photoOptions = [
   '/img/team-1.jpg',
   '/img/team-2.jpg',
@@ -655,56 +679,15 @@ watch(aiModalOpen, (isOpen) => {
   <div>
     <AppPageDrawers>
       <template #left>
-        <v-card-text>
-          <AppSelect
-            v-model="barLayout"
-            :items="[
-              { title: 'No bar', value: 'none' },
-              { title: 'Single bar', value: 'single' },
-              { title: 'Double bars', value: 'double' },
-            ]"
-            label="Bar layout"
-            hide-details
-            class="mt-3"
+        <v-list density="comfortable" nav>
+          <v-list-item
+            v-for="item in sidebarRoutes"
+            :key="item.to"
+            :title="item.label"
+            :to="item.to"
+            :prepend-icon="item.icon"
           />
-          <AppSelect
-            v-model="selectedDividerType"
-            :items="dividerTypeOptions"
-            label="Divider type"
-            hide-details
-            class="mt-3"
-          />
-          <p class="text-body-2">Bar radius</p>
-          <v-slider
-            v-model="barRadius"
-            :min="activeBarDesignConfig.barRadius.min"
-            :max="activeBarDesignConfig.barRadius.max"
-            step="1"
-            hide-details
-            class="mt-3"
-          />
-          <p class="text-body-2">Bar width</p>
-          <v-slider
-            v-model="primaryBarWidth"
-            :min="activeBarDesignConfig.barWidth.min"
-            :max="activeBarDesignConfig.barWidth.max"
-            step="1"
-            hide-details
-            class="mt-3"
-          />
-          <p v-if="barLayout === 'double'" class="text-body-2">
-            Sec Bar width"
-          </p>
-          <v-slider
-            v-if="barLayout === 'double'"
-            v-model="secondaryBarWidth"
-            :min="activeBarDesignConfig.secondaryBarWidth.min"
-            :max="activeBarDesignConfig.secondaryBarWidth.max"
-            step="1"
-            hide-details
-            class="mt-3"
-          />
-        </v-card-text>
+        </v-list>
       </template>
       <template #right>
         <v-btn class="mt-1" variant="tonal" prepend-icon="mdi-content-save" block @click="saveFromPreview">Save</v-btn>

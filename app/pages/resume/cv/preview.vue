@@ -83,7 +83,29 @@ const decorColorOptions = [
 ]
 const editableDecorObjects = ref<any[]>([])
 const decorMenuOpenIndex = ref<number | null>(null)
+const sidebarRoutes = computed(() => {
+  const routes = [
+    { label: 'Catalog', to: '/resume', icon: 'mdi-apps' },
+    { label: 'Create New CV', to: '/resume/cv/preview', icon: 'mdi-file-account-outline' },
+    { label: 'Create New Cover Page', to: '/resume/cover-page/preview', icon: 'mdi-file-document-outline' },
+    { label: 'Create New Cover Letter', to: '/resume/cover-letter/preview', icon: 'mdi-email-edit-outline' },
+    { label: 'Create CV Template', to: '/resume/cv/template-create', icon: 'mdi-palette-outline' },
+    { label: 'Create Cover Page Template', to: '/resume/cover-page/template-create', icon: 'mdi-palette-swatch-outline' },
+    { label: 'Create Cover Letter Template', to: '/resume/cover-letter/template-create', icon: 'mdi-palette-swatch-variant' },
+    { label: 'IA Features', to: '/resume/ia-features', icon: 'mdi-robot-outline' },
+    { label: 'Documentation', to: '/resume/documentation', icon: 'mdi-book-open-page-variant-outline' },
+  ]
 
+  if (loggedIn.value) {
+    routes.splice(1, 0, {
+      label: 'Mes Files',
+      to: '/resume/my-files',
+      icon: 'mdi-folder-multiple-outline',
+    })
+  }
+
+  return routes
+})
 const activeTemplate = computed(
   () =>
     GENERATED_RESUME_TEMPLATES.find(
@@ -1286,52 +1308,15 @@ watch(
     />
     <AppPageDrawers v-if="!isCaptureMode">
       <template #left>
-        <v-card-text>
-          <p class="text-body-2">Aside width</p>
-          <v-slider
-            v-model="asideWidth"
-            :min="240"
-            :max="1200"
-            :step="2"
-            hide-details
-            class="mb-2"
+        <v-list density="comfortable" nav>
+          <v-list-item
+            v-for="item in sidebarRoutes"
+            :key="item.to"
+            :title="item.label"
+            :to="item.to"
+            :prepend-icon="item.icon"
           />
-          <p class="text-body-2">Aside height</p>
-          <v-slider
-            v-model="asideHeight"
-            :min="120"
-            :max="2600"
-            :step="2"
-            hide-details
-            class="mb-2"
-          />
-          <p class="text-body-2">Aside radius</p>
-          <v-slider
-            v-model="asideRadius"
-            :min="0"
-            :max="90"
-            :step="1"
-            hide-details
-          />
-          <p class="text-body-2">Bar heighth</p>
-          <v-slider
-            v-model="sectionBarConfig.height"
-            :min="1"
-            :max="18"
-            :step="1"
-            hide-details
-            class="mt-2"
-          />
-          <p class="text-body-2">Bar radius</p>
-          <v-slider
-            v-model="sectionBarConfig.radius"
-            :min="0"
-            :max="999"
-            :step="1"
-            hide-details
-            class="mt-2"
-          />
-        </v-card-text>
+        </v-list>
       </template>
 
       <template #right>
