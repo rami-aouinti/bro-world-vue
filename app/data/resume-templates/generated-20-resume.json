@@ -73,6 +73,19 @@
     "layoutOptions": {
       "asideStartsAtTop": true
     },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "none",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
+    },
     "decorOptions": {
       "enabled": true,
       "preset": "geo-duo"
@@ -516,6 +529,19 @@
     },
     "layoutOptions": {
       "asideStartsAtTop": true
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "none",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
     },
     "decorOptions": {
       "enabled": true,
