@@ -318,9 +318,16 @@ const aiPhotoUrl = ref('')
 
 const COVER_PREVIEW_PDF_PAGE_HEIGHT = 1123
 const coverPreviewRef = ref<HTMLElement | null>(null)
-const showCoverPreviewPageBreak = ref(false)
+const coverPreviewPageCount = ref(1)
 let coverPreviewMeasureTimer: ReturnType<typeof setTimeout> | undefined
 let coverPreviewResizeObserver: ResizeObserver | undefined
+
+const coverPreviewPageBreaks = computed(() =>
+  Array.from(
+    { length: Math.max(0, coverPreviewPageCount.value - 1) },
+    (_, index) => index + 1,
+  ),
+)
 
 function measureCoverPreviewOverflow() {
   if (!import.meta.client) return
@@ -334,12 +341,15 @@ function measureCoverPreviewOverflow() {
     preview.scrollHeight,
     Math.ceil(preview.getBoundingClientRect().height),
   )
-  showCoverPreviewPageBreak.value = neededHeight > COVER_PREVIEW_PDF_PAGE_HEIGHT
+  coverPreviewPageCount.value = Math.max(
+    1,
+    Math.ceil(neededHeight / COVER_PREVIEW_PDF_PAGE_HEIGHT),
+  )
 }
 
 function scheduleCoverPreviewMeasure(reset = false) {
   if (!import.meta.client) return
-  if (reset) showCoverPreviewPageBreak.value = false
+  if (reset) coverPreviewPageCount.value = 1
   if (coverPreviewMeasureTimer) window.clearTimeout(coverPreviewMeasureTimer)
   coverPreviewMeasureTimer = window.setTimeout(() => {
     coverPreviewMeasureTimer = undefined
@@ -1073,8 +1083,10 @@ watch(aiModalOpen, (isOpen) => {
           </footer>
         </main>
         <ResumePreviewPageBreak
-          v-if="showCoverPreviewPageBreak"
-          :page-number="1"
+          v-for="pageBreak in coverPreviewPageBreaks"
+          :key="`cover-letter-break-${pageBreak}`"
+          :page-number="pageBreak"
+          :top="pageBreak * COVER_PREVIEW_PDF_PAGE_HEIGHT"
         />
       </div>
       <input
