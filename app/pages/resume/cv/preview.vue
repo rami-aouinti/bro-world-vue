@@ -1492,6 +1492,16 @@ watch(
                       </v-menu>
                       <template v-if="item.type === 'link'">
                         <a class="cv-contact-link" :href="item.value" target="_blank" rel="noopener noreferrer" :title="item.value">{{ item.label }}</a>
+                        <HoverRichTextEditor
+                          class="cv-header-editor cv-header-editor--contact cv-header-editor--link-value"
+                          :model-value="item.value"
+                          :placeholder="item.label || 'Contact'"
+                          font-size="12px"
+                          font-weight="600"
+                          :font-family="textFontPreset('body')"
+                          color="inherit"
+                          @update:model-value="updateHeaderField(item.key, $event)"
+                        />
                       </template>
                       <HoverRichTextEditor
                         v-else
@@ -1577,6 +1587,16 @@ watch(
                       </v-menu>
                       <template v-if="item.type === 'link'">
                         <a class="cv-contact-link" :href="item.value" target="_blank" rel="noopener noreferrer" :title="item.value">{{ item.label }}</a>
+                        <HoverRichTextEditor
+                          class="cv-header-editor cv-header-editor--contact cv-header-editor--link-value"
+                          :model-value="item.value"
+                          :placeholder="item.label || 'Contact'"
+                          font-size="12px"
+                          font-weight="600"
+                          :font-family="textFontPreset('body')"
+                          color="inherit"
+                          @update:model-value="updateHeaderField(item.key, $event)"
+                        />
                       </template>
                       <HoverRichTextEditor
                         v-else
@@ -2897,6 +2917,21 @@ watch(
 
 .cv-header-editor--contact {
   flex: 1 1 auto;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.cv-header-editor--link-value {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.cv-header-editor--link-value :deep(.hover-editor__surface),
+.cv-header-editor--link-value :deep(.hover-editor__content),
+.cv-header-editor--link-value :deep(.hover-editor__content p) {
+  min-width: 0;
+  max-width: 100%;
   overflow-wrap: anywhere;
   word-break: break-word;
 }
