@@ -7,6 +7,31 @@ definePageMeta({
 })
 
 const { t } = useI18n()
+
+useSeoMeta({
+  title: 'Free AI Resume Builder, CV Templates, Cover Letter & Cover Page | Bro World',
+  description:
+    'Create a free CV online with AI, resume templates, cover letter and cover page generator. Browse modern templates and build job-ready documents fast.',
+  keywords:
+    'free resume builder, AI CV generator, free CV templates, cover letter generator, cover page template, job application, Bro World',
+  ogTitle: 'Free AI Resume Builder & Templates | Bro World',
+  ogDescription:
+    'Build your resume, cover letter, and cover page with free AI tools and modern templates.',
+  ogImage: '/img/cv/generated/tpl-001.png',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Free AI Resume Builder & Templates | Bro World',
+  twitterDescription:
+    'Create your CV, cover letter, and cover page with AI and free templates.',
+  twitterImage: '/img/cv/generated/tpl-001.png',
+})
+
+useHead({
+  link: [
+    { rel: 'preload', as: 'image', href: '/img/cv/generated/tpl-001.png' },
+    { rel: 'preload', as: 'image', href: '/img/cv/generated/cletter-001.png' },
+    { rel: 'preload', as: 'image', href: '/img/cv/generated/cpage-001.png' },
+  ],
+})
 const { allTemplates } = useResumeTemplates()
 
 const activeTemplateTab = ref<'resume' | 'cover-page' | 'cover-letter'>('resume')

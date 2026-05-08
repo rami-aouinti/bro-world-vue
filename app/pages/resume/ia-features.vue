@@ -1,4 +1,8 @@
 <script setup lang="ts">
+useSeoMeta({
+  robots: 'index, follow',
+  keywords: 'free, IA, AI, resume help, resume documentation, cv assistant',
+})
 definePageMeta({ layout: 'resume', title: 'IA Features' })
 const { t, tm, rt } = useI18n()
 

@@ -19,7 +19,21 @@ definePageMeta({ title: 'resumePreview.coverLetter.metaTitle', layout: 'resume' 
 const { t } = useI18n()
 useHead(() => ({
   title: t('resumePreview.coverLetter.metaTitle'),
+  link: [
+    { rel: 'preload', as: 'image', href: '/img/cv/generated/cletter-001.png' },
+    { rel: 'preload', as: 'image', href: '/img/cv/generated/cletter-002.png' },
+    { rel: 'preload', as: 'image', href: '/img/cv/generated/cletter-003.png' },
+  ],
 }))
+
+useSeoMeta({
+  title: 'New Cover Letter - Free AI Builder | Bro World',
+  description: 'Generate and preview a free AI cover letter with job-ready templates.',
+  keywords: 'new cover letter, free cover letter, ai cover letter generator, job application letter',
+  ogImage: '/img/cv/generated/cletter-001.png',
+  twitterCard: 'summary_large_image',
+  twitterImage: '/img/cv/generated/cletter-001.png',
+})
 const route = useRoute()
 const { user } = useUserSession()
 const { coverLetterTemplates } = useResumeTemplates()
