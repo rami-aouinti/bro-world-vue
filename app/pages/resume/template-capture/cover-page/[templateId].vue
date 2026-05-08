@@ -121,7 +121,11 @@ const defaultValues = computed(() => {
     fullName: String(defaults.fullName || 'Alex Martin'),
     role: String(defaults.role || 'Senior Full Stack Developer'),
     image: String(defaults.image || '/img/team-1.jpg'),
-    description: String(defaults.description || 'Driven engineer delivering robust products with strong UX and clean architecture.'),
+    description: String(defaults.description || 'Product-minded software engineer with 8+ years of experience shipping reliable web platforms, leading cross-functional delivery, and improving user conversion across international markets.'),
+    tagline: String(defaults.tagline || 'Portfolio: alexmartin.dev · LinkedIn: /in/alexmartin'),
+    email: String(defaults.email || 'alex.martin@proton.me'),
+    phone: String(defaults.phone || '+33 6 12 34 56 78'),
+    city: String(defaults.city || 'Paris, France'),
   }
 })
 
@@ -168,9 +172,11 @@ const isLayoutRight = computed(() => selectedTemplate.value.layout === 'layout-r
     <section>
       <h2 :style="itemStyles.heading">About Me</h2>
       <p :style="itemStyles.summary">{{ defaultValues.description }}</p>
+      <p class="tagline">{{ defaultValues.tagline }}</p>
       <div class="contact-row">
-        <span :style="itemStyles.email">alex@example.com</span>
-        <span :style="itemStyles.phone">+33 6 00 00 00 00</span>
+        <span :style="itemStyles.email">{{ defaultValues.email }}</span>
+        <span :style="itemStyles.phone">{{ defaultValues.phone }}</span>
+        <span :style="itemStyles.phone">{{ defaultValues.city }}</span>
       </div>
     </section>
   </main>
@@ -189,7 +195,8 @@ p { font-size: 24px; color: var(--cp-muted); }
 .role { margin-top: 8px; }
 h2 { color: var(--cp-primary); font-size: 40px; margin: 0 0 16px; }
 section { border-top: 3px var(--section-divider-style) var(--section-divider-color); padding-top: 24px; margin-top: var(--section-spacing); }
-.contact-row { display: flex; gap: 24px; margin-top: 20px; flex-wrap: wrap; }
+.contact-row { display: flex; gap: 18px 24px; margin-top: 18px; flex-wrap: wrap; }
+.tagline { margin-top: 16px; color: var(--cp-text); font-size: 18px; line-height: 1.45; }
 .decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cp-primary) 35%,transparent)}
 .decor-circle{border-radius:999px}
 .decor-ring{border-radius:999px;background:transparent;border:3px solid color-mix(in srgb,var(--cp-secondary) 55%,transparent)}

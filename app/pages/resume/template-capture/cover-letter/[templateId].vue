@@ -117,9 +117,11 @@ const defaultValues = computed(() => {
     image: String(defaults.image || '/img/team-1.jpg'),
     date: String(defaults.date || 'May 3, 2026'),
     location: String(defaults.location || 'Paris, France'),
+    targetCompany: String(defaults.targetCompany || 'NovaTech Solutions'),
+    targetRole: String(defaults.targetRole || 'Senior Frontend Engineer'),
     heading: String(defaults.heading || 'Dear Hiring Manager,'),
-    companyParagraph: String(defaults.companyParagraph || 'I am excited to apply for your role. I bring strong experience in product delivery, scalable web architecture, and cross-functional collaboration.'),
-    summary: String(defaults.summary || 'I would welcome the opportunity to contribute to your team and discuss how my background aligns with your needs.'),
+    companyParagraph: String(defaults.companyParagraph || 'I am applying for the Senior Frontend Engineer position at NovaTech Solutions. Over the last eight years, I have built and scaled Vue and React products used by more than 2 million monthly users, while partnering closely with design, product, and data teams.'),
+    summary: String(defaults.summary || 'In my current role, I led a redesign that reduced onboarding drop-off by 23% and improved Lighthouse accessibility from 71 to 96. I would be glad to bring the same ownership and delivery mindset to your team.'),
   }
 })
 
@@ -167,6 +169,7 @@ const isLayoutRight = computed(() => selectedTemplate.value.layout === 'layout-r
     </header>
     <section>
       <p class="intro">{{ defaultValues.heading }}</p>
+      <p class="target-role">Re: {{ defaultValues.targetRole }} — {{ defaultValues.targetCompany }}</p>
       <p>
         {{ defaultValues.companyParagraph }}
       </p>
@@ -197,7 +200,8 @@ h1 { color: var(--cl-text); margin: 0; font-size: 44px; line-height: 1.05; }
 .role { color: var(--cl-muted); margin: 0; font-size: 24px; }
 p { font-size: 24px; line-height: 1.55; margin: 0 0 18px; color: color-mix(in srgb,var(--cl-text) 78%, #475569); }
 section { border-top: 2px var(--section-divider-style) var(--section-divider-color); padding-top: 24px; margin-top: 24px; }
-.intro { font-weight: 700; color: var(--cl-text); margin-bottom: 24px; }
+.intro { font-weight: 700; color: var(--cl-text); margin-bottom: 10px; }
+.target-role { font-weight: 600; color: var(--cl-primary); margin-bottom: 22px; }
 .signature-label { margin-top: 24px; }
 .decor-object{position:absolute;pointer-events:none;background:color-mix(in srgb,var(--cl-primary) 35%,transparent)}
 .decor-circle{border-radius:999px}
