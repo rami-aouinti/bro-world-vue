@@ -3362,33 +3362,164 @@
     }
   },
   "resumeResources": {
-    "title": "Ressources du créateur de CV",
-    "subtitle": "Apprenez, créez plus vite et obtenez de meilleurs résultats grâce à des outils guidés.",
+    "title": "Ressources du générateur de CV",
+    "subtitle": "Apprends, avance plus vite et obtiens de meilleurs résultats avec des guides pratiques.",
     "iaFeatures": {
       "title": "Fonctionnalités IA",
-      "description": "Utilisez l’IA pour accélérer la rédaction, améliorer la structure et obtenir un retour exploitable avant l’envoi de votre candidature.",
-      "items": [
-        "Génération IA : créez un brouillon professionnel à partir d’un court résumé de profil.",
-        "Revue IA : détectez les informations manquantes, les formulations faibles et les incohérences de mise en page.",
-        "Recommandations intelligentes : suggestions pour des puces plus percutantes et un style orienté recruteur."
+      "description": "Découvre toutes les capacités IA disponibles pour le CV, la page de garde et la lettre de motivation.",
+      "sections": [
+        {
+          "title": "AI for CV Writing",
+          "description": "Generate an optimized CV draft in seconds from your role, goals, and experience level.",
+          "icon": "mdi-file-account-outline",
+          "chips": [
+            "Role-based summaries",
+            "Achievement bullet suggestions",
+            "ATS-friendly phrasing"
+          ]
+        },
+        {
+          "title": "AI for Cover Page",
+          "description": "Create polished introduction blocks, personal branding headlines, and role-focused hooks.",
+          "icon": "mdi-image-text",
+          "chips": [
+            "Professional headline ideas",
+            "Color and tone alignment",
+            "Company-specific positioning"
+          ]
+        },
+        {
+          "title": "AI for Cover Letter",
+          "description": "Build tailored letters with stronger storytelling and measurable impact.",
+          "icon": "mdi-email-edit-outline",
+          "chips": [
+            "Personalized openings",
+            "Mission alignment prompts",
+            "Impact-oriented closing paragraph"
+          ]
+        },
+        {
+          "title": "Review and Optimization",
+          "description": "Audit grammar, clarity, structure, and keyword density before export.",
+          "icon": "mdi-magnify-scan",
+          "chips": [
+            "Weak wording detection",
+            "Keyword gap alerts",
+            "Formatting consistency checks"
+          ]
+        },
+        {
+          "title": "Smart Productivity",
+          "description": "Reduce editing time with reusable suggestions and iterative improvement.",
+          "icon": "mdi-rocket-launch-outline",
+          "chips": [
+            "One-click rewriting",
+            "Version iteration",
+            "Faster finalization"
+          ]
+        }
+      ],
+      "benefits": [
+        "Réduis fortement le temps de rédaction sans sacrifier la qualité.",
+        "Garde une cohérence entre CV, page de garde et lettre de motivation.",
+        "Améliore la lisibilité pour les recruteurs avec un wording plus clair.",
+        "Envoie tes candidatures avec plus de confiance."
       ]
     },
     "help": {
-      "title": "Centre d’aide",
-      "description": "Trouvez des réponses rapides pour les parcours de création, d’édition et d’export.",
-      "items": [
-        "Comment démarrer un nouveau CV, une page de garde ou une lettre de motivation en un clic.",
-        "Comment personnaliser la mise en page, les couleurs et la structure du document.",
-        "Comment prévisualiser, itérer et exporter des versions de haute qualité."
+      "title": "Centre d'aide",
+      "description": "Tout ce qu'il faut pour comprendre chaque étape du générateur de CV.",
+      "steps": [
+        {
+          "title": "1. Start Your Project",
+          "details": "Choose CV, cover page, or cover letter. Select a template and language, then initialize your workspace."
+        },
+        {
+          "title": "2. Fill Core Information",
+          "details": "Complete profile details, experience, education, skills, and links. Use AI suggestions if needed."
+        },
+        {
+          "title": "3. Customize Design",
+          "details": "Adjust typography, spacing, blocks, colors, and section order for your target role."
+        },
+        {
+          "title": "4. Use AI Assistance",
+          "details": "Generate drafts, improve sections, and run a final review for structure and clarity."
+        },
+        {
+          "title": "5. Preview and Export",
+          "details": "Review in live preview mode and export polished files for applications."
+        }
+      ],
+      "faqs": [
+        {
+          "q": "Can I adapt content for different roles?",
+          "a": "Yes. Duplicate your version and quickly retarget summaries, bullets, and letter tone."
+        },
+        {
+          "q": "How can I keep design consistency?",
+          "a": "Reuse the same theme settings across documents to keep a unified personal brand."
+        },
+        {
+          "q": "Is the AI output final?",
+          "a": "AI gives a strong baseline. Final edits are recommended to match your voice and goals."
+        },
+        {
+          "q": "Can I combine manual and AI editing?",
+          "a": "Absolutely. You can edit every section manually before or after AI assistance."
+        }
       ]
     },
     "documentation": {
       "title": "Documentation",
-      "description": "Références techniques et fonctionnelles pour l’ensemble du module CV.",
-      "items": [
-        "Architecture des modèles et système de variantes pour CV, page de garde et lettre de motivation.",
-        "Cartographie des routes pour les pages d’éditeur, d’aperçu et de création de modèles.",
-        "Bonnes pratiques pour le contenu multilingue et la localisation."
+      "description": "Référentiel détaillé sur les fonctionnalités, la structure et les bonnes pratiques.",
+      "categories": [
+        {
+          "title": "Editor Workflow",
+          "points": [
+            "Document creation lifecycle",
+            "Autosave behavior",
+            "Section validation and completion flow"
+          ]
+        },
+        {
+          "title": "Template System",
+          "points": [
+            "Available layouts and skins",
+            "Block composition model",
+            "Cross-document style consistency"
+          ]
+        },
+        {
+          "title": "AI Integration",
+          "points": [
+            "Prompt-driven generation strategy",
+            "Refinement and feedback loop",
+            "Quality control recommendations"
+          ]
+        },
+        {
+          "title": "Localization",
+          "points": [
+            "Multilingual content strategy",
+            "Translation key architecture",
+            "Language switching behavior"
+          ]
+        },
+        {
+          "title": "Export and Delivery",
+          "points": [
+            "Preview checklist",
+            "Export quality recommendations",
+            "Submission-ready best practices"
+          ]
+        }
+      ],
+      "tips": [
+        "Cible chaque document sur un seul objectif de poste.",
+        "Quantifie tes résultats dès que possible.",
+        "Lance une revue IA après chaque grande modification.",
+        "Privilégie des sections concises pour faciliter la lecture recruteur."
       ]
     }
   }

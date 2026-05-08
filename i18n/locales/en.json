@@ -3384,29 +3384,160 @@
     "subtitle": "Learn, build faster, and get better results with guided tools.",
     "iaFeatures": {
       "title": "AI Features",
-      "description": "Use AI to speed up writing, improve structure, and get actionable feedback before sending your application.",
-      "items": [
-        "AI generation: create professional draft content from a short profile summary.",
-        "AI review: detect missing details, weak wording, and formatting inconsistencies.",
-        "Smart recommendations: suggestions for stronger bullet points and recruiter-friendly phrasing."
+      "description": "Discover every AI capability available in CV, cover page, and cover letter workflows.",
+      "sections": [
+        {
+          "title": "AI for CV Writing",
+          "description": "Generate an optimized CV draft in seconds from your role, goals, and experience level.",
+          "icon": "mdi-file-account-outline",
+          "chips": [
+            "Role-based summaries",
+            "Achievement bullet suggestions",
+            "ATS-friendly phrasing"
+          ]
+        },
+        {
+          "title": "AI for Cover Page",
+          "description": "Create polished introduction blocks, personal branding headlines, and role-focused hooks.",
+          "icon": "mdi-image-text",
+          "chips": [
+            "Professional headline ideas",
+            "Color and tone alignment",
+            "Company-specific positioning"
+          ]
+        },
+        {
+          "title": "AI for Cover Letter",
+          "description": "Build tailored letters with stronger storytelling and measurable impact.",
+          "icon": "mdi-email-edit-outline",
+          "chips": [
+            "Personalized openings",
+            "Mission alignment prompts",
+            "Impact-oriented closing paragraph"
+          ]
+        },
+        {
+          "title": "Review and Optimization",
+          "description": "Audit grammar, clarity, structure, and keyword density before export.",
+          "icon": "mdi-magnify-scan",
+          "chips": [
+            "Weak wording detection",
+            "Keyword gap alerts",
+            "Formatting consistency checks"
+          ]
+        },
+        {
+          "title": "Smart Productivity",
+          "description": "Reduce editing time with reusable suggestions and iterative improvement.",
+          "icon": "mdi-rocket-launch-outline",
+          "chips": [
+            "One-click rewriting",
+            "Version iteration",
+            "Faster finalization"
+          ]
+        }
+      ],
+      "benefits": [
+        "Cut writing time significantly while maintaining quality.",
+        "Create more consistent documents across CV, cover page, and cover letter.",
+        "Improve recruiter readability with clear, impactful wording.",
+        "Increase confidence before sending applications."
       ]
     },
     "help": {
       "title": "Help Center",
-      "description": "Find quick answers for creation, editing, and export workflows.",
-      "items": [
-        "How to start a new CV, cover page, or cover letter in one click.",
-        "How to customize layout, colors, and document structure.",
-        "How to preview, iterate, and export high-quality versions."
+      "description": "Everything you need to understand each step of the resume builder.",
+      "steps": [
+        {
+          "title": "1. Start Your Project",
+          "details": "Choose CV, cover page, or cover letter. Select a template and language, then initialize your workspace."
+        },
+        {
+          "title": "2. Fill Core Information",
+          "details": "Complete profile details, experience, education, skills, and links. Use AI suggestions if needed."
+        },
+        {
+          "title": "3. Customize Design",
+          "details": "Adjust typography, spacing, blocks, colors, and section order for your target role."
+        },
+        {
+          "title": "4. Use AI Assistance",
+          "details": "Generate drafts, improve sections, and run a final review for structure and clarity."
+        },
+        {
+          "title": "5. Preview and Export",
+          "details": "Review in live preview mode and export polished files for applications."
+        }
+      ],
+      "faqs": [
+        {
+          "q": "Can I adapt content for different roles?",
+          "a": "Yes. Duplicate your version and quickly retarget summaries, bullets, and letter tone."
+        },
+        {
+          "q": "How can I keep design consistency?",
+          "a": "Reuse the same theme settings across documents to keep a unified personal brand."
+        },
+        {
+          "q": "Is the AI output final?",
+          "a": "AI gives a strong baseline. Final edits are recommended to match your voice and goals."
+        },
+        {
+          "q": "Can I combine manual and AI editing?",
+          "a": "Absolutely. You can edit every section manually before or after AI assistance."
+        }
       ]
     },
     "documentation": {
       "title": "Documentation",
-      "description": "Technical and functional references for the complete resume module.",
-      "items": [
-        "Template architecture and variant system for CV, cover page, and cover letter.",
-        "Route map for editor, preview, and template creation pages.",
-        "Best practices for multilingual content and localization."
+      "description": "Detailed reference for features, structure, and best practices.",
+      "categories": [
+        {
+          "title": "Editor Workflow",
+          "points": [
+            "Document creation lifecycle",
+            "Autosave behavior",
+            "Section validation and completion flow"
+          ]
+        },
+        {
+          "title": "Template System",
+          "points": [
+            "Available layouts and skins",
+            "Block composition model",
+            "Cross-document style consistency"
+          ]
+        },
+        {
+          "title": "AI Integration",
+          "points": [
+            "Prompt-driven generation strategy",
+            "Refinement and feedback loop",
+            "Quality control recommendations"
+          ]
+        },
+        {
+          "title": "Localization",
+          "points": [
+            "Multilingual content strategy",
+            "Translation key architecture",
+            "Language switching behavior"
+          ]
+        },
+        {
+          "title": "Export and Delivery",
+          "points": [
+            "Preview checklist",
+            "Export quality recommendations",
+            "Submission-ready best practices"
+          ]
+        }
+      ],
+      "tips": [
+        "Keep each document targeted to one role objective.",
+        "Quantify achievements whenever possible.",
+        "Run AI review after every major revision.",
+        "Use concise sections to improve recruiter scanning speed."
       ]
     }
   }
