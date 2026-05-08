@@ -1527,6 +1527,16 @@ watch(
                       </v-menu>
                       <template v-if="item.type === 'link'">
                         <a class="cv-contact-link" :href="item.value" target="_blank" rel="noopener noreferrer" :title="item.value">{{ item.label }}</a>
+                        <HoverRichTextEditor
+                          class="cv-header-editor cv-header-editor--contact cv-header-editor--link-value"
+                          :model-value="item.value"
+                          :placeholder="item.label || 'Contact'"
+                          font-size="12px"
+                          font-weight="600"
+                          :font-family="textFontPreset('body')"
+                          color="inherit"
+                          @update:model-value="updateHeaderField(item.key, $event)"
+                        />
                       </template>
                       <HoverRichTextEditor
                         v-else
@@ -1612,6 +1622,16 @@ watch(
                       </v-menu>
                       <template v-if="item.type === 'link'">
                         <a class="cv-contact-link" :href="item.value" target="_blank" rel="noopener noreferrer" :title="item.value">{{ item.label }}</a>
+                        <HoverRichTextEditor
+                          class="cv-header-editor cv-header-editor--contact cv-header-editor--link-value"
+                          :model-value="item.value"
+                          :placeholder="item.label || 'Contact'"
+                          font-size="12px"
+                          font-weight="600"
+                          :font-family="textFontPreset('body')"
+                          color="inherit"
+                          @update:model-value="updateHeaderField(item.key, $event)"
+                        />
                       </template>
                       <HoverRichTextEditor
                         v-else
@@ -1629,7 +1649,7 @@ watch(
                 </div>
               </template>
               <template v-else-if="headerType === 'header-split'">
-                <div class="cv-header-identity cv-col-4">
+                <div class="cv-header-split-left cv-col-6">
                   <div class="cv-photo-wrap">
                     <img
                       :src="photoPreview || headerProfile.image"
@@ -1683,8 +1703,30 @@ watch(
                         class="cv-color-dot"
                         :style="{ background: c }"
                         @click="photoBorderColor = c"
-                      ></button></div></v-card
+                      /></div></v-card
                   ></v-menu>
+                  </div>
+                  <div class="cv-header-identity cv-header-identity--split">
+                    <HoverRichTextEditor
+                      class="cv-header-editor cv-header-editor--name"
+                      :model-value="headerProfile.fullName"
+                      placeholder="Full name"
+                      font-size="22px"
+                      font-weight="700"
+                      :font-family="textFontPreset('fullName')"
+                      color="inherit"
+                      @update:model-value="updateHeaderField('fullName', $event)"
+                    />
+                    <HoverRichTextEditor
+                      class="cv-header-editor cv-header-editor--role"
+                      :model-value="headerProfile.role"
+                      placeholder="Role"
+                      font-size="13px"
+                      font-weight="600"
+                      :font-family="textFontPreset('body')"
+                      :color="headerMutedColor"
+                      @update:model-value="updateHeaderField('role', $event)"
+                    />
                   </div>
                 </div>
                 <div class="cv-col-6 cv-header-contact">
@@ -2914,6 +2956,26 @@ watch(
   word-break: break-word;
 }
 
+.cv-header-editor--link-value {
+  display: none;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.cv-contact-item:hover .cv-header-editor--link-value,
+.cv-contact-item:focus-within .cv-header-editor--link-value {
+  display: block;
+}
+
+.cv-header-editor--link-value :deep(.hover-editor__surface),
+.cv-header-editor--link-value :deep(.hover-editor__content),
+.cv-header-editor--link-value :deep(.hover-editor__content p) {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .cv-section-title {
   display: flex !important;
   align-items: center;
@@ -2956,16 +3018,16 @@ watch(
 .cv-header-layout--header-left { grid-template-columns: 2fr 1fr; }
 .cv-header-layout--header-right { grid-template-columns: 1fr 2fr; }
 .cv-header-layout--header-split { grid-template-columns: 5fr 7fr; }
-.cv-header-split-left { display: grid; grid-template-columns: auto 1fr; gap: 6px; align-items: center; justify-content: start; }
+.cv-header-split-left { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; justify-content: start; min-width: 0; }
 .cv-header-contact { display:flex; flex-direction:column; justify-content:center; align-items:stretch; text-align:start; }
 .cv-header-contact-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 10px; width:100%; text-align:start; }
-.cv-contact-item { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; }
+.cv-contact-item { display:flex; align-items:center; gap:6px; min-width:0; font-size:13px; font-weight:700; }
 .cv-contact-icon-btn{min-width:24px;padding:0}
-.cv-contact-link{font-weight:700;color:inherit;text-decoration:none}
+.cv-contact-link{font-weight:700;color:inherit;text-decoration:none;flex-shrink:0}
 .cv-contact-link:hover{text-decoration:underline}
 .cv-header-layout, .cv-contact-item, .cv-header-identity strong { color: var(--cv-header-text, #0f172a); }
 .cv-header-identity { display: flex; flex-direction: column; gap: 4px; justify-content:center; align-items:center; text-align:center; }
-.cv-header-identity--split { align-items:flex-start; text-align:start; }
+.cv-header-identity--split { align-items:flex-start; min-width:0; text-align:start; }
 .cv-header-avatar { width: 52px; height: 52px; object-fit: cover; border-radius: 999px; }
 
 .empty-state {
