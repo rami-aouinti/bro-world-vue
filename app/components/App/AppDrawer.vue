@@ -5,6 +5,7 @@ const drawerState = useState('drawer', () => true)
 const { mobile } = useDisplay()
 const router = useRouter()
 const route = useRoute()
+const slots = useSlots()
 const registry = useDrawerSlotRegistry()
 const drawerModel = computed(() => (mobile.value ? drawerState.value : true))
 
@@ -17,14 +18,17 @@ function handleDrawerModelUpdate(val: boolean) {
 }
 const rail = computed(() => !drawerState.value && !mobile.value)
 const leftDrawerRenderer = computed(() => registry?.left.value ?? null)
-const shouldRenderDrawerSlot = computed(() => Boolean(leftDrawerRenderer.value))
+const defaultDrawerRenderer = computed(() => slots.default ?? null)
+const shouldRenderDrawerSlot = computed(() =>
+  Boolean(leftDrawerRenderer.value || defaultDrawerRenderer.value),
+)
 const shouldHideUserEntry = computed(() =>
   ['/world/crm', '/world/shop', '/world/jobs', '/world/learning'].some(
     (prefix) => route.path.startsWith(prefix),
   ),
 )
 const leftDrawerSlotHost = {
-  render: () => leftDrawerRenderer.value?.(),
+  render: () => leftDrawerRenderer.value?.() ?? defaultDrawerRenderer.value?.(),
 }
 const _fallbackDrawerItems = computed(() =>
   (() => {
