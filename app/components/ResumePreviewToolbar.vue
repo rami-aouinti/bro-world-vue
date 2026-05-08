@@ -63,6 +63,36 @@ function paletteValue(palette: PaletteOption) {
 <template>
   <div class="resume-preview-toolbar d-flex align-center justify-space-between ga-3 mb-4" role="toolbar" aria-label="Resume preview actions">
     <div class="d-flex align-center ga-2 flex-wrap">
+
+      <v-menu
+        :model-value="settingsMenuOpen"
+        location="bottom start"
+        :close-on-content-click="false"
+        @update:model-value="emit('update:settings-menu-open', $event)"
+      >
+        <template #activator="{ props: menuProps }">
+          <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-cog">Settings</v-btn>
+        </template>
+        <v-card class="pa-3" min-width="300">
+          <slot name="settings" />
+        </v-card>
+      </v-menu>
+
+      <v-menu
+        v-if="showDecor"
+        :model-value="decorMenuOpen"
+        location="bottom start"
+        :close-on-content-click="false"
+        @update:model-value="emit('update:decor-menu-open', $event)"
+      >
+        <template #activator="{ props: menuProps }">
+          <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-shape-plus">Decor</v-btn>
+        </template>
+        <v-card class="pa-3 decor-menu-card" min-width="300" @click.stop>
+          <slot name="decor" />
+        </v-card>
+      </v-menu>
+
       <v-menu :model-value="menuOpen" location="bottom start" @update:model-value="emit('update:menu-open', $event)">
         <template #activator="{ props: menuProps }">
           <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-view-grid">Template</v-btn>
@@ -108,40 +138,10 @@ function paletteValue(palette: PaletteOption) {
         </v-card>
       </v-menu>
 
-
-      <v-menu
-        v-if="showDecor"
-        :model-value="decorMenuOpen"
-        location="bottom start"
-        :close-on-content-click="false"
-        @update:model-value="emit('update:decor-menu-open', $event)"
-      >
-        <template #activator="{ props: menuProps }">
-          <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-shape-plus">Decor</v-btn>
-        </template>
-        <v-card class="pa-3 decor-menu-card" min-width="300" @click.stop>
-          <slot name="decor" />
-        </v-card>
-      </v-menu>
-
       <v-btn v-if="showSection" variant="outlined" prepend-icon="mdi-plus" @click="emit('section')">Section</v-btn>
     </div>
 
-    <div class="d-flex align-center ga-2 flex-wrap justify-end">
-      <v-menu
-        :model-value="settingsMenuOpen"
-        location="bottom end"
-        :close-on-content-click="false"
-        @update:model-value="emit('update:settings-menu-open', $event)"
-      >
-        <template #activator="{ props: menuProps }">
-          <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-cog">Settings</v-btn>
-        </template>
-        <v-card class="pa-3" min-width="300">
-          <slot name="settings" />
-        </v-card>
-      </v-menu>
-    </div>
+
   </div>
 </template>
 
