@@ -136,6 +136,9 @@ const isLayoutRight = computed(() => selectedTemplate.value.layout === 'layout-r
       '--cp-text': selectedTemplate.theme.palette.text,
       '--cp-muted': selectedTemplate.theme.palette.muted,
       '--cp-bg': selectedTemplate.theme.palette.pageBackground,
+      '--cp-page-border-width': selectedTemplate.theme?.pageBorder?.enabled ? `${selectedTemplate.theme?.pageBorder?.width ?? 0}px` : '0px',
+      '--cp-page-border-color': selectedTemplate.theme?.pageBorder?.color ?? 'transparent',
+      '--cp-page-border-radius': `${selectedTemplate.theme?.pageBorder?.radius ?? 0}px`,
       '--section-divider-style': resolvedStyles.sectionDividerStyle,
       '--section-spacing': `${resolvedStyles.sectionSpacing}px`,
       '--section-divider-color': resolvedStyles.sectionDividerColor,
@@ -170,7 +173,7 @@ const isLayoutRight = computed(() => selectedTemplate.value.layout === 'layout-r
 </template>
 
 <style scoped>
-.capture-cover-page { position: relative; overflow: hidden; width: 850px; height: 1123px; padding: 80px; background: var(--cp-bg); color: var(--cp-text); border-radius: var(--cp-radius); box-shadow: var(--cp-shadow); }
+.capture-cover-page { position: relative; overflow: hidden; width: 850px; height: 1123px; padding: 80px; background: var(--cp-bg); color: var(--cp-text); border-radius: var(--cp-page-border-radius, var(--cp-radius)); border: var(--cp-page-border-width, 0px) solid var(--cp-page-border-color, transparent); box-shadow: var(--cp-shadow); }
 .hero { border-left: var(--cp-bar-width) solid var(--cp-primary); padding-left: 24px; margin-bottom: 48px; border-radius: var(--cp-bar-radius); min-height: 148px; position:relative; }
 .hero--ribbon{padding-top:16px;padding-bottom:12px}
 .hero--no-bar{border-left:0!important;border-right:0!important;padding-left:0;padding-right:0}.hero--double::before{content:'';position:absolute;left:calc(var(--cp-bar-width) + 6px);top:0;bottom:0;width:var(--cp-bar-secondary-width);background:var(--cp-secondary);border-radius:var(--cp-bar-radius)}

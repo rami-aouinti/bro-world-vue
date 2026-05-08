@@ -135,6 +135,9 @@ const isLayoutRight = computed(() => selectedTemplate.value.layout === 'layout-r
       '--cl-text': selectedTemplate.theme.palette.text,
       '--cl-muted': selectedTemplate.theme.palette.muted,
       '--cl-bg': selectedTemplate.theme.palette.pageBackground,
+      '--cl-page-border-width': selectedTemplate.theme?.pageBorder?.enabled ? `${selectedTemplate.theme?.pageBorder?.width ?? 0}px` : '0px',
+      '--cl-page-border-color': selectedTemplate.theme?.pageBorder?.color ?? 'transparent',
+      '--cl-page-border-radius': `${selectedTemplate.theme?.pageBorder?.radius ?? 0}px`,
       '--section-divider-style': resolvedStyles.sectionDividerStyle,
       '--paragraph-spacing': `${resolvedStyles.paragraphSpacing}px`,
       '--cl-radius': `${resolvedStyles.radius}px`,
@@ -177,7 +180,7 @@ const isLayoutRight = computed(() => selectedTemplate.value.layout === 'layout-r
 </template>
 
 <style scoped>
-.capture-cover-letter { position: relative; overflow: hidden; width: 850px; height: 1123px; padding: 64px 72px; background: var(--cl-bg); color: var(--cl-text); border-radius: var(--cl-radius); box-shadow: var(--cl-shadow); }
+.capture-cover-letter { position: relative; overflow: hidden; width: 850px; height: 1123px; padding: 64px 72px; background: var(--cl-bg); color: var(--cl-text); border-radius: var(--cl-page-border-radius, var(--cl-radius)); border: var(--cl-page-border-width, 0px) solid var(--cl-page-border-color, transparent); box-shadow: var(--cl-shadow); }
 .meta-top-right { position: absolute; top: 64px; right: 72px; text-align: right; display: flex; flex-direction: column; gap: 2px; align-items: flex-end; }
 .meta-top-right--layout-right { right: auto; left: 72px; text-align: left; align-items: flex-start; }
 .date { color: var(--cl-muted); margin: 0; }
