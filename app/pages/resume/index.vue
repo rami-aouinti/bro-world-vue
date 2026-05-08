@@ -53,6 +53,13 @@ const sidebarRoutes = computed(() => [
   { label: 'Documentation', to: '/resume/documentation', icon: 'mdi-book-open-page-variant-outline' },
 ])
 
+
+const templatePreviewRoute = (templateType: 'resume' | 'cover-page' | 'cover-letter', templateId: string) => {
+  if (templateType === 'resume') return `/resume/cv/preview?template=${templateId}`
+  if (templateType === 'cover-page') return `/resume/cover-page/preview?template=${templateId}`
+  return `/resume/cover-letter/preview?template=${templateId}`
+}
+
 const randomVariants = computed(() => {
   const pool = [...displayedTemplates.value]
   const selected: typeof pool = []
@@ -116,6 +123,7 @@ const randomVariants = computed(() => {
               v-for="templateCard in displayedTemplates"
               :key="templateCard.id"
               class="postcard-gradient-card template-slide"
+              :to="templatePreviewRoute(templateCard.type, templateCard.id)"
             >
               <v-img :src="templateCard.image" :alt="templateCard.title" />
               <span>{{ templateCard.title }}</span>
