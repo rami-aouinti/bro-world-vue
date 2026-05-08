@@ -817,7 +817,7 @@ watch(aiModalOpen, (isOpen) => {
             '--cp-primary': activeColors.primary,
             '--cp-secondary': activeColors.secondary,
             '--cp-text': activeColors.text,
-            '--cp-muted': activeColors.muted,
+            '--cp-muted': readableCoverTextColor(activeColors.muted),
             '--cp-bg': activeColors.pageBackground,
             '--cp-page-border-width': activeTemplate?.theme?.pageBorder?.enabled ? `${activeTemplate?.theme?.pageBorder?.width ?? 0}px` : '0px',
             '--cp-page-border-color': activeTemplate?.theme?.pageBorder?.color ?? 'transparent',
