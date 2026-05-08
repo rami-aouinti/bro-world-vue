@@ -1,7 +1,7 @@
 [
   {
     "id": "cpage-001",
-    "name": "cover-page-hero-01",
+    "name": "Executive Cover",
     "version": 1,
     "layout": "layout-left",
     "structure": "cover-structure-1",
@@ -270,7 +270,7 @@
   },
   {
     "id": "cpage-002",
-    "name": "cover-page-editorial-02",
+    "name": "Modern Front",
     "version": 1,
     "layout": "layout-left",
     "structure": "cover-structure-2",
@@ -565,7 +565,7 @@
   },
   {
     "id": "cpage-003",
-    "name": "cover-page-minimal-03",
+    "name": "Editorial Profile",
     "version": 1,
     "layout": "layout-left",
     "structure": "cover-structure-3",
@@ -855,7 +855,7 @@
   },
   {
     "id": "cpage-004",
-    "name": "cover-page-executive-04",
+    "name": "Minimal Intro",
     "version": 1,
     "layout": "layout-left",
     "structure": "cover-structure-4",
@@ -1150,7 +1150,7 @@
   },
   {
     "id": "cpage-005",
-    "name": "cover-page-creative-05",
+    "name": "Corporate Portfolio",
     "version": 1,
     "layout": "layout-left",
     "structure": "cover-structure-1",
@@ -1440,7 +1440,7 @@
   },
   {
     "id": "cpage-006",
-    "name": "cover-page-hero-06",
+    "name": "Leadership Cover",
     "version": 1,
     "layout": "layout-right",
     "structure": "cover-structure-2",
@@ -1735,7 +1735,7 @@
   },
   {
     "id": "cpage-007",
-    "name": "cover-page-editorial-07",
+    "name": "Polished Front",
     "version": 1,
     "layout": "layout-right",
     "structure": "cover-structure-3",
@@ -2025,7 +2025,7 @@
   },
   {
     "id": "cpage-008",
-    "name": "cover-page-minimal-08",
+    "name": "Premium Profile",
     "version": 1,
     "layout": "layout-right",
     "structure": "cover-structure-4",
@@ -2320,7 +2320,7 @@
   },
   {
     "id": "cpage-009",
-    "name": "cover-page-executive-09",
+    "name": "Strategic Intro",
     "version": 1,
     "layout": "layout-right",
     "structure": "cover-structure-1",
@@ -2610,7 +2610,7 @@
   },
   {
     "id": "cpage-010",
-    "name": "cover-page-creative-10",
+    "name": "Creative Portfolio",
     "version": 1,
     "layout": "layout-right",
     "structure": "cover-structure-2",
@@ -2905,7 +2905,7 @@
   },
   {
     "id": "cpage-021",
-    "name": "cover-page-hero-01-no-bar-21",
+    "name": "Classic Cover",
     "version": 1,
     "layout": "layout-left",
     "structure": "cover-structure-1",
@@ -3172,7 +3172,7 @@
   },
   {
     "id": "cpage-022",
-    "name": "cover-page-hero-01-no-bar-22",
+    "name": "Refined Front",
     "version": 1,
     "layout": "layout-left",
     "structure": "cover-structure-1",

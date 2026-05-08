@@ -1,7 +1,7 @@
 [
   {
     "id": "tpl-001",
-    "name": "aside-structure-1",
+    "name": "Executive Profile",
     "version": 1,
     "layout": "aside",
     "structure": "structure-1",
@@ -439,7 +439,7 @@
   },
   {
     "id": "tpl-002",
-    "name": "aside-structure-2",
+    "name": "Modern Portfolio",
     "version": 1,
     "layout": "aside",
     "structure": "structure-2",
@@ -877,7 +877,7 @@
   },
   {
     "id": "tpl-003",
-    "name": "no-aside-structure-2",
+    "name": "Corporate Brief",
     "version": 1,
     "layout": "no-aside",
     "structure": "structure-2",
@@ -1332,7 +1332,7 @@
   },
   {
     "id": "tpl-004",
-    "name": "no-aside-structure-1",
+    "name": "Strategic Resume",
     "version": 1,
     "layout": "no-aside",
     "structure": "structure-1",
@@ -1786,7 +1786,7 @@
   },
   {
     "id": "tpl-005",
-    "name": "aside-left-structure-1",
+    "name": "Leadership Format",
     "version": 1,
     "layout": "aside-left",
     "structure": "structure-1",
@@ -2240,7 +2240,7 @@
   },
   {
     "id": "tpl-006",
-    "name": "aside-left-structure-2",
+    "name": "Professional Slate",
     "version": 1,
     "layout": "aside-left",
     "structure": "structure-2",
@@ -2694,7 +2694,7 @@
   },
   {
     "id": "tpl-007",
-    "name": "aside-right-structure-1",
+    "name": "Career Focus",
     "version": 1,
     "layout": "aside-right",
     "structure": "structure-1",
@@ -3148,7 +3148,7 @@
   },
   {
     "id": "tpl-008",
-    "name": "aside-right-structure-2",
+    "name": "Talent Summary",
     "version": 1,
     "layout": "aside-right",
     "structure": "structure-2",
@@ -3602,7 +3602,7 @@
   },
   {
     "id": "tpl-009",
-    "name": "aside-full-left-structure-1",
+    "name": "Executive Sidebar",
     "version": 1,
     "layout": "aside-full-left",
     "structure": "structure-1",
@@ -4056,7 +4056,7 @@
   },
   {
     "id": "tpl-010",
-    "name": "aside-full-left-structure-2",
+    "name": "Balanced Profile",
     "version": 1,
     "layout": "aside-full-left",
     "structure": "structure-2",
@@ -4510,7 +4510,7 @@
   },
   {
     "id": "tpl-011",
-    "name": "aside-full-right-structure-1",
+    "name": "Director Resume",
     "version": 1,
     "layout": "aside-full-right",
     "structure": "structure-1",
@@ -4944,7 +4944,7 @@
   },
   {
     "id": "tpl-012",
-    "name": "aside-full-right-structure-2",
+    "name": "Manager Portfolio",
     "version": 1,
     "layout": "aside-full-right",
     "structure": "structure-2",
@@ -5378,7 +5378,7 @@
   },
   {
     "id": "tpl-013",
-    "name": "aside-bar-left-structure-1",
+    "name": "Premium Column",
     "version": 1,
     "layout": "aside-bar-left",
     "structure": "structure-1",
@@ -5832,7 +5832,7 @@
   },
   {
     "id": "tpl-014",
-    "name": "aside-bar-right-structure-2",
+    "name": "Polished Format",
     "version": 1,
     "layout": "aside-bar-right",
     "structure": "structure-2",
@@ -6286,7 +6286,7 @@
   },
   {
     "id": "tpl-021",
-    "name": "dark-layout-1",
+    "name": "Midnight Executive",
     "version": 1,
     "layout": "aside",
     "structure": "structure-1",
@@ -6725,7 +6725,7 @@
   },
   {
     "id": "tpl-022",
-    "name": "dark-layout-2",
+    "name": "Noir Portfolio",
     "version": 1,
     "layout": "aside-left",
     "structure": "structure-2",
@@ -7164,7 +7164,7 @@
   },
   {
     "id": "tpl-023",
-    "name": "dark-layout-3",
+    "name": "Charcoal Profile",
     "version": 1,
     "layout": "aside-right",
     "structure": "structure-3",
@@ -7618,7 +7618,7 @@
   },
   {
     "id": "tpl-024",
-    "name": "dark-layout-4",
+    "name": "Slate Resume",
     "version": 1,
     "layout": "aside-full-left",
     "structure": "structure-4",
@@ -8071,7 +8071,7 @@
   },
   {
     "id": "tpl-025",
-    "name": "dark-layout-5",
+    "name": "Obsidian Brief",
     "version": 1,
     "layout": "aside-full-right",
     "structure": "structure-5",
@@ -8524,7 +8524,7 @@
   },
   {
     "id": "tpl-026",
-    "name": "dark-layout-6",
+    "name": "Graphite Summary",
     "version": 1,
     "layout": "aside-bar-left",
     "structure": "structure-6",
@@ -8977,7 +8977,7 @@
   },
   {
     "id": "tpl-027",
-    "name": "dark-layout-7",
+    "name": "Onyx Career",
     "version": 1,
     "layout": "aside-bar-right",
     "structure": "structure-7",
@@ -9490,7 +9490,7 @@
   },
   {
     "id": "tpl-028",
-    "name": "dark-layout-8",
+    "name": "Carbon Format",
     "version": 1,
     "layout": "no-aside",
     "structure": "structure-8",
@@ -10003,7 +10003,7 @@
   },
   {
     "id": "tpl-029",
-    "name": "dark-layout-9",
+    "name": "Eclipse Profile",
     "version": 1,
     "layout": "no-aside-split",
     "structure": "structure-9",
@@ -10516,7 +10516,7 @@
   },
   {
     "id": "tpl-030",
-    "name": "dark-layout-10",
+    "name": "Shadow Portfolio",
     "version": 1,
     "layout": "no-aside",
     "structure": "structure-10",

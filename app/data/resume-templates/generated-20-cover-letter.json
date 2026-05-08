@@ -1,7 +1,7 @@
 [
   {
     "id": "cletter-001",
-    "name": "cover-letter-classic-01",
+    "name": "Classic Letter",
     "version": 1,
     "layout": "layout-left",
     "structure": "letter-structure-1",
@@ -411,7 +411,7 @@
   },
   {
     "id": "cletter-002",
-    "name": "cover-letter-modern-02",
+    "name": "Modern Letter",
     "version": 1,
     "layout": "layout-left",
     "structure": "letter-structure-2",
@@ -796,7 +796,7 @@
   },
   {
     "id": "cletter-003",
-    "name": "cover-letter-ats-03",
+    "name": "Recruiter Letter",
     "version": 1,
     "layout": "layout-left",
     "structure": "letter-structure-3",
@@ -1176,7 +1176,7 @@
   },
   {
     "id": "cletter-004",
-    "name": "cover-letter-premium-04",
+    "name": "Executive Letter",
     "version": 1,
     "layout": "layout-left",
     "structure": "letter-structure-4",
@@ -1561,7 +1561,7 @@
   },
   {
     "id": "cletter-005",
-    "name": "cover-letter-split-05",
+    "name": "Professional Letter",
     "version": 1,
     "layout": "layout-left",
     "structure": "letter-structure-1",
@@ -1941,7 +1941,7 @@
   },
   {
     "id": "cletter-006",
-    "name": "cover-letter-classic-06",
+    "name": "Corporate Letter",
     "version": 1,
     "layout": "layout-right",
     "structure": "letter-structure-2",
@@ -2326,7 +2326,7 @@
   },
   {
     "id": "cletter-007",
-    "name": "cover-letter-modern-07",
+    "name": "Premium Letter",
     "version": 1,
     "layout": "layout-right",
     "structure": "letter-structure-3",
@@ -2711,7 +2711,7 @@
   },
   {
     "id": "cletter-008",
-    "name": "cover-letter-ats-08",
+    "name": "Strategic Letter",
     "version": 1,
     "layout": "layout-right",
     "structure": "letter-structure-4",
@@ -3096,7 +3096,7 @@
   },
   {
     "id": "cletter-009",
-    "name": "cover-letter-premium-09",
+    "name": "Creative Letter",
     "version": 1,
     "layout": "layout-right",
     "structure": "letter-structure-1",
@@ -3481,7 +3481,7 @@
   },
   {
     "id": "cletter-010",
-    "name": "cover-letter-split-10",
+    "name": "Leadership Letter",
     "version": 1,
     "layout": "layout-right",
     "structure": "letter-structure-2",
@@ -3866,7 +3866,7 @@
   },
   {
     "id": "cletter-021",
-    "name": "cover-letter-classic-01-no-bar-21",
+    "name": "Refined Letter",
     "version": 1,
     "layout": "layout-left",
     "structure": "letter-structure-1",
@@ -4274,7 +4274,7 @@
   },
   {
     "id": "cletter-022",
-    "name": "cover-letter-classic-01-no-bar-22",
+    "name": "Polished Letter",
     "version": 1,
     "layout": "layout-left",
     "structure": "letter-structure-1",
