@@ -1,0 +1,22 @@
+<script setup lang="ts">
+definePageMeta({ layout: 'resume', title: 'Help' })
+const { t, tm, rt } = useI18n()
+const items = computed(() =>
+  (tm('resumeResources.help.items') as unknown[]).map((item) => rt(item)),
+)
+</script>
+
+<template>
+  <v-container class="py-8" max-width="900">
+    <h1>{{ t('resumeResources.help.title') }}</h1>
+    <p class="text-medium-emphasis mb-6">{{ t('resumeResources.help.description') }}</p>
+    <v-list lines="two">
+      <v-list-item
+        v-for="(item, index) in items"
+        :key="index"
+        :title="item"
+        prepend-icon="mdi-lifebuoy"
+      />
+    </v-list>
+  </v-container>
+</template>

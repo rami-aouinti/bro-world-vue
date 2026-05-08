@@ -4,45 +4,12 @@ import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-20-res
 definePageMeta({
   title: 'resumeBuilder.meta.indexTitle',
   layout: 'resume',
-  description:
-    'Create professional resumes, CVs, cover letters, and cover pages online with modern Bro World templates.',
-  keywords:
-    'resume builder, CV builder, cover letter builder, resume templates, ATS resume, professional CV',
-  robots: { index: true, follow: true, 'max-image-preview': 'large' },
-  sitemap: { changefreq: 'weekly', priority: 0.8 },
 })
 
 const { t } = useI18n()
-const runtimeConfig = useRuntimeConfig()
-const siteUrl = runtimeConfig.public.siteUrl || 'https://bro-world-space.com'
-const pageUrl = `${siteUrl}/resume`
+const { allTemplates } = useResumeTemplates()
 
-useSeoMeta({
-  title: 'Créateur de CV en ligne | Bro World',
-  description:
-    'Créez un CV professionnel en quelques minutes avec des modèles modernes, personnalisables et optimisés ATS.',
-  ogTitle: 'Créateur de CV en ligne | Bro World',
-  ogDescription:
-    'Choisissez un modèle, personnalisez votre CV et exportez un document prêt à envoyer.',
-  ogType: 'website',
-  ogUrl: pageUrl,
-  twitterCard: 'summary_large_image',
-  twitterTitle: 'Créateur de CV en ligne | Bro World',
-  twitterDescription:
-    'Un builder de CV rapide, moderne et optimisé pour les recruteurs.',
-  robots: 'index, follow',
-})
-
-useHead({
-  link: [{ rel: 'canonical', href: pageUrl }],
-})
-
-const { allTemplates, coverPageTemplates, coverLetterTemplates } =
-  useResumeTemplates()
-
-const activeTemplateTab = ref<'resume' | 'cover-page' | 'cover-letter'>(
-  'resume',
-)
+const activeTemplateTab = ref<'resume' | 'cover-page' | 'cover-letter'>('resume')
 const selectedLayoutFilter = ref<string | null>(null)
 
 const generatedResumeTemplates = computed(() =>
@@ -86,54 +53,30 @@ const displayedTemplates = computed(() => {
   )
 })
 
-const selectedTemplateId = ref<string>('')
-const isTemplateModalOpen = ref(false)
+const sidebarRoutes = computed(() => [
+  { label: 'Create New CV', to: '/resume/cv/preview', icon: 'mdi-file-account-outline' },
+  { label: 'Mes Files', to: '/resume/my-files', icon: 'mdi-folder-multiple-outline' },
+  { label: 'Create New Cover Page', to: '/resume/cover-page/preview', icon: 'mdi-file-document-outline' },
+  { label: 'Create New Cover Letter', to: '/resume/cover-letter/preview', icon: 'mdi-email-edit-outline' },
+  { label: 'Create CV Template', to: '/resume/cv/template-create', icon: 'mdi-palette-outline' },
+  { label: 'Create Cover Page Template', to: '/resume/cover-page/template-create', icon: 'mdi-palette-swatch-outline' },
+  { label: 'Create Cover Letter Template', to: '/resume/cover-letter/template-create', icon: 'mdi-palette-swatch-variant' },
+  { label: 'IA Features', to: '/resume/ia-features', icon: 'mdi-robot-outline' },
+  { label: 'Help', to: '/resume/help', icon: 'mdi-lifebuoy' },
+  { label: 'Documentation', to: '/resume/documentation', icon: 'mdi-book-open-page-variant-outline' },
+])
 
-watch(
-  displayedTemplates,
-  (items) => {
-    if (!items.length) return
-    if (
-      !selectedTemplateId.value ||
-      !items.some((item) => item.id === selectedTemplateId.value)
-    ) {
-      selectedTemplateId.value = items[0]?.id || ''
-    }
-  },
-  { immediate: true },
-)
+const randomVariants = computed(() => {
+  const pool = [...displayedTemplates.value]
+  const selected: typeof pool = []
 
-const selectedTemplateCard = computed(
-  () =>
-    displayedTemplates.value.find(
-      (item) => item.id === selectedTemplateId.value,
-    ) ||
-    displayedTemplates.value[0] ||
-    null,
-)
+  while (pool.length && selected.length < 3) {
+    const randomIndex = Math.floor(Math.random() * pool.length)
+    const [picked] = pool.splice(randomIndex, 1)
+    if (picked) selected.push(picked)
+  }
 
-const openTemplateModal = (template: {
-  id: string
-  title: string
-  image: string
-  type: 'resume' | 'cover-page' | 'cover-letter'
-  templateId?: string
-}) => {
-  selectedTemplateId.value = template.id
-  isTemplateModalOpen.value = true
-}
-
-const showRightDrawerDesktop = useState('show-right-drawer-desktop', () => true)
-const showRightDrawerMobile = useState('show-right-drawer-mobile', () => false)
-const previousDesktopRightDrawer = showRightDrawerDesktop.value
-const previousMobileRightDrawer = showRightDrawerMobile.value
-
-showRightDrawerDesktop.value = true
-showRightDrawerMobile.value = false
-
-onUnmounted(() => {
-  showRightDrawerDesktop.value = previousDesktopRightDrawer
-  showRightDrawerMobile.value = previousMobileRightDrawer
+  return selected
 })
 </script>
 
@@ -141,68 +84,39 @@ onUnmounted(() => {
   <div>
     <AppPageDrawers>
       <template #left>
-        <h3>{{ t('resumeBuilder.index.heroTitle') }}</h3>
-        <p class="hero-subtitle">{{ t('resumeBuilder.index.heroSubtitle') }}</p>
-        <v-btn
-          color="primary"
-          variant="tonal"
-          size="large"
-          to="/resume/cv/preview"
-          class="mt-3"
-        >
-          {{ t('resumeBuilder.index.journey.steps.template.cta') }}
-        </v-btn>
-        <v-btn
-          color="warning"
-          variant="tonal"
-          size="large"
-          to="/resume/cv/template-create"
-          class="mt-3"
-        >
-          Create CV Template
-        </v-btn>
+        <v-list density="comfortable" nav>
+          <v-list-item
+            v-for="item in sidebarRoutes"
+            :key="item.to"
+            :title="item.label"
+            :to="item.to"
+            :prepend-icon="item.icon"
+          />
+        </v-list>
       </template>
+
       <template #right>
-        <h3>{{ t('coverBuilder.index.heroTitle') }}</h3>
-        <p class="hero-subtitle">{{ t('resumeBuilder.index.heroSubtitle') }}</p>
-        <v-btn
-          color="primary"
-          variant="tonal"
-          size="large"
-          to="/resume/cover-page/preview"
-          class="mt-3"
-        >
-          {{ t('resumeBuilder.index.journey.steps.template.cta-page') }}
-        </v-btn>
-        <v-btn
-          color="primary"
-          variant="tonal"
-          size="large"
-          to="/resume/cover-letter/preview"
-          class="mt-3"
-        >
-          {{ t('resumeBuilder.index.journey.steps.template.cta-letter') }}
-        </v-btn>
-        <v-btn
-          color="warning"
-          variant="tonal"
-          size="large"
-          to="/resume/cover-page/template-create"
-          class="mt-3"
-        >
-          Create Cover Page Template
-        </v-btn>
-        <v-btn
-          color="warning"
-          variant="tonal"
-          size="large"
-          to="/resume/cover-letter/template-create"
-          class="mt-3"
-        >
-          Create Cover Letter Template
-        </v-btn>
+        <v-chip color="primary" class="mb-3" variant="flat">Variants</v-chip>
+        <v-row dense>
+          <v-col v-for="variant in randomVariants" :key="variant.id" cols="12">
+            <v-card
+              class="preview-variant-card"
+              :to="
+                variant.type === 'resume'
+                  ? `/resume/cv/preview?template=${variant.id}`
+                  : variant.type === 'cover-page'
+                    ? `/resume/cover-page/preview?template=${variant.id}`
+                    : `/resume/cover-letter/preview?template=${variant.id}`
+              "
+            >
+              <v-img :src="variant.image" :alt="variant.title" height="130" cover />
+              <v-card-text class="py-2">{{ variant.title }}</v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
       </template>
     </AppPageDrawers>
+
     <v-container fluid>
       <section class="hero px-4 px-md-8 fade-in-up">
         <div class="templates-showcase mt-8 fade-in-up delay-1">
@@ -226,57 +140,14 @@ onUnmounted(() => {
               v-for="templateCard in displayedTemplates"
               :key="templateCard.id"
               class="postcard-gradient-card template-slide"
-              @click="selectedTemplateId = templateCard.id"
             >
               <v-img :src="templateCard.image" :alt="templateCard.title" />
               <span>{{ templateCard.title }}</span>
-              <div class="template-actions">
-                <v-btn
-                  color="primary"
-                  variant="flat"
-                  size="small"
-                  prepend-icon="mdi-eye-outline"
-                  class="template-action-btn"
-                  :to="
-                    templateCard.type === 'resume'
-                      ? `/resume/cv/preview?template=${templateCard.id}`
-                      : templateCard.type === 'cover-page'
-                        ? `/resume/cover-page/preview?template=${templateCard.id}`
-                        : `/resume/cover-letter/preview?template=${templateCard.id}`
-                  "
-                  @click.stop
-                >
-                  Preview
-                </v-btn>
-                <v-btn
-                  color="secondary"
-                  variant="tonal"
-                  size="small"
-                  prepend-icon="mdi-image-search-outline"
-                  class="template-action-btn"
-                  @click.stop="openTemplateModal(templateCard)"
-                >
-                  Show
-                </v-btn>
-              </div>
             </v-card>
           </div>
         </div>
       </section>
     </v-container>
-
-    <AppModal
-      v-model="isTemplateModalOpen"
-      :title="selectedTemplateCard?.title || ''"
-      :max-width="960"
-    >
-      <v-img
-        v-if="selectedTemplateCard"
-        :src="selectedTemplateCard.image"
-        :alt="selectedTemplateCard.title"
-        class="template-preview-image"
-      />
-    </AppModal>
   </div>
 </template>
 
@@ -286,23 +157,13 @@ onUnmounted(() => {
   margin: 0 auto;
   text-align: center;
 }
-
-.hero-subtitle {
-  max-width: 880px;
-  margin: 0 auto;
-  font-size: 1.1rem;
-  color: rgba(var(--v-theme-on-surface), 0.75);
-}
-
 .templates-showcase {
   max-width: 1100px;
   margin: 0 auto;
 }
-
 .templates-tabs {
   border-bottom: 1px solid rgba(var(--v-theme-on-surface), 0.2);
 }
-
 .templates-slider {
   display: flex;
   gap: 16px;
@@ -310,7 +171,6 @@ onUnmounted(() => {
   padding-bottom: 8px;
   scroll-snap-type: x mandatory;
 }
-
 .template-slide {
   min-width: 260px;
   max-width: 260px;
@@ -319,69 +179,37 @@ onUnmounted(() => {
   overflow: hidden;
   background: rgba(var(--v-theme-surface), 1);
   color: inherit;
-  cursor: pointer;
   text-align: left;
   scroll-snap-align: start;
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease;
 }
-
-.template-slide:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.18);
-}
-
 .template-slide img {
   width: 100%;
   height: 180px;
   object-fit: cover;
   display: block;
 }
-
 .template-slide span {
   display: block;
   padding: 10px 12px;
   font-weight: 600;
 }
-
 .fade-in-up {
   animation: fadeInUp 0.7s ease both;
 }
-
 .delay-1 {
   animation-delay: 0.15s;
 }
-
 @keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(18px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
-.template-preview-card {
-  max-width: 760px;
-  margin-inline: auto;
-}
-.template-preview-image {
-  border-radius: 12px;
-  border: 1px solid rgba(var(--v-theme-on-surface), 0.16);
-}
-
-.template-action-btn {
-  text-transform: none;
-  font-weight: 600;
-}
-
-.template-actions {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  padding: 8px 12px 16px;
+.preview-variant-card {
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.2);
 }
 </style>
