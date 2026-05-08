@@ -1626,28 +1626,6 @@ v-if="!isCaptureMode"
                         @update:model-value="updateHeaderField(item.key, $event)"
                       />
                     </div>
-                    <HoverRichTextEditor
-                      class="cv-header-editor cv-header-editor--name"
-                      :model-value="headerProfile.fullName"
-                      placeholder="Full name"
-                      font-size="22px"
-                      font-weight="700"
-                      :font-family="textFontPreset('fullName')"
-                      color="inherit"
-                      @update:model-value="
-                        updateHeaderField('fullName', $event)
-                      "
-                    />
-                    <HoverRichTextEditor
-                      class="cv-header-editor cv-header-editor--role"
-                      :model-value="headerProfile.role"
-                      placeholder="Role"
-                      font-size="14px"
-                      font-weight="700"
-                      :font-family="textFontPreset('body')"
-                      color="inherit"
-                      @update:model-value="updateHeaderField('role', $event)"
-                    />
                   </div>
                 </div>
               </template>
@@ -1709,28 +1687,6 @@ v-if="!isCaptureMode"
                             ></button></div></v-card
                       ></v-menu>
                     </div>
-                    <HoverRichTextEditor
-                      class="cv-header-editor cv-header-editor--name"
-                      :model-value="headerProfile.fullName"
-                      placeholder="Full name"
-                      font-size="22px"
-                      font-weight="700"
-                      :font-family="textFontPreset('fullName')"
-                      color="inherit"
-                      @update:model-value="
-                        updateHeaderField('fullName', $event)
-                      "
-                    />
-                    <HoverRichTextEditor
-                      class="cv-header-editor cv-header-editor--role"
-                      :model-value="headerProfile.role"
-                      placeholder="Role"
-                      font-size="14px"
-                      font-weight="700"
-                      :font-family="textFontPreset('body')"
-                      color="inherit"
-                      @update:model-value="updateHeaderField('role', $event)"
-                    />
                   </div>
                   <div class="cv-col-6 cv-header-contact">
                     <div class="cv-header-contact-grid">
