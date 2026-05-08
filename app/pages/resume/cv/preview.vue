@@ -203,7 +203,10 @@ function decorObjectStyle(obj: any) {
     height: `${size}px`,
   }
   const color = String(obj?.color ?? '').trim()
-  if (color) base.backgroundColor = color
+  if (color) {
+    base.backgroundColor = color
+    base.color = color
+  }
 
   if (type === 'ring' && color) {
     base.backgroundColor = 'transparent'
@@ -3341,7 +3344,11 @@ watch(
 .decor-object {
   position: absolute;
   pointer-events: none;
+  color: var(--cv-primary, #1d4ed8);
   background: color-mix(in srgb, var(--cv-primary, #1d4ed8) 35%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, currentColor 32%, rgba(255, 255, 255, 0.72)),
+    0 4px 18px color-mix(in srgb, currentColor 28%, transparent);
   transform: translate(-50%, -50%);
   z-index: 0;
 }
