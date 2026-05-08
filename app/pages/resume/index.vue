@@ -10,16 +10,16 @@ const { t } = useI18n()
 const { allTemplates } = useResumeTemplates()
 
 const activeTemplateTab = ref<'resume' | 'cover-page' | 'cover-letter'>('resume')
-const selectedLayoutFilter = ref<string | null>(null)
+const selectedLayoutFilter = ref('all')
 
 const generatedResumeTemplates = computed(() =>
   GENERATED_RESUME_TEMPLATES.map((template) => ({
     id: template.id,
     title: `${template.name}`,
-    image: template.id ? `/img/cv/generated/${template.id}.png` : '/img/cv/resume-modern.sv',
+    image: template.id ? `/img/cv/generated/${template.id}.png` : '/img/cv/resume-modern.svg',
     type: 'resume' as const,
     templateId: template.id,
-    layout: template.layout,
+    layoutId: template.layout,
   })),
 )
 
@@ -29,15 +29,68 @@ const documentTabs = computed(() => [
   { label: ` ${t('resumeBuilder.index.tabs.letter')}`, value: 'cover-letter' as const },
 ])
 
-const displayedTemplates = computed(() => {
-  if (activeTemplateTab.value === 'resume') {
-    return generatedResumeTemplates.value.filter((template) => {
-      if (!selectedLayoutFilter.value) return true
-      return template.layout === selectedLayoutFilter.value
-    })
-  }
+const activeTabTemplates = computed(() => {
+  if (activeTemplateTab.value === 'resume') return generatedResumeTemplates.value
 
   return allTemplates.value.filter((template) => template.type === activeTemplateTab.value)
+})
+
+const layoutLabelMap: Record<string, string> = {
+  'aside': 'Aside',
+  'aside-left': 'Aside left',
+  'aside-right': 'Aside right',
+  'aside-bar-left': 'Bar left',
+  'aside-bar-right': 'Bar right',
+  'aside-full-left': 'Full left',
+  'aside-full-right': 'Full right',
+  'no-aside': 'No aside',
+  'no-aside-split': 'Split',
+  'layout-left': 'Left',
+  'layout-right': 'Right',
+}
+
+const prettifyLayoutLabel = (layoutId: string) =>
+  layoutLabelMap[layoutId] ??
+  layoutId
+    .replace(/^layout-/, '')
+    .split('-')
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
+
+const layoutFilterOptions = computed(() => {
+  const layoutCounts = activeTabTemplates.value.reduce<Record<string, number>>((acc, template) => {
+    if (!template.layoutId) return acc
+    acc[template.layoutId] = (acc[template.layoutId] ?? 0) + 1
+    return acc
+  }, {})
+
+  return [
+    {
+      label: 'All',
+      value: 'all',
+      count: activeTabTemplates.value.length,
+    },
+    ...Object.entries(layoutCounts)
+      .sort(([layoutA], [layoutB]) => prettifyLayoutLabel(layoutA).localeCompare(prettifyLayoutLabel(layoutB)))
+      .map(([layoutId, count]) => ({
+        label: prettifyLayoutLabel(layoutId),
+        value: layoutId,
+        count,
+      })),
+  ]
+})
+
+const displayedTemplates = computed(() => {
+  if (selectedLayoutFilter.value === 'all') return activeTabTemplates.value
+
+  return activeTabTemplates.value.filter(
+    (template) => template.layoutId === selectedLayoutFilter.value,
+  )
+})
+
+watch(activeTemplateTab, () => {
+  selectedLayoutFilter.value = 'all'
 })
 
 const templatePreviewRoute = (templateType: 'resume' | 'cover-page' | 'cover-letter', templateId: string) => {
@@ -92,6 +145,22 @@ const randomVariants = computed(() => {
             <v-tab v-for="tab in documentTabs" :key="tab.value" :value="tab.value">{{ tab.label }}</v-tab>
           </v-tabs>
 
+          <div class="layout-filter-bar" aria-label="Template layout filters">
+            <v-btn
+              v-for="layoutOption in layoutFilterOptions"
+              :key="layoutOption.value"
+              class="layout-filter-button"
+              :class="{ 'layout-filter-button--active': selectedLayoutFilter === layoutOption.value }"
+              :variant="selectedLayoutFilter === layoutOption.value ? 'flat' : 'text'"
+              :color="selectedLayoutFilter === layoutOption.value ? 'primary' : undefined"
+              rounded="pill"
+              @click="selectedLayoutFilter = layoutOption.value"
+            >
+              <span>{{ layoutOption.label }}</span>
+              <span class="layout-filter-count">{{ layoutOption.count }}</span>
+            </v-btn>
+          </div>
+
           <div class="templates-slider mt-4">
             <v-card
               v-for="templateCard in displayedTemplates"
@@ -121,6 +190,62 @@ const randomVariants = computed(() => {
 }
 .templates-tabs {
   border-bottom: 1px solid rgba(var(--v-theme-on-surface), 0.2);
+}
+.layout-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 6px;
+  padding: 10px;
+  overflow-x: auto;
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.1);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(var(--v-theme-primary), 0.08), transparent 38%),
+    rgba(var(--v-theme-surface), 0.76);
+  box-shadow: 0 16px 42px rgba(var(--v-theme-on-surface), 0.08);
+  backdrop-filter: blur(18px);
+  scrollbar-width: thin;
+}
+.layout-filter-button {
+  flex: 0 0 auto;
+  min-height: 42px;
+  padding-inline: 16px 10px !important;
+  border: 1px solid transparent;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+.layout-filter-button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(var(--v-theme-primary), 0.24);
+  background: rgba(var(--v-theme-primary), 0.08);
+}
+.layout-filter-button--active {
+  box-shadow: 0 12px 28px rgba(var(--v-theme-primary), 0.28);
+}
+.layout-filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  margin-left: 10px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: rgba(var(--v-theme-on-primary), 0.18);
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1;
+}
+.layout-filter-button:not(.layout-filter-button--active) .layout-filter-count {
+  background: rgba(var(--v-theme-primary), 0.12);
+  color: rgb(var(--v-theme-primary));
 }
 .templates-slider {
   display: flex;
