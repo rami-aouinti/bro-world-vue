@@ -14,7 +14,7 @@
 </template>
 
 <style scoped>
-.cv-layout{width:100%;min-height:1123px;background:#fff;border:1px solid rgba(148,163,184,.45);border-radius:0;overflow:hidden}
+.cv-layout{width:100%;min-height:1123px;background:var(--cv-page-background,#fff);color:var(--cv-page-text,#0f172a);border:1px solid rgba(148,163,184,.45);border-radius:0;overflow:hidden}
 .cv-header{padding:0;margin:0}
 .cv-header-track{width:100%;display:flex;justify-content:flex-start}
 .cv-header-band{background:var(--cv-primary, #1d4ed8);height:var(--cv-aside-height, 180px);width:var(--cv-aside-width, 100%);max-width:100%;border-bottom-left-radius:var(--cv-aside-radius, 0px);border-bottom-right-radius:var(--cv-aside-radius, 0px);display:flex;align-items:flex-start;padding:24px;color:#fff}
