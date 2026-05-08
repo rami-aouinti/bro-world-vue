@@ -3249,6 +3249,8 @@ v-if="!isCaptureMode"
   width: var(--cv-section-bar-width, 44px);
   height: var(--cv-section-bar-height, 3px);
   border-radius: var(--cv-section-bar-radius, 999px);
+  overflow: hidden;
+  clip-path: inset(0 round var(--cv-section-bar-radius, 999px));
   position: absolute;
   left: 0;
   top: calc(100% + 6px);
