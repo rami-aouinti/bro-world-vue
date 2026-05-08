@@ -106,6 +106,10 @@ const dividerTypeOptions = [
   { title: 'None', value: 'none' },
 ]
 const selectedDividerType = ref('line')
+const pageBorderEnabled = ref(true)
+const pageBorderWidth = ref(0)
+const pageBorderRadius = ref(0)
+const pageBorderColor = ref('#0f172a')
 const textFontSize = ref(24)
 const textColor = ref('#475569')
 const barRadius = ref(0)
@@ -412,6 +416,39 @@ watch(
   },
   { immediate: true },
 )
+
+
+watch(
+  activeTemplate,
+  (template) => {
+    pageBorderEnabled.value = Boolean(template?.theme?.pageBorder?.enabled)
+    pageBorderWidth.value = Number(template?.theme?.pageBorder?.width ?? 0)
+    pageBorderRadius.value = Number(template?.theme?.pageBorder?.radius ?? 0)
+    pageBorderColor.value = String(
+      template?.theme?.pageBorder?.color || '#0f172a',
+    )
+  },
+  { immediate: true },
+)
+
+watch(
+  [pageBorderEnabled, pageBorderWidth, pageBorderRadius, pageBorderColor],
+  () => {
+    if (!activeTemplate.value.theme) activeTemplate.value.theme = {} as any
+    if (!activeTemplate.value.theme.pageBorder)
+      activeTemplate.value.theme.pageBorder = {
+        enabled: false,
+        width: 0,
+        radius: 0,
+        color: '#0f172a',
+      } as any
+    activeTemplate.value.theme.pageBorder.enabled = pageBorderEnabled.value
+    activeTemplate.value.theme.pageBorder.width = pageBorderWidth.value
+    activeTemplate.value.theme.pageBorder.radius = pageBorderRadius.value
+    activeTemplate.value.theme.pageBorder.color = pageBorderColor.value
+  },
+)
+
 function addDecorObject() {
   editableDecorObjects.value.push(
     normalizeDecorObject({
@@ -827,10 +864,10 @@ watch(aiModalOpen, (isOpen) => {
           </v-row>
           <v-divider class="my-3" />
           <v-row dense>
-            <v-col cols="6"><v-switch v-model="activeTemplate.theme.pageBorder.enabled" label="Page border" hide-details inset class="mt-2" /></v-col>
-            <v-col cols="6"><p class="text-body-2">Border width</p><v-slider v-model="activeTemplate.theme.pageBorder.width" :min="0" :max="24" :step="1" hide-details /></v-col>
-            <v-col cols="6"><p class="text-body-2">Border radius</p><v-slider v-model="activeTemplate.theme.pageBorder.radius" :min="0" :max="60" :step="1" hide-details /></v-col>
-            <v-col cols="6"><p class="text-body-2">Border color</p><v-text-field v-model="activeTemplate.theme.pageBorder.color" type="color" hide-details density="compact" /></v-col>
+            <v-col cols="6"><v-switch v-model="pageBorderEnabled" label="Page border" hide-details inset class="mt-2" /></v-col>
+            <v-col cols="6"><p class="text-body-2">Border width</p><v-slider v-model="pageBorderWidth" :min="0" :max="24" :step="1" hide-details /></v-col>
+            <v-col cols="6"><p class="text-body-2">Border radius</p><v-slider v-model="pageBorderRadius" :min="0" :max="60" :step="1" hide-details /></v-col>
+            <v-col cols="6"><p class="text-body-2">Border color</p><v-text-field v-model="pageBorderColor" type="color" hide-details density="compact" /></v-col>
           </v-row>
         </v-card-text>
         </template>
@@ -847,9 +884,9 @@ watch(aiModalOpen, (isOpen) => {
             '--cp-text': activeColors.text,
             '--cp-muted': activeColors.muted,
             '--cp-bg': activeColors.pageBackground,
-            '--cp-page-border-width': activeTemplate?.theme?.pageBorder?.enabled ? `${activeTemplate?.theme?.pageBorder?.width ?? 0}px` : '0px',
-            '--cp-page-border-color': activeTemplate?.theme?.pageBorder?.color ?? 'transparent',
-            '--cp-page-border-radius': `${activeTemplate?.theme?.pageBorder?.radius ?? 0}px`,
+            '--cp-page-border-width': pageBorderEnabled ? `${pageBorderWidth}px` : '0px',
+            '--cp-page-border-color': pageBorderColor,
+            '--cp-page-border-radius': `${pageBorderRadius}px`,
             '--section-divider-style': sectionDividerStyle,
             '--section-divider-color': sectionDividerColor,
             '--section-spacing': sectionSpacing,
