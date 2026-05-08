@@ -15,6 +15,9 @@ withDefaults(
     paletteColumns?: number
     showAi?: boolean
     settingsMenuOpen?: boolean
+    decorMenuOpen?: boolean
+    showDecor?: boolean
+    showSection?: boolean
   }>(),
   {
     menuOpen: false,
@@ -28,13 +31,16 @@ withDefaults(
     paletteColumns: 5,
     showAi: true,
     settingsMenuOpen: false,
+    decorMenuOpen: false,
+    showDecor: false,
+    showSection: false,
   },
 )
 
 const emit = defineEmits<{
-  (e: 'update:menu-open' | 'update:palette-menu-open' | 'update:settings-menu-open', value: boolean): void
+  (e: 'update:menu-open' | 'update:palette-menu-open' | 'update:settings-menu-open' | 'update:decor-menu-open', value: boolean): void
   (e: 'select-template' | 'select-palette', value: string): void
-  (e: 'save' | 'ai' | 'signature' | 'pdf'): void
+  (e: 'save' | 'ai' | 'signature' | 'pdf' | 'section'): void
 }>()
 
 function templateId(template: PreviewTemplate) {
@@ -101,6 +107,24 @@ function paletteValue(palette: PaletteOption) {
           </div>
         </v-card>
       </v-menu>
+
+
+      <v-menu
+        v-if="showDecor"
+        :model-value="decorMenuOpen"
+        location="bottom start"
+        :close-on-content-click="false"
+        @update:model-value="emit('update:decor-menu-open', $event)"
+      >
+        <template #activator="{ props: menuProps }">
+          <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-shape-plus">Decor</v-btn>
+        </template>
+        <v-card class="pa-3 decor-menu-card" min-width="300" @click.stop>
+          <slot name="decor" />
+        </v-card>
+      </v-menu>
+
+      <v-btn v-if="showSection" variant="outlined" prepend-icon="mdi-plus" @click="emit('section')">Section</v-btn>
     </div>
 
     <div class="d-flex align-center ga-2 flex-wrap justify-end">
@@ -177,6 +201,11 @@ function paletteValue(palette: PaletteOption) {
 .template-option--active {
   border-color: rgb(var(--v-theme-primary));
   box-shadow: 0 0 0 1px rgb(var(--v-theme-primary));
+}
+
+.decor-menu-card {
+  max-height: min(72vh, 680px);
+  overflow-y: auto;
 }
 
 .palette-grid {

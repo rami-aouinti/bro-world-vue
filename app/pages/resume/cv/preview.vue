@@ -43,6 +43,7 @@ const selectedTemplate = ref(GENERATED_RESUME_TEMPLATES[0]?.id || 'tpl-001')
 const layoutMenuOpen = ref(false)
 const paletteMenuOpen = ref(false)
 const settingsMenuOpen = ref(false)
+const decorMenuOpen = ref(false)
 const selectedPalette = ref('template')
 const signatureDataUrl = ref('')
 const signatureDialogOpen = ref(false)
@@ -515,12 +516,6 @@ function shiftSectionByLine(
   scheduleCvPreviewMeasure()
 }
 
-function canShiftSectionUp(
-  orderKey: keyof typeof sectionOrders,
-  section: string,
-) {
-  return (sectionLineOffsets[sectionOffsetKey(orderKey, section)] || 0) > 0
-}
 const languageOption = ref<any | null>(null)
 const languageStars = ref(3)
 const languageCatalog = [
@@ -1300,13 +1295,6 @@ watch(
         >
           Compare
         </v-btn>
-        <v-btn
-          class="mt-3"
-          size="small"
-          variant="outlined"
-          @click="addDecorObject"
-          >Add decor</v-btn
-        >
         <v-switch
           v-model="sectionBarConfig.show"
           label="Section bar"
@@ -1323,7 +1311,41 @@ watch(
           hide-details
           class="mt-2"
         />
-        <div class="mt-3 d-flex flex-column ga-2">
+      </template>
+    </AppPageDrawers>
+
+    <v-container fluid>
+      <ResumePreviewToolbar
+        v-if="!isCaptureMode"
+        v-model:menu-open="layoutMenuOpen"
+        v-model:palette-menu-open="paletteMenuOpen"
+        v-model:settings-menu-open="settingsMenuOpen"
+        v-model:decor-menu-open="decorMenuOpen"
+        :palettes="palettePresetOptions"
+        show-decor
+        show-section
+        :selected-palette="selectedPalette"
+        :palette-columns="10"
+        :templates="GENERATED_RESUME_TEMPLATES"
+        :selected-template="selectedTemplate"
+        :get-template-image="
+          (template) => `/img/cv/generated/${template.id}.png`
+        "
+        template-key-prefix="cv-preview"
+        @select-template="applyPreviewTemplate"
+        @select-palette="selectedPalette = $event"
+      >
+        <template #decor>
+          <v-btn
+            size="small"
+            variant="outlined"
+            prepend-icon="mdi-shape-plus"
+            block
+            @click.stop="addDecorObject"
+          >
+            Add decor
+          </v-btn>
+          <div class="mt-3 d-flex flex-column ga-2">
           <v-menu
             v-for="(obj, i) in editableDecorObjects"
             :key="`obj-${i}`"
@@ -1372,7 +1394,7 @@ watch(
                         ? '2px solid #111827'
                         : '1px solid #cbd5e1',
                   }"
-                  @click="obj.color = color"
+                  @click.stop="obj.color = color"
                 />
               </div>
               <v-slider
@@ -1416,33 +1438,13 @@ watch(
                 color="error"
                 variant="text"
                 class="mt-2"
-                @click="removeDecorObject(i)"
+                @click.stop="removeDecorObject(i)"
                 >remove</v-btn
               >
             </v-card>
           </v-menu>
         </div>
-      </template>
-    </AppPageDrawers>
-
-    <v-container fluid>
-      <ResumePreviewToolbar
-        v-if="!isCaptureMode"
-        v-model:menu-open="layoutMenuOpen"
-        v-model:palette-menu-open="paletteMenuOpen"
-        v-model:settings-menu-open="settingsMenuOpen"
-        :palettes="palettePresetOptions"
-        :selected-palette="selectedPalette"
-        :palette-columns="10"
-        :templates="GENERATED_RESUME_TEMPLATES"
-        :selected-template="selectedTemplate"
-        :get-template-image="
-          (template) => `/img/cv/generated/${template.id}.png`
-        "
-        template-key-prefix="cv-preview"
-        @select-template="applyPreviewTemplate"
-        @select-palette="selectedPalette = $event"
-      >
+        </template>
         <template #settings>
           <p class="text-body-2">Aside width</p>
           <v-slider v-model="asideWidth" :min="240" :max="1200" :step="2" hide-details class="mb-2" />
@@ -1466,7 +1468,7 @@ watch(
             '--cv-preview-page-width': `${CV_PREVIEW_PAGE_WIDTH}px`,
           }"
       >
-        <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"></div>
+        <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
         <component :is="activeLayoutComponent" class="w-100 cv-preview-page" :style="{ background: activeColors?.pageBackground || '#ffffff', height: 'auto', minHeight: `${cvPreviewHeight}px`, overflow: 'visible', '--cv-primary': activeColors?.primary || '#1d4ed8', '--cv-secondary': activeColors?.secondary || '#93C5FD', '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body'), '--cv-header-text': headerTextColor, '--cv-header-muted': headerMutedColor, '--cv-section-bar-height': `${sectionBarConfig.height}px`, '--cv-section-bar-radius': `${sectionBarConfig.radius}px`, '--cv-section-bar-display': sectionBarConfig.show ? 'block' : 'none', '--cv-section-title-width': sectionBarConfig.widthType === 'complete' ? '100%' : 'fit-content', '--cv-section-bar-width': sectionBarConfig.widthType === 'complete' ? '100%' : 'calc(100% + 18px)' }">
           <template #header>
             <div class="cv-header-layout" :class="`cv-header-layout--${headerType}`">
@@ -1519,7 +1521,7 @@ watch(
                   </div>
                 </div>
                 <div class="cv-header-identity cv-col-4">
-                  <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker" /><v-menu v-model="photoMenuOpen" location="right start" :close-on-content-click="false"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"></button></div></v-card></v-menu></div>
+                  <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker" /><v-menu v-model="photoMenuOpen" location="right start" :close-on-content-click="false"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"/></div></v-card></v-menu></div>
                   <HoverRichTextEditor
                     class="cv-header-editor cv-header-editor--name"
                     :model-value="headerProfile.fullName"
@@ -1544,7 +1546,7 @@ watch(
               </template>
               <template v-else-if="headerType === 'header-right'">
                 <div class="cv-header-identity cv-col-4">
-                  <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker" /><v-menu v-model="photoMenuOpen" location="right start" :close-on-content-click="false"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"></button></div></v-card></v-menu></div>
+                  <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker" /><v-menu v-model="photoMenuOpen" location="right start" :close-on-content-click="false"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"/></div></v-card></v-menu></div>
                   <HoverRichTextEditor
                     class="cv-header-editor cv-header-editor--name"
                     :model-value="headerProfile.fullName"
@@ -2601,13 +2603,14 @@ watch(
             </footer>
           </template>
         </component>
-        <ResumePreviewPageBreak
-          v-for="pageBreak in cvPreviewPageBreaks"
-          v-if="!isCaptureMode"
-          :key="`cv-page-break-${pageBreak}`"
-          :page-number="pageBreak"
-          :top="pageBreak * CV_PREVIEW_PDF_PAGE_HEIGHT"
-        />
+        <template v-if="!isCaptureMode">
+          <ResumePreviewPageBreak
+            v-for="pageBreak in cvPreviewPageBreaks"
+            :key="`cv-page-break-${pageBreak}`"
+            :page-number="pageBreak"
+            :top="pageBreak * CV_PREVIEW_PDF_PAGE_HEIGHT"
+          />
+        </template>
       </div>
     </v-container>
 
