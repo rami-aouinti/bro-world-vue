@@ -5,6 +5,10 @@ import ResumePreviewToolbar from '~/components/ResumePreviewToolbar.vue'
 import ResumePreviewPageBreak from '~/components/ResumePreviewPageBreak.vue'
 import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-20-cover-letter.json'
 import PALETTE_PRESETS from '~/data/resume-templates/palettes.json'
+import {
+  applyReadablePageTextColors,
+  readableTextColorForBackground,
+} from '~/utils/resumeColorContrast'
 import { buildToolbarPaletteOptions } from '~/modules/resume/theme/paletteOptions'
 import {
   resolveResumeTextFont,
@@ -268,16 +272,24 @@ const activeColors = computed(() => {
     (option) => option.value === selectedPalette.value,
   )
   if (selected && selected.value !== 'template')
-    return {
+    return applyReadablePageTextColors({
       ...palette,
       primary: selected.primary,
       secondary: selected.secondary,
       text: selected.text,
       muted: selected.tertiary,
       pageBackground: selected.quaternary,
-    }
-  return palette
+    })
+  return applyReadablePageTextColors(palette)
 })
+function readableCoverTextColor(color = '#0F172A') {
+  return readableTextColorForBackground(activeColors.value.pageBackground, color)
+}
+
+const readableBodyTextColor = computed(() =>
+  readableCoverTextColor(textColor.value),
+)
+
 const isLayoutRight = computed(
   () => activeTemplate.value?.layout === 'layout-right',
 )
@@ -854,7 +866,7 @@ watch(aiModalOpen, (isOpen) => {
             '--section-divider-color': sectionDividerColor,
             '--section-spacing': sectionSpacing,
             '--body-size': `${textFontSize}px`,
-            '--body-color': textColor,
+            '--body-color': readableBodyTextColor,
             '--bar-radius': `${barRadius}px`,
             '--bar-primary-width': `${primaryBarWidth}px`,
             '--bar-secondary-width': `${secondaryBarWidth}px`,
@@ -892,14 +904,14 @@ watch(aiModalOpen, (isOpen) => {
               <HoverRichTextEditor
                 v-model="model.date"
                 :font-size="`${letterElementStyles.date.size}px`"
-                :color="letterElementStyles.date.color"
+                :color="readableCoverTextColor(letterElementStyles.date.color)"
                 :font-weight="letterElementStyles.date.weight"
                 :font-family="textFontFamily('date')"
               />
               <HoverRichTextEditor
                 v-model="model.location"
                 :font-size="`${letterElementStyles.address.size}px`"
-                :color="letterElementStyles.address.color"
+                :color="readableCoverTextColor(letterElementStyles.address.color)"
                 :font-weight="letterElementStyles.address.weight"
                 :font-family="textFontFamily('address')"
               />

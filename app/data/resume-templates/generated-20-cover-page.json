@@ -7,11 +7,11 @@
     "structure": "cover-structure-1",
     "theme": {
       "palette": {
-        "primary": "#0F4C81",
-        "secondary": "#5FA8D3",
-        "text": "#111827",
-        "muted": "#6B7280",
-        "pageBackground": "#F8FAFC"
+        "primary": "#2563EB",
+        "secondary": "#93C5FD",
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#1F2937"
       },
       "density": "airy",
       "textStyle": "sans"
@@ -278,9 +278,9 @@
       "palette": {
         "primary": "#7C3AED",
         "secondary": "#C4B5FD",
-        "text": "#111827",
-        "muted": "#6B7280",
-        "pageBackground": "#FAF5FF"
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#111827"
       },
       "density": "comfortable",
       "textStyle": "roman"
@@ -573,9 +573,9 @@
       "palette": {
         "primary": "#BE123C",
         "secondary": "#FDA4AF",
-        "text": "#111827",
-        "muted": "#6B7280",
-        "pageBackground": "#FFF1F2"
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#2F2430"
       },
       "density": "compact",
       "textStyle": "serif"
@@ -861,11 +861,11 @@
     "structure": "cover-structure-4",
     "theme": {
       "palette": {
-        "primary": "#065F46",
+        "primary": "#047857",
         "secondary": "#6EE7B7",
-        "text": "#111827",
-        "muted": "#6B7280",
-        "pageBackground": "#ECFDF5"
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#1F2A24"
       },
       "density": "airy",
       "textStyle": "sans"
@@ -1156,11 +1156,11 @@
     "structure": "cover-structure-1",
     "theme": {
       "palette": {
-        "primary": "#9A3412",
+        "primary": "#C2410C",
         "secondary": "#FDBA74",
-        "text": "#111827",
-        "muted": "#6B7280",
-        "pageBackground": "#FFF7ED"
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#2D261F"
       },
       "density": "comfortable",
       "textStyle": "roman"
@@ -1447,10 +1447,10 @@
     "theme": {
       "palette": {
         "primary": "#0F4C81",
-        "secondary": "#5FA8D3",
-        "text": "#111827",
-        "muted": "#6B7280",
-        "pageBackground": "#F8FAFC"
+        "secondary": "#7DD3FC",
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#172033"
       },
       "density": "compact",
       "textStyle": "serif"
@@ -1741,11 +1741,11 @@
     "structure": "cover-structure-3",
     "theme": {
       "palette": {
-        "primary": "#7C3AED",
-        "secondary": "#C4B5FD",
-        "text": "#111827",
-        "muted": "#6B7280",
-        "pageBackground": "#FAF5FF"
+        "primary": "#4F46E5",
+        "secondary": "#A5B4FC",
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#24243A"
       },
       "density": "airy",
       "textStyle": "sans"
@@ -2031,11 +2031,11 @@
     "structure": "cover-structure-4",
     "theme": {
       "palette": {
-        "primary": "#BE123C",
-        "secondary": "#FDA4AF",
-        "text": "#111827",
-        "muted": "#6B7280",
-        "pageBackground": "#FFF1F2"
+        "primary": "#0F766E",
+        "secondary": "#99F6E4",
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#1E2D2B"
       },
       "density": "comfortable",
       "textStyle": "roman"
@@ -2326,11 +2326,11 @@
     "structure": "cover-structure-1",
     "theme": {
       "palette": {
-        "primary": "#065F46",
-        "secondary": "#6EE7B7",
-        "text": "#111827",
-        "muted": "#6B7280",
-        "pageBackground": "#ECFDF5"
+        "primary": "#A16207",
+        "secondary": "#FDE68A",
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#2F2A1F"
       },
       "density": "compact",
       "textStyle": "serif"
@@ -2616,11 +2616,11 @@
     "structure": "cover-structure-2",
     "theme": {
       "palette": {
-        "primary": "#9A3412",
-        "secondary": "#FDBA74",
-        "text": "#111827",
-        "muted": "#6B7280",
-        "pageBackground": "#FFF7ED"
+        "primary": "#475569",
+        "secondary": "#CBD5E1",
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#111827"
       },
       "density": "airy",
       "textStyle": "sans"
@@ -2911,11 +2911,11 @@
     "structure": "cover-structure-1",
     "theme": {
       "palette": {
-        "primary": "#0F4C81",
-        "secondary": "#5FA8D3",
-        "text": "#111827",
-        "muted": "#6B7280",
-        "pageBackground": "#F8FAFC"
+        "primary": "#2563EB",
+        "secondary": "#93C5FD",
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#1F2937"
       },
       "density": "airy",
       "textStyle": "sans"
@@ -3178,11 +3178,11 @@
     "structure": "cover-structure-1",
     "theme": {
       "palette": {
-        "primary": "#0F4C81",
-        "secondary": "#5FA8D3",
-        "text": "#111827",
-        "muted": "#6B7280",
-        "pageBackground": "#F8FAFC"
+        "primary": "#7C3AED",
+        "secondary": "#C4B5FD",
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#111827"
       },
       "density": "airy",
       "textStyle": "sans"

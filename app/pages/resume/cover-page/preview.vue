@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import GENERATED_COVER_PAGE_TEMPLATES from '~/data/resume-templates/generated-20-cover-page.json'
 import PALETTE_PRESETS from '~/data/resume-templates/palettes.json'
+import {
+  applyReadablePageTextColors,
+  readableTextColorForBackground,
+} from '~/utils/resumeColorContrast'
 import { buildToolbarPaletteOptions } from '~/modules/resume/theme/paletteOptions'
 import { listMyResumes } from '~/services/resumeApi'
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
@@ -248,16 +252,24 @@ const activeColors = computed(() => {
     (option) => option.value === selectedPalette.value,
   )
   if (selected && selected.value !== 'template')
-    return {
+    return applyReadablePageTextColors({
       ...palette,
       primary: selected.primary,
       secondary: selected.secondary,
       text: selected.text,
       muted: selected.tertiary,
       pageBackground: selected.quaternary,
-    }
-  return palette
+    })
+  return applyReadablePageTextColors(palette)
 })
+function readableCoverTextColor(color = '#0F172A') {
+  return readableTextColorForBackground(activeColors.value.pageBackground, color)
+}
+
+const readableBodyTextColor = computed(() =>
+  readableCoverTextColor(textColor.value),
+)
+
 const isLayoutRight = computed(
   () => activeTemplate.value?.layout === 'layout-right',
 )
@@ -828,7 +840,7 @@ watch(aiModalOpen, (isOpen) => {
             '--section-divider-color': sectionDividerColor,
             '--section-spacing': sectionSpacing,
             '--body-size': `${textFontSize}px`,
-            '--body-color': textColor,
+            '--body-color': readableBodyTextColor,
             '--bar-radius': `${barRadius}px`,
             '--bar-primary-width': `${primaryBarWidth}px`,
             '--bar-secondary-width': `${secondaryBarWidth}px`,
@@ -960,14 +972,14 @@ watch(aiModalOpen, (isOpen) => {
               <HoverRichTextEditor
                 v-model="model.fullName"
                 :font-size="`${elementStyles.fullName.size}px`"
-                :color="elementStyles.fullName.color"
+                :color="readableCoverTextColor(elementStyles.fullName.color)"
                 :font-weight="elementStyles.fullName.weight"
                 :font-family="textFontFamily('fullName', 'serif')"
               />
               <HoverRichTextEditor
                 v-model="model.role"
                 :font-size="`${elementStyles.role.size}px`"
-                :color="elementStyles.role.color"
+                :color="readableCoverTextColor(elementStyles.role.color)"
                 :font-weight="elementStyles.role.weight"
                 :font-family="textFontFamily('role')"
               />
@@ -978,28 +990,28 @@ watch(aiModalOpen, (isOpen) => {
             <HoverRichTextEditor
               v-model="model.heading"
               :font-size="`${elementStyles.heading.size}px`"
-              :color="elementStyles.heading.color"
+              :color="readableCoverTextColor(elementStyles.heading.color)"
               :font-weight="elementStyles.heading.weight"
               :font-family="textFontFamily('heading', 'serif')"
             />
             <HoverRichTextEditor
               v-model="model.summary"
               :font-size="`${elementStyles.summary.size}px`"
-              :color="elementStyles.summary.color"
+              :color="readableCoverTextColor(elementStyles.summary.color)"
               :font-weight="elementStyles.summary.weight"
               :font-family="textFontFamily('summary')"
             />
             <HoverRichTextEditor
               v-model="model.email"
               :font-size="`${elementStyles.email.size}px`"
-              :color="elementStyles.email.color"
+              :color="readableCoverTextColor(elementStyles.email.color)"
               :font-weight="elementStyles.email.weight"
               :font-family="textFontFamily('email')"
             />
             <HoverRichTextEditor
               v-model="model.phone"
               :font-size="`${elementStyles.phone.size}px`"
-              :color="elementStyles.phone.color"
+              :color="readableCoverTextColor(elementStyles.phone.color)"
               :font-weight="elementStyles.phone.weight"
               :font-family="textFontFamily('phone')"
             />

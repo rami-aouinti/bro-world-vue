@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-20-resume.json'
 import PALETTE_PRESETS from '~/data/resume-templates/palettes.json'
+import {
+  applyReadablePageTextColors,
+  readableMutedColorForBackground,
+  readableTextColorForBackground,
+} from '~/utils/resumeColorContrast'
 import { buildToolbarPaletteOptions } from '~/modules/resume/theme/paletteOptions'
 import CvLayoutAside from '~/components/cv/layouts/CvLayoutAside.vue'
 import CvLayoutNoAside from '~/components/cv/layouts/CvLayoutNoAside.vue'
@@ -123,15 +128,15 @@ const activeColors = computed(() => {
     (option) => option.value === selectedPalette.value,
   )
   if (selected && selected.value !== 'template')
-    return {
+    return applyReadablePageTextColors({
       ...palette,
       primary: selected.primary,
       secondary: selected.secondary ?? selected.dark,
       text: selected.text,
       muted: selected.tertiary,
       pageBackground: selected.quaternary,
-    }
-  return palette
+    })
+  return applyReadablePageTextColors(palette)
 })
 const sectionBarConfig = reactive({
   show: true,
@@ -1006,11 +1011,21 @@ const isHeaderLightLayout = computed(() => {
 })
 
 const headerTextColor = computed(() =>
-  isHeaderLightLayout.value ? '#F8FAFC' : '#0F172A',
+  isHeaderLightLayout.value
+    ? '#F8FAFC'
+    : readableTextColorForBackground(
+        activeColors.value?.pageBackground,
+        activeColors.value?.text || '#0F172A',
+      ),
 )
 
 const headerMutedColor = computed(() =>
-  isHeaderLightLayout.value ? '#CBD5E1' : '#334155',
+  isHeaderLightLayout.value
+    ? '#CBD5E1'
+    : readableMutedColorForBackground(
+        activeColors.value?.pageBackground,
+        activeColors.value?.muted || '#334155',
+      ),
 )
 
 watch(
@@ -1469,7 +1484,7 @@ watch(
           }"
       >
         <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
-        <component :is="activeLayoutComponent" class="w-100 cv-preview-page" :style="{ background: activeColors?.pageBackground || '#ffffff', height: 'auto', minHeight: `${cvPreviewHeight}px`, overflow: 'visible', '--cv-primary': activeColors?.primary || '#1d4ed8', '--cv-secondary': activeColors?.secondary || '#93C5FD', '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body'), '--cv-header-text': headerTextColor, '--cv-header-muted': headerMutedColor, '--cv-section-bar-height': `${sectionBarConfig.height}px`, '--cv-section-bar-radius': `${sectionBarConfig.radius}px`, '--cv-section-bar-display': sectionBarConfig.show ? 'block' : 'none', '--cv-section-title-width': sectionBarConfig.widthType === 'complete' ? '100%' : 'fit-content', '--cv-section-bar-width': sectionBarConfig.widthType === 'complete' ? '100%' : 'calc(100% + 18px)' }">
+        <component :is="activeLayoutComponent" class="w-100 cv-preview-page" :style="{ background: activeColors?.pageBackground || '#ffffff', color: activeColors?.text || '#0f172a', height: 'auto', minHeight: `${cvPreviewHeight}px`, overflow: 'visible', '--cv-primary': activeColors?.primary || '#1d4ed8', '--cv-secondary': activeColors?.secondary || '#93C5FD', '--cv-page-background': activeColors?.pageBackground || '#ffffff', '--cv-page-text': activeColors?.text || '#0f172a', '--cv-page-muted': activeColors?.muted || '#64748b', '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body'), '--cv-header-text': headerTextColor, '--cv-header-muted': headerMutedColor, '--cv-section-bar-height': `${sectionBarConfig.height}px`, '--cv-section-bar-radius': `${sectionBarConfig.radius}px`, '--cv-section-bar-display': sectionBarConfig.show ? 'block' : 'none', '--cv-section-title-width': sectionBarConfig.widthType === 'complete' ? '100%' : 'fit-content', '--cv-section-bar-width': sectionBarConfig.widthType === 'complete' ? '100%' : 'calc(100% + 18px)' }">
           <template #header>
             <div class="cv-header-layout" :class="`cv-header-layout--${headerType}`">
               <template v-if="headerType === 'header-left'">
@@ -2980,7 +2995,7 @@ watch(
   right: 0;
   bottom: 0;
   height: var(--cv-page-end-bar-height, 24px);
-  background: #fff;
+  background: var(--cv-page-background, #fff);
 }
 
 .cv-header-layout { display: grid; width: 100%; gap: 12px; align-items: center; }
@@ -3021,7 +3036,7 @@ watch(
   padding: 8px 10px;
   border-radius: 8px;
   background: transparent;
-  color: #1e293b;
+  color: var(--cv-page-text, #1e293b);
   border: 0;
   font-weight: 600;
   font-size: 13px;
@@ -3096,7 +3111,7 @@ watch(
   padding: 8px 4px;
   margin-bottom: 8px;
   font-weight: 600;
-  color: #334155;
+  color: var(--cv-page-muted, #334155);
   background: transparent;
 }
 .cv-section-row > strong {
@@ -3251,7 +3266,7 @@ watch(
   cursor: pointer;
 }
 .cv-section-row > strong {
-  color: color-mix(in srgb, var(--cv-primary, #1d4ed8) 78%, #0f172a);
+  color: color-mix(in srgb, var(--cv-primary, #1d4ed8) 72%, var(--cv-page-text, #0f172a));
 }
 .cv-aside-section-item > strong {
   color: color-mix(in srgb, var(--cv-primary, #1d4ed8) 55%, white);
