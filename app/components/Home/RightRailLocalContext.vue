@@ -56,13 +56,11 @@ interface CrmProjectsResponse {
 
 const { locale, t } = useI18n()
 const { scopedRecruitPath } = useRecruitScopedApi()
-const LOCATION_PROMPTED_KEY = 'home.local-context.prompted'
 const LAST_COORDS_KEY = 'home.local-context.coords'
 
 const isLoading = ref(false)
 const permissionDenied = ref(false)
 const loadError = ref('')
-const isLocationModalOpen = ref(false)
 const localContext = ref<LocalContextResponse | null>(null)
 const featuredJobs = ref<RecruitJobItem[]>([])
 const featuredProjects = ref<CrmProjectItem[]>([])
@@ -174,22 +172,6 @@ function setStoredCoords(lat: number, lon: number) {
   }
 }
 
-function hasPromptedForLocation() {
-  try {
-    return window.localStorage.getItem(LOCATION_PROMPTED_KEY) === '1'
-  } catch {
-    return false
-  }
-}
-
-function markLocationPrompted() {
-  try {
-    window.localStorage.setItem(LOCATION_PROMPTED_KEY, '1')
-  } catch {
-    // Ignore storage write failures.
-  }
-}
-
 async function loadLocalContextByCoords(coords: { lat: number; lon: number }) {
   isLoading.value = true
 
@@ -224,7 +206,6 @@ async function loadLocalContext(position: GeolocationPosition) {
 
 function requestLocation() {
   resetState()
-  isLocationModalOpen.value = false
 
   if (!navigator.geolocation) {
     loadError.value = t('home.rightNav.localContext.unsupported')
@@ -252,42 +233,12 @@ onMounted(() => {
 
   if (storedCoords) {
     void loadLocalContextByCoords(storedCoords)
-    return
-  }
-
-  if (!hasPromptedForLocation()) {
-    isLocationModalOpen.value = true
-    markLocationPrompted()
   }
 })
 </script>
 
 <template>
   <div>
-    <v-dialog
-      v-model="isLocationModalOpen"
-      max-width="420"
-      :aria-label="$t('home.rightNav.localContext.title')"
-    >
-      <v-card rounded="xl">
-        <v-card-title class="text-h6">
-          {{ $t('home.rightNav.localContext.title') }}
-        </v-card-title>
-        <v-card-text>
-          {{ $t('home.rightNav.localContext.subtitle') }}
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn variant="text" @click="isLocationModalOpen = false">
-            {{ $t('common.close') }}
-          </v-btn>
-          <v-btn color="primary" :loading="isLoading" @click="requestLocation">
-            {{ $t('home.rightNav.localContext.permissionCta') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
     <div v-if="isLoading">
       <v-card-text class="py-6 text-center">
         <v-progress-circular
