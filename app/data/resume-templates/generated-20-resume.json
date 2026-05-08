@@ -24,7 +24,7 @@
         "secondary": "#324762",
         "text": "#0F172A",
         "muted": "#64748B",
-        "pageBackground": "#B7C5D7"
+        "pageBackground": "#CBD5E1"
       },
       "line": "soft",
       "density": "comfortable",
@@ -275,11 +275,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Inter",
-        "Playfair Display"
-      ],
+      "googleFonts": ["Fira Code", "Inter", "Playfair Display"],
       "scale": "balanced",
       "fonts": {
         "display": "Playfair Display",
@@ -299,141 +295,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       }
     }
   },
@@ -460,9 +387,9 @@
       "palette": {
         "primary": "#1C0B1F",
         "secondary": "#9237A2",
-        "text": "#1F2937",
-        "muted": "#6B7280",
-        "pageBackground": "#C299C9"
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#D1D5DB"
       },
       "line": "strong",
       "density": "compact",
@@ -713,11 +640,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Cormorant Garamond",
-        "Fira Code",
-        "Lato"
-      ],
+      "googleFonts": ["Cormorant Garamond", "Fira Code", "Lato"],
       "scale": "balanced",
       "fonts": {
         "display": "Cormorant Garamond",
@@ -737,141 +660,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       }
     }
   },
@@ -900,7 +754,7 @@
         "secondary": "#93C5FD",
         "text": "#0F172A",
         "muted": "#64748B",
-        "pageBackground": "#F8FAFC"
+        "pageBackground": "#E5E7EB"
       },
       "line": "soft",
       "density": "comfortable",
@@ -946,11 +800,7 @@
       "sectionSpacing": "normal"
     },
     "photoOptions": {
-      "shapeList": [
-        "circle",
-        "rounded",
-        "square"
-      ],
+      "shapeList": ["circle", "rounded", "square"],
       "shadow": "none",
       "frame": "none"
     },
@@ -1168,11 +1018,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Merriweather",
-        "Source Sans 3"
-      ],
+      "googleFonts": ["Fira Code", "Merriweather", "Source Sans 3"],
       "scale": "balanced",
       "fonts": {
         "display": "Merriweather",
@@ -1192,141 +1038,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       }
     }
   },
@@ -1353,9 +1130,9 @@
       "palette": {
         "primary": "#7C3AED",
         "secondary": "#C4B5FD",
-        "text": "#1F2937",
-        "muted": "#6B7280",
-        "pageBackground": "#FAF5FF"
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#C7D2FE"
       },
       "line": "strong",
       "density": "compact",
@@ -1400,11 +1177,7 @@
       "sectionSpacing": "normal"
     },
     "photoOptions": {
-      "shapeList": [
-        "circle",
-        "rounded",
-        "square"
-      ],
+      "shapeList": ["circle", "rounded", "square"],
       "shadow": "none",
       "frame": "none"
     },
@@ -1622,11 +1395,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Libre Baskerville",
-        "Nunito Sans"
-      ],
+      "googleFonts": ["Fira Code", "Libre Baskerville", "Nunito Sans"],
       "scale": "balanced",
       "fonts": {
         "display": "Libre Baskerville",
@@ -1646,141 +1415,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       }
     }
   },
@@ -1809,7 +1509,7 @@
         "secondary": "#93C5FD",
         "text": "#0F172A",
         "muted": "#64748B",
-        "pageBackground": "#F8FAFC"
+        "pageBackground": "#D6D3D1"
       },
       "line": "soft",
       "density": "comfortable",
@@ -1854,11 +1554,7 @@
       "sectionSpacing": "normal"
     },
     "photoOptions": {
-      "shapeList": [
-        "circle",
-        "rounded",
-        "square"
-      ],
+      "shapeList": ["circle", "rounded", "square"],
       "shadow": "soft",
       "frame": "line"
     },
@@ -2076,11 +1772,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Roboto",
-        "Roboto Slab"
-      ],
+      "googleFonts": ["Fira Code", "Roboto", "Roboto Slab"],
       "scale": "balanced",
       "fonts": {
         "display": "Roboto Slab",
@@ -2100,141 +1792,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       }
     }
   },
@@ -2261,9 +1884,9 @@
       "palette": {
         "primary": "#7C3AED",
         "secondary": "#C4B5FD",
-        "text": "#1F2937",
-        "muted": "#6B7280",
-        "pageBackground": "#FAF5FF"
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#BFC7D5"
       },
       "line": "strong",
       "density": "compact",
@@ -2308,11 +1931,7 @@
       "sectionSpacing": "normal"
     },
     "photoOptions": {
-      "shapeList": [
-        "circle",
-        "rounded",
-        "square"
-      ],
+      "shapeList": ["circle", "rounded", "square"],
       "shadow": "soft",
       "frame": "line"
     },
@@ -2530,11 +2149,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Manrope",
-        "Prata"
-      ],
+      "googleFonts": ["Fira Code", "Manrope", "Prata"],
       "scale": "balanced",
       "fonts": {
         "display": "Prata",
@@ -2554,141 +2169,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       }
     }
   },
@@ -2715,9 +2261,9 @@
       "palette": {
         "primary": "#1D4ED8",
         "secondary": "#93C5FD",
-        "text": "#0F172A",
-        "muted": "#64748B",
-        "pageBackground": "#F8FAFC"
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#111827"
       },
       "line": "soft",
       "density": "comfortable",
@@ -2762,11 +2308,7 @@
       "sectionSpacing": "normal"
     },
     "photoOptions": {
-      "shapeList": [
-        "circle",
-        "rounded",
-        "square"
-      ],
+      "shapeList": ["circle", "rounded", "square"],
       "shadow": "none",
       "frame": "none"
     },
@@ -2984,11 +2526,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Inter",
-        "Space Grotesk"
-      ],
+      "googleFonts": ["Fira Code", "Inter", "Space Grotesk"],
       "scale": "balanced",
       "fonts": {
         "display": "Space Grotesk",
@@ -3008,141 +2546,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       }
     }
   },
@@ -3169,9 +2638,9 @@
       "palette": {
         "primary": "#7C3AED",
         "secondary": "#C4B5FD",
-        "text": "#1F2937",
-        "muted": "#6B7280",
-        "pageBackground": "#FAF5FF"
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#1F2937"
       },
       "line": "strong",
       "density": "compact",
@@ -3216,11 +2685,7 @@
       "sectionSpacing": "normal"
     },
     "photoOptions": {
-      "shapeList": [
-        "circle",
-        "rounded",
-        "square"
-      ],
+      "shapeList": ["circle", "rounded", "square"],
       "shadow": "none",
       "frame": "none"
     },
@@ -3438,11 +2903,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Montserrat",
-        "Open Sans"
-      ],
+      "googleFonts": ["Fira Code", "Montserrat", "Open Sans"],
       "scale": "balanced",
       "fonts": {
         "display": "Montserrat",
@@ -3462,141 +2923,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       }
     }
   },
@@ -3623,9 +3015,9 @@
       "palette": {
         "primary": "#1D4ED8",
         "secondary": "#93C5FD",
-        "text": "#0F172A",
-        "muted": "#64748B",
-        "pageBackground": "#F8FAFC"
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#0F172A"
       },
       "line": "soft",
       "density": "comfortable",
@@ -3670,11 +3062,7 @@
       "sectionSpacing": "normal"
     },
     "photoOptions": {
-      "shapeList": [
-        "circle",
-        "rounded",
-        "square"
-      ],
+      "shapeList": ["circle", "rounded", "square"],
       "shadow": "none",
       "frame": "none"
     },
@@ -3892,11 +3280,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Lato",
-        "Oswald"
-      ],
+      "googleFonts": ["Fira Code", "Lato", "Oswald"],
       "scale": "balanced",
       "fonts": {
         "display": "Oswald",
@@ -3916,141 +3300,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       }
     }
   },
@@ -4077,9 +3392,9 @@
       "palette": {
         "primary": "#7C3AED",
         "secondary": "#C4B5FD",
-        "text": "#1F2937",
-        "muted": "#6B7280",
-        "pageBackground": "#FAF5FF"
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#27272A"
       },
       "line": "strong",
       "density": "compact",
@@ -4124,11 +3439,7 @@
       "sectionSpacing": "normal"
     },
     "photoOptions": {
-      "shapeList": [
-        "circle",
-        "rounded",
-        "square"
-      ],
+      "shapeList": ["circle", "rounded", "square"],
       "shadow": "none",
       "frame": "none"
     },
@@ -4346,11 +3657,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Nunito Sans",
-        "Raleway"
-      ],
+      "googleFonts": ["Fira Code", "Nunito Sans", "Raleway"],
       "scale": "balanced",
       "fonts": {
         "display": "Raleway",
@@ -4370,141 +3677,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       }
     }
   },
@@ -4531,9 +3769,9 @@
       "palette": {
         "primary": "#1D4ED8",
         "secondary": "#93C5FD",
-        "text": "#0F172A",
-        "muted": "#64748B",
-        "pageBackground": "#F8FAFC"
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#374151"
       },
       "line": "soft",
       "density": "comfortable",
@@ -4780,11 +4018,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Poppins",
-        "Source Sans 3"
-      ],
+      "googleFonts": ["Fira Code", "Poppins", "Source Sans 3"],
       "scale": "balanced",
       "fonts": {
         "display": "Poppins",
@@ -4804,141 +4038,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       }
     }
   },
@@ -4965,9 +4130,9 @@
       "palette": {
         "primary": "#7C3AED",
         "secondary": "#C4B5FD",
-        "text": "#1F2937",
-        "muted": "#6B7280",
-        "pageBackground": "#FAF5FF"
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#334155"
       },
       "line": "strong",
       "density": "compact",
@@ -5214,11 +4379,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "DM Sans",
-        "DM Serif Display",
-        "Fira Code"
-      ],
+      "googleFonts": ["DM Sans", "DM Serif Display", "Fira Code"],
       "scale": "balanced",
       "fonts": {
         "display": "DM Serif Display",
@@ -5238,141 +4399,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       }
     }
   },
@@ -5401,7 +4493,7 @@
         "secondary": "#93C5FD",
         "text": "#0F172A",
         "muted": "#64748B",
-        "pageBackground": "#F8FAFC"
+        "pageBackground": "#CBD5E1"
       },
       "line": "soft",
       "density": "comfortable",
@@ -5446,11 +4538,7 @@
       "sectionSpacing": "normal"
     },
     "photoOptions": {
-      "shapeList": [
-        "circle",
-        "rounded",
-        "square"
-      ],
+      "shapeList": ["circle", "rounded", "square"],
       "shadow": "none",
       "frame": "none"
     },
@@ -5668,11 +4756,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Bitter",
-        "Fira Code",
-        "Work Sans"
-      ],
+      "googleFonts": ["Bitter", "Fira Code", "Work Sans"],
       "scale": "balanced",
       "fonts": {
         "display": "Bitter",
@@ -5692,141 +4776,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       }
     }
   },
@@ -5853,9 +4868,9 @@
       "palette": {
         "primary": "#7C3AED",
         "secondary": "#C4B5FD",
-        "text": "#1F2937",
-        "muted": "#6B7280",
-        "pageBackground": "#FAF5FF"
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#D1D5DB"
       },
       "line": "strong",
       "density": "compact",
@@ -5900,11 +4915,7 @@
       "sectionSpacing": "normal"
     },
     "photoOptions": {
-      "shapeList": [
-        "circle",
-        "rounded",
-        "square"
-      ],
+      "shapeList": ["circle", "rounded", "square"],
       "shadow": "none",
       "frame": "none"
     },
@@ -6122,11 +5133,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Fraunces",
-        "Public Sans"
-      ],
+      "googleFonts": ["Fira Code", "Fraunces", "Public Sans"],
       "scale": "balanced",
       "fonts": {
         "display": "Fraunces",
@@ -6146,141 +5153,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       }
     }
   },
@@ -6307,9 +5245,9 @@
       "palette": {
         "primary": "#0B1220",
         "secondary": "#93C5FD",
-        "text": "#E5E7EB",
-        "muted": "#94A3B8",
-        "pageBackground": "#F8FAFC"
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#E5E7EB"
       },
       "line": "soft",
       "density": "comfortable",
@@ -6561,11 +5499,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Inter",
-        "Playfair Display"
-      ],
+      "googleFonts": ["Fira Code", "Inter", "Playfair Display"],
       "scale": "balanced",
       "fonts": {
         "display": "Playfair Display",
@@ -6585,141 +5519,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       }
     }
   },
@@ -6746,9 +5611,9 @@
       "palette": {
         "primary": "#111827",
         "secondary": "#A5B4FC",
-        "text": "#F3F4F6",
-        "muted": "#9CA3AF",
-        "pageBackground": "#F9FAFB"
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#C7D2FE"
       },
       "line": "block",
       "density": "compact",
@@ -7000,11 +5865,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Cormorant Garamond",
-        "Fira Code",
-        "Lato"
-      ],
+      "googleFonts": ["Cormorant Garamond", "Fira Code", "Lato"],
       "scale": "balanced",
       "fonts": {
         "display": "Cormorant Garamond",
@@ -7024,141 +5885,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       }
     }
   },
@@ -7185,9 +5977,9 @@
       "palette": {
         "primary": "#1E1B4B",
         "secondary": "#BFDBFE",
-        "text": "#EDE9FE",
-        "muted": "#A5B4FC",
-        "pageBackground": "#F5F3FF"
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#D6D3D1"
       },
       "line": "none",
       "density": "comfortable",
@@ -7234,11 +6026,7 @@
       "asideStartsAtTop": true
     },
     "photoOptions": {
-      "shapeList": [
-        "circle",
-        "rounded",
-        "square"
-      ],
+      "shapeList": ["circle", "rounded", "square"],
       "shadow": "none",
       "frame": "none"
     },
@@ -7454,11 +6242,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Merriweather",
-        "Source Sans 3"
-      ],
+      "googleFonts": ["Fira Code", "Merriweather", "Source Sans 3"],
       "scale": "balanced",
       "fonts": {
         "display": "Merriweather",
@@ -7478,141 +6262,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       }
     }
   },
@@ -7639,9 +6354,9 @@
       "palette": {
         "primary": "#172554",
         "secondary": "#C7D2FE",
-        "text": "#DBEAFE",
-        "muted": "#93C5FD",
-        "pageBackground": "#EFF6FF"
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#BFC7D5"
       },
       "line": "soft",
       "density": "compact",
@@ -7687,11 +6402,7 @@
       "asideStartsAtTop": false
     },
     "photoOptions": {
-      "shapeList": [
-        "circle",
-        "rounded",
-        "square"
-      ],
+      "shapeList": ["circle", "rounded", "square"],
       "shadow": "none",
       "frame": "none"
     },
@@ -7907,11 +6618,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Libre Baskerville",
-        "Nunito Sans"
-      ],
+      "googleFonts": ["Fira Code", "Libre Baskerville", "Nunito Sans"],
       "scale": "balanced",
       "fonts": {
         "display": "Libre Baskerville",
@@ -7931,141 +6638,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       }
     }
   },
@@ -8092,9 +6730,9 @@
       "palette": {
         "primary": "#0F172A",
         "secondary": "#BAE6FD",
-        "text": "#E2E8F0",
-        "muted": "#94A3B8",
-        "pageBackground": "#F0F9FF"
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#111827"
       },
       "line": "block",
       "density": "comfortable",
@@ -8140,11 +6778,7 @@
       "asideStartsAtTop": true
     },
     "photoOptions": {
-      "shapeList": [
-        "circle",
-        "rounded",
-        "square"
-      ],
+      "shapeList": ["circle", "rounded", "square"],
       "shadow": "soft",
       "frame": "line"
     },
@@ -8360,11 +6994,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Roboto",
-        "Roboto Slab"
-      ],
+      "googleFonts": ["Fira Code", "Roboto", "Roboto Slab"],
       "scale": "balanced",
       "fonts": {
         "display": "Roboto Slab",
@@ -8384,141 +7014,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       }
     }
   },
@@ -8545,9 +7106,9 @@
       "palette": {
         "primary": "#0B1220",
         "secondary": "#DDD6FE",
-        "text": "#E5E7EB",
-        "muted": "#94A3B8",
-        "pageBackground": "#FAF5FF"
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#1F2937"
       },
       "line": "none",
       "density": "compact",
@@ -8593,11 +7154,7 @@
       "asideStartsAtTop": false
     },
     "photoOptions": {
-      "shapeList": [
-        "circle",
-        "rounded",
-        "square"
-      ],
+      "shapeList": ["circle", "rounded", "square"],
       "shadow": "soft",
       "frame": "line"
     },
@@ -8813,11 +7370,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Manrope",
-        "Prata"
-      ],
+      "googleFonts": ["Fira Code", "Manrope", "Prata"],
       "scale": "balanced",
       "fonts": {
         "display": "Prata",
@@ -8837,141 +7390,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       }
     }
   },
@@ -8998,9 +7482,9 @@
       "palette": {
         "primary": "#111827",
         "secondary": "#E2E8F0",
-        "text": "#F3F4F6",
-        "muted": "#9CA3AF",
-        "pageBackground": "#FFFFFF"
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#0F172A"
       },
       "line": "soft",
       "density": "comfortable",
@@ -9046,11 +7530,7 @@
       "asideStartsAtTop": true
     },
     "photoOptions": {
-      "shapeList": [
-        "circle",
-        "rounded",
-        "square"
-      ],
+      "shapeList": ["circle", "rounded", "square"],
       "shadow": "none",
       "frame": "none"
     },
@@ -9266,11 +7746,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Inter",
-        "Space Grotesk"
-      ],
+      "googleFonts": ["Fira Code", "Inter", "Space Grotesk"],
       "scale": "balanced",
       "fonts": {
         "display": "Space Grotesk",
@@ -9290,141 +7766,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       }
     },
     "sectionOrder": [
@@ -9511,9 +7918,9 @@
       "palette": {
         "primary": "#1E1B4B",
         "secondary": "#FDE68A",
-        "text": "#EDE9FE",
-        "muted": "#A5B4FC",
-        "pageBackground": "#FFFBEB"
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#27272A"
       },
       "line": "block",
       "density": "compact",
@@ -9559,11 +7966,7 @@
       "asideStartsAtTop": false
     },
     "photoOptions": {
-      "shapeList": [
-        "circle",
-        "rounded",
-        "square"
-      ],
+      "shapeList": ["circle", "rounded", "square"],
       "shadow": "none",
       "frame": "none"
     },
@@ -9779,11 +8182,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Montserrat",
-        "Open Sans"
-      ],
+      "googleFonts": ["Fira Code", "Montserrat", "Open Sans"],
       "scale": "balanced",
       "fonts": {
         "display": "Montserrat",
@@ -9803,141 +8202,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       }
     },
     "sectionOrder": [
@@ -10024,9 +8354,9 @@
       "palette": {
         "primary": "#172554",
         "secondary": "#FBCFE8",
-        "text": "#DBEAFE",
-        "muted": "#93C5FD",
-        "pageBackground": "#FDF2F8"
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#374151"
       },
       "line": "none",
       "density": "comfortable",
@@ -10072,11 +8402,7 @@
       "asideStartsAtTop": true
     },
     "photoOptions": {
-      "shapeList": [
-        "circle",
-        "rounded",
-        "square"
-      ],
+      "shapeList": ["circle", "rounded", "square"],
       "shadow": "none",
       "frame": "none"
     },
@@ -10292,11 +8618,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Lato",
-        "Oswald"
-      ],
+      "googleFonts": ["Fira Code", "Lato", "Oswald"],
       "scale": "balanced",
       "fonts": {
         "display": "Oswald",
@@ -10316,141 +8638,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#1D4ED8",
-          "#64748B"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#0F172A", "#1D4ED8", "#64748B"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#64748B",
-          "#0F172A",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#64748B", "#0F172A", "#1D4ED8"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#0F172A",
-          "#64748B",
-          "#1D4ED8"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#0F172A", "#64748B", "#1D4ED8"]
       }
     },
     "sectionOrder": [
@@ -10537,9 +8790,9 @@
       "palette": {
         "primary": "#0F172A",
         "secondary": "#99F6E4",
-        "text": "#E2E8F0",
-        "muted": "#94A3B8",
-        "pageBackground": "#F0FDFA"
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#334155"
       },
       "line": "soft",
       "density": "compact",
@@ -10585,11 +8838,7 @@
       "asideStartsAtTop": false
     },
     "photoOptions": {
-      "shapeList": [
-        "circle",
-        "rounded",
-        "square"
-      ],
+      "shapeList": ["circle", "rounded", "square"],
       "shadow": "none",
       "frame": "none"
     },
@@ -10805,11 +9054,7 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": [
-        "Fira Code",
-        "Nunito Sans",
-        "Raleway"
-      ],
+      "googleFonts": ["Fira Code", "Nunito Sans", "Raleway"],
       "scale": "balanced",
       "fonts": {
         "display": "Raleway",
@@ -10829,141 +9074,72 @@
           "min": 34,
           "max": 54
         },
-        "styles": [
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#111827"
-        ]
+        "styles": ["semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#111827"]
       },
       "title": {
         "size": {
           "min": 18,
           "max": 30
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "sectionTitle": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "entryTitle": {
         "size": {
           "min": 14,
           "max": 22
         },
-        "styles": [
-          "medium",
-          "semibold",
-          "bold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#7C3AED",
-          "#6B7280"
-        ]
+        "styles": ["medium", "semibold", "bold"],
+        "colors": ["#1F2937", "#7C3AED", "#6B7280"]
       },
       "date": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "location": {
         "size": {
           "min": 11,
           "max": 15
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#6B7280",
-          "#1F2937",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#6B7280", "#1F2937", "#7C3AED"]
       },
       "description": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "bullet": {
         "size": {
           "min": 12,
           "max": 18
         },
-        "styles": [
-          "regular",
-          "medium"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       },
       "contact": {
         "size": {
           "min": 11,
           "max": 16
         },
-        "styles": [
-          "regular",
-          "medium",
-          "semibold"
-        ],
-        "colors": [
-          "#1F2937",
-          "#6B7280",
-          "#7C3AED"
-        ]
+        "styles": ["regular", "medium", "semibold"],
+        "colors": ["#1F2937", "#6B7280", "#7C3AED"]
       }
     },
     "sectionOrder": [
