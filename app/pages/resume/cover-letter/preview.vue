@@ -11,7 +11,7 @@ import {
   useResumeGoogleFonts,
 } from '~/composables/useResumeGoogleFonts'
 
-definePageMeta({ title: 'resumePreview.coverLetter.metaTitle' })
+definePageMeta({ title: 'resumePreview.coverLetter.metaTitle', layout: 'resume' })
 const { t } = useI18n()
 useHead(() => ({
   title: t('resumePreview.coverLetter.metaTitle'),
@@ -861,7 +861,7 @@ watch(aiModalOpen, (isOpen) => {
       />
       <div
         ref="coverPreviewRef"
-        class="py-8 d-flex justify-center preview-single-page-frame"
+        class="d-flex justify-center preview-single-page-frame"
       >
         <main
           class="capture-cover-letter"
