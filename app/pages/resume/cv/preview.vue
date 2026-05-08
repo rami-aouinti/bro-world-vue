@@ -2922,9 +2922,14 @@ watch(
 }
 
 .cv-header-editor--link-value {
-  display: block;
+  display: none;
   min-width: 0;
   max-width: 100%;
+}
+
+.cv-contact-item:hover .cv-header-editor--link-value,
+.cv-contact-item:focus-within .cv-header-editor--link-value {
+  display: block;
 }
 
 .cv-header-editor--link-value :deep(.hover-editor__surface),
