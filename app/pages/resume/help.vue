@@ -1,7 +1,9 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'resume', title: 'Help' })
-const { t, tm } = useI18n()
-const items = computed(() => tm('resumeResources.help.items') as string[])
+const { t, tm, rt } = useI18n()
+const items = computed(() =>
+  (tm('resumeResources.help.items') as unknown[]).map((item) => rt(item)),
+)
 </script>
 
 <template>

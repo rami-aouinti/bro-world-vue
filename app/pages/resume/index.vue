@@ -41,15 +41,16 @@ const displayedTemplates = computed(() => {
 })
 
 const sidebarRoutes = computed(() => [
-  { label: 'Create New CV', to: '/resume/cv/preview' },
-  { label: 'Create New Cover Page', to: '/resume/cover-page/preview' },
-  { label: 'Create New Cover Letter', to: '/resume/cover-letter/preview' },
-  { label: 'Create CV Template', to: '/resume/cv/template-create' },
-  { label: 'Create Cover Page Template', to: '/resume/cover-page/template-create' },
-  { label: 'Create Cover Letter Template', to: '/resume/cover-letter/template-create' },
-  { label: 'IA Features', to: '/resume/ia-features' },
-  { label: 'Help', to: '/resume/help' },
-  { label: 'Documentation', to: '/resume/documentation' },
+  { label: 'Create New CV', to: '/resume/cv/preview', icon: 'mdi-file-account-outline' },
+  { label: 'Mes Files', to: '/resume/my-files', icon: 'mdi-folder-multiple-outline' },
+  { label: 'Create New Cover Page', to: '/resume/cover-page/preview', icon: 'mdi-file-document-outline' },
+  { label: 'Create New Cover Letter', to: '/resume/cover-letter/preview', icon: 'mdi-email-edit-outline' },
+  { label: 'Create CV Template', to: '/resume/cv/template-create', icon: 'mdi-palette-outline' },
+  { label: 'Create Cover Page Template', to: '/resume/cover-page/template-create', icon: 'mdi-palette-swatch-outline' },
+  { label: 'Create Cover Letter Template', to: '/resume/cover-letter/template-create', icon: 'mdi-palette-swatch-variant' },
+  { label: 'IA Features', to: '/resume/ia-features', icon: 'mdi-robot-outline' },
+  { label: 'Help', to: '/resume/help', icon: 'mdi-lifebuoy' },
+  { label: 'Documentation', to: '/resume/documentation', icon: 'mdi-book-open-page-variant-outline' },
 ])
 
 const randomVariants = computed(() => {
@@ -76,16 +77,25 @@ const randomVariants = computed(() => {
             :key="item.to"
             :title="item.label"
             :to="item.to"
-            prepend-icon="mdi-chevron-right"
+            :prepend-icon="item.icon"
           />
         </v-list>
       </template>
 
       <template #right>
-        <h3 class="mb-3">{{ t('resumeBuilder.index.randomVariantsTitle') }}</h3>
+        <v-chip color="primary" class="mb-3" variant="flat">Variants</v-chip>
         <v-row dense>
           <v-col v-for="variant in randomVariants" :key="variant.id" cols="12">
-            <v-card class="preview-variant-card" :to="variant.type === 'resume' ? `/resume/cv/preview?template=${variant.id}` : variant.type === 'cover-page' ? `/resume/cover-page/preview?template=${variant.id}` : `/resume/cover-letter/preview?template=${variant.id}`">
+            <v-card
+              class="preview-variant-card"
+              :to="
+                variant.type === 'resume'
+                  ? `/resume/cv/preview?template=${variant.id}`
+                  : variant.type === 'cover-page'
+                    ? `/resume/cover-page/preview?template=${variant.id}`
+                    : `/resume/cover-letter/preview?template=${variant.id}`
+              "
+            >
               <v-img :src="variant.image" :alt="variant.title" height="130" cover />
               <v-card-text class="py-2">{{ variant.title }}</v-card-text>
             </v-card>
@@ -102,7 +112,11 @@ const randomVariants = computed(() => {
           </v-tabs>
 
           <div class="templates-slider mt-4">
-            <v-card v-for="templateCard in displayedTemplates" :key="templateCard.id" class="postcard-gradient-card template-slide">
+            <v-card
+              v-for="templateCard in displayedTemplates"
+              :key="templateCard.id"
+              class="postcard-gradient-card template-slide"
+            >
               <v-img :src="templateCard.image" :alt="templateCard.title" />
               <span>{{ templateCard.title }}</span>
             </v-card>
@@ -114,15 +128,64 @@ const randomVariants = computed(() => {
 </template>
 
 <style scoped>
-.hero { max-width: 1200px; margin: 0 auto; text-align: center; }
-.templates-showcase { max-width: 1100px; margin: 0 auto; }
-.templates-tabs { border-bottom: 1px solid rgba(var(--v-theme-on-surface), 0.2); }
-.templates-slider { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; }
-.template-slide { min-width: 260px; max-width: 260px; border: 1px solid rgba(var(--v-theme-on-surface), 0.2); border-radius: 12px; overflow: hidden; background: rgba(var(--v-theme-surface), 1); color: inherit; text-align: left; scroll-snap-align: start; }
-.template-slide img { width: 100%; height: 180px; object-fit: cover; display: block; }
-.template-slide span { display: block; padding: 10px 12px; font-weight: 600; }
-.fade-in-up { animation: fadeInUp 0.7s ease both; }
-.delay-1 { animation-delay: 0.15s; }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
-.preview-variant-card { border: 1px solid rgba(var(--v-theme-on-surface), 0.2); }
+.hero {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+.templates-showcase {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.templates-tabs {
+  border-bottom: 1px solid rgba(var(--v-theme-on-surface), 0.2);
+}
+.templates-slider {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scroll-snap-type: x mandatory;
+}
+.template-slide {
+  min-width: 260px;
+  max-width: 260px;
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.2);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(var(--v-theme-surface), 1);
+  color: inherit;
+  text-align: left;
+  scroll-snap-align: start;
+}
+.template-slide img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+.template-slide span {
+  display: block;
+  padding: 10px 12px;
+  font-weight: 600;
+}
+.fade-in-up {
+  animation: fadeInUp 0.7s ease both;
+}
+.delay-1 {
+  animation-delay: 0.15s;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.preview-variant-card {
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.2);
+}
 </style>
