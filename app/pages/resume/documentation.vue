@@ -14,7 +14,7 @@ const tips = computed(() => (tm('resumeResources.documentation.tips') as unknown
 
     <v-row>
       <v-col v-for="category in categories" :key="category.title" cols="12" md="6" lg="4">
-        <v-card class="doc-card h-100" elevation="3">
+        <v-card class="doc-card h-100 postcard-gradient-card" elevation="3">
           <v-card-title class="text-wrap">{{ rt(category.title) }}</v-card-title>
           <v-list density="compact">
             <v-list-item
@@ -28,7 +28,7 @@ const tips = computed(() => (tm('resumeResources.documentation.tips') as unknown
       </v-col>
     </v-row>
 
-    <v-card class="mt-8" color="primary" variant="tonal">
+    <v-card class="mt-8 postcard-gradient-card" color="primary" variant="tonal">
       <v-card-title>Best Practices</v-card-title>
       <v-card-text>
         <v-chip-group column>

@@ -22,7 +22,7 @@ const items = computed(() =>
   <v-container>
     <v-row>
       <v-col v-for="item in items" :key="item.title" cols="12" md="6" lg="4">
-        <v-card class="mb-1">
+        <v-card class="mb-1 postcard-gradient-card">
           <v-list-item v-bind="item" :ripple="false" class="py-4" />
         </v-card>
       </v-col>

@@ -577,7 +577,7 @@ async function deleteSelectedStory() {
 </script>
 
 <template>
-  <v-card rounded="xl" class="mb-4 stories-shell">
+  <v-card rounded="xl" class="mb-4 stories-shell postcard-gradient-card">
     <v-card-title
       class="text-subtitle-1 font-weight-bold d-flex align-center justify-space-between"
     >
@@ -692,7 +692,7 @@ async function deleteSelectedStory() {
   </v-card>
 
   <v-dialog v-model="viewerOpen" fullscreen scrim="rgba(0,0,0,.93)">
-    <v-card v-if="selectedGroup && selectedStory" class="story-viewer">
+    <v-card v-if="selectedGroup && selectedStory" class="story-viewer postcard-gradient-card">
       <div class="story-stage">
         <v-btn
           class="story-nav-btn story-nav-btn--left"

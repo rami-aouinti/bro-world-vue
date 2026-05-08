@@ -83,29 +83,6 @@ const decorColorOptions = [
 ]
 const editableDecorObjects = ref<any[]>([])
 const decorMenuOpenIndex = ref<number | null>(null)
-const sidebarRoutes = computed(() => {
-  const routes = [
-    { label: 'Catalog', to: '/resume', icon: 'mdi-apps' },
-    { label: 'Create New CV', to: '/resume/cv/preview', icon: 'mdi-file-account-outline' },
-    { label: 'Create New Cover Page', to: '/resume/cover-page/preview', icon: 'mdi-file-document-outline' },
-    { label: 'Create New Cover Letter', to: '/resume/cover-letter/preview', icon: 'mdi-email-edit-outline' },
-    { label: 'Create CV Template', to: '/resume/cv/template-create', icon: 'mdi-palette-outline' },
-    { label: 'Create Cover Page Template', to: '/resume/cover-page/template-create', icon: 'mdi-palette-swatch-outline' },
-    { label: 'Create Cover Letter Template', to: '/resume/cover-letter/template-create', icon: 'mdi-palette-swatch-variant' },
-    { label: 'IA Features', to: '/resume/ia-features', icon: 'mdi-robot-outline' },
-    { label: 'Documentation', to: '/resume/documentation', icon: 'mdi-book-open-page-variant-outline' },
-  ]
-
-  if (loggedIn.value) {
-    routes.splice(1, 0, {
-      label: 'Mes Files',
-      to: '/resume/my-files',
-      icon: 'mdi-folder-multiple-outline',
-    })
-  }
-
-  return routes
-})
 const activeTemplate = computed(
   () =>
     GENERATED_RESUME_TEMPLATES.find(
@@ -1307,18 +1284,6 @@ watch(
       @change="onPhotoSelected"
     />
     <AppPageDrawers v-if="!isCaptureMode">
-      <template #left>
-        <v-list density="comfortable" nav>
-          <v-list-item
-            v-for="item in sidebarRoutes"
-            :key="item.to"
-            :title="item.label"
-            :to="item.to"
-            :prepend-icon="item.icon"
-          />
-        </v-list>
-      </template>
-
       <template #right>
         <v-btn class="mt-1" variant="tonal" prepend-icon="mdi-content-save" block @click="saveFromPreview">Save</v-btn>
         <v-btn class="mt-2" color="primary" prepend-icon="mdi-file-pdf-box" block @click="downloadPdf">PDF</v-btn>

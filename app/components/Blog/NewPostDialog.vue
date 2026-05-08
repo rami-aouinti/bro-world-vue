@@ -198,7 +198,7 @@ function onSubmit() {
     @update:model-value="emit('update:open', $event)"
   >
     <v-card
-      class="new-post-dialog"
+      class="new-post-dialog postcard-gradient-card"
       :class="{ 'new-post-dialog--light': isLightTheme }"
       rounded="xl"
     >
@@ -278,7 +278,7 @@ function onSubmit() {
     :title="actionModalTitle"
     :max-width="520"
   >
-    <v-card v-if="modalState === 'tag'" rounded="lg">
+    <v-card v-if="modalState === 'tag'" rounded="lg" class="postcard-gradient-card">
       <v-card-text>
         <v-text-field
           v-model="tagsInput"
@@ -295,7 +295,7 @@ function onSubmit() {
       </v-card-actions>
     </v-card>
 
-    <v-card v-else-if="modalState === 'youtube'" rounded="lg">
+    <v-card v-else-if="modalState === 'youtube'" rounded="lg" class="postcard-gradient-card">
       <v-card-text>
         <v-text-field
           v-model="youtubeUrl"
@@ -312,7 +312,7 @@ function onSubmit() {
       </v-card-actions>
     </v-card>
 
-    <v-card v-else-if="modalState === 'camera'" rounded="lg">
+    <v-card v-else-if="modalState === 'camera'" rounded="lg" class="postcard-gradient-card">
       <v-card-text>
         {{ t('blog.newPost.modals.camera.description') }}
       </v-card-text>
@@ -327,7 +327,7 @@ function onSubmit() {
       </v-card-actions>
     </v-card>
 
-    <v-card v-else-if="modalState === 'media'" rounded="lg">
+    <v-card v-else-if="modalState === 'media'" rounded="lg" class="postcard-gradient-card">
       <v-card-text class="d-flex flex-column ga-3">
         <v-text-field
           v-model="imageUrl"
