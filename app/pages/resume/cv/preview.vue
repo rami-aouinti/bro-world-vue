@@ -1313,22 +1313,6 @@ watch(
         >
           Compare
         </v-btn>
-        <v-switch
-          v-model="sectionBarConfig.show"
-          label="Section bar"
-          hide-details
-          inset
-        />
-        <AppSelect
-          v-model="sectionBarConfig.widthType"
-          :items="[
-            { title: 'Flex', value: 'flex' },
-            { title: 'Complet', value: 'complete' },
-          ]"
-          label="Bar width mode"
-          hide-details
-          class="mt-2"
-        />
       </template>
     </AppPageDrawers>
 
@@ -1470,6 +1454,23 @@ watch(
           <v-slider v-model="asideHeight" :min="120" :max="2600" :step="2" hide-details class="mb-2" />
           <p class="text-body-2">Aside radius</p>
           <v-slider v-model="asideRadius" :min="0" :max="90" :step="1" hide-details />
+          <v-switch
+            v-model="sectionBarConfig.show"
+            label="Section bar"
+            hide-details
+            inset
+            class="mt-2"
+          />
+          <AppSelect
+            v-model="sectionBarConfig.widthType"
+            :items="[
+              { title: 'Flex', value: 'flex' },
+              { title: 'Complet', value: 'complete' },
+            ]"
+            label="Bar width mode"
+            hide-details
+            class="mt-2"
+          />
           <p class="text-body-2">Bar heighth</p>
           <v-slider v-model="sectionBarConfig.height" :min="1" :max="18" :step="1" hide-details class="mt-2" />
           <p class="text-body-2">Bar radius</p>
