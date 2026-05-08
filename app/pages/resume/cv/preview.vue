@@ -331,6 +331,7 @@ function visibleOrderedSections(
 }
 
 const CV_PREVIEW_PDF_PAGE_HEIGHT = 1100
+const CV_PREVIEW_PAGE_WIDTH = 794
 const cvPreviewRef = ref<HTMLElement | null>(null)
 const cvPreviewPageCount = ref(1)
 let cvPreviewMeasureTimer: ReturnType<typeof setTimeout> | undefined
@@ -1166,7 +1167,7 @@ async function downloadPdf() {
     .map((el) => el.outerHTML)
     .join('')
   printWindow.document.write(
-    `<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.cv-preview-shell{width:210mm;box-sizing:border-box;margin:0}.resume-preview-page-break{display:none!important}.cv-section-toolbar,.cv-photo-menu-btn{display:none!important}</style></head><body>${node.outerHTML}</body></html>`,
+    `<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.cv-preview-shell{width:794px;max-width:794px;box-sizing:border-box;margin:0}.resume-preview-page-break{display:none!important}.cv-section-toolbar,.cv-photo-menu-btn{display:none!important}</style></head><body>${node.outerHTML}</body></html>`,
   )
   printWindow.document.close()
   await new Promise((resolve) => setTimeout(resolve, 900))
@@ -1497,6 +1498,7 @@ v-if="!isCaptureMode"
           :style="{
             '--cv-preview-page-height': `${CV_PREVIEW_PDF_PAGE_HEIGHT}px`,
             '--cv-preview-total-height': `${cvPreviewHeight}px`,
+            '--cv-preview-page-width': `${CV_PREVIEW_PAGE_WIDTH}px`,
           }"
         >
           <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"></div>
@@ -1624,28 +1626,6 @@ v-if="!isCaptureMode"
                         @update:model-value="updateHeaderField(item.key, $event)"
                       />
                     </div>
-                    <HoverRichTextEditor
-                      class="cv-header-editor cv-header-editor--name"
-                      :model-value="headerProfile.fullName"
-                      placeholder="Full name"
-                      font-size="22px"
-                      font-weight="700"
-                      :font-family="textFontPreset('fullName')"
-                      color="inherit"
-                      @update:model-value="
-                        updateHeaderField('fullName', $event)
-                      "
-                    />
-                    <HoverRichTextEditor
-                      class="cv-header-editor cv-header-editor--role"
-                      :model-value="headerProfile.role"
-                      placeholder="Role"
-                      font-size="14px"
-                      font-weight="700"
-                      :font-family="textFontPreset('body')"
-                      color="inherit"
-                      @update:model-value="updateHeaderField('role', $event)"
-                    />
                   </div>
                 </div>
               </template>
@@ -1707,28 +1687,6 @@ v-if="!isCaptureMode"
                             ></button></div></v-card
                       ></v-menu>
                     </div>
-                    <HoverRichTextEditor
-                      class="cv-header-editor cv-header-editor--name"
-                      :model-value="headerProfile.fullName"
-                      placeholder="Full name"
-                      font-size="22px"
-                      font-weight="700"
-                      :font-family="textFontPreset('fullName')"
-                      color="inherit"
-                      @update:model-value="
-                        updateHeaderField('fullName', $event)
-                      "
-                    />
-                    <HoverRichTextEditor
-                      class="cv-header-editor cv-header-editor--role"
-                      :model-value="headerProfile.role"
-                      placeholder="Role"
-                      font-size="14px"
-                      font-weight="700"
-                      :font-family="textFontPreset('body')"
-                      color="inherit"
-                      @update:model-value="updateHeaderField('role', $event)"
-                    />
                   </div>
                   <div class="cv-col-6 cv-header-contact">
                     <div class="cv-header-contact-grid">
@@ -2972,6 +2930,9 @@ v-if="!isCaptureMode"
 
 .cv-preview-shell {
   position: relative;
+  width: var(--cv-preview-page-width, 794px);
+  min-width: var(--cv-preview-page-width, 794px);
+  max-width: var(--cv-preview-page-width, 794px);
   min-height: var(--cv-preview-total-height, 1100px);
 }
 
