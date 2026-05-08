@@ -16,9 +16,7 @@ const generatedResumeTemplates = computed(() =>
   GENERATED_RESUME_TEMPLATES.map((template) => ({
     id: template.id,
     title: `Resume · ${template.name}`,
-    image: template.id
-      ? `/img/cv/generated/${template.id}.png`
-      : '/img/cv/resume-modern.sv',
+    image: template.id ? `/img/cv/generated/${template.id}.png` : '/img/cv/resume-modern.sv',
     type: 'resume' as const,
     templateId: template.id,
     layout: template.layout,
@@ -26,18 +24,9 @@ const generatedResumeTemplates = computed(() =>
 )
 
 const documentTabs = computed(() => [
-  {
-    label: `Resume · ${t('resumeBuilder.index.tabs.resume')}`,
-    value: 'resume' as const,
-  },
-  {
-    label: `Cover Page · ${t('resumeBuilder.index.tabs.cover')}`,
-    value: 'cover-page' as const,
-  },
-  {
-    label: `Cover Letter · ${t('resumeBuilder.index.tabs.letter')}`,
-    value: 'cover-letter' as const,
-  },
+  { label: `Resume · ${t('resumeBuilder.index.tabs.resume')}`, value: 'resume' as const },
+  { label: `Cover Page · ${t('resumeBuilder.index.tabs.cover')}`, value: 'cover-page' as const },
+  { label: `Cover Letter · ${t('resumeBuilder.index.tabs.letter')}`, value: 'cover-letter' as const },
 ])
 
 const displayedTemplates = computed(() => {
@@ -48,9 +37,7 @@ const displayedTemplates = computed(() => {
     })
   }
 
-  return allTemplates.value.filter(
-    (template) => template.type === activeTemplateTab.value,
-  )
+  return allTemplates.value.filter((template) => template.type === activeTemplateTab.value)
 })
 
 const sidebarRoutes = computed(() => [
@@ -120,19 +107,8 @@ const randomVariants = computed(() => {
     <v-container fluid>
       <section class="hero px-4 px-md-8 fade-in-up">
         <div class="templates-showcase mt-8 fade-in-up delay-1">
-          <v-tabs
-            v-model="activeTemplateTab"
-            color="primary"
-            grow
-            class="templates-tabs"
-          >
-            <v-tab
-              v-for="tab in documentTabs"
-              :key="tab.value"
-              :value="tab.value"
-            >
-              {{ tab.label }}
-            </v-tab>
+          <v-tabs v-model="activeTemplateTab" color="primary" grow class="templates-tabs">
+            <v-tab v-for="tab in documentTabs" :key="tab.value" :value="tab.value">{{ tab.label }}</v-tab>
           </v-tabs>
 
           <div class="templates-slider mt-4">

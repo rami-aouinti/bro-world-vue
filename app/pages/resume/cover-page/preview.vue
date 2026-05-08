@@ -278,7 +278,7 @@ const aiRole = ref('')
 const aiLocation = ref('')
 const aiPhotoUrl = ref('')
 
-const COVER_PREVIEW_PDF_PAGE_HEIGHT = 1100
+const COVER_PREVIEW_PDF_PAGE_HEIGHT = 1123
 const coverPreviewRef = ref<HTMLElement | null>(null)
 const showCoverPreviewPageBreak = ref(false)
 let coverPreviewMeasureTimer: ReturnType<typeof setTimeout> | undefined
