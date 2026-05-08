@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-20-resume.json'
 import PALETTE_PRESETS from '~/data/resume-templates/palettes.json'
+import {
+  applyReadablePageTextColors,
+  readableMutedColorForBackground,
+  readableTextColorForBackground,
+} from '~/utils/resumeColorContrast'
 import { buildToolbarPaletteOptions } from '~/modules/resume/theme/paletteOptions'
 import CvLayoutAside from '~/components/cv/layouts/CvLayoutAside.vue'
 import CvLayoutNoAside from '~/components/cv/layouts/CvLayoutNoAside.vue'
@@ -10,6 +15,7 @@ import CvLayoutAsideFullLeft from '~/components/cv/layouts/CvLayoutAsideFullLeft
 import CvLayoutAsideFullRight from '~/components/cv/layouts/CvLayoutAsideFullRight.vue'
 import CvLayoutAsideBarLeft from '~/components/cv/layouts/CvLayoutAsideBarLeft.vue'
 import CvLayoutAsideBarRight from '~/components/cv/layouts/CvLayoutAsideBarRight.vue'
+import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 import {
   resolveResumeTextFont,
   useResumeGoogleFonts,
@@ -23,7 +29,7 @@ import CvEditableSectionContent from '~/components/cv/sections/CvEditableSection
 const { t } = useI18n()
 
 definePageMeta({
-  title: 'Resume · CV Preview',
+  title: 'resumePreview.cv.metaTitle',
   layout: 'resume',
 })
 
@@ -36,9 +42,13 @@ const queryTemplateId =
   typeof route.query.template === 'string' ? route.query.template : ''
 const queryPaletteId =
   typeof route.query.palette === 'string' ? route.query.palette : ''
+const { loggedIn, user } = useUserSession()
+const myResumes = ref<ResumeApiItem[]>([])
 const selectedTemplate = ref(GENERATED_RESUME_TEMPLATES[0]?.id || 'tpl-001')
 const layoutMenuOpen = ref(false)
 const paletteMenuOpen = ref(false)
+const settingsMenuOpen = ref(false)
+const decorMenuOpen = ref(false)
 const selectedPalette = ref('template')
 const signatureDataUrl = ref('')
 const signatureDialogOpen = ref(false)
@@ -79,7 +89,6 @@ const decorColorOptions = [
 ]
 const editableDecorObjects = ref<any[]>([])
 const decorMenuOpenIndex = ref<number | null>(null)
-
 const activeTemplate = computed(
   () =>
     GENERATED_RESUME_TEMPLATES.find(
@@ -119,15 +128,15 @@ const activeColors = computed(() => {
     (option) => option.value === selectedPalette.value,
   )
   if (selected && selected.value !== 'template')
-    return {
+    return applyReadablePageTextColors({
       ...palette,
       primary: selected.primary,
       secondary: selected.secondary ?? selected.dark,
       text: selected.text,
       muted: selected.tertiary,
       pageBackground: selected.quaternary,
-    }
-  return palette
+    })
+  return applyReadablePageTextColors(palette)
 })
 const sectionBarConfig = reactive({
   show: true,
@@ -194,7 +203,10 @@ function decorObjectStyle(obj: any) {
     height: `${size}px`,
   }
   const color = String(obj?.color ?? '').trim()
-  if (color) base.backgroundColor = color
+  if (color) {
+    base.backgroundColor = color
+    base.color = color
+  }
 
   if (type === 'ring' && color) {
     base.backgroundColor = 'transparent'
@@ -328,6 +340,7 @@ function visibleOrderedSections(
 }
 
 const CV_PREVIEW_PDF_PAGE_HEIGHT = 1100
+const CV_PREVIEW_PAGE_WIDTH = 794
 const cvPreviewRef = ref<HTMLElement | null>(null)
 const cvPreviewPageCount = ref(1)
 let cvPreviewMeasureTimer: ReturnType<typeof setTimeout> | undefined
@@ -445,7 +458,8 @@ const headerType = computed(() =>
 const templateFakeData = computed(
   () => (activeTemplate.value as any)?.fakeData || {},
 )
-const fakeData = computed(() => templateFakeData.value)
+const userResumeData = computed<any>(() => myResumes.value[0] || null)
+const fakeData = computed(() => userResumeData.value || templateFakeData.value)
 const sectionType = (
   key: keyof ReturnType<(typeof sectionVariantMap)['value']>,
 ) => sectionVariantMap.value[key] || 'classic'
@@ -510,12 +524,6 @@ function shiftSectionByLine(
   scheduleCvPreviewMeasure()
 }
 
-function canShiftSectionUp(
-  orderKey: keyof typeof sectionOrders,
-  section: string,
-) {
-  return (sectionLineOffsets[sectionOffsetKey(orderKey, section)] || 0) > 0
-}
 const languageOption = ref<any | null>(null)
 const languageStars = ref(3)
 const languageCatalog = [
@@ -1006,11 +1014,21 @@ const isHeaderLightLayout = computed(() => {
 })
 
 const headerTextColor = computed(() =>
-  isHeaderLightLayout.value ? '#F8FAFC' : '#0F172A',
+  isHeaderLightLayout.value
+    ? '#F8FAFC'
+    : readableTextColorForBackground(
+        activeColors.value?.pageBackground,
+        activeColors.value?.text || '#0F172A',
+      ),
 )
 
 const headerMutedColor = computed(() =>
-  isHeaderLightLayout.value ? '#CBD5E1' : '#334155',
+  isHeaderLightLayout.value
+    ? '#CBD5E1'
+    : readableMutedColorForBackground(
+        activeColors.value?.pageBackground,
+        activeColors.value?.muted || '#334155',
+      ),
 )
 
 watch(
@@ -1082,18 +1100,38 @@ function applyPreviewTemplate(templateId: string) {
 }
 
 async function saveFromPreview() {
-  const payload = JSON.parse(JSON.stringify(activeTemplate.value || {}))
-  payload.name = payload.name || payload.id || 'customize-template'
-  payload.version = Number(payload.version || 1)
-  payload.customize = {
+  const templatePayload = JSON.parse(JSON.stringify(activeTemplate.value || {}))
+  templatePayload.name =
+    templatePayload.name || templatePayload.id || 'preview-template'
+  templatePayload.version = Number(templatePayload.version || 1)
+  templatePayload.customize = {
     selectedPalette: selectedPalette.value,
     signature: signatureDataUrl.value,
   }
-  const response = await $fetch<{ id: string }>('https://bro-world.org/api/v1/recruit/templates/resumes', {
+  const templateResponse = await $fetch<{ id: string }>(
+    'https://bro-world.org/api/v1/recruit/templates/resumes',
+    { method: 'POST', body: templatePayload },
+  )
+
+  const token = user.value?.token?.trim()
+  if (!token) return
+  const data: any = fakeData.value || {}
+  await $fetch('https://bro-world.org/api/v1/recruit/resumes', {
     method: 'POST',
-    body: payload,
+    headers: { Authorization: `Bearer ${token}` },
+    body: {
+      templateId: templateResponse.id,
+      resumeInformation: data.resumeInformation || {},
+      experiences: data.experiences || [],
+      educations: data.educations || [],
+      skills: data.skills || [],
+      languages: data.languages || [],
+      certifications: data.certifications || [],
+      references: data.references || [],
+      projects: data.projects || [],
+      hobbies: data.hobbies || [],
+    },
   })
-  localStorage.setItem('resume-cv-template-create', JSON.stringify({ id: response.id, payload }))
 }
 
 function openAiModal() {
@@ -1102,7 +1140,7 @@ function openAiModal() {
 
 async function generateResumeOfferMatch() {
   if (!matchOfferText.value.trim() || matchOfferLoading.value) return
-  const token = ''
+  const token = user.value?.token?.trim()
   if (!token) return
   matchOfferLoading.value = true
   matchOfferResult.value = null
@@ -1142,7 +1180,7 @@ async function downloadPdf() {
     .map((el) => el.outerHTML)
     .join('')
   printWindow.document.write(
-    `<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.cv-preview-shell{width:210mm;box-sizing:border-box;margin:0}.resume-preview-page-break{display:none!important}.cv-section-toolbar,.cv-photo-menu-btn{display:none!important}</style></head><body>${node.outerHTML}</body></html>`,
+    `<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.cv-preview-shell{width:794px;max-width:794px;box-sizing:border-box;margin:0}.resume-preview-page-break{display:none!important}.cv-section-toolbar,.cv-photo-menu-btn{display:none!important}</style></head><body>${node.outerHTML}</body></html>`,
   )
   printWindow.document.close()
   await new Promise((resolve) => setTimeout(resolve, 900))
@@ -1212,6 +1250,16 @@ function initCanvas() {
 }
 
 onMounted(async () => {
+  if (loggedIn.value && !isCaptureMode.value) {
+    try {
+      const resumes = await listMyResumes()
+      if (Array.isArray(resumes) && resumes.length > 0)
+        myResumes.value = resumes
+    } catch {
+      // keep template fake data fallback
+    }
+  }
+
   await nextTick()
   scheduleCvPreviewMeasure(true)
   if (import.meta.client && 'ResizeObserver' in window && cvPreviewRef.value) {
@@ -1249,90 +1297,57 @@ watch(
       @change="onPhotoSelected"
     />
     <AppPageDrawers v-if="!isCaptureMode">
-      <template #left>
-        <v-card-text>
-          <p class="text-body-2">Aside width</p>
-          <v-slider
-            v-model="asideWidth"
-            :min="240"
-            :max="1200"
-            :step="2"
-            hide-details
-            class="mb-2"
-          />
-          <p class="text-body-2">Aside height</p>
-          <v-slider
-            v-model="asideHeight"
-            :min="120"
-            :max="2600"
-            :step="2"
-            hide-details
-            class="mb-2"
-          />
-          <p class="text-body-2">Aside radius</p>
-          <v-slider
-            v-model="asideRadius"
-            :min="0"
-            :max="90"
-            :step="1"
-            hide-details
-          />
-          <p class="text-body-2">Bar heighth</p>
-          <v-slider
-            v-model="sectionBarConfig.height"
-            :min="1"
-            :max="18"
-            :step="1"
-            hide-details
-            class="mt-2"
-          />
-          <p class="text-body-2">Bar radius</p>
-          <v-slider
-            v-model="sectionBarConfig.radius"
-            :min="0"
-            :max="999"
-            :step="1"
-            hide-details
-            class="mt-2"
-          />
-        </v-card-text>
-      </template>
-
       <template #right>
+        <v-btn class="mt-1" variant="tonal" color="primary" prepend-icon="mdi-content-save" block @click="saveFromPreview">Save</v-btn>
+        <v-btn class="mt-2" variant="tonal"  color="primary" prepend-icon="mdi-file-pdf-box" block @click="downloadPdf">PDF</v-btn>
+        <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-draw" block @click="openSignatureDialog">Signature</v-btn>
+        <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-robot" block @click="openAiModal">AI</v-btn>
+        <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-plus" block to="/resume/cv/template-create">Template</v-btn>
         <v-btn
           v-if="userResumeData"
-          class="mt-4"
+          class="mt-2"
           color="primary"
           variant="tonal"
           block
           @click="matchOfferModalOpen = true"
         >
-          Correspondence with Offer
+          Compare
         </v-btn>
-        <v-btn
-          class="mt-3"
-          size="small"
-          variant="outlined"
-          @click="addDecorObject"
-          >Add decor</v-btn
-        >
-        <v-switch
-          v-model="sectionBarConfig.show"
-          label="Section bar"
-          hide-details
-          inset
-        />
-        <AppSelect
-          v-model="sectionBarConfig.widthType"
-          :items="[
-            { title: 'Flex', value: 'flex' },
-            { title: 'Complet', value: 'complete' },
-          ]"
-          label="Bar width mode"
-          hide-details
-          class="mt-2"
-        />
-        <div class="mt-3 d-flex flex-column ga-2">
+      </template>
+    </AppPageDrawers>
+
+    <v-container fluid>
+      <ResumePreviewToolbar
+        v-if="!isCaptureMode"
+        v-model:menu-open="layoutMenuOpen"
+        v-model:palette-menu-open="paletteMenuOpen"
+        v-model:settings-menu-open="settingsMenuOpen"
+        v-model:decor-menu-open="decorMenuOpen"
+        :palettes="palettePresetOptions"
+        show-decor
+        show-section
+        :selected-palette="selectedPalette"
+        :palette-columns="10"
+        :templates="GENERATED_RESUME_TEMPLATES"
+        :selected-template="selectedTemplate"
+        :get-template-image="
+          (template) => `/img/cv/generated/${template.id}.png`
+        "
+        template-key-prefix="cv-preview"
+        @select-template="applyPreviewTemplate"
+        @select-palette="selectedPalette = $event"
+      >
+        <template #decor>
+          <v-btn
+            size="small"
+            variant="outlined"
+            prepend-icon="mdi-shape-plus"
+            block
+            @click.stop="addDecorObject"
+          >
+            Add decor
+          </v-btn>
+          <div class="mt-3 d-flex flex-column ga-2">
           <v-menu
             v-for="(obj, i) in editableDecorObjects"
             :key="`obj-${i}`"
@@ -1381,7 +1396,7 @@ watch(
                         ? '2px solid #111827'
                         : '1px solid #cbd5e1',
                   }"
-                  @click="obj.color = color"
+                  @click.stop="obj.color = color"
                 />
               </div>
               <v-slider
@@ -1425,44 +1440,51 @@ watch(
                 color="error"
                 variant="text"
                 class="mt-2"
-                @click="removeDecorObject(i)"
+                @click.stop="removeDecorObject(i)"
                 >remove</v-btn
               >
             </v-card>
           </v-menu>
         </div>
-      </template>
-    </AppPageDrawers>
+        </template>
+        <template #settings>
+          <p class="text-body-2">Aside width</p>
+          <v-slider v-model="asideWidth" :min="240" :max="1200" :step="2" hide-details class="mb-2" />
+          <p class="text-body-2">Aside height</p>
+          <v-slider v-model="asideHeight" :min="120" :max="2600" :step="2" hide-details class="mb-2" />
+          <p class="text-body-2">Aside radius</p>
+          <v-slider v-model="asideRadius" :min="0" :max="90" :step="1" hide-details />
+          <v-switch
+            v-model="sectionBarConfig.show"
+            label="Section bar"
+            hide-details
+            inset
+            class="mt-2"
+          />
+          <AppSelect
+            v-model="sectionBarConfig.widthType"
+            :items="[
+              { title: 'Flex', value: 'flex' },
+              { title: 'Complet', value: 'complete' },
+            ]"
+            label="Bar width mode"
+            hide-details
+            class="mt-2"
+          />
+          <p class="text-body-2">Bar heighth</p>
+          <v-slider v-model="sectionBarConfig.height" :min="1" :max="18" :step="1" hide-details class="mt-2" />
+          <p class="text-body-2">Bar radius</p>
+          <v-slider v-model="sectionBarConfig.radius" :min="0" :max="999" :step="1" hide-details class="mt-2" />
+        </template>
+      </ResumePreviewToolbar>
 
-    <v-container fluid>
-      <ResumePreviewToolbar
-        :show-ai="false"
-v-if="!isCaptureMode"
-        v-model:menu-open="layoutMenuOpen"
-        v-model:palette-menu-open="paletteMenuOpen"
-        :palettes="palettePresetOptions"
-        :selected-palette="selectedPalette"
-        :palette-columns="10"
-        :templates="GENERATED_RESUME_TEMPLATES"
-        :selected-template="selectedTemplate"
-        :get-template-image="
-          (template) => `/img/cv/generated/${template.id}.png`
-        "
-        template-key-prefix="cv-preview"
-        @save="saveFromPreview"
-        @signature="openSignatureDialog"
-        @pdf="downloadPdf"
-        @select-template="applyPreviewTemplate"
-        @select-palette="selectedPalette = $event"
-      />
-
-      <div class="py-8">
-        <div
-          ref="cvPreviewRef"
-          class="cv-preview-shell"
-          :style="{
+      <div
+        ref="cvPreviewRef"
+        class="cv-preview-shell"
+        :style="{
             '--cv-preview-page-height': `${CV_PREVIEW_PDF_PAGE_HEIGHT}px`,
             '--cv-preview-total-height': `${cvPreviewHeight}px`,
+            '--cv-preview-page-width': `${CV_PREVIEW_PAGE_WIDTH}px`,
           }"
         >
           <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"></div>
@@ -1492,6 +1514,16 @@ v-if="!isCaptureMode"
                       </v-menu>
                       <template v-if="item.type === 'link'">
                         <a class="cv-contact-link" :href="item.value" target="_blank" rel="noopener noreferrer" :title="item.value">{{ item.label }}</a>
+                        <HoverRichTextEditor
+                          class="cv-header-editor cv-header-editor--contact cv-header-editor--link-value"
+                          :model-value="item.value"
+                          :placeholder="item.label || 'Contact'"
+                          font-size="12px"
+                          font-weight="600"
+                          :font-family="textFontPreset('body')"
+                          color="inherit"
+                          @update:model-value="updateHeaderField(item.key, $event)"
+                        />
                       </template>
                       <HoverRichTextEditor
                         v-else
@@ -1508,7 +1540,7 @@ v-if="!isCaptureMode"
                   </div>
                 </div>
                 <div class="cv-header-identity cv-col-4">
-                  <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker" /><v-menu v-model="photoMenuOpen" location="right start" :close-on-content-click="false"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"></button></div></v-card></v-menu></div>
+                  <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker" /><v-menu v-model="photoMenuOpen" location="right start" :close-on-content-click="false"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"/></div></v-card></v-menu></div>
                   <HoverRichTextEditor
                     class="cv-header-editor cv-header-editor--name"
                     :model-value="headerProfile.fullName"
@@ -1533,7 +1565,7 @@ v-if="!isCaptureMode"
               </template>
               <template v-else-if="headerType === 'header-right'">
                 <div class="cv-header-identity cv-col-4">
-                  <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker" /><v-menu v-model="photoMenuOpen" location="right start" :close-on-content-click="false"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"></button></div></v-card></v-menu></div>
+                  <div class="cv-photo-wrap"><img :src="photoPreview || headerProfile.image" alt="profile" class="cv-header-avatar" :style="{ width: `${photoSize}px`, height: `${photoSize}px`, borderRadius: `${photoRadius}px`, border: `${photoBorderWidth}px solid ${photoBorderColor}` }" @click="openPhotoPicker" /><v-menu v-model="photoMenuOpen" location="right start" :close-on-content-click="false"><template #activator="{ props }"><v-btn icon="mdi-dots-vertical" size="x-small" class="cv-photo-menu-btn" v-bind="props" @click.stop/></template><v-card class="pa-3" min-width="220"><v-slider v-model="photoSize" label="Size" :min="48" :max="180" :step="2" hide-details class="mb-2"/><v-slider v-model="photoRadius" label="Radius" :min="0" :max="999" :step="1" hide-details class="mb-2"/><v-slider v-model="photoBorderWidth" label="Border" :min="0" :max="12" :step="1" hide-details class="mb-2"/><div class="cv-color-grid"><button v-for="c in photoColors" :key="c" class="cv-color-dot" :style="{background:c}" @click="photoBorderColor=c"/></div></v-card></v-menu></div>
                   <HoverRichTextEditor
                     class="cv-header-editor cv-header-editor--name"
                     :model-value="headerProfile.fullName"
@@ -1577,6 +1609,16 @@ v-if="!isCaptureMode"
                       </v-menu>
                       <template v-if="item.type === 'link'">
                         <a class="cv-contact-link" :href="item.value" target="_blank" rel="noopener noreferrer" :title="item.value">{{ item.label }}</a>
+                        <HoverRichTextEditor
+                          class="cv-header-editor cv-header-editor--contact cv-header-editor--link-value"
+                          :model-value="item.value"
+                          :placeholder="item.label || 'Contact'"
+                          font-size="12px"
+                          font-weight="600"
+                          :font-family="textFontPreset('body')"
+                          color="inherit"
+                          @update:model-value="updateHeaderField(item.key, $event)"
+                        />
                       </template>
                       <HoverRichTextEditor
                         v-else
@@ -1590,89 +1632,68 @@ v-if="!isCaptureMode"
                         @update:model-value="updateHeaderField(item.key, $event)"
                       />
                     </div>
-                    <HoverRichTextEditor
-                      class="cv-header-editor cv-header-editor--name"
-                      :model-value="headerProfile.fullName"
-                      placeholder="Full name"
-                      font-size="22px"
-                      font-weight="700"
-                      :font-family="textFontPreset('fullName')"
-                      color="inherit"
-                      @update:model-value="
-                        updateHeaderField('fullName', $event)
-                      "
-                    />
-                    <HoverRichTextEditor
-                      class="cv-header-editor cv-header-editor--role"
-                      :model-value="headerProfile.role"
-                      placeholder="Role"
-                      font-size="14px"
-                      font-weight="700"
-                      :font-family="textFontPreset('body')"
-                      color="inherit"
-                      @update:model-value="updateHeaderField('role', $event)"
-                    />
                   </div>
                 </div>
               </template>
-                <template v-else-if="headerType === 'header-split'">
-                  <div class="cv-header-identity cv-col-4">
-                    <div class="cv-photo-wrap">
-                      <img
-                        :src="photoPreview || headerProfile.image"
-                        alt="profile"
-                        class="cv-header-avatar"
-                        :style="{
+              <template v-else-if="headerType === 'header-split'">
+                <div class="cv-header-split-left cv-col-6">
+                  <div class="cv-photo-wrap">
+                    <img
+                      :src="photoPreview || headerProfile.image"
+                      alt="profile"
+                      class="cv-header-avatar"
+                      :style="{
                           width: `${photoSize}px`,
                           height: `${photoSize}px`,
                           borderRadius: `${photoRadius}px`,
                           border: `${photoBorderWidth}px solid ${photoBorderColor}`,
                         }"
-                        @click="openPhotoPicker"
-                      /><v-menu
-                        v-model="photoMenuOpen"
-                        location="right start"
-                        :close-on-content-click="false"
-                        ><template #activator="{ props }"
-                          ><v-btn
-                            icon="mdi-dots-vertical"
-                            size="x-small"
-                            class="cv-photo-menu-btn"
-                            v-bind="props"
-                            @click.stop /></template
-                        ><v-card class="pa-3" min-width="220"
-                          ><v-slider
-                            v-model="photoSize"
-                            label="Size"
-                            :min="48"
-                            :max="180"
-                            :step="2"
-                            hide-details
-                            class="mb-2" /><v-slider
-                            v-model="photoRadius"
-                            label="Radius"
-                            :min="0"
-                            :max="999"
-                            :step="1"
-                            hide-details
-                            class="mb-2" /><v-slider
-                            v-model="photoBorderWidth"
-                            label="Border"
-                            :min="0"
-                            :max="12"
-                            :step="1"
-                            hide-details
-                            class="mb-2" />
-                          <div class="cv-color-grid">
-                            <button
-                              v-for="c in photoColors"
-                              :key="c"
-                              class="cv-color-dot"
-                              :style="{ background: c }"
-                              @click="photoBorderColor = c"
-                            ></button></div></v-card
-                      ></v-menu>
-                    </div>
+                      @click="openPhotoPicker"
+                    /><v-menu
+                    v-model="photoMenuOpen"
+                    location="right start"
+                    :close-on-content-click="false"
+                  ><template #activator="{ props }"
+                  ><v-btn
+                    icon="mdi-dots-vertical"
+                    size="x-small"
+                    class="cv-photo-menu-btn"
+                    v-bind="props"
+                    @click.stop /></template
+                  ><v-card class="pa-3" min-width="220"
+                  ><v-slider
+                    v-model="photoSize"
+                    label="Size"
+                    :min="48"
+                    :max="180"
+                    :step="2"
+                    hide-details
+                    class="mb-2" /><v-slider
+                    v-model="photoRadius"
+                    label="Radius"
+                    :min="0"
+                    :max="999"
+                    :step="1"
+                    hide-details
+                    class="mb-2" /><v-slider
+                    v-model="photoBorderWidth"
+                    label="Border"
+                    :min="0"
+                    :max="12"
+                    :step="1"
+                    hide-details
+                    class="mb-2" />
+                    <div class="cv-color-grid">
+                      <button
+                        v-for="c in photoColors"
+                        :key="c"
+                        class="cv-color-dot"
+                        :style="{ background: c }"
+                        @click="photoBorderColor = c"
+                      /></div></v-card
+                  ></v-menu>
+                  </div>
+                  <div class="cv-header-identity cv-header-identity--split">
                     <HoverRichTextEditor
                       class="cv-header-editor cv-header-editor--name"
                       :model-value="headerProfile.fullName"
@@ -1681,105 +1702,104 @@ v-if="!isCaptureMode"
                       font-weight="700"
                       :font-family="textFontPreset('fullName')"
                       color="inherit"
-                      @update:model-value="
-                        updateHeaderField('fullName', $event)
-                      "
+                      @update:model-value="updateHeaderField('fullName', $event)"
                     />
                     <HoverRichTextEditor
                       class="cv-header-editor cv-header-editor--role"
                       :model-value="headerProfile.role"
                       placeholder="Role"
-                      font-size="14px"
-                      font-weight="700"
+                      font-size="13px"
+                      font-weight="600"
                       :font-family="textFontPreset('body')"
-                      color="inherit"
+                      :color="headerMutedColor"
                       @update:model-value="updateHeaderField('role', $event)"
                     />
                   </div>
-                  <div class="cv-col-6 cv-header-contact">
-                    <div class="cv-header-contact-grid">
-                      <div
-                        v-for="(item, idx) in headerProfile.contact"
-                        :key="`split-${idx}`"
-                        class="cv-contact-item"
+                </div>
+                <div class="cv-col-6 cv-header-contact">
+                  <div class="cv-header-contact-grid">
+                    <div
+                      v-for="(item, idx) in headerProfile.contact"
+                      :key="`split-${idx}`"
+                      class="cv-contact-item"
+                    >
+                      <v-menu
+                        location="bottom start"
+                        :close-on-content-click="true"
                       >
-                        <v-menu
-                          location="bottom start"
-                          :close-on-content-click="true"
-                        >
-                          <template #activator="{ props }">
-                            <v-btn
-                              v-bind="props"
-                              icon
-                              size="x-small"
-                              variant="text"
-                              class="cv-contact-icon-btn"
-                            >
-                              <v-icon :icon="item.icon" size="16" />
-                            </v-btn>
-                          </template>
-                          <v-list density="compact" class="cv-icon-menu-list">
-                            <v-list-item
-                              v-for="altIcon in contactIconAlternatives[
+                        <template #activator="{ props }">
+                          <v-btn
+                            v-bind="props"
+                            icon
+                            size="x-small"
+                            variant="text"
+                            class="cv-contact-icon-btn"
+                          >
+                            <v-icon :icon="item.icon" size="16" />
+                          </v-btn>
+                        </template>
+                        <v-list density="compact" class="cv-icon-menu-list">
+                          <v-list-item
+                            v-for="altIcon in contactIconAlternatives[
                                 item.key
                               ] || [item.icon]"
-                              :key="`${item.key}-${altIcon}`"
-                              :title="altIcon"
-                              @click="updateContactIcon(item.key, altIcon)"
-                            >
-                              <template #prepend
-                                ><v-icon :icon="altIcon" size="16"
-                              /></template>
-                            </v-list-item>
-                          </v-list>
-                        </v-menu>
-                        <template v-if="item.type === 'link'">
-                          <a
-                            class="cv-contact-link"
-                            :href="item.value"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            :title="item.value"
-                            >{{ item.label }}</a
+                            :key="`${item.key}-${altIcon}`"
+                            :title="altIcon"
+                            @click="updateContactIcon(item.key, altIcon)"
                           >
-                          <HoverRichTextEditor
-                            class="cv-header-editor cv-header-editor--contact cv-header-editor--link-value"
-                            :model-value="item.value"
-                            :placeholder="item.label || 'Contact'"
-                            font-size="12px"
-                            font-weight="600"
-                            :font-family="textFontPreset('body')"
-                            color="inherit"
-                            @update:model-value="
-                              updateHeaderField(item.key, $event)
-                            "
-                          />
-                        </template>
+                            <template #prepend
+                            ><v-icon :icon="altIcon" size="16"
+                            /></template>
+                          </v-list-item>
+                        </v-list>
+                      </v-menu>
+                      <template v-if="item.type === 'link'">
+                        <a
+                          class="cv-contact-link"
+                          :href="item.value"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          :title="item.value"
+                        >{{ item.label }}</a
+                        >
                         <HoverRichTextEditor
-                          v-else
-                          class="cv-header-editor cv-header-editor--contact"
+                          class="cv-header-editor cv-header-editor--contact cv-header-editor--link-value"
                           :model-value="item.value"
                           :placeholder="item.label || 'Contact'"
-                          font-size="13px"
-                          font-weight="700"
+                          font-size="12px"
+                          font-weight="600"
                           :font-family="textFontPreset('body')"
                           color="inherit"
                           @update:model-value="
+                              updateHeaderField(item.key, $event)
+                            "
+                        />
+                      </template>
+                      <HoverRichTextEditor
+                        v-else
+                        class="cv-header-editor cv-header-editor--contact"
+                        :model-value="item.value"
+                        :placeholder="item.label || 'Contact'"
+                        font-size="13px"
+                        font-weight="700"
+                        :font-family="textFontPreset('body')"
+                        color="inherit"
+                        @update:model-value="
                             updateHeaderField(item.key, $event)
                           "
-                        />
-                      </div>
+                      />
                     </div>
                   </div>
-                </template>
-              </div>
-            </template>
-            <template #aside>
-              <div
-                v-if="
+                </div>
+              </template>
+            </div>
+          </template>
+          <template #aside>
+            <div
+              v-if="
                   isSideContentLayout && normalizedStructure === 'structure-1'
                 "
-                :class="[
+              :class="[
                   'cv-aside-sections',
                   {
                     'cv-aside-sections--full': [
@@ -1788,106 +1808,106 @@ v-if="!isCaptureMode"
                     ].includes(String(activeTemplate?.layout || '')),
                   },
                 ]"
-              >
-                <div
-                  v-for="section in visibleOrderedSections(
+            >
+              <div
+                v-for="section in visibleOrderedSections(
                     'asideOne',
                     structureAsideOneSections,
                     'asideOne',
                   )"
-                  :key="`aside-s1-${section}`"
-                  class="cv-aside-section-item"
-                  :style="sectionOffsetStyle('asideOne', section)"
-                  draggable="true"
-                  @dragstart="onSectionDragStart('asideOne', section)"
-                  @dragover.prevent
-                  @drop="onSectionDrop('asideOne', section)"
-                  @dragend="onSectionDragEnd"
-                >
-                  <div class="cv-section-toolbar">
-                    <AppSelect
-                      v-model="sectionTypeOverrides[toSectionKey(section)]"
-                      :items="getSectionVariantOptions(toSectionKey(section))"
-                      item-title="title"
-                      item-value="value"
-                      density="compact"
-                      variant="outlined"
-                      hide-details
-                      prepend-inner-icon="mdi-shape-outline"
-                      class="cv-variant-select"
-                    /><v-btn
-                      icon="mdi-plus"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="addSectionItem(toSectionKey(section))"
-                    /><v-btn
-                      icon="mdi-minus"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="
+                :key="`aside-s1-${section}`"
+                class="cv-aside-section-item"
+                :style="sectionOffsetStyle('asideOne', section)"
+                draggable="true"
+                @dragstart="onSectionDragStart('asideOne', section)"
+                @dragover.prevent
+                @drop="onSectionDrop('asideOne', section)"
+                @dragend="onSectionDragEnd"
+              >
+                <div class="cv-section-toolbar">
+                  <AppSelect
+                    v-model="sectionTypeOverrides[toSectionKey(section)]"
+                    :items="getSectionVariantOptions(toSectionKey(section))"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-shape-outline"
+                    class="cv-variant-select"
+                  /><v-btn
+                  icon="mdi-plus"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="addSectionItem(toSectionKey(section))"
+                /><v-btn
+                  icon="mdi-minus"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="
                         hideSection(toSectionKey(section));
                         hideSectionInZone('asideOne', toSectionKey(section))
                       "
-                    /><v-btn
-                      icon="mdi-arrow-up"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="
+                /><v-btn
+                  icon="mdi-arrow-up"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="
                         shiftSectionByLine('asideOne', section, 'up')
                       "
-                    /><v-btn
-                      icon="mdi-arrow-down"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="
+                /><v-btn
+                  icon="mdi-arrow-down"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="
                         shiftSectionByLine('asideOne', section, 'down')
                       "
-                    /><v-btn
-                      icon="mdi-drag"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="moveSection('asideOne', section, 'down')"
-                    />
-                  </div>
-                  <strong class="cv-section-title"
-                    ><v-icon
-                      :icon="
+                /><v-btn
+                  icon="mdi-drag"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="moveSection('asideOne', section, 'down')"
+                />
+                </div>
+                <strong class="cv-section-title"
+                ><v-icon
+                  :icon="
                         sectionIconMap[toSectionKey(section)] ||
                         'mdi-circle-small'
                       "
-                      size="16"
-                      class="mr-1" /><HoverRichTextEditor
-                      class="cv-section-title-editor"
-                      :model-value="sectionDisplayTitle(section)"
-                      font-size="13px"
-                      font-weight="700"
-                      :font-family="textFontPreset('sectionLabel')"
-                      color="inherit"
-                      @update:model-value="
+                  size="16"
+                  class="mr-1" /><HoverRichTextEditor
+                  class="cv-section-title-editor"
+                  :model-value="sectionDisplayTitle(section)"
+                  font-size="13px"
+                  font-weight="700"
+                  :font-family="textFontPreset('sectionLabel')"
+                  color="inherit"
+                  @update:model-value="
                         updateSectionDisplayTitle(section, $event)
                       "
-                  /></strong>
-                  <CvEditableSectionContent
-                    :section-key="toSectionKey(section)"
-                    :variant="
+                /></strong>
+                <CvEditableSectionContent
+                  :section-key="toSectionKey(section)"
+                  :variant="
                       effectiveSectionType(
                         toSectionKey(section),
                         sectionType(toSectionKey(section) as any),
                       )
                     "
-                    :items="getEditableSectionItems(section)"
-                    @update-item="
+                  :items="getEditableSectionItems(section)"
+                  @update-item="
                       (index, value) =>
                         updateEditableSectionItem(section, index, value)
                     "
-                  />
-                </div>
+                />
               </div>
-              <div
-                v-else-if="
+            </div>
+            <div
+              v-else-if="
                   isSideContentLayout && normalizedStructure === 'structure-2'
                 "
-                :class="[
+              :class="[
                   'cv-aside-sections',
                   {
                     'cv-aside-sections--full': [
@@ -1896,421 +1916,513 @@ v-if="!isCaptureMode"
                     ].includes(String(activeTemplate?.layout || '')),
                   },
                 ]"
-              >
-                <div
-                  v-for="section in visibleOrderedSections(
+            >
+              <div
+                v-for="section in visibleOrderedSections(
                     'asideTwo',
                     structureAsideTwoSections,
                     'asideTwo',
                   )"
-                  :key="`aside-s2-${section}`"
-                  class="cv-aside-section-item"
-                  :style="sectionOffsetStyle('asideTwo', section)"
-                  draggable="true"
-                  @dragstart="onSectionDragStart('asideTwo', section)"
-                  @dragover.prevent
-                  @drop="onSectionDrop('asideTwo', section)"
-                  @dragend="onSectionDragEnd"
-                >
-                  <div class="cv-section-toolbar">
-                    <AppSelect
-                      v-model="sectionTypeOverrides[toSectionKey(section)]"
-                      :items="getSectionVariantOptions(toSectionKey(section))"
-                      item-title="title"
-                      item-value="value"
-                      density="compact"
-                      variant="outlined"
-                      hide-details
-                      prepend-inner-icon="mdi-shape-outline"
-                      class="cv-variant-select"
-                    /><v-btn
-                      icon="mdi-plus"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="addSectionItem(toSectionKey(section))"
-                    /><v-btn
-                      icon="mdi-minus"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="
+                :key="`aside-s2-${section}`"
+                class="cv-aside-section-item"
+                :style="sectionOffsetStyle('asideTwo', section)"
+                draggable="true"
+                @dragstart="onSectionDragStart('asideTwo', section)"
+                @dragover.prevent
+                @drop="onSectionDrop('asideTwo', section)"
+                @dragend="onSectionDragEnd"
+              >
+                <div class="cv-section-toolbar">
+                  <AppSelect
+                    v-model="sectionTypeOverrides[toSectionKey(section)]"
+                    :items="getSectionVariantOptions(toSectionKey(section))"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-shape-outline"
+                    class="cv-variant-select"
+                  /><v-btn
+                  icon="mdi-plus"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="addSectionItem(toSectionKey(section))"
+                /><v-btn
+                  icon="mdi-minus"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="
                         hideSection(toSectionKey(section));
                         hideSectionInZone('asideTwo', toSectionKey(section))
                       "
-                    /><v-btn
-                      icon="mdi-arrow-up"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="
+                /><v-btn
+                  icon="mdi-arrow-up"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="
                         shiftSectionByLine('asideTwo', section, 'up')
                       "
-                    /><v-btn
-                      icon="mdi-arrow-down"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="
+                /><v-btn
+                  icon="mdi-arrow-down"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="
                         shiftSectionByLine('asideTwo', section, 'down')
                       "
-                    /><v-btn
-                      icon="mdi-drag"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="moveSection('asideTwo', section, 'down')"
-                    />
-                  </div>
-                  <strong class="cv-section-title"
-                    ><v-icon
-                      :icon="
+                /><v-btn
+                  icon="mdi-drag"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="moveSection('asideTwo', section, 'down')"
+                />
+                </div>
+                <strong class="cv-section-title"
+                ><v-icon
+                  :icon="
                         sectionIconMap[toSectionKey(section)] ||
                         'mdi-circle-small'
                       "
-                      size="16"
-                      class="mr-1" /><HoverRichTextEditor
-                      class="cv-section-title-editor"
-                      :model-value="sectionDisplayTitle(section)"
-                      font-size="13px"
-                      font-weight="700"
-                      :font-family="textFontPreset('sectionLabel')"
-                      color="inherit"
-                      @update:model-value="
+                  size="16"
+                  class="mr-1" /><HoverRichTextEditor
+                  class="cv-section-title-editor"
+                  :model-value="sectionDisplayTitle(section)"
+                  font-size="13px"
+                  font-weight="700"
+                  :font-family="textFontPreset('sectionLabel')"
+                  color="inherit"
+                  @update:model-value="
                         updateSectionDisplayTitle(section, $event)
                       "
-                  /></strong>
-                  <CvEditableSectionContent
-                    :section-key="toSectionKey(section)"
-                    :variant="
+                /></strong>
+                <CvEditableSectionContent
+                  :section-key="toSectionKey(section)"
+                  :variant="
                       effectiveSectionType(
                         toSectionKey(section),
                         sectionType(toSectionKey(section) as any),
                       )
                     "
-                    :items="getEditableSectionItems(section)"
-                    @update-item="
+                  :items="getEditableSectionItems(section)"
+                  @update-item="
                       (index, value) =>
                         updateEditableSectionItem(section, index, value)
                     "
-                  />
-                </div>
+                />
               </div>
-            </template>
+            </div>
+          </template>
 
-            <template #content>
-              <div
-                v-if="
+          <template #content>
+            <div
+              v-if="
                   isSideContentLayout && normalizedStructure === 'structure-1'
                 "
-                class="cv-sections-list"
-              >
-                <div
-                  v-for="section in visibleOrderedSections(
+              class="cv-sections-list"
+            >
+              <div
+                v-for="section in visibleOrderedSections(
                     'contentBase',
                     structureContentBaseSections,
                   )"
-                  :key="`content-base-${section}`"
-                  class="cv-section-row"
-                  :style="sectionOffsetStyle('contentBase', section)"
-                  draggable="true"
-                  @dragstart="onSectionDragStart('contentBase', section)"
-                  @dragover.prevent
-                  @drop="onSectionDrop('contentBase', section)"
-                  @dragend="onSectionDragEnd"
-                >
-                  <div class="cv-section-toolbar">
-                    <AppSelect
-                      v-model="sectionTypeOverrides[toSectionKey(section)]"
-                      :items="getSectionVariantOptions(toSectionKey(section))"
-                      item-title="title"
-                      item-value="value"
-                      density="compact"
-                      variant="outlined"
-                      hide-details
-                      prepend-inner-icon="mdi-shape-outline"
-                      class="cv-variant-select"
-                    /><v-btn
-                      icon="mdi-plus"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="addSectionItem(toSectionKey(section))"
-                    /><v-btn
-                      icon="mdi-minus"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="hideSection(toSectionKey(section))"
-                    /><v-btn
-                      icon="mdi-arrow-up"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="
+                :key="`content-base-${section}`"
+                class="cv-section-row"
+                :style="sectionOffsetStyle('contentBase', section)"
+                draggable="true"
+                @dragstart="onSectionDragStart('contentBase', section)"
+                @dragover.prevent
+                @drop="onSectionDrop('contentBase', section)"
+                @dragend="onSectionDragEnd"
+              >
+                <div class="cv-section-toolbar">
+                  <AppSelect
+                    v-model="sectionTypeOverrides[toSectionKey(section)]"
+                    :items="getSectionVariantOptions(toSectionKey(section))"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-shape-outline"
+                    class="cv-variant-select"
+                  /><v-btn
+                  icon="mdi-plus"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="addSectionItem(toSectionKey(section))"
+                /><v-btn
+                  icon="mdi-minus"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="hideSection(toSectionKey(section))"
+                /><v-btn
+                  icon="mdi-arrow-up"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="
                         shiftSectionByLine('contentBase', section, 'up')
                       "
-                    /><v-btn
-                      icon="mdi-arrow-down"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="
+                /><v-btn
+                  icon="mdi-arrow-down"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="
                         shiftSectionByLine('contentBase', section, 'down')
                       "
-                    /><v-btn
-                      icon="mdi-drag"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="moveSection('contentBase', section, 'down')"
-                    />
-                  </div>
-                  <strong class="cv-section-title"
-                    ><v-icon
-                      :icon="
+                /><v-btn
+                  icon="mdi-drag"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="moveSection('contentBase', section, 'down')"
+                />
+                </div>
+                <strong class="cv-section-title"
+                ><v-icon
+                  :icon="
                         sectionIconMap[toSectionKey(section)] ||
                         'mdi-circle-small'
                       "
-                      size="16"
-                      class="mr-1" /><HoverRichTextEditor
-                      class="cv-section-title-editor"
-                      :model-value="sectionDisplayTitle(section)"
-                      font-size="13px"
-                      font-weight="700"
-                      :font-family="textFontPreset('sectionLabel')"
-                      color="inherit"
-                      @update:model-value="
+                  size="16"
+                  class="mr-1" /><HoverRichTextEditor
+                  class="cv-section-title-editor"
+                  :model-value="sectionDisplayTitle(section)"
+                  font-size="13px"
+                  font-weight="700"
+                  :font-family="textFontPreset('sectionLabel')"
+                  color="inherit"
+                  @update:model-value="
                         updateSectionDisplayTitle(section, $event)
                       " /></strong
-                  ><CvEditableSectionContent
-                    :section-key="toSectionKey(section)"
-                    :variant="
+                ><CvEditableSectionContent
+                :section-key="toSectionKey(section)"
+                :variant="
                       effectiveSectionType(
                         toSectionKey(section),
                         sectionType(toSectionKey(section) as any),
                       )
                     "
-                    :items="getEditableSectionItems(section)"
-                    @update-item="
+                :items="getEditableSectionItems(section)"
+                @update-item="
                       (index, value) =>
                         updateEditableSectionItem(section, index, value)
                     "
-                  />
-                </div>
+              />
               </div>
-              <div
-                v-else-if="
+            </div>
+            <div
+              v-else-if="
                   isSideContentLayout && normalizedStructure === 'structure-2'
                 "
-                class="cv-sections-structure-2"
-              >
-                <div
-                  v-for="section in visibleOrderedSections(
+              class="cv-sections-structure-2"
+            >
+              <div
+                v-for="section in visibleOrderedSections(
                     'contentStructure2',
                     [...structureContentBaseSections, 'Skills'],
                   )"
-                  :key="`content-s2-${section}`"
-                  class="cv-section-row"
-                  :style="sectionOffsetStyle('contentStructure2', section)"
-                  draggable="true"
-                  @dragstart="onSectionDragStart('contentStructure2', section)"
-                  @dragover.prevent
-                  @drop="onSectionDrop('contentStructure2', section)"
-                  @dragend="onSectionDragEnd"
-                >
-                  <div class="cv-section-toolbar">
-                    <AppSelect
-                      v-model="sectionTypeOverrides[toSectionKey(section)]"
-                      :items="getSectionVariantOptions(toSectionKey(section))"
-                      item-title="title"
-                      item-value="value"
-                      density="compact"
-                      variant="outlined"
-                      hide-details
-                      prepend-inner-icon="mdi-shape-outline"
-                      class="cv-variant-select"
-                    /><v-btn
-                      icon="mdi-plus"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="addSectionItem(toSectionKey(section))"
-                    /><v-btn
-                      icon="mdi-minus"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="hideSection(toSectionKey(section))"
-                    /><v-btn
-                      icon="mdi-arrow-up"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="
+                :key="`content-s2-${section}`"
+                class="cv-section-row"
+                :style="sectionOffsetStyle('contentStructure2', section)"
+                draggable="true"
+                @dragstart="onSectionDragStart('contentStructure2', section)"
+                @dragover.prevent
+                @drop="onSectionDrop('contentStructure2', section)"
+                @dragend="onSectionDragEnd"
+              >
+                <div class="cv-section-toolbar">
+                  <AppSelect
+                    v-model="sectionTypeOverrides[toSectionKey(section)]"
+                    :items="getSectionVariantOptions(toSectionKey(section))"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-shape-outline"
+                    class="cv-variant-select"
+                  /><v-btn
+                  icon="mdi-plus"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="addSectionItem(toSectionKey(section))"
+                /><v-btn
+                  icon="mdi-minus"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="hideSection(toSectionKey(section))"
+                /><v-btn
+                  icon="mdi-arrow-up"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="
                         shiftSectionByLine('contentStructure2', section, 'up')
                       "
-                    /><v-btn
-                      icon="mdi-arrow-down"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="
+                /><v-btn
+                  icon="mdi-arrow-down"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="
                         shiftSectionByLine('contentStructure2', section, 'down')
                       "
-                    /><v-btn
-                      icon="mdi-drag"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="
+                /><v-btn
+                  icon="mdi-drag"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="
                         moveSection('contentStructure2', section, 'down')
                       "
-                    />
-                  </div>
-                  <strong class="cv-section-title"
-                    ><v-icon
-                      :icon="
+                />
+                </div>
+                <strong class="cv-section-title"
+                ><v-icon
+                  :icon="
                         sectionIconMap[toSectionKey(section)] ||
                         'mdi-circle-small'
                       "
-                      size="16"
-                      class="mr-1" /><HoverRichTextEditor
-                      class="cv-section-title-editor"
-                      :model-value="sectionDisplayTitle(section)"
-                      font-size="13px"
-                      font-weight="700"
-                      :font-family="textFontPreset('sectionLabel')"
-                      color="inherit"
-                      @update:model-value="
+                  size="16"
+                  class="mr-1" /><HoverRichTextEditor
+                  class="cv-section-title-editor"
+                  :model-value="sectionDisplayTitle(section)"
+                  font-size="13px"
+                  font-weight="700"
+                  :font-family="textFontPreset('sectionLabel')"
+                  color="inherit"
+                  @update:model-value="
                         updateSectionDisplayTitle(section, $event)
                       " /></strong
-                  ><CvEditableSectionContent
-                    :section-key="toSectionKey(section)"
-                    :variant="
+                ><CvEditableSectionContent
+                :section-key="toSectionKey(section)"
+                :variant="
                       effectiveSectionType(
                         toSectionKey(section),
                         sectionType(toSectionKey(section) as any),
                       )
                     "
-                    :items="getEditableSectionItems(section)"
-                    @update-item="
+                :items="getEditableSectionItems(section)"
+                @update-item="
                       (index, value) =>
                         updateEditableSectionItem(section, index, value)
                     "
-                  />
-                </div>
+              />
               </div>
-              <div
-                v-else-if="
+            </div>
+            <div
+              v-else-if="
                   isMainStructureLayout && normalizedStructure === 'structure-1'
                 "
-                class="cv-sections-list"
-              >
-                <div
-                  v-for="section in visibleOrderedSections(
+              class="cv-sections-list"
+            >
+              <div
+                v-for="section in visibleOrderedSections(
                     'mainOne',
                     structureOneSections,
                   )"
-                  :key="`s1-${section}`"
-                  class="cv-section-row"
-                  :style="sectionOffsetStyle('mainOne', section)"
-                  draggable="true"
-                  @dragstart="onSectionDragStart('mainOne', section)"
-                  @dragover.prevent
-                  @drop="onSectionDrop('mainOne', section)"
-                  @dragend="onSectionDragEnd"
-                >
-                  <div class="cv-section-toolbar">
-                    <AppSelect
-                      v-model="sectionTypeOverrides[toSectionKey(section)]"
-                      :items="getSectionVariantOptions(toSectionKey(section))"
-                      item-title="title"
-                      item-value="value"
-                      density="compact"
-                      variant="outlined"
-                      hide-details
-                      prepend-inner-icon="mdi-shape-outline"
-                      class="cv-variant-select"
-                    /><v-btn
-                      icon="mdi-plus"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="addSectionItem(toSectionKey(section))"
-                    /><v-btn
-                      icon="mdi-minus"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="hideSection(toSectionKey(section))"
-                    /><v-btn
-                      icon="mdi-arrow-up"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="shiftSectionByLine('mainOne', section, 'up')"
-                    /><v-btn
-                      icon="mdi-arrow-down"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="
+                :key="`s1-${section}`"
+                class="cv-section-row"
+                :style="sectionOffsetStyle('mainOne', section)"
+                draggable="true"
+                @dragstart="onSectionDragStart('mainOne', section)"
+                @dragover.prevent
+                @drop="onSectionDrop('mainOne', section)"
+                @dragend="onSectionDragEnd"
+              >
+                <div class="cv-section-toolbar">
+                  <AppSelect
+                    v-model="sectionTypeOverrides[toSectionKey(section)]"
+                    :items="getSectionVariantOptions(toSectionKey(section))"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-shape-outline"
+                    class="cv-variant-select"
+                  /><v-btn
+                  icon="mdi-plus"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="addSectionItem(toSectionKey(section))"
+                /><v-btn
+                  icon="mdi-minus"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="hideSection(toSectionKey(section))"
+                /><v-btn
+                  icon="mdi-arrow-up"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="shiftSectionByLine('mainOne', section, 'up')"
+                /><v-btn
+                  icon="mdi-arrow-down"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="
                         shiftSectionByLine('mainOne', section, 'down')
                       "
-                    /><v-btn
-                      icon="mdi-drag"
-                      size="x-small"
-                      variant="text"
-                      @click.stop="moveSection('mainOne', section, 'down')"
-                    />
-                  </div>
-                  <strong class="cv-section-title"
-                    ><v-icon
-                      :icon="
+                /><v-btn
+                  icon="mdi-drag"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="moveSection('mainOne', section, 'down')"
+                />
+                </div>
+                <strong class="cv-section-title"
+                ><v-icon
+                  :icon="
                         sectionIconMap[toSectionKey(section)] ||
                         'mdi-circle-small'
                       "
-                      size="16"
-                      class="mr-1" /><HoverRichTextEditor
-                      class="cv-section-title-editor"
-                      :model-value="sectionDisplayTitle(section)"
-                      font-size="13px"
-                      font-weight="700"
-                      :font-family="textFontPreset('sectionLabel')"
-                      color="inherit"
-                      @update:model-value="
+                  size="16"
+                  class="mr-1" /><HoverRichTextEditor
+                  class="cv-section-title-editor"
+                  :model-value="sectionDisplayTitle(section)"
+                  font-size="13px"
+                  font-weight="700"
+                  :font-family="textFontPreset('sectionLabel')"
+                  color="inherit"
+                  @update:model-value="
                         updateSectionDisplayTitle(section, $event)
                       " /></strong
-                  ><CvEditableSectionContent
-                    :section-key="toSectionKey(section)"
-                    :variant="
+                ><CvEditableSectionContent
+                :section-key="toSectionKey(section)"
+                :variant="
                       effectiveSectionType(
                         toSectionKey(section),
                         sectionType(toSectionKey(section) as any),
                       )
                     "
-                    :items="getEditableSectionItems(section)"
-                    @update-item="
+                :items="getEditableSectionItems(section)"
+                @update-item="
                       (index, value) =>
                         updateEditableSectionItem(section, index, value)
                     "
-                  />
-                </div>
+              />
               </div>
-              <div
-                v-else-if="
+            </div>
+            <div
+              v-else-if="
                   isMainStructureLayout && normalizedStructure === 'structure-2'
                 "
-                class="cv-sections-structure-2"
-              >
-                <div
-                  v-for="section in visibleOrderedSections(
+              class="cv-sections-structure-2"
+            >
+              <div
+                v-for="section in visibleOrderedSections(
                     'mainTwoTop',
                     structureTwoTopSections,
                   )"
-                  :key="`s2-top-${section}`"
-                  class="cv-section-row"
-                  :style="sectionOffsetStyle('mainTwoTop', section)"
-                  draggable="true"
-                  @dragstart="onSectionDragStart('mainTwoTop', section)"
-                  @dragover.prevent
-                  @drop="onSectionDrop('mainTwoTop', section)"
-                  @dragend="onSectionDragEnd"
-                >
-                  <div class="cv-section-toolbar">
-                    <AppSelect
-                      v-model="sectionTypeOverrides[toSectionKey(section)]"
-                      :items="getSectionVariantOptions(toSectionKey(section))"
-                      item-title="title"
-                      item-value="value"
-                      density="compact"
-                      variant="outlined"
-                      hide-details
-                      prepend-inner-icon="mdi-shape-outline"
-                      class="cv-variant-select"
-                    /><v-btn
+                :key="`s2-top-${section}`"
+                class="cv-section-row"
+                :style="sectionOffsetStyle('mainTwoTop', section)"
+                draggable="true"
+                @dragstart="onSectionDragStart('mainTwoTop', section)"
+                @dragover.prevent
+                @drop="onSectionDrop('mainTwoTop', section)"
+                @dragend="onSectionDragEnd"
+              >
+                <div class="cv-section-toolbar">
+                  <AppSelect
+                    v-model="sectionTypeOverrides[toSectionKey(section)]"
+                    :items="getSectionVariantOptions(toSectionKey(section))"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-shape-outline"
+                    class="cv-variant-select"
+                  /><v-btn
+                  icon="mdi-plus"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="addSectionItem(toSectionKey(section))"
+                /><v-btn
+                  icon="mdi-minus"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="hideSection(toSectionKey(section))"
+                /><v-btn
+                  icon="mdi-arrow-up"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="
+                        shiftSectionByLine('mainTwoTop', section, 'up')
+                      "
+                /><v-btn
+                  icon="mdi-arrow-down"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="
+                        shiftSectionByLine('mainTwoTop', section, 'down')
+                      "
+                /><v-btn
+                  icon="mdi-drag"
+                  size="x-small"
+                  variant="text"
+                  @click.stop="moveSection('mainTwoTop', section, 'down')"
+                />
+                </div>
+                <strong class="cv-section-title"
+                ><v-icon
+                  :icon="
+                        sectionIconMap[toSectionKey(section)] ||
+                        'mdi-circle-small'
+                      "
+                  size="16"
+                  class="mr-1" /><HoverRichTextEditor
+                  class="cv-section-title-editor"
+                  :model-value="sectionDisplayTitle(section)"
+                  font-size="13px"
+                  font-weight="700"
+                  :font-family="textFontPreset('sectionLabel')"
+                  color="inherit"
+                  @update:model-value="
+                        updateSectionDisplayTitle(section, $event)
+                      " /></strong
+                ><CvEditableSectionContent
+                :section-key="toSectionKey(section)"
+                :variant="
+                      effectiveSectionType(
+                        toSectionKey(section),
+                        sectionType(toSectionKey(section) as any),
+                      )
+                    "
+                :items="getEditableSectionItems(section)"
+                @update-item="
+                      (index, value) =>
+                        updateEditableSectionItem(section, index, value)
+                    "
+              />
+              </div>
+              <v-row class="mt-1" dense>
+                <v-col cols="6">
+                  <div
+                    v-for="section in visibleOrderedSections(
+                        'mainTwoLeft',
+                        structureTwoLeftSections,
+                      )"
+                    :key="`s2-left-${section}`"
+                    class="cv-section-row"
+                    :style="sectionOffsetStyle('mainTwoLeft', section)"
+                    draggable="true"
+                    @dragstart="onSectionDragStart('mainTwoLeft', section)"
+                    @dragover.prevent
+                    @drop="onSectionDrop('mainTwoLeft', section)"
+                    @dragend="onSectionDragEnd"
+                  >
+                    <div class="cv-section-toolbar">
+                      <AppSelect
+                        v-model="sectionTypeOverrides[toSectionKey(section)]"
+                        :items="
+                            getSectionVariantOptions(toSectionKey(section))
+                          "
+                        item-title="title"
+                        item-value="value"
+                        density="compact"
+                        variant="outlined"
+                        hide-details
+                        prepend-inner-icon="mdi-shape-outline"
+                        class="cv-variant-select"
+                      /><v-btn
                       icon="mdi-plus"
                       size="x-small"
                       variant="text"
@@ -2325,28 +2437,30 @@ v-if="!isCaptureMode"
                       size="x-small"
                       variant="text"
                       @click.stop="
-                        shiftSectionByLine('mainTwoTop', section, 'up')
-                      "
+                            shiftSectionByLine('mainTwoLeft', section, 'up')
+                          "
                     /><v-btn
                       icon="mdi-arrow-down"
                       size="x-small"
                       variant="text"
                       @click.stop="
-                        shiftSectionByLine('mainTwoTop', section, 'down')
-                      "
+                            shiftSectionByLine('mainTwoLeft', section, 'down')
+                          "
                     /><v-btn
                       icon="mdi-drag"
                       size="x-small"
                       variant="text"
-                      @click.stop="moveSection('mainTwoTop', section, 'down')"
+                      @click.stop="
+                            moveSection('mainTwoLeft', section, 'down')
+                          "
                     />
-                  </div>
-                  <strong class="cv-section-title"
+                    </div>
+                    <strong class="cv-section-title"
                     ><v-icon
                       :icon="
-                        sectionIconMap[toSectionKey(section)] ||
-                        'mdi-circle-small'
-                      "
+                            sectionIconMap[toSectionKey(section)] ||
+                            'mdi-circle-small'
+                          "
                       size="16"
                       class="mr-1" /><HoverRichTextEditor
                       class="cv-section-title-editor"
@@ -2356,260 +2470,166 @@ v-if="!isCaptureMode"
                       :font-family="textFontPreset('sectionLabel')"
                       color="inherit"
                       @update:model-value="
-                        updateSectionDisplayTitle(section, $event)
-                      " /></strong
-                  ><CvEditableSectionContent
-                    :section-key="toSectionKey(section)"
-                    :variant="
-                      effectiveSectionType(
-                        toSectionKey(section),
-                        sectionType(toSectionKey(section) as any),
-                      )
-                    "
-                    :items="getEditableSectionItems(section)"
-                    @update-item="
-                      (index, value) =>
-                        updateEditableSectionItem(section, index, value)
-                    "
-                  />
-                </div>
-                <v-row class="mt-1" dense>
-                  <v-col cols="6">
-                    <div
-                      v-for="section in visibleOrderedSections(
-                        'mainTwoLeft',
-                        structureTwoLeftSections,
-                      )"
-                      :key="`s2-left-${section}`"
-                      class="cv-section-row"
-                      :style="sectionOffsetStyle('mainTwoLeft', section)"
-                      draggable="true"
-                      @dragstart="onSectionDragStart('mainTwoLeft', section)"
-                      @dragover.prevent
-                      @drop="onSectionDrop('mainTwoLeft', section)"
-                      @dragend="onSectionDragEnd"
-                    >
-                      <div class="cv-section-toolbar">
-                        <AppSelect
-                          v-model="sectionTypeOverrides[toSectionKey(section)]"
-                          :items="
-                            getSectionVariantOptions(toSectionKey(section))
-                          "
-                          item-title="title"
-                          item-value="value"
-                          density="compact"
-                          variant="outlined"
-                          hide-details
-                          prepend-inner-icon="mdi-shape-outline"
-                          class="cv-variant-select"
-                        /><v-btn
-                          icon="mdi-plus"
-                          size="x-small"
-                          variant="text"
-                          @click.stop="addSectionItem(toSectionKey(section))"
-                        /><v-btn
-                          icon="mdi-minus"
-                          size="x-small"
-                          variant="text"
-                          @click.stop="hideSection(toSectionKey(section))"
-                        /><v-btn
-                          icon="mdi-arrow-up"
-                          size="x-small"
-                          variant="text"
-                          @click.stop="
-                            shiftSectionByLine('mainTwoLeft', section, 'up')
-                          "
-                        /><v-btn
-                          icon="mdi-arrow-down"
-                          size="x-small"
-                          variant="text"
-                          @click.stop="
-                            shiftSectionByLine('mainTwoLeft', section, 'down')
-                          "
-                        /><v-btn
-                          icon="mdi-drag"
-                          size="x-small"
-                          variant="text"
-                          @click.stop="
-                            moveSection('mainTwoLeft', section, 'down')
-                          "
-                        />
-                      </div>
-                      <strong class="cv-section-title"
-                        ><v-icon
-                          :icon="
-                            sectionIconMap[toSectionKey(section)] ||
-                            'mdi-circle-small'
-                          "
-                          size="16"
-                          class="mr-1" /><HoverRichTextEditor
-                          class="cv-section-title-editor"
-                          :model-value="sectionDisplayTitle(section)"
-                          font-size="13px"
-                          font-weight="700"
-                          :font-family="textFontPreset('sectionLabel')"
-                          color="inherit"
-                          @update:model-value="
                             updateSectionDisplayTitle(section, $event)
                           " /></strong
-                      ><CvEditableSectionContent
-                        :section-key="toSectionKey(section)"
-                        :variant="
+                    ><CvEditableSectionContent
+                    :section-key="toSectionKey(section)"
+                    :variant="
                           effectiveSectionType(
                             toSectionKey(section),
                             sectionType(toSectionKey(section) as any),
                           )
                         "
-                        :items="getEditableSectionItems(section)"
-                        @update-item="
+                    :items="getEditableSectionItems(section)"
+                    @update-item="
                           (index, value) =>
                             updateEditableSectionItem(section, index, value)
                         "
-                      />
-                    </div>
-                  </v-col>
-                  <v-col cols="6">
-                    <div
-                      v-for="section in visibleOrderedSections(
+                  />
+                  </div>
+                </v-col>
+                <v-col cols="6">
+                  <div
+                    v-for="section in visibleOrderedSections(
                         'mainTwoRight',
                         structureTwoRightSections,
                       )"
-                      :key="`s2-right-${section}`"
-                      class="cv-section-row"
-                      :style="sectionOffsetStyle('mainTwoRight', section)"
-                      draggable="true"
-                      @dragstart="onSectionDragStart('mainTwoRight', section)"
-                      @dragover.prevent
-                      @drop="onSectionDrop('mainTwoRight', section)"
-                      @dragend="onSectionDragEnd"
-                    >
-                      <div class="cv-section-toolbar">
-                        <AppSelect
-                          v-model="sectionTypeOverrides[toSectionKey(section)]"
-                          :items="
+                    :key="`s2-right-${section}`"
+                    class="cv-section-row"
+                    :style="sectionOffsetStyle('mainTwoRight', section)"
+                    draggable="true"
+                    @dragstart="onSectionDragStart('mainTwoRight', section)"
+                    @dragover.prevent
+                    @drop="onSectionDrop('mainTwoRight', section)"
+                    @dragend="onSectionDragEnd"
+                  >
+                    <div class="cv-section-toolbar">
+                      <AppSelect
+                        v-model="sectionTypeOverrides[toSectionKey(section)]"
+                        :items="
                             getSectionVariantOptions(toSectionKey(section))
                           "
-                          item-title="title"
-                          item-value="value"
-                          density="compact"
-                          variant="outlined"
-                          hide-details
-                          prepend-inner-icon="mdi-shape-outline"
-                          class="cv-variant-select"
-                        /><v-btn
-                          icon="mdi-plus"
-                          size="x-small"
-                          variant="text"
-                          @click.stop="addSectionItem(toSectionKey(section))"
-                        /><v-btn
-                          icon="mdi-minus"
-                          size="x-small"
-                          variant="text"
-                          @click.stop="hideSection(toSectionKey(section))"
-                        /><v-btn
-                          icon="mdi-arrow-up"
-                          size="x-small"
-                          variant="text"
-                          @click.stop="
+                        item-title="title"
+                        item-value="value"
+                        density="compact"
+                        variant="outlined"
+                        hide-details
+                        prepend-inner-icon="mdi-shape-outline"
+                        class="cv-variant-select"
+                      /><v-btn
+                      icon="mdi-plus"
+                      size="x-small"
+                      variant="text"
+                      @click.stop="addSectionItem(toSectionKey(section))"
+                    /><v-btn
+                      icon="mdi-minus"
+                      size="x-small"
+                      variant="text"
+                      @click.stop="hideSection(toSectionKey(section))"
+                    /><v-btn
+                      icon="mdi-arrow-up"
+                      size="x-small"
+                      variant="text"
+                      @click.stop="
                             shiftSectionByLine('mainTwoRight', section, 'up')
                           "
-                        /><v-btn
-                          icon="mdi-arrow-down"
-                          size="x-small"
-                          variant="text"
-                          @click.stop="
+                    /><v-btn
+                      icon="mdi-arrow-down"
+                      size="x-small"
+                      variant="text"
+                      @click.stop="
                             shiftSectionByLine('mainTwoRight', section, 'down')
                           "
-                        /><v-btn
-                          icon="mdi-drag"
-                          size="x-small"
-                          variant="text"
-                          @click.stop="
+                    /><v-btn
+                      icon="mdi-drag"
+                      size="x-small"
+                      variant="text"
+                      @click.stop="
                             moveSection('mainTwoRight', section, 'down')
                           "
-                        />
-                      </div>
-                      <strong class="cv-section-title"
-                        ><v-icon
-                          :icon="
+                    />
+                    </div>
+                    <strong class="cv-section-title"
+                    ><v-icon
+                      :icon="
                             sectionIconMap[toSectionKey(section)] ||
                             'mdi-circle-small'
                           "
-                          size="16"
-                          class="mr-1" /><HoverRichTextEditor
-                          class="cv-section-title-editor"
-                          :model-value="sectionDisplayTitle(section)"
-                          font-size="13px"
-                          font-weight="700"
-                          :font-family="textFontPreset('sectionLabel')"
-                          color="inherit"
-                          @update:model-value="
+                      size="16"
+                      class="mr-1" /><HoverRichTextEditor
+                      class="cv-section-title-editor"
+                      :model-value="sectionDisplayTitle(section)"
+                      font-size="13px"
+                      font-weight="700"
+                      :font-family="textFontPreset('sectionLabel')"
+                      color="inherit"
+                      @update:model-value="
                             updateSectionDisplayTitle(section, $event)
                           " /></strong
-                      ><CvEditableSectionContent
-                        :section-key="toSectionKey(section)"
-                        :variant="
+                    ><CvEditableSectionContent
+                    :section-key="toSectionKey(section)"
+                    :variant="
                           effectiveSectionType(
                             toSectionKey(section),
                             sectionType(toSectionKey(section) as any),
                           )
                         "
-                        :items="getEditableSectionItems(section)"
-                        @update-item="
+                    :items="getEditableSectionItems(section)"
+                    @update-item="
                           (index, value) =>
                             updateEditableSectionItem(section, index, value)
                         "
-                      />
-                    </div>
-                  </v-col>
-                </v-row>
-              </div>
-              <div v-else class="empty-state">
-                <p class="text-medium-emphasis">
-                  Aucune section CV affichée pour le moment.
-                </p>
-              </div>
-              <footer v-if="signatureDataUrl" class="signature-footer">
-                <div class="signature-box">
-                  <img
-                    :src="signatureDataUrl"
-                    alt="signature"
-                    class="signature-image"
                   />
-                  <v-menu location="bottom end">
-                    <template #activator="{ props }">
-                      <v-btn
-                        v-bind="props"
-                        icon="mdi-dots-vertical"
-                        size="x-small"
-                        class="signature-menu-btn"
-                      />
-                    </template>
-                    <v-list density="compact">
-                      <v-list-item
-                        prepend-icon="mdi-pencil"
-                        title="Edit"
-                        @click="openSignatureDialog"
-                      />
-                      <v-list-item
-                        prepend-icon="mdi-delete"
-                        title="Delete"
-                        @click="deleteSignature"
-                      />
-                    </v-list>
-                  </v-menu>
-                </div>
-              </footer>
-            </template>
-          </component>
+                  </div>
+                </v-col>
+              </v-row>
+            </div>
+            <div v-else class="empty-state">
+              <p class="text-medium-emphasis">
+                Aucune section CV affichée pour le moment.
+              </p>
+            </div>
+            <footer v-if="signatureDataUrl" class="signature-footer">
+              <div class="signature-box">
+                <img
+                  :src="signatureDataUrl"
+                  alt="signature"
+                  class="signature-image"
+                />
+                <v-menu location="bottom end">
+                  <template #activator="{ props }">
+                    <v-btn
+                      v-bind="props"
+                      icon="mdi-dots-vertical"
+                      size="x-small"
+                      class="signature-menu-btn"
+                    />
+                  </template>
+                  <v-list density="compact">
+                    <v-list-item
+                      prepend-icon="mdi-pencil"
+                      title="Edit"
+                      @click="openSignatureDialog"
+                    />
+                    <v-list-item
+                      prepend-icon="mdi-delete"
+                      title="Delete"
+                      @click="deleteSignature"
+                    />
+                  </v-list>
+                </v-menu>
+              </div>
+            </footer>
+          </template>
+        </component>
+        <template v-if="!isCaptureMode">
           <ResumePreviewPageBreak
             v-for="pageBreak in cvPreviewPageBreaks"
-            v-if="!isCaptureMode"
             :key="`cv-page-break-${pageBreak}`"
             :page-number="pageBreak"
             :top="pageBreak * CV_PREVIEW_PDF_PAGE_HEIGHT"
           />
-        </div>
+        </template>
       </div>
     </v-container>
 
@@ -2924,6 +2944,26 @@ v-if="!isCaptureMode"
   word-break: break-word;
 }
 
+.cv-header-editor--link-value {
+  display: none;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.cv-contact-item:hover .cv-header-editor--link-value,
+.cv-contact-item:focus-within .cv-header-editor--link-value {
+  display: block;
+}
+
+.cv-header-editor--link-value :deep(.hover-editor__surface),
+.cv-header-editor--link-value :deep(.hover-editor__content),
+.cv-header-editor--link-value :deep(.hover-editor__content p) {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .cv-section-title {
   display: flex !important;
   align-items: center;
@@ -2938,6 +2978,9 @@ v-if="!isCaptureMode"
 
 .cv-preview-shell {
   position: relative;
+  width: 100%;
+  max-width: var(--cv-preview-page-width, 794px);
+  min-width: 0;
   min-height: var(--cv-preview-total-height, 1100px);
 }
 
@@ -2958,23 +3001,23 @@ v-if="!isCaptureMode"
   right: 0;
   bottom: 0;
   height: var(--cv-page-end-bar-height, 24px);
-  background: #fff;
+  background: var(--cv-page-background, #fff);
 }
 
-.cv-header-layout { display: grid; gap: 12px; align-items: center; }
+.cv-header-layout { display: grid; width: 100%; gap: 12px; align-items: center; }
 .cv-header-layout--header-left { grid-template-columns: 2fr 1fr; }
 .cv-header-layout--header-right { grid-template-columns: 1fr 2fr; }
 .cv-header-layout--header-split { grid-template-columns: 5fr 7fr; }
-.cv-header-split-left { display: grid; grid-template-columns: auto 1fr; gap: 6px; align-items: center; justify-content: start; }
+.cv-header-split-left { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; justify-content: start; min-width: 0; }
 .cv-header-contact { display:flex; flex-direction:column; justify-content:center; align-items:stretch; text-align:start; }
 .cv-header-contact-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 10px; width:100%; text-align:start; }
-.cv-contact-item { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; }
+.cv-contact-item { display:flex; align-items:center; gap:6px; min-width:0; font-size:13px; font-weight:700; }
 .cv-contact-icon-btn{min-width:24px;padding:0}
-.cv-contact-link{font-weight:700;color:inherit;text-decoration:none}
+.cv-contact-link{font-weight:700;color:inherit;text-decoration:none;flex-shrink:0}
 .cv-contact-link:hover{text-decoration:underline}
 .cv-header-layout, .cv-contact-item, .cv-header-identity strong { color: var(--cv-header-text, #0f172a); }
 .cv-header-identity { display: flex; flex-direction: column; gap: 4px; justify-content:center; align-items:center; text-align:center; }
-.cv-header-identity--split { align-items:flex-start; text-align:start; }
+.cv-header-identity--split { align-items:flex-start; min-width:0; text-align:start; }
 .cv-header-avatar { width: 52px; height: 52px; object-fit: cover; border-radius: 999px; }
 
 .empty-state {
@@ -2999,7 +3042,7 @@ v-if="!isCaptureMode"
   padding: 8px 10px;
   border-radius: 8px;
   background: transparent;
-  color: #1e293b;
+  color: var(--cv-page-text, #1e293b);
   border: 0;
   font-weight: 600;
   font-size: 13px;
@@ -3074,7 +3117,7 @@ v-if="!isCaptureMode"
   padding: 8px 4px;
   margin-bottom: 8px;
   font-weight: 600;
-  color: #334155;
+  color: var(--cv-page-muted, #334155);
   background: transparent;
 }
 .cv-section-row > strong {
@@ -3229,7 +3272,7 @@ v-if="!isCaptureMode"
   cursor: pointer;
 }
 .cv-section-row > strong {
-  color: color-mix(in srgb, var(--cv-primary, #1d4ed8) 78%, #0f172a);
+  color: color-mix(in srgb, var(--cv-primary, #1d4ed8) 72%, var(--cv-page-text, #0f172a));
 }
 .cv-aside-section-item > strong {
   color: color-mix(in srgb, var(--cv-primary, #1d4ed8) 55%, white);
@@ -3251,6 +3294,8 @@ v-if="!isCaptureMode"
   width: var(--cv-section-bar-width, 44px);
   height: var(--cv-section-bar-height, 3px);
   border-radius: var(--cv-section-bar-radius, 999px);
+  overflow: hidden;
+  clip-path: inset(0 round var(--cv-section-bar-radius, 999px));
   position: absolute;
   left: 0;
   top: calc(100% + 6px);
@@ -3304,7 +3349,11 @@ v-if="!isCaptureMode"
 .decor-object {
   position: absolute;
   pointer-events: none;
+  color: var(--cv-primary, #1d4ed8);
   background: color-mix(in srgb, var(--cv-primary, #1d4ed8) 35%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, currentColor 32%, rgba(255, 255, 255, 0.72)),
+    0 4px 18px color-mix(in srgb, currentColor 28%, transparent);
   transform: translate(-50%, -50%);
   z-index: 0;
 }
