@@ -454,6 +454,66 @@
           "#1D4ED8"
         ]
       }
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
+      }
     }
   },
   {
@@ -910,6 +970,66 @@
           "#6B7280",
           "#7C3AED"
         ]
+      }
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
       }
     }
   },
@@ -1372,6 +1492,66 @@
           "#1D4ED8"
         ]
       }
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
+      }
     }
   },
   {
@@ -1831,6 +2011,66 @@
           "#6B7280",
           "#7C3AED"
         ]
+      }
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
       }
     }
   },
@@ -2292,6 +2532,66 @@
           "#1D4ED8"
         ]
       }
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
+      }
     }
   },
   {
@@ -2751,6 +3051,66 @@
           "#6B7280",
           "#7C3AED"
         ]
+      }
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
       }
     }
   },
@@ -3212,6 +3572,66 @@
           "#1D4ED8"
         ]
       }
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
+      }
     }
   },
   {
@@ -3671,6 +4091,66 @@
           "#6B7280",
           "#7C3AED"
         ]
+      }
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
       }
     }
   },
@@ -4132,6 +4612,66 @@
           "#1D4ED8"
         ]
       }
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
+      }
     }
   },
   {
@@ -4592,6 +5132,66 @@
           "#7C3AED"
         ]
       }
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
+      }
     }
   },
   {
@@ -5032,6 +5632,82 @@
           "#1D4ED8"
         ]
       }
+    },
+    "layoutOptions": {
+      "asideStartsAtTop": true
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "none",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
+      }
     }
   },
   {
@@ -5471,6 +6147,82 @@
           "#6B7280",
           "#7C3AED"
         ]
+      }
+    },
+    "layoutOptions": {
+      "asideStartsAtTop": true
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "none",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
       }
     }
   },
@@ -5932,6 +6684,66 @@
           "#1D4ED8"
         ]
       }
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
+      }
     }
   },
   {
@@ -6392,6 +7204,66 @@
           "#7C3AED"
         ]
       }
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
+      }
     }
   },
   {
@@ -6837,6 +7709,79 @@
           "#1D4ED8"
         ]
       }
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "none",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
+      }
     }
   },
   {
@@ -7281,6 +8226,79 @@
           "#6B7280",
           "#7C3AED"
         ]
+      }
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "none",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
       }
     }
   },
@@ -7742,6 +8760,66 @@
           "#1D4ED8"
         ]
       }
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
+      }
     }
   },
   {
@@ -8200,6 +9278,66 @@
           "#6B7280",
           "#7C3AED"
         ]
+      }
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
       }
     }
   },
@@ -8660,6 +9798,66 @@
           "#1D4ED8"
         ]
       }
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
+      }
     }
   },
   {
@@ -9118,6 +10316,66 @@
           "#6B7280",
           "#7C3AED"
         ]
+      }
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
       }
     }
   },
