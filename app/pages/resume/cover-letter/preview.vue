@@ -7,11 +7,19 @@ import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-
 import PALETTE_PRESETS from '~/data/resume-templates/palettes.json'
 import { buildToolbarPaletteOptions } from '~/modules/resume/theme/paletteOptions'
 import {
+  isDarkPageBackground,
+  readableMutedTextColor,
+  readableTextColor,
+} from '~/utils/colorContrast'
+import {
   resolveResumeTextFont,
   useResumeGoogleFonts,
 } from '~/composables/useResumeGoogleFonts'
 
-definePageMeta({ title: 'resumePreview.coverLetter.metaTitle', layout: 'resume' })
+definePageMeta({
+  title: 'resumePreview.coverLetter.metaTitle',
+  layout: 'resume',
+})
 const { t } = useI18n()
 useHead(() => ({
   title: t('resumePreview.coverLetter.metaTitle'),
@@ -267,17 +275,38 @@ const activeColors = computed(() => {
   const selected = palettePresetOptions.value.find(
     (option) => option.value === selectedPalette.value,
   )
-  if (selected && selected.value !== 'template')
-    return {
-      ...palette,
-      primary: selected.primary,
-      secondary: selected.secondary,
-      text: selected.text,
-      muted: selected.tertiary,
-      pageBackground: selected.quaternary,
-    }
-  return palette
+  const colors =
+    selected && selected.value !== 'template'
+      ? {
+          ...palette,
+          primary: selected.primary,
+          secondary: selected.secondary,
+          text: selected.text,
+          muted: selected.tertiary,
+          pageBackground: selected.quaternary,
+        }
+      : palette
+  const pageBackground = colors.pageBackground || '#ffffff'
+  return {
+    ...colors,
+    pageBackground,
+    text: readableTextColor(pageBackground, colors.text || '#0F172A'),
+    muted: readableMutedTextColor(pageBackground, colors.muted || '#64748B'),
+  }
 })
+const effectiveBodyColor = computed(() =>
+  readableTextColor(activeColors.value.pageBackground, textColor.value),
+)
+const isDarkPreviewPage = computed(() =>
+  isDarkPageBackground(activeColors.value.pageBackground),
+)
+
+function resolvedLetterElementColor(key: keyof typeof letterElementStyles) {
+  return readableTextColor(
+    activeColors.value.pageBackground,
+    letterElementStyles[key].color,
+  )
+}
 const isLayoutRight = computed(
   () => activeTemplate.value?.layout === 'layout-right',
 )
@@ -491,19 +520,22 @@ async function saveFromPreview() {
   )
   const token = user.value?.token?.trim()
   if (!token) return
-  await $fetch('https://bro-world.org/api/v1/recruit/private/me/cover-letters', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body: {
-      fullName: model.fullName,
-      role: model.role,
-      location: model.location,
-      header: model.heading,
-      description1: model.companyParagraph,
-      description2: model.summary,
-      templateId: templateResponse.id,
+  await $fetch(
+    'https://bro-world.org/api/v1/recruit/private/me/cover-letters',
+    {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: {
+        fullName: model.fullName,
+        role: model.role,
+        location: model.location,
+        header: model.heading,
+        description1: model.companyParagraph,
+        description2: model.summary,
+        templateId: templateResponse.id,
+      },
     },
-  })
+  )
 }
 async function downloadPdf() {
   const node = document.querySelector(
@@ -678,11 +710,51 @@ watch(aiModalOpen, (isOpen) => {
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-btn class="mt-1" variant="tonal" color="primary" prepend-icon="mdi-content-save" block @click="saveFromPreview">Save</v-btn>
-        <v-btn class="mt-2" variant="tonal"  color="primary" prepend-icon="mdi-file-pdf-box" block @click="downloadPdf">PDF</v-btn>
-        <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-draw" block @click="openSignatureDialog">Signature</v-btn>
-        <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-robot" block @click="openAiModal">AI</v-btn>
-        <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-plus" block to="/resume/cover-letter/template-create">Template</v-btn>
+        <v-btn
+          class="mt-1"
+          variant="tonal"
+          color="primary"
+          prepend-icon="mdi-content-save"
+          block
+          @click="saveFromPreview"
+          >Save</v-btn
+        >
+        <v-btn
+          class="mt-2"
+          variant="tonal"
+          color="primary"
+          prepend-icon="mdi-file-pdf-box"
+          block
+          @click="downloadPdf"
+          >PDF</v-btn
+        >
+        <v-btn
+          class="mt-2"
+          variant="tonal"
+          color="primary"
+          prepend-icon="mdi-draw"
+          block
+          @click="openSignatureDialog"
+          >Signature</v-btn
+        >
+        <v-btn
+          class="mt-2"
+          variant="tonal"
+          color="primary"
+          prepend-icon="mdi-robot"
+          block
+          @click="openAiModal"
+          >AI</v-btn
+        >
+        <v-btn
+          class="mt-2"
+          variant="tonal"
+          color="primary"
+          prepend-icon="mdi-plus"
+          block
+          to="/resume/cover-letter/template-create"
+          >Template</v-btn
+        >
       </template>
     </AppPageDrawers>
     <v-container fluid>
@@ -699,7 +771,7 @@ watch(aiModalOpen, (isOpen) => {
         :templates="coverLetterTemplates"
         :selected-template="selectedTemplate"
         template-key-prefix="cover-letter-preview"
-                @select-template="applyPreviewTemplate"
+        @select-template="applyPreviewTemplate"
         @select-palette="selectedPalette = $event"
       >
         <template #decor>
@@ -757,7 +829,12 @@ watch(aiModalOpen, (isOpen) => {
               <v-card class="pa-3" min-width="260" @click.stop>
                 <AppSelect
                   v-model="obj.type"
-                  :items="decorShapeOptions.map((shape) => ({ title: shape, value: shape }))"
+                  :items="
+                    decorShapeOptions.map((shape) => ({
+                      title: shape,
+                      value: shape,
+                    }))
+                  "
                   label="Type"
                   hide-details
                 />
@@ -778,64 +855,105 @@ watch(aiModalOpen, (isOpen) => {
                     @click.stop="obj.color = color"
                   />
                 </div>
-                <v-slider v-model="obj.size" label="Size" min="20" max="420" step="1" hide-details class="mt-3" />
-                <v-slider v-model="obj.opacity" label="Opacity" min="0.02" max="0.4" step="0.01" hide-details class="mt-3" />
-                <v-slider v-model="obj.x" label="X slider" min="0" max="100" step="1" hide-details class="mt-3" />
-                <v-slider v-model="obj.y" label="Y slider" min="0" max="100" step="1" hide-details class="mt-3" />
-                <v-btn size="x-small" color="error" variant="text" class="mt-2" @click.stop="removeDecorObject(i)">remove</v-btn>
+                <v-slider
+                  v-model="obj.size"
+                  label="Size"
+                  min="20"
+                  max="420"
+                  step="1"
+                  hide-details
+                  class="mt-3"
+                />
+                <v-slider
+                  v-model="obj.opacity"
+                  label="Opacity"
+                  min="0.02"
+                  max="0.4"
+                  step="0.01"
+                  hide-details
+                  class="mt-3"
+                />
+                <v-slider
+                  v-model="obj.x"
+                  label="X slider"
+                  min="0"
+                  max="100"
+                  step="1"
+                  hide-details
+                  class="mt-3"
+                />
+                <v-slider
+                  v-model="obj.y"
+                  label="Y slider"
+                  min="0"
+                  max="100"
+                  step="1"
+                  hide-details
+                  class="mt-3"
+                />
+                <v-btn
+                  size="x-small"
+                  color="error"
+                  variant="text"
+                  class="mt-2"
+                  @click.stop="removeDecorObject(i)"
+                  >remove</v-btn
+                >
               </v-card>
             </v-menu>
           </div>
         </template>
         <template #settings>
-        <v-card-text>
-          <AppSelect
-            v-model="barLayout"
-            :items="[
-              { title: 'No bar', value: 'none' },
-              { title: 'Single bar', value: 'single' },
-              { title: 'Double bars', value: 'double' },
-            ]"
-            label="Bar layout"
-            hide-details
-            class="mt-3"
-          />
-          <AppSelect
-            v-model="selectedDividerType"
-            :items="dividerTypeOptions"
-            label="Divider type"
-            hide-details
-            class="mt-3"
-          />
-          <p class="text-body-2">Bar radius</p>
-          <v-slider
-            v-model="barRadius"
-            :min="activeBarDesignConfig.barRadius.min"
-            :max="activeBarDesignConfig.barRadius.max"
-            step="1"
-            hide-details
-            class="mt-3"
-          />
-          <p class="text-body-2">Bar width</p>
-          <v-slider
-            v-model="primaryBarWidth"
-            :min="activeBarDesignConfig.barWidth.min"
-            :max="activeBarDesignConfig.barWidth.max"
-            step="1"
-            hide-details
-            class="mt-3"
-          />
-          <p v-if="barLayout === 'double'" class="text-body-2">Sec bar width</p>
-          <v-slider
-            v-if="barLayout === 'double'"
-            v-model="secondaryBarWidth"
-            :min="activeBarDesignConfig.secondaryBarWidth.min"
-            :max="activeBarDesignConfig.secondaryBarWidth.max"
-            step="1"
-            hide-details
-            class="mt-3"
-          />
-        </v-card-text>
+          <v-card-text>
+            <AppSelect
+              v-model="barLayout"
+              :items="[
+                { title: 'No bar', value: 'none' },
+                { title: 'Single bar', value: 'single' },
+                { title: 'Double bars', value: 'double' },
+              ]"
+              label="Bar layout"
+              hide-details
+              class="mt-3"
+            />
+            <AppSelect
+              v-model="selectedDividerType"
+              :items="dividerTypeOptions"
+              label="Divider type"
+              hide-details
+              class="mt-3"
+            />
+            <p class="text-body-2">Bar radius</p>
+            <v-slider
+              v-model="barRadius"
+              :min="activeBarDesignConfig.barRadius.min"
+              :max="activeBarDesignConfig.barRadius.max"
+              step="1"
+              hide-details
+              class="mt-3"
+            />
+            <p class="text-body-2">Bar width</p>
+            <v-slider
+              v-model="primaryBarWidth"
+              :min="activeBarDesignConfig.barWidth.min"
+              :max="activeBarDesignConfig.barWidth.max"
+              step="1"
+              hide-details
+              class="mt-3"
+            />
+            <p v-if="barLayout === 'double'" class="text-body-2">
+              Sec bar width
+            </p>
+            <v-slider
+              v-if="barLayout === 'double'"
+              v-model="secondaryBarWidth"
+              :min="activeBarDesignConfig.secondaryBarWidth.min"
+              :max="activeBarDesignConfig.secondaryBarWidth.max"
+              step="1"
+              hide-details
+              class="mt-3"
+            />
+          </v-card-text>
         </template>
       </ResumePreviewToolbar>
       <div
@@ -844,6 +962,7 @@ watch(aiModalOpen, (isOpen) => {
       >
         <main
           class="capture-cover-letter"
+          :class="{ 'capture-cover-letter--dark': isDarkPreviewPage }"
           :style="{
             '--cp-primary': activeColors.primary,
             '--cp-secondary': activeColors.secondary,
@@ -854,7 +973,7 @@ watch(aiModalOpen, (isOpen) => {
             '--section-divider-color': sectionDividerColor,
             '--section-spacing': sectionSpacing,
             '--body-size': `${textFontSize}px`,
-            '--body-color': textColor,
+            '--body-color': effectiveBodyColor,
             '--bar-radius': `${barRadius}px`,
             '--bar-primary-width': `${primaryBarWidth}px`,
             '--bar-secondary-width': `${secondaryBarWidth}px`,
@@ -892,14 +1011,14 @@ watch(aiModalOpen, (isOpen) => {
               <HoverRichTextEditor
                 v-model="model.date"
                 :font-size="`${letterElementStyles.date.size}px`"
-                :color="letterElementStyles.date.color"
+                :color="resolvedLetterElementColor('date')"
                 :font-weight="letterElementStyles.date.weight"
                 :font-family="textFontFamily('date')"
               />
               <HoverRichTextEditor
                 v-model="model.location"
                 :font-size="`${letterElementStyles.address.size}px`"
-                :color="letterElementStyles.address.color"
+                :color="resolvedLetterElementColor('address')"
                 :font-weight="letterElementStyles.address.weight"
                 :font-family="textFontFamily('address')"
               />
@@ -1077,13 +1196,25 @@ watch(aiModalOpen, (isOpen) => {
         <p class="mb-4">{{ aiPromptProgress }}</p>
         <v-row>
           <v-col cols="12" md="6"
-            ><v-text-field v-model="aiFullName" label="Full name" variant="outlined" hide-details
+            ><v-text-field
+              v-model="aiFullName"
+              label="Full name"
+              variant="outlined"
+              hide-details
           /></v-col>
           <v-col cols="12" md="6"
-            ><v-text-field v-model="aiRole" label="Role" variant="outlined" hide-details
+            ><v-text-field
+              v-model="aiRole"
+              label="Role"
+              variant="outlined"
+              hide-details
           /></v-col>
           <v-col cols="12" md="6"
-            ><v-text-field v-model="aiLocation" label="Location" variant="outlined" hide-details
+            ><v-text-field
+              v-model="aiLocation"
+              label="Location"
+              variant="outlined"
+              hide-details
           /></v-col>
           <v-col cols="12" md="6"
             ><v-text-field label="Email" variant="outlined" hide-details
