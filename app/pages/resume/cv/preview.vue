@@ -2954,7 +2954,7 @@ v-if="!isCaptureMode"
   background: #fff;
 }
 
-.cv-header-layout { display: grid; gap: 12px; align-items: center; }
+.cv-header-layout { display: grid; width: 100%; gap: 12px; align-items: center; }
 .cv-header-layout--header-left { grid-template-columns: 2fr 1fr; }
 .cv-header-layout--header-right { grid-template-columns: 1fr 2fr; }
 .cv-header-layout--header-split { grid-template-columns: 5fr 7fr; }
