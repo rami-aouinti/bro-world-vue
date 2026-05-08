@@ -381,7 +381,7 @@ function applyTagFilter(tag: string) {
 <template>
   <v-card
     rounded="xl"
-    class="post-card"
+    class="post-card postcard-gradient-card"
     :class="{
       'post-card--light': isLightTheme,
     }"
@@ -630,7 +630,7 @@ function applyTagFilter(tag: string) {
     </v-card-text>
 
     <v-dialog v-model="imagePreviewDialog" max-width="920">
-      <v-card rounded="lg">
+      <v-card rounded="lg" class="postcard-gradient-card">
         <v-img
           :src="imagePreviewSrc"
           alt="Post image preview"
