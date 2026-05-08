@@ -788,6 +788,7 @@ watch(aiModalOpen, (isOpen) => {
             <v-col cols="6"><v-switch v-model="activeTemplate.theme.pageBorder.enabled" label="Page border" hide-details inset class="mt-2" /></v-col>
             <v-col cols="6"><p class="text-body-2">Border width</p><v-slider v-model="activeTemplate.theme.pageBorder.width" :min="0" :max="24" :step="1" hide-details /></v-col>
             <v-col cols="6"><p class="text-body-2">Border radius</p><v-slider v-model="activeTemplate.theme.pageBorder.radius" :min="0" :max="60" :step="1" hide-details /></v-col>
+            <v-col cols="6"><p class="text-body-2">Border color</p><v-text-field v-model="activeTemplate.theme.pageBorder.color" type="color" hide-details density="compact" /></v-col>
           </v-row>
         </v-card-text>
         </template>

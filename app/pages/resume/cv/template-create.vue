@@ -1005,6 +1005,7 @@ const asideRadius = ref(0)
 const pageBorderEnabled = ref(true)
 const pageBorderWidth = ref(0)
 const pageBorderRadius = ref(0)
+const pageBorderColor = ref('#0f172a')
 
 function parsePx(value: unknown, fallback: number) {
   const num = Number.parseFloat(String(value ?? ''))
@@ -1043,17 +1044,19 @@ watch(
     pageBorderEnabled.value = Boolean(template?.theme?.pageBorder?.enabled)
     pageBorderWidth.value = parsePx(template?.theme?.pageBorder?.width, 0)
     pageBorderRadius.value = parsePx(template?.theme?.pageBorder?.radius, 0)
+    pageBorderColor.value = String(template?.theme?.pageBorder?.color || "#0f172a")
   },
   { immediate: true },
 )
 
-watch([pageBorderEnabled, pageBorderWidth, pageBorderRadius], () => {
+watch([pageBorderEnabled, pageBorderWidth, pageBorderRadius, pageBorderColor], () => {
   if (!activeTemplate.value) return
   if (!activeTemplate.value.theme) activeTemplate.value.theme = {} as any
   if (!activeTemplate.value.theme.pageBorder) activeTemplate.value.theme.pageBorder = { enabled: false, width: 0, radius: 0, color: '#0f172a' } as any
   activeTemplate.value.theme.pageBorder.enabled = pageBorderEnabled.value
   activeTemplate.value.theme.pageBorder.width = pageBorderWidth.value
   activeTemplate.value.theme.pageBorder.radius = pageBorderRadius.value
+  activeTemplate.value.theme.pageBorder.color = pageBorderColor.value
 })
 
 watch(selectedTemplate, () => scheduleCvPreviewMeasure(true))
@@ -1480,6 +1483,7 @@ watch(
             <v-col cols="6"><v-switch v-model="pageBorderEnabled" label="Page border" hide-details inset class="mt-2" /></v-col>
             <v-col cols="6"><p class="text-body-2">Border width</p><v-slider v-model="pageBorderWidth" :min="0" :max="24" :step="1" hide-details /></v-col>
             <v-col cols="6"><p class="text-body-2">Border radius</p><v-slider v-model="pageBorderRadius" :min="0" :max="60" :step="1" hide-details /></v-col>
+            <v-col cols="6"><p class="text-body-2">Border color</p><v-text-field v-model="pageBorderColor" type="color" hide-details density="compact" /></v-col>
           </v-row>
         </template>
       </ResumePreviewToolbar>
@@ -1494,7 +1498,7 @@ watch(
           }"
       >
         <div v-for="(obj,index) in editableDecorObjects" :key="`decor-${index}`" class="decor-object" :class="`decor-${obj.type}`" :style="decorObjectStyle(obj)"/>
-        <component :is="activeLayoutComponent" class="w-100 cv-preview-page" :style="{ background: activeColors?.pageBackground || '#ffffff', color: activeColors?.text || '#0f172a', height: 'auto', minHeight: `${cvPreviewHeight}px`, overflow: 'visible', '--cv-primary': activeColors?.primary || '#1d4ed8', '--cv-secondary': activeColors?.secondary || '#93C5FD', '--cv-page-background': activeColors?.pageBackground || '#ffffff', '--cv-page-text': activeColors?.text || '#0f172a', '--cv-page-muted': activeColors?.muted || '#64748b', '--cv-page-border-width': pageBorderEnabled ? `${pageBorderWidth}px` : '0px', '--cv-page-border-color': activeTemplate?.theme?.pageBorder?.color || 'transparent', '--cv-page-border-radius': `${pageBorderRadius}px`, '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body'), '--cv-header-text': headerTextColor, '--cv-header-muted': headerMutedColor, '--cv-section-bar-height': `${sectionBarConfig.height}px`, '--cv-section-bar-radius': `${sectionBarConfig.radius}px`, '--cv-section-bar-display': sectionBarConfig.show ? 'block' : 'none', '--cv-section-title-width': sectionBarConfig.widthType === 'complete' ? '100%' : 'fit-content', '--cv-section-bar-width': sectionBarConfig.widthType === 'complete' ? '100%' : 'calc(100% + 18px)' }">
+        <component :is="activeLayoutComponent" class="w-100 cv-preview-page" :style="{ background: activeColors?.pageBackground || '#ffffff', color: activeColors?.text || '#0f172a', height: 'auto', minHeight: `${cvPreviewHeight}px`, overflow: 'visible', '--cv-primary': activeColors?.primary || '#1d4ed8', '--cv-secondary': activeColors?.secondary || '#93C5FD', '--cv-page-background': activeColors?.pageBackground || '#ffffff', '--cv-page-text': activeColors?.text || '#0f172a', '--cv-page-muted': activeColors?.muted || '#64748b', '--cv-page-border-width': pageBorderEnabled ? `${pageBorderWidth}px` : '0px', '--cv-page-border-color': pageBorderColor, '--cv-page-border-radius': `${pageBorderRadius}px`, '--cv-aside-width': `${asideWidth}px`, '--cv-aside-height': `${asideHeight}px`, '--cv-aside-radius': `${asideRadius}px`, '--cv-text-fullname': textFontPreset('fullName'), '--cv-text-section-label': textFontPreset('sectionLabel'), '--cv-text-entry-title': textFontPreset('entryTitle'), '--cv-text-body': textFontPreset('body'), '--cv-header-text': headerTextColor, '--cv-header-muted': headerMutedColor, '--cv-section-bar-height': `${sectionBarConfig.height}px`, '--cv-section-bar-radius': `${sectionBarConfig.radius}px`, '--cv-section-bar-display': sectionBarConfig.show ? 'block' : 'none', '--cv-section-title-width': sectionBarConfig.widthType === 'complete' ? '100%' : 'fit-content', '--cv-section-bar-width': sectionBarConfig.widthType === 'complete' ? '100%' : 'calc(100% + 18px)' }">
           <template #header>
             <div class="cv-header-layout" :class="`cv-header-layout--${headerType}`">
               <template v-if="headerType === 'header-left'">
