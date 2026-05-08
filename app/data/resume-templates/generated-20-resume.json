@@ -29,7 +29,13 @@
       "line": "soft",
       "density": "comfortable",
       "textStyle": "roman",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "792",
@@ -467,7 +473,13 @@
       "line": "strong",
       "density": "compact",
       "textStyle": "roman",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "792",
@@ -905,7 +917,13 @@
       "line": "soft",
       "density": "comfortable",
       "textStyle": "roman",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "400",
@@ -1360,7 +1378,13 @@
       "line": "strong",
       "density": "compact",
       "textStyle": "roman",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "260px",
@@ -1814,7 +1838,13 @@
       "line": "soft",
       "density": "comfortable",
       "textStyle": "italic",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "240px",
@@ -2268,7 +2298,13 @@
       "line": "strong",
       "density": "compact",
       "textStyle": "italic",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "240px",
@@ -2722,7 +2758,13 @@
       "line": "soft",
       "density": "comfortable",
       "textStyle": "mono",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "240px",
@@ -3176,7 +3218,13 @@
       "line": "strong",
       "density": "compact",
       "textStyle": "mono",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "240px",
@@ -3630,7 +3678,13 @@
       "line": "soft",
       "density": "comfortable",
       "textStyle": "mono",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "240px",
@@ -4084,7 +4138,13 @@
       "line": "strong",
       "density": "compact",
       "textStyle": "mono",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "240px",
@@ -4538,7 +4598,13 @@
       "line": "soft",
       "density": "comfortable",
       "textStyle": "mono",
-      "showIcon": false
+      "showIcon": false,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "240px",
@@ -4972,7 +5038,13 @@
       "line": "strong",
       "density": "compact",
       "textStyle": "mono",
-      "showIcon": false
+      "showIcon": false,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "240px",
@@ -5406,7 +5478,13 @@
       "line": "soft",
       "density": "comfortable",
       "textStyle": "mono",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "240px",
@@ -5860,7 +5938,13 @@
       "line": "strong",
       "density": "compact",
       "textStyle": "mono",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "240px",
@@ -6314,7 +6398,13 @@
       "line": "soft",
       "density": "comfortable",
       "textStyle": "roman",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "792",
@@ -6753,7 +6843,13 @@
       "line": "block",
       "density": "compact",
       "textStyle": "italic",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "792",
@@ -7192,7 +7288,13 @@
       "line": "none",
       "density": "comfortable",
       "textStyle": "roman",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "400",
@@ -7646,7 +7748,13 @@
       "line": "soft",
       "density": "compact",
       "textStyle": "italic",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "260px",
@@ -8099,7 +8207,13 @@
       "line": "block",
       "density": "comfortable",
       "textStyle": "roman",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "240px",
@@ -8552,7 +8666,13 @@
       "line": "none",
       "density": "compact",
       "textStyle": "italic",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "240px",
@@ -9005,7 +9125,13 @@
       "line": "soft",
       "density": "comfortable",
       "textStyle": "roman",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "240px",
@@ -9518,7 +9644,13 @@
       "line": "block",
       "density": "compact",
       "textStyle": "italic",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "240px",
@@ -10031,7 +10163,13 @@
       "line": "none",
       "density": "comfortable",
       "textStyle": "roman",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "240px",
@@ -10544,7 +10682,13 @@
       "line": "soft",
       "density": "compact",
       "textStyle": "italic",
-      "showIcon": true
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "aside": {
       "width": "240px",

@@ -14,7 +14,13 @@
         "pageBackground": "#1F2937"
       },
       "density": "comfortable",
-      "textStyle": "roman"
+      "textStyle": "roman",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "sections": {
       "header": "minimal",
@@ -424,7 +430,13 @@
         "pageBackground": "#F8FAFC"
       },
       "density": "compact",
-      "textStyle": "sans"
+      "textStyle": "sans",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "sections": {
       "header": "detailed",
@@ -809,7 +821,13 @@
         "pageBackground": "#0F172A"
       },
       "density": "airy",
-      "textStyle": "serif"
+      "textStyle": "serif",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "sections": {
       "header": "contact-band",
@@ -1189,7 +1207,13 @@
         "pageBackground": "#F5F5F4"
       },
       "density": "comfortable",
-      "textStyle": "roman"
+      "textStyle": "roman",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "sections": {
       "header": "minimal",
@@ -1574,7 +1598,13 @@
         "pageBackground": "#111827"
       },
       "density": "compact",
-      "textStyle": "sans"
+      "textStyle": "sans",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "sections": {
       "header": "detailed",
@@ -1954,7 +1984,13 @@
         "pageBackground": "#F5F3FF"
       },
       "density": "airy",
-      "textStyle": "serif"
+      "textStyle": "serif",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "sections": {
       "header": "contact-band",
@@ -2339,7 +2375,13 @@
         "pageBackground": "#1F2937"
       },
       "density": "comfortable",
-      "textStyle": "roman"
+      "textStyle": "roman",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "sections": {
       "header": "minimal",
@@ -2724,7 +2766,13 @@
         "pageBackground": "#F8FAFC"
       },
       "density": "compact",
-      "textStyle": "sans"
+      "textStyle": "sans",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "sections": {
       "header": "detailed",
@@ -3109,7 +3157,13 @@
         "pageBackground": "#0F172A"
       },
       "density": "airy",
-      "textStyle": "serif"
+      "textStyle": "serif",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "sections": {
       "header": "contact-band",
@@ -3494,7 +3548,13 @@
         "pageBackground": "#F5F5F4"
       },
       "density": "comfortable",
-      "textStyle": "roman"
+      "textStyle": "roman",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "sections": {
       "header": "minimal",
@@ -3879,7 +3939,13 @@
         "pageBackground": "#111827"
       },
       "density": "comfortable",
-      "textStyle": "roman"
+      "textStyle": "roman",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "sections": {
       "header": "minimal",
@@ -4287,7 +4353,13 @@
         "pageBackground": "#F5F3FF"
       },
       "density": "comfortable",
-      "textStyle": "roman"
+      "textStyle": "roman",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "sections": {
       "header": "minimal",

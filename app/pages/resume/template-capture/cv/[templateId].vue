@@ -94,7 +94,7 @@ function previewValue(key: string): string {
 
 <template>
   <main class="capture-cv-page">
-    <component :is="activeLayoutComponent" :style="{ background: selectedTemplate?.theme?.palette?.pageBackground || '#ffffff', '--cv-primary': selectedTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-aside-width': asideDesign.width, '--cv-aside-height': asideDesign.height, '--cv-aside-radius': asideDesign.radius }">
+    <component :is="activeLayoutComponent" :style="{ background: selectedTemplate?.theme?.palette?.pageBackground || '#ffffff', border: selectedTemplate?.theme?.pageBorder?.enabled ? `${selectedTemplate?.theme?.pageBorder?.width ?? 0}px solid ${selectedTemplate?.theme?.pageBorder?.color ?? 'transparent'}` : 'none', borderRadius: `${selectedTemplate?.theme?.pageBorder?.radius ?? 0}px`, '--cv-primary': selectedTemplate?.theme?.palette?.primary || '#1d4ed8', '--cv-aside-width': asideDesign.width, '--cv-aside-height': asideDesign.height, '--cv-aside-radius': asideDesign.radius }">
       <template #header>
         <div class="capture-empty-state">
           <h2>{{ selectedTemplate.name }}</h2>

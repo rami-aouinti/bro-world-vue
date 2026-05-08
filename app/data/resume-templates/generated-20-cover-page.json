@@ -14,7 +14,13 @@
         "pageBackground": "#1F2937"
       },
       "density": "airy",
-      "textStyle": "sans"
+      "textStyle": "sans",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "hero": {
       "alignment": "left",
@@ -283,7 +289,13 @@
         "pageBackground": "#F8FAFC"
       },
       "density": "comfortable",
-      "textStyle": "roman"
+      "textStyle": "roman",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "hero": {
       "alignment": "center",
@@ -578,7 +590,13 @@
         "pageBackground": "#0F172A"
       },
       "density": "compact",
-      "textStyle": "serif"
+      "textStyle": "serif",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "hero": {
       "alignment": "right",
@@ -868,7 +886,13 @@
         "pageBackground": "#F5F5F4"
       },
       "density": "airy",
-      "textStyle": "sans"
+      "textStyle": "sans",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "hero": {
       "alignment": "left",
@@ -1163,7 +1187,13 @@
         "pageBackground": "#111827"
       },
       "density": "comfortable",
-      "textStyle": "roman"
+      "textStyle": "roman",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "hero": {
       "alignment": "center",
@@ -1453,7 +1483,13 @@
         "pageBackground": "#F5F3FF"
       },
       "density": "compact",
-      "textStyle": "serif"
+      "textStyle": "serif",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "hero": {
       "alignment": "right",
@@ -1748,7 +1784,13 @@
         "pageBackground": "#1F2937"
       },
       "density": "airy",
-      "textStyle": "sans"
+      "textStyle": "sans",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "hero": {
       "alignment": "left",
@@ -2038,7 +2080,13 @@
         "pageBackground": "#F8FAFC"
       },
       "density": "comfortable",
-      "textStyle": "roman"
+      "textStyle": "roman",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "hero": {
       "alignment": "center",
@@ -2333,7 +2381,13 @@
         "pageBackground": "#0F172A"
       },
       "density": "compact",
-      "textStyle": "serif"
+      "textStyle": "serif",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "hero": {
       "alignment": "right",
@@ -2623,7 +2677,13 @@
         "pageBackground": "#F5F5F4"
       },
       "density": "airy",
-      "textStyle": "sans"
+      "textStyle": "sans",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "hero": {
       "alignment": "left",
@@ -2918,7 +2978,13 @@
         "pageBackground": "#111827"
       },
       "density": "airy",
-      "textStyle": "sans"
+      "textStyle": "sans",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "hero": {
       "alignment": "left",
@@ -3185,7 +3251,13 @@
         "pageBackground": "#F5F3FF"
       },
       "density": "airy",
-      "textStyle": "sans"
+      "textStyle": "sans",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      }
     },
     "hero": {
       "alignment": "left",
