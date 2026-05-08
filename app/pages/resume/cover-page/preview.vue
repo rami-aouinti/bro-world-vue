@@ -62,6 +62,7 @@ const imageBorderColor = ref('#0f172a')
 const photoPosition = ref<'left' | 'right'>('left')
 const selectedPalette = ref<string>('template')
 const paletteMenuOpen = ref(false)
+const settingsMenuOpen = ref(false)
 const palettePresetOptions = computed(() =>
   buildToolbarPaletteOptions(
     activeTemplate.value.theme.palette,
@@ -830,7 +831,12 @@ watch(aiModalOpen, (isOpen) => {
         @pdf="downloadPdf"
         @select-template="applyPreviewTemplate"
         @select-palette="selectedPalette = $event"
-      />
+        v-model:settings-menu-open="settingsMenuOpen"
+      >
+        <template #settings>
+          <div class="text-body-2">Utilisez le panneau gauche pour les réglages détaillés.</div>
+        </template>
+      </ResumePreviewToolbar>
       <div
         ref="coverPreviewRef"
         class="d-flex justify-center preview-single-page-frame"

@@ -42,6 +42,7 @@ const myResumes = ref<ResumeApiItem[]>([])
 const selectedTemplate = ref(GENERATED_RESUME_TEMPLATES[0]?.id || 'tpl-001')
 const layoutMenuOpen = ref(false)
 const paletteMenuOpen = ref(false)
+const settingsMenuOpen = ref(false)
 const selectedPalette = ref('template')
 const signatureDataUrl = ref('')
 const signatureDialogOpen = ref(false)
@@ -1489,7 +1490,12 @@ v-if="!isCaptureMode"
         @pdf="downloadPdf"
         @select-template="applyPreviewTemplate"
         @select-palette="selectedPalette = $event"
-      />
+        v-model:settings-menu-open="settingsMenuOpen"
+      >
+        <template #settings>
+          <div class="text-body-2">Utilisez le panneau gauche pour les réglages détaillés.</div>
+        </template>
+      </ResumePreviewToolbar>
 
       <div
         ref="cvPreviewRef"
