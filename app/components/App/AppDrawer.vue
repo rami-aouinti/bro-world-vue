@@ -19,7 +19,7 @@ const rail = computed(() => !drawerState.value && !mobile.value)
 const leftDrawerRenderer = computed(() => registry?.left.value ?? null)
 const shouldRenderDrawerSlot = computed(() => Boolean(leftDrawerRenderer.value))
 const shouldHideUserEntry = computed(() =>
-  ['/world/crm', '/world/shop', '/world/jobs', '/world/learning', '/resume'].some(
+  ['/world/crm', '/world/shop', '/world/jobs', '/world/learning'].some(
     (prefix) => route.path.startsWith(prefix),
   ),
 )
