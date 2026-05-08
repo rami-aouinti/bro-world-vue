@@ -156,21 +156,6 @@ const navMenus = [
 const featureMenu = navMenus[0]!
 const applicationsMenu = navMenus[1]!
 const worldMenu = navMenus[2]!
-const resumeEditorRoutes = [
-  '/resume/cv/preview',
-  '/resume/cover-page/preview',
-  '/resume/cover-letter/preview',
-] as const
-const resumeEditorNavButtons = computed(() => [
-  { label: t('appbar.resumeEditor.resume'), to: '/resume/cv/preview' },
-  { label: t('appbar.resumeEditor.coverPage'), to: '/resume/cover-page/preview' },
-  { label: t('appbar.resumeEditor.coverLetter'), to: '/resume/cover-letter/preview' },
-])
-const isResumeEditorRoute = computed(() =>
-  resumeEditorRoutes.includes(
-    route.path as (typeof resumeEditorRoutes)[number],
-  ),
-)
 
 const isDark = computed({
   get() {
@@ -590,7 +575,6 @@ onBeforeUnmount(() => {
       </v-menu>
 
       <v-menu
-        v-if="!isResumeEditorRoute"
         v-model="mobileApplicationsMenuOpen"
         location="bottom"
       >
@@ -645,7 +629,6 @@ onBeforeUnmount(() => {
       </v-menu>
 
       <v-menu
-        v-if="!isResumeEditorRoute"
         v-model="mobileWorldMenuOpen"
         location="bottom"
       >
@@ -698,40 +681,11 @@ onBeforeUnmount(() => {
           </div>
         </div>
       </v-menu>
-      <div v-if="isResumeEditorRoute" class="app-top-bar__resume-nav-mobile">
-        <v-btn
-          v-for="button in resumeEditorNavButtons"
-          :key="button.to"
-          :to="button.to"
-          variant="text"
-          size="small"
-          rounded="lg"
-          class="app-top-bar__resume-nav-btn"
-          :color="route.path === button.to ? 'primary' : undefined"
-        >
-          {{ button.label }}
-        </v-btn>
-      </div>
     </div>
 
     <div v-else class="app-top-bar__nav d-none d-md-flex">
-      <template v-if="isResumeEditorRoute">
-        <v-btn
-          v-for="button in resumeEditorNavButtons"
-          :key="button.to"
-          :to="button.to"
-          variant="text"
-          size="small"
-          rounded="lg"
-          class="app-top-bar__nav-btn"
-          :color="route.path === button.to ? 'primary' : undefined"
-        >
-          {{ button.label }}
-        </v-btn>
-      </template>
       <v-menu
         v-for="menu in navMenus"
-        v-else
         :key="menu.label"
         location="bottom"
       >

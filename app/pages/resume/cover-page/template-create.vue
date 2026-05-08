@@ -10,7 +10,7 @@ import {
   useResumeGoogleFonts,
 } from '~/composables/useResumeGoogleFonts'
 
-definePageMeta({ title: 'Resume · Cover Page Template Create' })
+definePageMeta({ layout: 'resume', title: 'Resume · Cover Page Template Create' })
 const { t } = useI18n()
 useHead(() => ({
   title: t('resumePreview.coverPage.metaTitle'),
