@@ -64,7 +64,6 @@ const randomVariants = computed(() => {
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-chip color="primary" class="mb-3" variant="flat">Variants</v-chip>
         <v-row dense>
           <v-col v-for="variant in randomVariants" :key="variant.id" cols="12">
             <v-card
