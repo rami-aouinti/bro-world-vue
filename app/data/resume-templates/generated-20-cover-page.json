@@ -9,9 +9,9 @@
       "palette": {
         "primary": "#0F4C81",
         "secondary": "#5FA8D3",
-        "text": "#0F172A",
-        "muted": "#64748B",
-        "pageBackground": "#E5E7EB"
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#F8FAFC"
       },
       "density": "airy",
       "textStyle": "sans"
@@ -57,64 +57,131 @@
           "min": 60,
           "max": 68
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#0F4C81", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
       },
       "role": {
         "size": {
           "min": 28,
           "max": 36
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#0F4C81", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
       },
       "heading": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#0F4C81", "#111827", "#5FA8D3"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F4C81",
+          "#111827",
+          "#5FA8D3"
+        ]
       },
       "summary": {
         "size": {
           "min": 16,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
       },
       "email": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
       },
       "phone": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
       },
       "date": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
       },
       "location": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
       }
     },
     "designConfig": {
@@ -122,7 +189,9 @@
         "min": 4,
         "max": 18
       },
-      "barLayout": ["single"],
+      "barLayout": [
+        "single"
+      ],
       "barWidth": {
         "min": 6,
         "max": 18
@@ -138,7 +207,10 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": ["Inter", "Playfair Display"],
+      "googleFonts": [
+        "Inter",
+        "Playfair Display"
+      ],
       "scale": "balanced",
       "fonts": {
         "display": "Playfair Display",
@@ -206,9 +278,9 @@
       "palette": {
         "primary": "#7C3AED",
         "secondary": "#C4B5FD",
-        "text": "#0F172A",
-        "muted": "#64748B",
-        "pageBackground": "#D1D5DB"
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FAF5FF"
       },
       "density": "comfortable",
       "textStyle": "roman"
@@ -275,64 +347,131 @@
           "min": 50,
           "max": 80
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#7C3AED", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#7C3AED",
+          "#6B7280"
+        ]
       },
       "role": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#7C3AED", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#7C3AED",
+          "#6B7280"
+        ]
       },
       "heading": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#7C3AED", "#111827", "#C4B5FD"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#7C3AED",
+          "#111827",
+          "#C4B5FD"
+        ]
       },
       "summary": {
         "size": {
           "min": 20,
           "max": 30
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#7C3AED"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#7C3AED"
+        ]
       },
       "email": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#7C3AED"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#7C3AED"
+        ]
       },
       "phone": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#7C3AED"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#7C3AED"
+        ]
       },
       "date": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#7C3AED"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#7C3AED"
+        ]
       },
       "location": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#7C3AED"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#7C3AED"
+        ]
       }
     },
     "designConfig": {
@@ -340,7 +479,10 @@
         "min": 12,
         "max": 28
       },
-      "barLayout": ["single", "double"],
+      "barLayout": [
+        "single",
+        "double"
+      ],
       "barWidth": {
         "min": 8,
         "max": 24
@@ -360,7 +502,10 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": ["Montserrat", "Open Sans"],
+      "googleFonts": [
+        "Montserrat",
+        "Open Sans"
+      ],
       "scale": "spacious",
       "fonts": {
         "display": "Montserrat",
@@ -428,9 +573,9 @@
       "palette": {
         "primary": "#BE123C",
         "secondary": "#FDA4AF",
-        "text": "#0F172A",
-        "muted": "#64748B",
-        "pageBackground": "#CBD5E1"
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FFF1F2"
       },
       "density": "compact",
       "textStyle": "serif"
@@ -497,64 +642,131 @@
           "min": 50,
           "max": 80
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#BE123C", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#BE123C",
+          "#6B7280"
+        ]
       },
       "role": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#BE123C", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#BE123C",
+          "#6B7280"
+        ]
       },
       "heading": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#BE123C", "#111827", "#FDA4AF"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#BE123C",
+          "#111827",
+          "#FDA4AF"
+        ]
       },
       "summary": {
         "size": {
           "min": 20,
           "max": 30
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#BE123C"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#BE123C"
+        ]
       },
       "email": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#BE123C"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#BE123C"
+        ]
       },
       "phone": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#BE123C"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#BE123C"
+        ]
       },
       "date": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#BE123C"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#BE123C"
+        ]
       },
       "location": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#BE123C"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#BE123C"
+        ]
       }
     },
     "designConfig": {
@@ -562,7 +774,9 @@
         "min": 0,
         "max": 12
       },
-      "barLayout": ["single"],
+      "barLayout": [
+        "single"
+      ],
       "barWidth": {
         "min": 4,
         "max": 12
@@ -578,7 +792,10 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": ["Cormorant Garamond", "Lato"],
+      "googleFonts": [
+        "Cormorant Garamond",
+        "Lato"
+      ],
       "scale": "tight",
       "fonts": {
         "display": "Cormorant Garamond",
@@ -646,9 +863,9 @@
       "palette": {
         "primary": "#065F46",
         "secondary": "#6EE7B7",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#1F2937"
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#ECFDF5"
       },
       "density": "airy",
       "textStyle": "sans"
@@ -715,64 +932,131 @@
           "min": 50,
           "max": 80
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#065F46", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#065F46",
+          "#6B7280"
+        ]
       },
       "role": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#065F46", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#065F46",
+          "#6B7280"
+        ]
       },
       "heading": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#065F46", "#111827", "#6EE7B7"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#065F46",
+          "#111827",
+          "#6EE7B7"
+        ]
       },
       "summary": {
         "size": {
           "min": 20,
           "max": 30
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#065F46"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#065F46"
+        ]
       },
       "email": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#065F46"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#065F46"
+        ]
       },
       "phone": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#065F46"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#065F46"
+        ]
       },
       "date": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#065F46"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#065F46"
+        ]
       },
       "location": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#065F46"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#065F46"
+        ]
       }
     },
     "designConfig": {
@@ -780,7 +1064,10 @@
         "min": 16,
         "max": 30
       },
-      "barLayout": ["single", "double"],
+      "barLayout": [
+        "single",
+        "double"
+      ],
       "barWidth": {
         "min": 10,
         "max": 22
@@ -800,7 +1087,10 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": ["Bebas Neue", "Roboto"],
+      "googleFonts": [
+        "Bebas Neue",
+        "Roboto"
+      ],
       "scale": "balanced",
       "fonts": {
         "display": "Bebas Neue",
@@ -868,9 +1158,9 @@
       "palette": {
         "primary": "#9A3412",
         "secondary": "#FDBA74",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#111827"
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FFF7ED"
       },
       "density": "comfortable",
       "textStyle": "roman"
@@ -937,64 +1227,131 @@
           "min": 50,
           "max": 80
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#9A3412", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#9A3412",
+          "#6B7280"
+        ]
       },
       "role": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#9A3412", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#9A3412",
+          "#6B7280"
+        ]
       },
       "heading": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#9A3412", "#111827", "#FDBA74"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#9A3412",
+          "#111827",
+          "#FDBA74"
+        ]
       },
       "summary": {
         "size": {
           "min": 20,
           "max": 30
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#9A3412"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#9A3412"
+        ]
       },
       "email": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#9A3412"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#9A3412"
+        ]
       },
       "phone": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#9A3412"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#9A3412"
+        ]
       },
       "date": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#9A3412"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#9A3412"
+        ]
       },
       "location": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#9A3412"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#9A3412"
+        ]
       }
     },
     "designConfig": {
@@ -1002,7 +1359,9 @@
         "min": 8,
         "max": 20
       },
-      "barLayout": ["single"],
+      "barLayout": [
+        "single"
+      ],
       "barWidth": {
         "min": 12,
         "max": 20
@@ -1018,7 +1377,10 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": ["Abril Fatface", "Source Sans 3"],
+      "googleFonts": [
+        "Abril Fatface",
+        "Source Sans 3"
+      ],
       "scale": "spacious",
       "fonts": {
         "display": "Abril Fatface",
@@ -1086,9 +1448,9 @@
       "palette": {
         "primary": "#0F4C81",
         "secondary": "#5FA8D3",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#374151"
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#F8FAFC"
       },
       "density": "compact",
       "textStyle": "serif"
@@ -1155,64 +1517,131 @@
           "min": 50,
           "max": 80
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#0F4C81", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
       },
       "role": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#0F4C81", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
       },
       "heading": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#0F4C81", "#111827", "#5FA8D3"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F4C81",
+          "#111827",
+          "#5FA8D3"
+        ]
       },
       "summary": {
         "size": {
           "min": 20,
           "max": 30
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
       },
       "email": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
       },
       "phone": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
       },
       "date": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
       },
       "location": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
       }
     },
     "designConfig": {
@@ -1220,7 +1649,10 @@
         "min": 2,
         "max": 16
       },
-      "barLayout": ["single", "double"],
+      "barLayout": [
+        "single",
+        "double"
+      ],
       "barWidth": {
         "min": 6,
         "max": 16
@@ -1240,7 +1672,10 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": ["Nunito Sans", "Raleway"],
+      "googleFonts": [
+        "Nunito Sans",
+        "Raleway"
+      ],
       "scale": "tight",
       "fonts": {
         "display": "Raleway",
@@ -1308,9 +1743,9 @@
       "palette": {
         "primary": "#7C3AED",
         "secondary": "#C4B5FD",
-        "text": "#0F172A",
-        "muted": "#64748B",
-        "pageBackground": "#E7E5E4"
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FAF5FF"
       },
       "density": "airy",
       "textStyle": "sans"
@@ -1377,64 +1812,131 @@
           "min": 50,
           "max": 80
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#7C3AED", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#7C3AED",
+          "#6B7280"
+        ]
       },
       "role": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#7C3AED", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#7C3AED",
+          "#6B7280"
+        ]
       },
       "heading": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#7C3AED", "#111827", "#C4B5FD"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#7C3AED",
+          "#111827",
+          "#C4B5FD"
+        ]
       },
       "summary": {
         "size": {
           "min": 20,
           "max": 30
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#7C3AED"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#7C3AED"
+        ]
       },
       "email": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#7C3AED"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#7C3AED"
+        ]
       },
       "phone": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#7C3AED"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#7C3AED"
+        ]
       },
       "date": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#7C3AED"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#7C3AED"
+        ]
       },
       "location": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#7C3AED"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#7C3AED"
+        ]
       }
     },
     "designConfig": {
@@ -1442,7 +1944,9 @@
         "min": 18,
         "max": 30
       },
-      "barLayout": ["single"],
+      "barLayout": [
+        "single"
+      ],
       "barWidth": {
         "min": 14,
         "max": 24
@@ -1458,7 +1962,10 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": ["Manrope", "Prata"],
+      "googleFonts": [
+        "Manrope",
+        "Prata"
+      ],
       "scale": "balanced",
       "fonts": {
         "display": "Prata",
@@ -1526,9 +2033,9 @@
       "palette": {
         "primary": "#BE123C",
         "secondary": "#FDA4AF",
-        "text": "#0F172A",
-        "muted": "#64748B",
-        "pageBackground": "#D4D4D8"
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FFF1F2"
       },
       "density": "comfortable",
       "textStyle": "roman"
@@ -1595,64 +2102,131 @@
           "min": 50,
           "max": 80
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#BE123C", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#BE123C",
+          "#6B7280"
+        ]
       },
       "role": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#BE123C", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#BE123C",
+          "#6B7280"
+        ]
       },
       "heading": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#BE123C", "#111827", "#FDA4AF"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#BE123C",
+          "#111827",
+          "#FDA4AF"
+        ]
       },
       "summary": {
         "size": {
           "min": 20,
           "max": 30
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#BE123C"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#BE123C"
+        ]
       },
       "email": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#BE123C"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#BE123C"
+        ]
       },
       "phone": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#BE123C"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#BE123C"
+        ]
       },
       "date": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#BE123C"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#BE123C"
+        ]
       },
       "location": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#BE123C"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#BE123C"
+        ]
       }
     },
     "designConfig": {
@@ -1660,7 +2234,10 @@
         "min": 6,
         "max": 24
       },
-      "barLayout": ["single", "double"],
+      "barLayout": [
+        "single",
+        "double"
+      ],
       "barWidth": {
         "min": 4,
         "max": 20
@@ -1680,7 +2257,10 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": ["Inter", "Space Grotesk"],
+      "googleFonts": [
+        "Inter",
+        "Space Grotesk"
+      ],
       "scale": "spacious",
       "fonts": {
         "display": "Space Grotesk",
@@ -1748,9 +2328,9 @@
       "palette": {
         "primary": "#065F46",
         "secondary": "#6EE7B7",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#0F172A"
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#ECFDF5"
       },
       "density": "compact",
       "textStyle": "serif"
@@ -1817,64 +2397,131 @@
           "min": 50,
           "max": 80
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#065F46", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#065F46",
+          "#6B7280"
+        ]
       },
       "role": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#065F46", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#065F46",
+          "#6B7280"
+        ]
       },
       "heading": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#065F46", "#111827", "#6EE7B7"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#065F46",
+          "#111827",
+          "#6EE7B7"
+        ]
       },
       "summary": {
         "size": {
           "min": 20,
           "max": 30
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#065F46"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#065F46"
+        ]
       },
       "email": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#065F46"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#065F46"
+        ]
       },
       "phone": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#065F46"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#065F46"
+        ]
       },
       "date": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#065F46"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#065F46"
+        ]
       },
       "location": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#065F46"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#065F46"
+        ]
       }
     },
     "designConfig": {
@@ -1882,7 +2529,9 @@
         "min": 10,
         "max": 26
       },
-      "barLayout": ["single"],
+      "barLayout": [
+        "single"
+      ],
       "barWidth": {
         "min": 6,
         "max": 14
@@ -1898,7 +2547,10 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": ["Libre Baskerville", "Public Sans"],
+      "googleFonts": [
+        "Libre Baskerville",
+        "Public Sans"
+      ],
       "scale": "tight",
       "fonts": {
         "display": "Libre Baskerville",
@@ -1966,9 +2618,9 @@
       "palette": {
         "primary": "#9A3412",
         "secondary": "#FDBA74",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#27272A"
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#FFF7ED"
       },
       "density": "airy",
       "textStyle": "sans"
@@ -2035,64 +2687,131 @@
           "min": 50,
           "max": 80
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#9A3412", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#9A3412",
+          "#6B7280"
+        ]
       },
       "role": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#9A3412", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#9A3412",
+          "#6B7280"
+        ]
       },
       "heading": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#9A3412", "#111827", "#FDBA74"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#9A3412",
+          "#111827",
+          "#FDBA74"
+        ]
       },
       "summary": {
         "size": {
           "min": 20,
           "max": 30
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#9A3412"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#9A3412"
+        ]
       },
       "email": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#9A3412"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#9A3412"
+        ]
       },
       "phone": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#9A3412"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#9A3412"
+        ]
       },
       "date": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#9A3412"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#9A3412"
+        ]
       },
       "location": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#9A3412"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#9A3412"
+        ]
       }
     },
     "designConfig": {
@@ -2100,7 +2819,10 @@
         "min": 0,
         "max": 30
       },
-      "barLayout": ["single", "double"],
+      "barLayout": [
+        "single",
+        "double"
+      ],
       "barWidth": {
         "min": 4,
         "max": 24
@@ -2120,7 +2842,10 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": ["Lato", "Oswald"],
+      "googleFonts": [
+        "Lato",
+        "Oswald"
+      ],
       "scale": "balanced",
       "fonts": {
         "display": "Oswald",
@@ -2188,9 +2913,9 @@
       "palette": {
         "primary": "#0F4C81",
         "secondary": "#5FA8D3",
-        "text": "#0F172A",
-        "muted": "#64748B",
-        "pageBackground": "#F3F4F6"
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#F8FAFC"
       },
       "density": "airy",
       "textStyle": "sans"
@@ -2236,64 +2961,131 @@
           "min": 60,
           "max": 68
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#0F4C81", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
       },
       "role": {
         "size": {
           "min": 28,
           "max": 36
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#0F4C81", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
       },
       "heading": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#0F4C81", "#111827", "#5FA8D3"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F4C81",
+          "#111827",
+          "#5FA8D3"
+        ]
       },
       "summary": {
         "size": {
           "min": 16,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
       },
       "email": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
       },
       "phone": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
       },
       "date": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
       },
       "location": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
       }
     },
     "designConfig": {
@@ -2317,7 +3109,10 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": ["DM Sans", "DM Serif Display"],
+      "googleFonts": [
+        "DM Sans",
+        "DM Serif Display"
+      ],
       "scale": "balanced",
       "fonts": {
         "display": "DM Serif Display",
@@ -2385,9 +3180,9 @@
       "palette": {
         "primary": "#0F4C81",
         "secondary": "#5FA8D3",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
-        "pageBackground": "#334155"
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#F8FAFC"
       },
       "density": "airy",
       "textStyle": "sans"
@@ -2433,64 +3228,131 @@
           "min": 60,
           "max": 68
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#0F4C81", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
       },
       "role": {
         "size": {
           "min": 28,
           "max": 36
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#111827", "#0F4C81", "#6B7280"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
       },
       "heading": {
         "size": {
           "min": 25,
           "max": 40
         },
-        "styles": ["regular", "medium", "semibold", "bold"],
-        "colors": ["#0F4C81", "#111827", "#5FA8D3"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F4C81",
+          "#111827",
+          "#5FA8D3"
+        ]
       },
       "summary": {
         "size": {
           "min": 16,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
       },
       "email": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
       },
       "phone": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#111827", "#6B7280", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
       },
       "date": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
       },
       "location": {
         "size": {
           "min": 14,
           "max": 20
         },
-        "styles": ["regular", "medium", "semibold"],
-        "colors": ["#6B7280", "#111827", "#0F4C81"]
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
       }
     },
     "designConfig": {
@@ -2514,7 +3376,10 @@
     },
     "typography": {
       "provider": "google-fonts",
-      "googleFonts": ["Cinzel", "Work Sans"],
+      "googleFonts": [
+        "Cinzel",
+        "Work Sans"
+      ],
       "scale": "balanced",
       "fonts": {
         "display": "Cinzel",
