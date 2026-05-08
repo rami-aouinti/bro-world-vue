@@ -847,6 +847,9 @@ watch(aiModalOpen, (isOpen) => {
             '--cp-text': activeColors.text,
             '--cp-muted': activeColors.muted,
             '--cp-bg': activeColors.pageBackground,
+            '--cp-page-border-width': activeTemplate?.theme?.pageBorder?.enabled ? `${activeTemplate?.theme?.pageBorder?.width ?? 0}px` : '0px',
+            '--cp-page-border-color': activeTemplate?.theme?.pageBorder?.color ?? 'transparent',
+            '--cp-page-border-radius': `${activeTemplate?.theme?.pageBorder?.radius ?? 0}px`,
             '--section-divider-style': sectionDividerStyle,
             '--section-divider-color': sectionDividerColor,
             '--section-spacing': sectionSpacing,
@@ -1168,6 +1171,8 @@ watch(aiModalOpen, (isOpen) => {
   padding: 56px 64px;
   background: var(--cp-bg);
   color: var(--cp-text);
+  border: var(--cp-page-border-width) solid var(--cp-page-border-color);
+  border-radius: var(--cp-page-border-radius);
 }
 .hero {
   border-left: var(--bar-primary-width) solid var(--cp-primary);
