@@ -790,17 +790,6 @@ onBeforeUnmount(() => {
               </div>
             </NuxtLink>
           </div>
-
-          <div class="app-top-bar__mega-menu-footer">
-            <v-btn
-              :to="menu.ctaTo"
-              variant="text"
-              append-icon="mdi-arrow-right"
-              class="text-none"
-            >
-              {{ t(menu.ctaLabel) }}
-            </v-btn>
-          </div>
         </div>
       </v-menu>
     </div>
