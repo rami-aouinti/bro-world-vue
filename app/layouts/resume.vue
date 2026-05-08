@@ -14,7 +14,7 @@ const AppDrawerLazy = defineAsyncComponent(
   () => import('~/components/App/AppDrawer.vue'),
 )
 const AppRightDrawerLazy = defineAsyncComponent(
-  () => import('~/components/App/AppRightDrawer.vue'),
+  () => import('~/components/App/AppRightResumeDrawer.vue'),
 )
 
 provideDrawerSlotRegistry()
