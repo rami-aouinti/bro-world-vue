@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import GENERATED_COVER_PAGE_TEMPLATES from '~/data/resume-templates/generated-20-cover-page.json'
+import { readableMutedColorForBackground } from '~/utils/resumeColorContrast'
 
 definePageMeta({ layout: false })
 
@@ -134,7 +135,10 @@ const isLayoutRight = computed(() => selectedTemplate.value.layout === 'layout-r
       '--cp-primary': selectedTemplate.theme.palette.primary,
       '--cp-secondary': selectedTemplate.theme.palette.secondary,
       '--cp-text': selectedTemplate.theme.palette.text,
-      '--cp-muted': selectedTemplate.theme.palette.muted,
+      '--cp-muted': readableMutedColorForBackground(
+        selectedTemplate.theme.palette.pageBackground,
+        selectedTemplate.theme.palette.muted,
+      ),
       '--cp-bg': selectedTemplate.theme.palette.pageBackground,
       '--cp-page-border-width': selectedTemplate.theme?.pageBorder?.enabled ? `${selectedTemplate.theme?.pageBorder?.width ?? 0}px` : '0px',
       '--cp-page-border-color': selectedTemplate.theme?.pageBorder?.color ?? 'transparent',
