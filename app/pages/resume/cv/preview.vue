@@ -3049,7 +3049,7 @@ watch(
 .cv-header-layout, .cv-contact-item, .cv-header-identity strong { color: var(--cv-header-text, #0f172a); }
 .cv-header-identity { display: flex; flex-direction: column; gap: 4px; justify-content:center; align-items:center; text-align:center; }
 .cv-header-identity--split { align-items:flex-start; min-width:0; text-align:start; }
-.cv-header-avatar { width: 52px; height: 52px; object-fit: cover; border-radius: 999px; }
+.cv-header-avatar { width: 52px; height: 52px; object-fit: cover; border-radius: 999px; cursor: pointer; }
 
 .empty-state {
   text-align: center;
@@ -3386,7 +3386,7 @@ watch(
     0 0 0 1px color-mix(in srgb, currentColor 32%, rgba(255, 255, 255, 0.72)),
     0 4px 18px color-mix(in srgb, currentColor 28%, transparent);
   transform: translate(-50%, -50%);
-  z-index: 0;
+  z-index: 4;
 }
 .decor-circle {
   border-radius: 999px;
