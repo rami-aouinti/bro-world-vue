@@ -11,7 +11,7 @@
   </div>
 </template>
 <style scoped>
-.cv-layout{width:100%;min-height:1123px;background:#fff;border:1px solid rgba(148,163,184,.45);border-radius:16px;overflow:visible}
+.cv-layout{width:100%;min-height:1123px;background:#fff;border:1px solid rgba(148,163,184,.45);border-radius:0;overflow:visible}
 .cv-header{padding:24px;background:var(--cv-primary,#1d4ed8);color:#fff}
 .cv-content{position:relative;padding:24px}
 .cv-aside-wrap{position:absolute;left:0;top:24px;display:flex;align-items:stretch}

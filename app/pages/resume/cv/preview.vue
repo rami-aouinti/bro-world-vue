@@ -2930,9 +2930,9 @@ v-if="!isCaptureMode"
 
 .cv-preview-shell {
   position: relative;
-  width: var(--cv-preview-page-width, 794px);
-  min-width: var(--cv-preview-page-width, 794px);
+  width: 100%;
   max-width: var(--cv-preview-page-width, 794px);
+  min-width: 0;
   min-height: var(--cv-preview-total-height, 1100px);
 }
 
