@@ -81,7 +81,9 @@ const imageBorderColor = ref('#0f172a')
 const photoPosition = ref<'left' | 'right'>('left')
 const selectedPalette = ref<string>('template')
 const paletteMenuOpen = ref(false)
-const settingsMenuOpen = ref(false)
+const asideMenuOpen = ref(false)
+const barMenuOpen = ref(false)
+const borderMenuOpen = ref(false)
 const decorMenuOpen = ref(false)
 const palettePresetOptions = computed(() =>
   buildToolbarPaletteOptions(
@@ -755,7 +757,9 @@ watch(aiModalOpen, (isOpen) => {
       <ResumePreviewToolbar
         v-model:menu-open="layoutMenuOpen"
         v-model:palette-menu-open="paletteMenuOpen"
-        v-model:settings-menu-open="settingsMenuOpen"
+        v-model:aside-menu-open="asideMenuOpen"
+        v-model:bar-menu-open="barMenuOpen"
+        v-model:border-menu-open="borderMenuOpen"
         v-model:decor-menu-open="decorMenuOpen"
         :palettes="palettePresetOptions"
         show-decor
@@ -853,23 +857,32 @@ watch(aiModalOpen, (isOpen) => {
             </v-menu>
           </div>
         </template>
-        <template #settings>
+        <template #aside>
         <v-card-text>
           <v-row dense>
-            <v-col cols="6"><AppSelect v-model="barLayout" :items="[{ title: 'No bar', value: 'none' },{ title: 'Single bar', value: 'single' },{ title: 'Double bars', value: 'double' }]" label="Bar layout" hide-details class="mt-3" /></v-col>
-            <v-col cols="6"><AppSelect v-model="selectedDividerType" :items="dividerTypeOptions" label="Divider type" hide-details class="mt-3" /></v-col>
-            <v-col cols="6"><p class="text-body-2">Bar radius</p><v-slider v-model="barRadius" :min="activeBarDesignConfig.barRadius.min" :max="activeBarDesignConfig.barRadius.max" step="1" hide-details /></v-col>
-            <v-col cols="6"><p class="text-body-2">Bar width</p><v-slider v-model="primaryBarWidth" :min="activeBarDesignConfig.barWidth.min" :max="activeBarDesignConfig.barWidth.max" step="1" hide-details /></v-col>
-            <v-col v-if="barLayout === 'double'" cols="6"><p class="text-body-2">Sec bar width</p><v-slider v-model="secondaryBarWidth" :min="activeBarDesignConfig.secondaryBarWidth.min" :max="activeBarDesignConfig.secondaryBarWidth.max" step="1" hide-details /></v-col>
-          </v-row>
-          <v-divider class="my-3" />
-          <v-row dense>
-            <v-col cols="6"><v-switch v-model="pageBorderEnabled" label="Page border" hide-details inset class="mt-2" /></v-col>
-            <v-col cols="6"><p class="text-body-2">Border width</p><v-slider v-model="pageBorderWidth" :min="0" :max="24" :step="1" hide-details /></v-col>
-            <v-col cols="6"><p class="text-body-2">Border radius</p><v-slider v-model="pageBorderRadius" :min="0" :max="60" :step="1" hide-details /></v-col>
-            <v-col cols="6"><p class="text-body-2">Border color</p><v-text-field v-model="pageBorderColor" type="color" hide-details density="compact" /></v-col>
+            <v-col cols="12"><AppSelect v-model="selectedDividerType" :items="dividerTypeOptions" label="Divider type" hide-details class="mt-3" /></v-col>
           </v-row>
         </v-card-text>
+        </template>
+        <template #bar>
+          <v-card-text>
+            <v-row dense>
+              <v-col cols="6"><AppSelect v-model="barLayout" :items="[{ title: 'No bar', value: 'none' },{ title: 'Single bar', value: 'single' },{ title: 'Double bars', value: 'double' }]" label="Bar layout" hide-details class="mt-3" /></v-col>
+              <v-col cols="6"><p class="text-body-2">Bar radius</p><v-slider v-model="barRadius" :min="activeBarDesignConfig.barRadius.min" :max="activeBarDesignConfig.barRadius.max" step="1" hide-details /></v-col>
+              <v-col cols="6"><p class="text-body-2">Bar width</p><v-slider v-model="primaryBarWidth" :min="activeBarDesignConfig.barWidth.min" :max="activeBarDesignConfig.barWidth.max" step="1" hide-details /></v-col>
+              <v-col v-if="barLayout === 'double'" cols="6"><p class="text-body-2">Sec bar width</p><v-slider v-model="secondaryBarWidth" :min="activeBarDesignConfig.secondaryBarWidth.min" :max="activeBarDesignConfig.secondaryBarWidth.max" step="1" hide-details /></v-col>
+            </v-row>
+          </v-card-text>
+        </template>
+        <template #border>
+          <v-card-text>
+            <v-row dense>
+              <v-col cols="6"><v-switch v-model="pageBorderEnabled" label="Page border" hide-details inset class="mt-2" /></v-col>
+              <v-col cols="6"><p class="text-body-2">Border width</p><v-slider v-model="pageBorderWidth" :min="0" :max="24" :step="1" hide-details /></v-col>
+              <v-col cols="6"><p class="text-body-2">Border radius</p><v-slider v-model="pageBorderRadius" :min="0" :max="60" :step="1" hide-details /></v-col>
+              <v-col cols="6"><p class="text-body-2">Border color</p><v-text-field v-model="pageBorderColor" type="color" hide-details density="compact" /></v-col>
+            </v-row>
+          </v-card-text>
         </template>
       </ResumePreviewToolbar>
       <div
