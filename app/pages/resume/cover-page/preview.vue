@@ -64,6 +64,7 @@ const photoPosition = ref<'left' | 'right'>('left')
 const selectedPalette = ref<string>('template')
 const paletteMenuOpen = ref(false)
 const settingsMenuOpen = ref(false)
+const decorMenuOpen = ref(false)
 const palettePresetOptions = computed(() =>
   buildToolbarPaletteOptions(
     activeTemplate.value.theme.palette,
@@ -370,16 +371,23 @@ watch(
   { immediate: true },
 )
 function addDecorObject() {
-  editableDecorObjects.value.push({
-    type: 'circle',
-    x: '50%',
-    y: '50%',
-    size: '120',
-    opacity: 0.15,
-  })
+  editableDecorObjects.value.push(
+    normalizeDecorObject({
+      type: 'circle',
+      x: 50,
+      y: 50,
+      size: 120,
+      opacity: 0.15,
+      color: '',
+    }),
+  )
+  decorMenuOpenIndex.value = editableDecorObjects.value.length - 1
 }
 function removeDecorObject(i: number) {
   editableDecorObjects.value.splice(i, 1)
+  if (decorMenuOpenIndex.value === i) decorMenuOpenIndex.value = null
+  if (decorMenuOpenIndex.value !== null && decorMenuOpenIndex.value > i)
+    decorMenuOpenIndex.value -= 1
 }
 function openAiModal() {
   aiModalOpen.value = true
@@ -661,112 +669,6 @@ watch(aiModalOpen, (isOpen) => {
         <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-draw" block @click="openSignatureDialog">Signature</v-btn>
         <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-robot" block @click="openAiModal">AI</v-btn>
         <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-plus" block to="/resume/cover-page/template-create">Template</v-btn>
-        <v-btn
-          class="mt-3"
-          size="small"
-          variant="outlined"
-          @click="addDecorObject"
-          >Add decor</v-btn
-        >
-        <div class="mt-3 d-flex flex-column ga-2">
-          <v-menu
-            v-for="(obj, i) in editableDecorObjects"
-            :key="`obj-${i}`"
-            :model-value="decorMenuOpenIndex === i"
-            :close-on-content-click="false"
-            location="left start"
-            @update:model-value="
-              (isOpen) => {
-                decorMenuOpenIndex = isOpen
-                  ? i
-                  : decorMenuOpenIndex === i
-                    ? null
-                    : decorMenuOpenIndex
-              }
-            "
-          >
-            <template #activator="{ props }">
-              <v-btn
-                v-bind="props"
-                size="small"
-                variant="tonal"
-                class="justify-space-between"
-                block
-              >
-                Decor {{ i + 1 }} · {{ obj.type }}
-              </v-btn>
-            </template>
-            <v-card class="pa-3" min-width="260" @click.stop>
-              <AppSelect
-                v-model="obj.type"
-                :items="decorShapeOptions.map((s) => ({ title: s, value: s }))"
-                label="Type"
-                hide-details
-              />
-              <p class="text-caption mt-3 mb-1">Color</p>
-              <div class="d-flex flex-wrap ga-2">
-                <v-btn
-                  v-for="color in decorColorOptions"
-                  :key="`decor-color-${i}-${color}`"
-                  icon
-                  size="x-small"
-                  :style="{
-                    backgroundColor: color,
-                    border:
-                      obj.color === color
-                        ? '2px solid #111827'
-                        : '1px solid #cbd5e1',
-                  }"
-                  @click="obj.color = color"
-                />
-              </div>
-              <v-slider
-                v-model="obj.size"
-                label="Size"
-                min="20"
-                max="420"
-                step="1"
-                hide-details
-                class="mt-3"
-              />
-              <v-slider
-                v-model="obj.opacity"
-                label="Opacity"
-                min="0.02"
-                max="0.4"
-                step="0.01"
-                hide-details
-                class="mt-3"
-              />
-              <v-slider
-                v-model="obj.x"
-                label="X slider"
-                min="0"
-                max="100"
-                step="1"
-                hide-details
-                class="mt-3"
-              />
-              <v-slider
-                v-model="obj.y"
-                label="Y slider"
-                min="0"
-                max="100"
-                step="1"
-                hide-details
-                class="mt-3"
-              />
-              <v-btn
-                size="x-small"
-                color="error"
-                variant="text"
-                class="mt-2"
-                @click="removeDecorObject(i)"
-                >remove</v-btn
-              >
-            </v-card>
-          </v-menu>
-        </div>
       </template>
     </AppPageDrawers>
     <v-container fluid>
@@ -774,7 +676,10 @@ watch(aiModalOpen, (isOpen) => {
         v-model:menu-open="layoutMenuOpen"
         v-model:palette-menu-open="paletteMenuOpen"
         v-model:settings-menu-open="settingsMenuOpen"
+        v-model:decor-menu-open="decorMenuOpen"
         :palettes="palettePresetOptions"
+        show-decor
+        show-section
         :selected-palette="selectedPalette"
         :palette-columns="10"
         :templates="coverPageTemplates"
@@ -783,6 +688,77 @@ watch(aiModalOpen, (isOpen) => {
                 @select-template="applyPreviewTemplate"
         @select-palette="selectedPalette = $event"
       >
+        <template #decor>
+          <v-btn
+            size="small"
+            variant="outlined"
+            prepend-icon="mdi-shape-plus"
+            block
+            @click.stop="addDecorObject"
+          >
+            Add decor
+          </v-btn>
+          <div class="mt-3 d-flex flex-column ga-2">
+            <v-menu
+              v-for="(obj, i) in editableDecorObjects"
+              :key="`obj-${i}`"
+              :model-value="decorMenuOpenIndex === i"
+              :close-on-content-click="false"
+              location="left start"
+              @update:model-value="
+                (isOpen) => {
+                  decorMenuOpenIndex = isOpen
+                    ? i
+                    : decorMenuOpenIndex === i
+                      ? null
+                      : decorMenuOpenIndex
+                }
+              "
+            >
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  size="small"
+                  variant="tonal"
+                  class="justify-space-between"
+                  block
+                >
+                  Decor {{ i + 1 }} · {{ obj.type }}
+                </v-btn>
+              </template>
+              <v-card class="pa-3" min-width="260" @click.stop>
+                <AppSelect
+                  v-model="obj.type"
+                  :items="decorShapeOptions.map((shape) => ({ title: shape, value: shape }))"
+                  label="Type"
+                  hide-details
+                />
+                <p class="text-caption mt-3 mb-1">Color</p>
+                <div class="d-flex flex-wrap ga-2">
+                  <v-btn
+                    v-for="color in decorColorOptions"
+                    :key="`decor-color-${i}-${color}`"
+                    icon
+                    size="x-small"
+                    :style="{
+                      backgroundColor: color,
+                      border:
+                        obj.color === color
+                          ? '2px solid #111827'
+                          : '1px solid #cbd5e1',
+                    }"
+                    @click.stop="obj.color = color"
+                  />
+                </div>
+                <v-slider v-model="obj.size" label="Size" min="20" max="420" step="1" hide-details class="mt-3" />
+                <v-slider v-model="obj.opacity" label="Opacity" min="0.02" max="0.4" step="0.01" hide-details class="mt-3" />
+                <v-slider v-model="obj.x" label="X slider" min="0" max="100" step="1" hide-details class="mt-3" />
+                <v-slider v-model="obj.y" label="Y slider" min="0" max="100" step="1" hide-details class="mt-3" />
+                <v-btn size="x-small" color="error" variant="text" class="mt-2" @click.stop="removeDecorObject(i)">remove</v-btn>
+              </v-card>
+            </v-menu>
+          </div>
+        </template>
         <template #settings>
         <v-card-text>
           <AppSelect
