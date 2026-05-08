@@ -62,6 +62,7 @@ const imageBorderColor = ref('#0f172a')
 const photoPosition = ref<'left' | 'right'>('left')
 const selectedPalette = ref<string>('template')
 const paletteMenuOpen = ref(false)
+const settingsMenuOpen = ref(false)
 const palettePresetOptions = computed(() =>
   buildToolbarPaletteOptions(
     activeTemplate.value.theme.palette,
@@ -706,6 +707,10 @@ watch(aiModalOpen, (isOpen) => {
         </v-card-text>
       </template>
       <template #right>
+        <v-btn class="mt-1" variant="tonal" prepend-icon="mdi-content-save" block @click="saveFromPreview">Save</v-btn>
+        <v-btn class="mt-2" color="primary" prepend-icon="mdi-file-pdf-box" block @click="downloadPdf">PDF</v-btn>
+        <v-btn class="mt-2" variant="tonal" prepend-icon="mdi-draw" block @click="openSignatureDialog">Signature</v-btn>
+        <v-btn class="mt-2" variant="tonal" prepend-icon="mdi-robot" block @click="openAiModal">AI</v-btn>
         <v-btn
           class="mt-3"
           size="small"
@@ -818,19 +823,69 @@ watch(aiModalOpen, (isOpen) => {
       <ResumePreviewToolbar
         v-model:menu-open="layoutMenuOpen"
         v-model:palette-menu-open="paletteMenuOpen"
+        v-model:settings-menu-open="settingsMenuOpen"
         :palettes="palettePresetOptions"
         :selected-palette="selectedPalette"
         :palette-columns="10"
         :templates="coverPageTemplates"
         :selected-template="selectedTemplate"
         template-key-prefix="cover-page-preview"
-        @save="saveFromPreview"
-        @ai="openAiModal"
-        @signature="openSignatureDialog"
-        @pdf="downloadPdf"
-        @select-template="applyPreviewTemplate"
+                @select-template="applyPreviewTemplate"
         @select-palette="selectedPalette = $event"
-      />
+      >
+        <template #settings>
+        <v-card-text>
+          <AppSelect
+            v-model="barLayout"
+            :items="[
+              { title: 'No bar', value: 'none' },
+              { title: 'Single bar', value: 'single' },
+              { title: 'Double bars', value: 'double' },
+            ]"
+            label="Bar layout"
+            hide-details
+            class="mt-3"
+          />
+          <AppSelect
+            v-model="selectedDividerType"
+            :items="dividerTypeOptions"
+            label="Divider type"
+            hide-details
+            class="mt-3"
+          />
+          <p class="text-body-2">Bar radius</p>
+          <v-slider
+            v-model="barRadius"
+            :min="activeBarDesignConfig.barRadius.min"
+            :max="activeBarDesignConfig.barRadius.max"
+            step="1"
+            hide-details
+            class="mt-3"
+          />
+          <p class="text-body-2">Bar width</p>
+          <v-slider
+            v-model="primaryBarWidth"
+            :min="activeBarDesignConfig.barWidth.min"
+            :max="activeBarDesignConfig.barWidth.max"
+            step="1"
+            hide-details
+            class="mt-3"
+          />
+          <p v-if="barLayout === 'double'" class="text-body-2">
+            Sec Bar width"
+          </p>
+          <v-slider
+            v-if="barLayout === 'double'"
+            v-model="secondaryBarWidth"
+            :min="activeBarDesignConfig.secondaryBarWidth.min"
+            :max="activeBarDesignConfig.secondaryBarWidth.max"
+            step="1"
+            hide-details
+            class="mt-3"
+          />
+        </v-card-text>
+        </template>
+      </ResumePreviewToolbar>
       <div
         ref="coverPreviewRef"
         class="d-flex justify-center preview-single-page-frame"

@@ -42,6 +42,7 @@ const myResumes = ref<ResumeApiItem[]>([])
 const selectedTemplate = ref(GENERATED_RESUME_TEMPLATES[0]?.id || 'tpl-001')
 const layoutMenuOpen = ref(false)
 const paletteMenuOpen = ref(false)
+const settingsMenuOpen = ref(false)
 const selectedPalette = ref('template')
 const signatureDataUrl = ref('')
 const signatureDialogOpen = ref(false)
@@ -1334,6 +1335,10 @@ watch(
       </template>
 
       <template #right>
+        <v-btn class="mt-1" variant="tonal" prepend-icon="mdi-content-save" block @click="saveFromPreview">Save</v-btn>
+        <v-btn class="mt-2" color="primary" prepend-icon="mdi-file-pdf-box" block @click="downloadPdf">PDF</v-btn>
+        <v-btn class="mt-2" variant="tonal" prepend-icon="mdi-draw" block @click="openSignatureDialog">Signature</v-btn>
+        <v-btn class="mt-2" variant="tonal" prepend-icon="mdi-robot" block @click="openAiModal">AI</v-btn>
         <v-btn
           v-if="userResumeData"
           class="mt-4"
@@ -1471,9 +1476,10 @@ watch(
 
     <v-container fluid>
       <ResumePreviewToolbar
-v-if="!isCaptureMode"
+        v-if="!isCaptureMode"
         v-model:menu-open="layoutMenuOpen"
         v-model:palette-menu-open="paletteMenuOpen"
+        v-model:settings-menu-open="settingsMenuOpen"
         :palettes="palettePresetOptions"
         :selected-palette="selectedPalette"
         :palette-columns="10"
@@ -1483,13 +1489,22 @@ v-if="!isCaptureMode"
           (template) => `/img/cv/generated/${template.id}.png`
         "
         template-key-prefix="cv-preview"
-        @save="saveFromPreview"
-        @ai="openAiModal"
-        @signature="openSignatureDialog"
-        @pdf="downloadPdf"
         @select-template="applyPreviewTemplate"
         @select-palette="selectedPalette = $event"
-      />
+      >
+        <template #settings>
+          <p class="text-body-2">Aside width</p>
+          <v-slider v-model="asideWidth" :min="240" :max="1200" :step="2" hide-details class="mb-2" />
+          <p class="text-body-2">Aside height</p>
+          <v-slider v-model="asideHeight" :min="120" :max="2600" :step="2" hide-details class="mb-2" />
+          <p class="text-body-2">Aside radius</p>
+          <v-slider v-model="asideRadius" :min="0" :max="90" :step="1" hide-details />
+          <p class="text-body-2">Bar heighth</p>
+          <v-slider v-model="sectionBarConfig.height" :min="1" :max="18" :step="1" hide-details class="mt-2" />
+          <p class="text-body-2">Bar radius</p>
+          <v-slider v-model="sectionBarConfig.radius" :min="0" :max="999" :step="1" hide-details class="mt-2" />
+        </template>
+      </ResumePreviewToolbar>
 
       <div
         ref="cvPreviewRef"
