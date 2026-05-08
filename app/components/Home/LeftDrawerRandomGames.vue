@@ -29,23 +29,38 @@ const randomGamesLoaded = useState<boolean>(
   'home-left-random-games-loaded',
   () => false,
 )
+const randomGamesAttempted = useState<boolean>(
+  'home-left-random-games-attempted',
+  () => false,
+)
 const gamesPending = ref(false)
+const gamesError = ref<string | null>(null)
 
 const randomProducts = ref<RandomProductItem[]>([])
 const productsPending = ref(false)
 const productsError = ref<string | null>(null)
 
 async function loadRandomGames() {
-  if (gamesPending.value || randomGamesLoaded.value) return
+  if (
+    gamesPending.value ||
+    randomGamesLoaded.value ||
+    randomGamesAttempted.value
+  )
+    return
 
   gamesPending.value = true
+  gamesError.value = null
 
   try {
     randomGames.value = await $fetch<RandomGameItem[]>('/api/games/random', {
       query: { limit: 2 },
     })
     randomGamesLoaded.value = true
+  } catch {
+    randomGames.value = []
+    gamesError.value = t('home.leftNav.states.emptyGames')
   } finally {
+    randomGamesAttempted.value = true
     gamesPending.value = false
   }
 }
@@ -160,6 +175,16 @@ async function openProduct(product: RandomProductItem) {
         </template>
       </v-list-item>
     </v-list>
+
+    <v-alert
+      v-else-if="gamesError"
+      type="warning"
+      variant="tonal"
+      density="compact"
+      class="mb-4"
+    >
+      {{ gamesError }}
+    </v-alert>
 
     <v-alert v-else type="info" variant="tonal" density="compact" class="mb-4">
       {{ t('home.leftNav.states.emptyGames') }}
