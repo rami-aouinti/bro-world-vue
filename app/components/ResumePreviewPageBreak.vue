@@ -27,8 +27,10 @@ const props = withDefaults(
   transform: translateY(-50%);
   pointer-events: none;
   z-index: 3;
-  background: #e2e8f0;
-  border-top: 1px solid rgba(148, 163, 184, 0.35);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgb(var(--v-theme-surface));
+  border-top: 1px solid
+    color-mix(in srgb, rgb(var(--v-theme-on-surface)) 20%, transparent);
+  border-bottom: 1px solid
+    color-mix(in srgb, rgb(var(--v-theme-on-surface)) 20%, transparent);
 }
 </style>
