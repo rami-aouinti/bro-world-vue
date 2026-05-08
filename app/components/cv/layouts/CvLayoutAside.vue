@@ -1,8 +1,10 @@
 <template>
   <div class="cv-layout cv-layout--aside">
     <header class="cv-header cv-header--aside">
-      <div class="cv-header-band">
-        <slot name="header" />
+      <div class="cv-header-track">
+        <div class="cv-header-band">
+          <slot name="header" />
+        </div>
       </div>
     </header>
     <section class="cv-main-content">
@@ -12,8 +14,9 @@
 </template>
 
 <style scoped>
-.cv-layout{width:100%;min-height:1123px;background:#fff;border:1px solid rgba(148,163,184,.45);border-radius:16px;overflow:hidden}
+.cv-layout{width:100%;min-height:1123px;background:#fff;border:1px solid rgba(148,163,184,.45);border-radius:0;overflow:hidden}
 .cv-header{padding:0;margin:0}
-.cv-header-band{background:var(--cv-primary, #1d4ed8);height:var(--cv-aside-height, 180px);width:var(--cv-aside-width, 100%);border-bottom-left-radius:var(--cv-aside-radius, 0px);border-bottom-right-radius:var(--cv-aside-radius, 0px);display:flex;align-items:flex-start;padding:24px;color:#fff}
+.cv-header-track{width:100%;display:flex;justify-content:flex-start}
+.cv-header-band{background:var(--cv-primary, #1d4ed8);height:var(--cv-aside-height, 180px);width:var(--cv-aside-width, 100%);max-width:100%;border-bottom-left-radius:var(--cv-aside-radius, 0px);border-bottom-right-radius:var(--cv-aside-radius, 0px);display:flex;align-items:flex-start;padding:24px;color:#fff}
 .cv-main-content{padding:24px;min-height:calc(1123px - var(--cv-aside-height, 180px))}
 </style>

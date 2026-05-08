@@ -510,7 +510,7 @@ async function downloadPdf() {
     .map((el) => el.outerHTML)
     .join('')
   w.document.write(
-    `<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.capture-cover-letter{width:210mm;min-height:297mm;box-sizing:border-box;margin:0}</style></head><body>${node.outerHTML}</body></html>`,
+    `<html><head>${headStyles}<style>@page{size:A4;margin:0}html,body{margin:0;background:#fff}body{display:flex;justify-content:center;align-items:flex-start}.capture-cover-letter{width:794px;max-width:794px;min-height:1123px;box-sizing:border-box;margin:0}</style></head><body>${node.outerHTML}</body></html>`,
   )
   w.document.close()
   await new Promise((r) => setTimeout(r, 900))
@@ -1187,7 +1187,7 @@ watch(aiModalOpen, (isOpen) => {
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
-  width: min(100%, 850px);
+  width: min(100%, 794px);
   min-height: 1123px;
   padding: 56px 64px;
   background: var(--cp-bg);
