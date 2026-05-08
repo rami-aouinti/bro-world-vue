@@ -676,6 +676,7 @@ watch(aiModalOpen, (isOpen) => {
         <v-btn class="mt-2" variant="tonal"  color="primary" prepend-icon="mdi-file-pdf-box" block @click="downloadPdf">PDF</v-btn>
         <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-draw" block @click="openSignatureDialog">Signature</v-btn>
         <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-robot" block @click="openAiModal">AI</v-btn>
+        <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-plus" block to="/resume/cover-letter/template-create">Template</v-btn>
         <v-card class="mt-3 pa-3" variant="outlined">
           <div class="text-caption mb-2">Template decor presets</div>
           <div class="d-flex flex-wrap ga-2">

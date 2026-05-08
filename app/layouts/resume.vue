@@ -72,11 +72,9 @@ const sidebarRoutes = computed(() => {
     { label: 'Create New CV', to: '/resume/cv/preview', icon: 'mdi-file-account-outline' },
     { label: 'Create New Cover Page', to: '/resume/cover-page/preview', icon: 'mdi-file-document-outline' },
     { label: 'Create New Cover Letter', to: '/resume/cover-letter/preview', icon: 'mdi-email-edit-outline' },
-    { label: 'Create CV Template', to: '/resume/cv/template-create', icon: 'mdi-palette-outline' },
-    { label: 'Create Cover Page Template', to: '/resume/cover-page/template-create', icon: 'mdi-palette-swatch-outline' },
-    { label: 'Create Cover Letter Template', to: '/resume/cover-letter/template-create', icon: 'mdi-palette-swatch-variant' },
     { label: 'IA Features', to: '/resume/ia-features', icon: 'mdi-robot-outline' },
     { label: 'Documentation', to: '/resume/documentation', icon: 'mdi-book-open-page-variant-outline' },
+    { label: 'FAQ', to: '/resume/faq', icon: 'mdi-frequently-asked-questions' },
   ]
 
   if (loggedIn.value) {
