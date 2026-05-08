@@ -19,7 +19,21 @@ definePageMeta({ title: 'resumePreview.coverPage.metaTitle', layout: 'resume' })
 const { t } = useI18n()
 useHead(() => ({
   title: t('resumePreview.coverPage.metaTitle'),
+  link: [
+    { rel: 'preload', as: 'image', href: '/img/cv/generated/cpage-001.png' },
+    { rel: 'preload', as: 'image', href: '/img/cv/generated/cpage-002.png' },
+    { rel: 'preload', as: 'image', href: '/img/cv/generated/cpage-003.png' },
+  ],
 }))
+
+useSeoMeta({
+  title: 'New Cover Page - Free AI Builder | Bro World',
+  description: 'Create and preview a professional cover page with free AI tools and templates.',
+  keywords: 'new cover page, free cover page, ai cover page, job cover page template',
+  ogImage: '/img/cv/generated/cpage-001.png',
+  twitterCard: 'summary_large_image',
+  twitterImage: '/img/cv/generated/cpage-001.png',
+})
 const route = useRoute()
 const { user } = useUserSession()
 const { coverPageTemplates } = useResumeTemplates()

@@ -35,7 +35,22 @@ definePageMeta({
 
 useHead(() => ({
   title: t('resumePreview.cv.metaTitle'),
+  link: [
+    { rel: 'preload', as: 'image', href: '/img/cv/generated/tpl-001.png' },
+    { rel: 'preload', as: 'image', href: '/img/cv/generated/tpl-002.png' },
+    { rel: 'preload', as: 'image', href: '/img/cv/generated/tpl-003.png' },
+  ],
 }))
+
+
+useSeoMeta({
+  title: 'New CV - Free AI Resume Preview | Bro World',
+  description: 'Create and preview a free AI-generated CV using modern resume templates on Bro World.',
+  keywords: 'new cv, free cv, ai resume, cv preview, resume templates',
+  ogImage: '/img/cv/generated/tpl-001.png',
+  twitterCard: 'summary_large_image',
+  twitterImage: '/img/cv/generated/tpl-001.png',
+})
 
 const route = useRoute()
 const queryTemplateId =

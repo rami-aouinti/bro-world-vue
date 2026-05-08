@@ -69,9 +69,9 @@ const { loggedIn } = useUserSession()
 const sidebarRoutes = computed(() => {
   const routes = [
     { label: 'Catalog', to: '/resume', icon: 'mdi-apps' },
-    { label: 'Create New CV', to: '/resume/cv/preview', icon: 'mdi-file-account-outline' },
-    { label: 'Create New Cover Page', to: '/resume/cover-page/preview', icon: 'mdi-file-document-outline' },
-    { label: 'Create New Cover Letter', to: '/resume/cover-letter/preview', icon: 'mdi-email-edit-outline' },
+    { label: 'New CV', to: '/resume/cv/preview', icon: 'mdi-file-account-outline' },
+    { label: 'New Cover Page', to: '/resume/cover-page/preview', icon: 'mdi-file-document-outline' },
+    { label: 'New Cover Letter', to: '/resume/cover-letter/preview', icon: 'mdi-email-edit-outline' },
     { label: 'IA Features', to: '/resume/ia-features', icon: 'mdi-robot-outline' },
     { label: 'Documentation', to: '/resume/documentation', icon: 'mdi-book-open-page-variant-outline' },
     { label: 'FAQ', to: '/resume/faq', icon: 'mdi-frequently-asked-questions' },
