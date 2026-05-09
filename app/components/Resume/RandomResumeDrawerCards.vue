@@ -44,8 +44,7 @@ const templatePreviewRoute = (templateType: 'resume' | 'cover-page' | 'cover-let
   <v-row dense>
     <v-col v-for="variant in rightDrawerRandomTemplates" :key="variant.id" cols="12">
       <v-card class="preview-variant-card postcard-gradient-card" :to="templatePreviewRoute(variant.type, variant.id)">
-        <v-img :src="variant.image" :alt="variant.title" height="130" cover />
-        <v-card-text class="py-2">{{ variant.title }}</v-card-text>
+        <v-img :src="variant.image" :alt="variant.title" height="165" cover />
       </v-card>
     </v-col>
   </v-row>
