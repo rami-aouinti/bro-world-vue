@@ -352,6 +352,9 @@ const photoInput = ref<HTMLInputElement | null>(null)
 const layoutMenuOpen = ref(false)
 const photoQuickMenuOpen = ref(false)
 const aiModalOpen = ref(false)
+const sectionModalOpen = ref(false)
+const sectionInsertAfter = ref(true)
+const sectionAnchor = ref('')
 const aiPrompt =
   'Tell us about yourself and the target position. Add accurate context so AI can generate a compelling and personalized cover letter profile.'
 const aiPromptProgress = ref('')
@@ -504,6 +507,14 @@ function removeDecorObject(i: number) {
 }
 function openAiModal() {
   aiModalOpen.value = true
+}
+
+function openSectionModal() {
+  sectionModalOpen.value = true
+}
+
+function saveSectionPlacement() {
+  sectionModalOpen.value = false
 }
 async function generateCoverLetterWithAi() {
   if (!aiAboutText.value.trim() || aiGenerating.value) return
@@ -803,6 +814,7 @@ watch(aiModalOpen, (isOpen) => {
         @select-palette="selectedPalette = $event"
         @update-palette-color="updatePaletteColor"
         @reset-palette="resetPaletteColors"
+        @section="openSectionModal"
       >
         <template #decor>
           <v-card class="pa-3 mb-3" variant="outlined">
