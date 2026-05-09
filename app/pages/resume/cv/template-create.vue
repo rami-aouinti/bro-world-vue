@@ -635,6 +635,10 @@ function openAddSectionModal() {
   addSectionOrder.after = true
   addSectionModalOpen.value = true
 }
+function selectAddSectionVariant(variant: string) {
+  addSectionVariant.value = variant
+  addSectionStep.value = 2
+}
 
 function confirmAddSection() {
   const sectionName = addSectionName.value.trim()
@@ -2822,8 +2826,8 @@ watch(
           <p class="text-body-2 mb-3">Choose a section form</p>
           <v-row dense>
             <v-col v-for="variant in addSectionVariantOptions" :key="variant.value" cols="12" sm="6" md="4">
-              <v-card class="pa-3 cursor-pointer" :variant="addSectionVariant === variant.value ? 'tonal' : 'outlined'" @click="addSectionVariant = variant.value">
-                <div class="text-subtitle-2">{{ variant.title }}</div>
+              <v-card class="pa-5 cursor-pointer add-section-variant-card" :variant="addSectionVariant === variant.value ? 'tonal' : 'outlined'" @click="selectAddSectionVariant(variant.value)">
+                <div class="text-h6 text-capitalize">{{ variant.title }}</div>
               </v-card>
             </v-col>
           </v-row>
@@ -2836,11 +2840,13 @@ watch(
           <v-switch v-model="addSectionOrder.after" label="Insert after selected section" hide-details />
         </template>
       </v-card-text>
-      <div class="d-flex justify-end ga-2 mt-2">
+      <template #actions>
+      <div class="d-flex justify-end ga-2 mt-2 w-100">
         <v-btn variant="text" @click="addSectionModalOpen = false">Cancel</v-btn>
         <v-btn v-if="addSectionStep === 1" color="primary" @click="addSectionStep = 2">Next</v-btn>
         <v-btn v-else color="primary" :disabled="!addSectionName.trim()" @click="confirmAddSection">Save</v-btn>
       </div>
+      </template>
     </AppModal>
 
     <AppModal
@@ -3544,5 +3550,10 @@ watch(
 }
 .decor-bar {
   border-radius: 999px;
+}
+.add-section-variant-card {
+  min-height: 120px;
+  display: flex;
+  align-items: center;
 }
 </style>
