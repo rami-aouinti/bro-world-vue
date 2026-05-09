@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-20-resume.json'
-import {
-  getGeneratedTemplateDesign,
-  getGeneratedTemplateFakeData,
-  getGeneratedTemplateSectionForm,
-} from '~/utils/generatedTemplateNormalizer'
+import { getGeneratedTemplateFakeData } from '~/utils/generatedTemplateNormalizer'
 import PALETTE_PRESETS from '~/data/resume-templates/palettes.json'
 import {
   applyReadablePageTextColors,
@@ -12,10 +8,6 @@ import {
   readableTextColorForBackground,
 } from '~/utils/resumeColorContrast'
 import { buildToolbarPaletteOptions } from '~/modules/resume/theme/paletteOptions'
-import {
-  getAsideSections,
-  getContentSections,
-} from '~/utils/resumeGeneratedTemplate'
 import CvLayoutAside from '~/components/cv/layouts/CvLayoutAside.vue'
 import CvLayoutNoAside from '~/components/cv/layouts/CvLayoutNoAside.vue'
 import CvLayoutAsideLeft from '~/components/cv/layouts/CvLayoutAsideLeft.vue'
@@ -123,9 +115,16 @@ const activeTemplate = computed(
     ) || GENERATED_RESUME_TEMPLATES[0],
 )
 useResumeGoogleFonts(activeTemplate)
-const activeTemplateDesign = computed(() =>
-  getGeneratedTemplateDesign(activeTemplate.value),
-)
+const sectionIconOverrides = reactive<Record<string, string>>({})
+const {
+  normalizedTemplate,
+  contentSections,
+  asideSections,
+  sectionIcon: runtimeSectionIcon,
+  sectionForm,
+  sectionColumn,
+  templateDesign: activeTemplateDesign,
+} = useGeneratedCvTemplateRuntime(activeTemplate, { sectionIconOverrides })
 
 const cvLayoutComponentMap = {
   aside: CvLayoutAside,
@@ -311,20 +310,20 @@ function removeDecorObject(index: number) {
 }
 
 const templateContentSections = computed(() =>
-  getContentSections(activeTemplate.value).map((section) => section.key),
+  contentSections.value.map((section) => section.key),
 )
 const templateFullContentSections = computed(() =>
-  getContentSections(activeTemplate.value)
+  contentSections.value
     .filter((section) => section.column !== 'half')
     .map((section) => section.key),
 )
 const templateHalfContentSections = computed(() =>
-  getContentSections(activeTemplate.value)
+  contentSections.value
     .filter((section) => section.column === 'half')
     .map((section) => section.key),
 )
 const templateAsideSections = computed(() =>
-  getAsideSections(activeTemplate.value).map((section) => section.key),
+  asideSections.value.map((section) => section.key),
 )
 const templateHalfContentLeftSections = computed(() =>
   templateHalfContentSections.value.filter((_, index) => index % 2 === 0),
@@ -560,23 +559,6 @@ function moveSection(
   sectionOrders[orderKey] = swapped
 }
 
-const sectionVariantMap = computed(() => {
-  const sections = (activeTemplate.value as any)?.sections || {}
-  return {
-    profile: getGeneratedTemplateSectionForm(sections, 'profile'),
-    experience: getGeneratedTemplateSectionForm(sections, 'experience'),
-    education: getGeneratedTemplateSectionForm(sections, 'education'),
-    skills: getGeneratedTemplateSectionForm(sections, 'skills'),
-    projects: getGeneratedTemplateSectionForm(sections, 'projects'),
-    languages: getGeneratedTemplateSectionForm(sections, 'languages'),
-    certification: getGeneratedTemplateSectionForm(sections, 'certifications'),
-    certifications: getGeneratedTemplateSectionForm(sections, 'certifications'),
-    references: getGeneratedTemplateSectionForm(sections, 'references'),
-    hobby: getGeneratedTemplateSectionForm(sections, 'interests'),
-    hobbies: getGeneratedTemplateSectionForm(sections, 'interests'),
-  }
-})
-
 const headerType = computed(() =>
   String(activeTemplateDesign.value?.headerType || 'header-left'),
 )
@@ -586,58 +568,7 @@ const templateFakeData = computed(() =>
 )
 const userResumeData = computed<any>(() => myResumes.value[0] || null)
 const fakeData = computed(() => userResumeData.value || templateFakeData.value)
-const sectionType = (key: keyof (typeof sectionVariantMap)['value']) =>
-  sectionVariantMap.value[key] || 'classic'
-
-const sectionIconOverrides = reactive<Record<string, string>>({})
-
-type TemplateSectionIconConfig = {
-  icon?: string
-  iconAlternatives?: string[]
-  column?: string
-}
-
-const normalizedTemplateSections = computed<
-  Record<string, TemplateSectionIconConfig>
->(() => {
-  const sections = (activeTemplate.value as any)?.sections || {}
-  return Object.entries(sections).reduce(
-    (acc, [sourceKey, rawValue]) => {
-      const key = normalizeSectionKey(sourceKey)
-      const config =
-        rawValue && typeof rawValue === 'object'
-          ? (rawValue as Record<string, any>)
-          : {}
-      const iconOverride = sectionIconOverrides[key]
-      const icon =
-        iconOverride ||
-        (typeof config.icon === 'string' ? config.icon : undefined)
-      const iconAlternatives = Array.isArray(config.iconAlternatives)
-        ? config.iconAlternatives.filter(
-            (icon): icon is string => typeof icon === 'string' && !!icon,
-          )
-        : []
-      const column =
-        typeof config.column === 'string' ? config.column : undefined
-
-      acc[key] = {
-        icon,
-        iconAlternatives,
-        column,
-      }
-      return acc
-    },
-    {} as Record<string, TemplateSectionIconConfig>,
-  )
-})
-
-function normalizeSectionKey(raw: string) {
-  const key = raw.toLowerCase()
-  if (key === 'certification') return 'certifications'
-  if (key === 'hobby' || key === 'interest' || key === 'interests')
-    return 'hobbies'
-  return key
-}
+const sectionType = (key: string) => sectionForm(key)
 
 const sectionVariantOptionsMap: Record<string, string[]> = {
   profile: ['classic'],
@@ -949,33 +880,20 @@ const sectionTitleMap: Record<string, string> = {
   hobbies: 'Hobby',
   projects: 'Projects',
 }
-const fallbackSectionIconMap: Record<string, string> = {
-  profile: 'mdi-account-outline',
-  experience: 'mdi-briefcase-outline',
-  education: 'mdi-school-outline',
-  skills: 'mdi-tools',
-  certifications: 'mdi-certificate-outline',
-  languages: 'mdi-translate',
-  references: 'mdi-account-group-outline',
-  hobbies: 'mdi-heart-outline',
-  interests: 'mdi-heart-outline',
-  projects: 'mdi-folder-star-outline',
-  contact: 'mdi-card-account-phone-outline',
-  languagesLabel: 'mdi-format-letter-case',
-}
+const fallbackSectionIconMap: Record<string, string> = {}
 
 function sectionIcon(sectionKey: string) {
   return (
-    normalizedTemplateSections.value[sectionKey]?.icon ||
-    fallbackSectionIconMap[sectionKey] ||
-    'mdi-circle-small'
+    fallbackSectionIconMap[toSectionKey(sectionKey)] ||
+    runtimeSectionIcon(sectionKey)
   )
 }
 
 function getSectionIconOptions(sectionKey: string) {
   const key = toSectionKey(sectionKey)
   const alternatives =
-    normalizedTemplateSections.value[key]?.iconAlternatives || []
+    normalizedTemplate.value.sections.find((section) => section.key === key)
+      ?.iconAlternatives || []
   return Array.from(
     new Set([sectionIcon(key), ...alternatives, fallbackSectionIconMap[key]]),
   )
@@ -1001,8 +919,9 @@ function toSectionKey(section?: string) {
 }
 
 function contentColumnClass(sectionKey: string) {
-  const column = normalizedTemplateSections.value[sectionKey]?.column
-  return column === 'half' ? 'cv-section-row--half' : 'cv-section-row--full'
+  return sectionColumn(sectionKey) === 'half'
+    ? 'cv-section-row--half'
+    : 'cv-section-row--full'
 }
 
 function getSectionItems(rawSection: string): string[] {
@@ -1640,8 +1559,8 @@ onMounted(async () => {
 
 watch(
   activeTemplate,
-  (template) => {
-    const design = getGeneratedTemplateDesign(template)
+  () => {
+    const design = activeTemplateDesign.value
     editableDecorObjects.value = (design?.decor?.objects || []).map(
       (obj: any) => normalizeDecorObject(obj),
     )
