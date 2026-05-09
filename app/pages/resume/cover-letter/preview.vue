@@ -479,11 +479,12 @@ watch(
 watch(
   activeTemplate,
   (template) => {
-    pageBorderEnabled.value = Boolean(template?.theme?.pageBorder?.enabled)
-    pageBorderWidth.value = Number(template?.theme?.pageBorder?.width ?? 0)
-    pageBorderRadius.value = Number(template?.theme?.pageBorder?.radius ?? 0)
+    const design = getGeneratedTemplateDesign(template)
+    pageBorderEnabled.value = Boolean(design?.theme?.pageBorder?.enabled)
+    pageBorderWidth.value = Number(design?.theme?.pageBorder?.width ?? 0)
+    pageBorderRadius.value = Number(design?.theme?.pageBorder?.radius ?? 0)
     pageBorderColor.value = String(
-      template?.theme?.pageBorder?.color || '#0f172a',
+      design?.theme?.pageBorder?.color || '#0f172a',
     )
   },
   { immediate: true },
