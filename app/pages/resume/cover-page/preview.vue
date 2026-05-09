@@ -285,6 +285,14 @@ const activeColors = computed(() => {
     })
   return applyReadablePageTextColors(palette)
 })
+
+function updatePaletteColor(payload: { key: 'primary' | 'secondary' | 'text' | 'pageBackground'; value: string }) {
+  const color = String(payload?.value || '').trim()
+  if (!color) return
+  selectedPalette.value = 'template'
+  if (!activeTemplate.value.theme.palette) activeTemplate.value.theme.palette = {} as any
+  ;(activeTemplate.value.theme.palette as Record<string, string>)[payload.key] = color
+}
 function readableCoverTextColor(color = '#0F172A') {
   return readableTextColorForBackground(activeColors.value.pageBackground, color)
 }
@@ -746,6 +754,7 @@ watch(aiModalOpen, (isOpen) => {
         v-model:border-menu-open="borderMenuOpen"
         v-model:decor-menu-open="decorMenuOpen"
         :palettes="palettePresetOptions"
+        :active-colors="activeColors"
         show-decor
         show-section
         :selected-palette="selectedPalette"
@@ -755,6 +764,7 @@ watch(aiModalOpen, (isOpen) => {
         template-key-prefix="cover-page-preview"
                 @select-template="applyPreviewTemplate"
         @select-palette="selectedPalette = $event"
+        @update-palette-color="updatePaletteColor"
       >
         <template #decor>
           <v-btn

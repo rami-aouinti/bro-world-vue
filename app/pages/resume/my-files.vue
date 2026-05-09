@@ -1,29 +1,68 @@
 <script setup lang="ts">
+import type { RecruitResume } from '~/types/world/jobs'
+import { privateApi } from '~/utils/http/privateApi'
+import RandomResumeDrawerCards from '~/components/Resume/RandomResumeDrawerCards.vue'
+
 definePageMeta({ layout: 'resume', title: 'Mes Files' })
 
-import RandomResumeDrawerCards
-  from "~/components/Resume/RandomResumeDrawerCards.vue";
+interface RecruitTemplateRef {
+  name: string
+}
 
-const myFileCards = [
-  {
-    title: 'CV',
-    description: 'Affiche mes CV.',
-    icon: 'mdi-file-document-outline',
-    to: '/profile',
-  },
-  {
-    title: 'Cover Page',
-    description: 'Affiche mes cover pages.',
-    icon: 'mdi-file-account-outline',
-    to: '/profile',
-  },
-  {
-    title: 'Cover Letter',
-    description: 'Affiche mes cover letters.',
-    icon: 'mdi-email-outline',
-    to: '/profile',
-  },
-] as const
+interface RecruitCoverPage {
+  id: string
+  template: RecruitTemplateRef
+  fullName?: string | null
+  role?: string | null
+  header?: string | null
+}
+
+interface RecruitCoverLetter {
+  id: string
+  template: RecruitTemplateRef
+  fullName?: string | null
+  role?: string | null
+  header?: string | null
+}
+
+const resumes = ref<RecruitResume[]>([])
+const coverPages = ref<RecruitCoverPage[]>([])
+const coverLetters = ref<RecruitCoverLetter[]>([])
+
+const loading = ref(false)
+const error = ref('')
+
+const hasResumes = computed(() => resumes.value.length > 0)
+const hasCoverPages = computed(() => coverPages.value.length > 0)
+const hasCoverLetters = computed(() => coverLetters.value.length > 0)
+
+const openCoverPageShow = (coverPage: RecruitCoverPage) =>
+  navigateTo(`/profile/cover-page/${coverPage.template.name}?id=${encodeURIComponent(coverPage.id)}`)
+
+const openCoverLetterShow = (coverLetter: RecruitCoverLetter) =>
+  navigateTo(`/profile/cover-letter/${coverLetter.template.name}?id=${encodeURIComponent(coverLetter.id)}`)
+
+async function fetchMyFiles() {
+  loading.value = true
+  error.value = ''
+  try {
+    const [resumesResponse, coverPagesResponse, coverLettersResponse] = await Promise.all([
+      privateApi.request<RecruitResume[]>('/api/recruit/private/me/resumes'),
+      privateApi.request<RecruitCoverPage[]>('/api/recruit/private/me/cover-pages'),
+      privateApi.request<RecruitCoverLetter[]>('/api/recruit/private/me/cover-letters'),
+    ])
+
+    resumes.value = resumesResponse
+    coverPages.value = coverPagesResponse
+    coverLetters.value = coverLettersResponse
+  } catch {
+    error.value = 'Impossible de charger vos fichiers pour le moment.'
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(fetchMyFiles)
 </script>
 
 <template>
@@ -33,27 +72,87 @@ const myFileCards = [
         <RandomResumeDrawerCards />
       </template>
     </AppPageDrawers>
-    <v-container class="py-8" max-width="1100">
+
+    <v-container class="py-8" max-width="1200">
       <div class="hero mb-8">
         <h1 class="text-h3 font-weight-bold mb-2">Mes Files</h1>
         <p class="text-medium-emphasis text-body-1">
-          My Files.
+          Tous mes CV, cover pages et cover letters dans un seul espace.
         </p>
       </div>
 
-      <v-row>
-        <v-col v-for="card in myFileCards" :key="card.title" cols="12" md="4">
-          <v-card class="h-100 postcard-gradient-card my-file-card" rounded="xl" :to="card.to">
-            <v-card-text>
-              <div class="d-flex align-center ga-3 mb-2">
-                <v-icon :icon="card.icon" size="28" color="primary" />
-                <h2 class="text-h6">{{ card.title }}</h2>
-              </div>
-              <p class="text-body-2 text-medium-emphasis mb-0">{{ card.description }}</p>
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
+      <v-alert v-if="error" type="error" variant="tonal" class="mb-6">{{ error }}</v-alert>
+      <v-skeleton-loader v-if="loading" type="article, article, article" />
+
+      <template v-else>
+        <v-card class="postcard-gradient-card mb-6" rounded="xl">
+          <v-card-title>My CV</v-card-title>
+          <v-divider />
+          <v-card-text>
+            <v-empty-state v-if="!hasResumes" icon="mdi-file-document-outline" title="Aucun CV" />
+            <v-row v-else>
+              <v-col v-for="resume in resumes" :key="resume.id" cols="12" md="6" lg="4">
+                <v-card rounded="xl" class="h-100 postcard-gradient-card my-file-card">
+                  <v-card-text>
+                    <h3 class="text-subtitle-1 font-weight-bold mb-2">CV #{{ resume.id.slice(0, 8) }}</h3>
+                    <p class="text-body-2 text-medium-emphasis mb-4">
+                      {{ resume.documentUrl ? 'CV PDF uploadé' : 'CV généré depuis vos données' }}
+                    </p>
+                    <div class="actions-row">
+                      <v-btn color="primary" variant="tonal" prepend-icon="mdi-eye-outline" :href="resume.documentUrl || undefined" :to="resume.documentUrl ? undefined : '/resume/cv/preview'" target="_blank">Show</v-btn>
+                      <v-btn color="primary" prepend-icon="mdi-pencil-outline" to="/resume/cv/template-create">Edit</v-btn>
+                    </div>
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+
+        <v-card class="postcard-gradient-card mb-6" rounded="xl">
+          <v-card-title>My Cover Pages</v-card-title>
+          <v-divider />
+          <v-card-text>
+            <v-empty-state v-if="!hasCoverPages" icon="mdi-file-account-outline" title="Aucune cover page" />
+            <v-row v-else>
+              <v-col v-for="coverPage in coverPages" :key="coverPage.id" cols="12" md="6" lg="4">
+                <v-card rounded="xl" class="h-100 postcard-gradient-card my-file-card">
+                  <v-card-text>
+                    <h3 class="text-subtitle-1 font-weight-bold mb-2">{{ coverPage.header || 'My Cover Page' }}</h3>
+                    <p class="text-body-2 text-medium-emphasis mb-4">{{ coverPage.fullName }} · {{ coverPage.role }}</p>
+                    <div class="actions-row">
+                      <v-btn color="primary" variant="tonal" prepend-icon="mdi-eye-outline" @click="openCoverPageShow(coverPage)">Show</v-btn>
+                      <v-btn color="primary" prepend-icon="mdi-pencil-outline" to="/resume/cover-page/preview">Edit</v-btn>
+                    </div>
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+
+        <v-card class="postcard-gradient-card" rounded="xl">
+          <v-card-title>My Cover Letters</v-card-title>
+          <v-divider />
+          <v-card-text>
+            <v-empty-state v-if="!hasCoverLetters" icon="mdi-email-outline" title="Aucune cover letter" />
+            <v-row v-else>
+              <v-col v-for="coverLetter in coverLetters" :key="coverLetter.id" cols="12" md="6" lg="4">
+                <v-card rounded="xl" class="h-100 postcard-gradient-card my-file-card">
+                  <v-card-text>
+                    <h3 class="text-subtitle-1 font-weight-bold mb-2">{{ coverLetter.header || 'My Cover Letter' }}</h3>
+                    <p class="text-body-2 text-medium-emphasis mb-4">{{ coverLetter.fullName }} · {{ coverLetter.role }}</p>
+                    <div class="actions-row">
+                      <v-btn color="primary" variant="tonal" prepend-icon="mdi-eye-outline" @click="openCoverLetterShow(coverLetter)">Show</v-btn>
+                      <v-btn color="primary" prepend-icon="mdi-pencil-outline" to="/resume/cover-letter/preview">Edit</v-btn>
+                    </div>
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </template>
     </v-container>
   </div>
 </template>
@@ -63,11 +162,19 @@ const myFileCards = [
   border-left: 4px solid rgb(var(--v-theme-primary));
   padding-left: 16px;
 }
+
 .my-file-card {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .my-file-card:hover {
   transform: translateY(-2px);
+}
+
+.actions-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
 }
 </style>
