@@ -17,6 +17,8 @@ import CvLayoutAsideLeft from '~/components/cv/layouts/CvLayoutAsideLeft.vue'
 import CvLayoutAsideRight from '~/components/cv/layouts/CvLayoutAsideRight.vue'
 import CvLayoutAsideFullLeft from '~/components/cv/layouts/CvLayoutAsideFullLeft.vue'
 import CvLayoutAsideFullRight from '~/components/cv/layouts/CvLayoutAsideFullRight.vue'
+import CvLayoutAsideTopFullLeft from '~/components/cv/layouts/CvLayoutAsideTopFullLeft.vue'
+import CvLayoutAsideTopFullRight from '~/components/cv/layouts/CvLayoutAsideTopFullRight.vue'
 import CvLayoutAsideBarLeft from '~/components/cv/layouts/CvLayoutAsideBarLeft.vue'
 import CvLayoutAsideBarRight from '~/components/cv/layouts/CvLayoutAsideBarRight.vue'
 import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
@@ -138,6 +140,8 @@ const cvLayoutComponentMap = {
   'aside-right': CvLayoutAsideRight,
   'aside-full-left': CvLayoutAsideFullLeft,
   'aside-full-right': CvLayoutAsideFullRight,
+  'aside-top-full-left': CvLayoutAsideTopFullLeft,
+  'aside-top-full-right': CvLayoutAsideTopFullRight,
   'aside-bar-left': CvLayoutAsideBarLeft,
   'aside-bar-right': CvLayoutAsideBarRight,
 } as const
