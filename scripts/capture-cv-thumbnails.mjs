@@ -15,7 +15,6 @@ const root = path.resolve(__dirname, '..')
 const outDir = path.join(root, 'public/img/cv/generated')
 const templatesPath = path.join(root, 'app/data/resume-templates/generated-20-resume.json')
 const baseUrl =' https://bro-world-space.com'
-
 const templatesRaw = await readFile(templatesPath, 'utf-8')
 const generatedCvTemplates = JSON.parse(templatesRaw)
 
