@@ -68,9 +68,15 @@ const editablePaletteFields: Array<{ key: PaletteColorKey; label: string }> = [
   { key: 'pageBackground', label: 'Page background' },
 ]
 
-function onColorUpdate(key: PaletteColorKey, event: Event) {
-  const target = event.target as HTMLInputElement | null
-  emit('update-palette-color', { key, value: target?.value || '' })
+function normalizeColor(value: string | undefined, fallback = '#000000') {
+  if (!value) return fallback
+  const raw = String(value).trim()
+  if (/^#[0-9a-fA-F]{6}$/.test(raw)) return raw
+  return fallback
+}
+
+function onColorUpdate(key: PaletteColorKey, value: string) {
+  emit('update-palette-color', { key, value: normalizeColor(value) })
 }
 </script>
 
@@ -179,18 +185,23 @@ function onColorUpdate(key: PaletteColorKey, event: Event) {
         </template>
         <v-card class="pa-3" min-width="280">
           <div class="d-flex flex-column ga-2">
-            <label
+            <div
               v-for="field in editablePaletteFields"
               :key="field.key"
               class="palette-color-row"
             >
-              <span>{{ field.label }}</span>
-              <input
-                :value="activeColors?.[field.key] || '#000000'"
-                type="color"
-                @input="onColorUpdate(field.key, $event)"
-              >
-            </label>
+              <span class="palette-color-row__label">{{ field.label }}</span>
+              <div class="palette-color-row__controls">
+                <input
+                  class="palette-color-row__input"
+                  :value="normalizeColor(activeColors?.[field.key], '#0f172a')"
+                  type="color"
+                  @input="onColorUpdate(field.key, ($event.target as HTMLInputElement)?.value || '')"
+                  @change="onColorUpdate(field.key, ($event.target as HTMLInputElement)?.value || '')"
+                >
+                <span class="palette-color-row__hex">{{ normalizeColor(activeColors?.[field.key], '#0f172a').toUpperCase() }}</span>
+              </div>
+            </div>
           </div>
           <v-btn class="mt-3" size="small" variant="text" prepend-icon="mdi-restore" @click="emit('reset-palette')">Reset</v-btn>
         </v-card>
@@ -293,6 +304,42 @@ function onColorUpdate(key: PaletteColorKey, event: Event) {
 .palette-dot--active {
   outline: 2px solid rgb(var(--v-theme-primary));
   outline-offset: 2px;
+}
+
+
+.palette-color-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.palette-color-row__label {
+  font-weight: 600;
+  color: rgb(var(--v-theme-on-surface));
+}
+
+.palette-color-row__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.palette-color-row__input {
+  width: 46px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-on-surface)) 22%, transparent);
+  background: transparent;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.palette-color-row__hex {
+  min-width: 76px;
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  color: color-mix(in srgb, rgb(var(--v-theme-on-surface)) 74%, transparent);
 }
 
 :deep(.resume-toolbar-fixed-menu) {
