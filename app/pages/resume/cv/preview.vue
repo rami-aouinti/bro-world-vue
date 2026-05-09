@@ -534,6 +534,7 @@ const sectionTypeOverrides = reactive<Record<string, string>>({})
 const customSectionCounter = ref(0)
 const addSectionModalOpen = ref(false)
 const addSectionStep = ref<1 | 2>(1)
+const isAddSectionStepOne = computed(() => Number(addSectionStep.value) === 1)
 const addSectionVariant = ref('classic')
 const addSectionName = ref('')
 const addSectionOrder = reactive({
@@ -2835,7 +2836,7 @@ watch(
       max-width="760"
     >
       <v-card-text>
-        <template v-if="addSectionStep === 1">
+        <template v-if="isAddSectionStepOne">
           <p class="text-body-2 mb-3">Choose a section form</p>
           <v-row dense>
             <v-col v-for="variant in addSectionVariantOptions" :key="variant.value" cols="12" sm="6" md="4">
@@ -2866,7 +2867,7 @@ watch(
       <template #actions>
       <div class="d-flex justify-end ga-2 mt-2 w-100">
         <v-btn variant="text" @click="addSectionModalOpen = false">Cancel</v-btn>
-        <v-btn v-if="addSectionStep === 1" color="primary" @click="goToAddSectionStepTwo">Next</v-btn>
+        <v-btn v-if="isAddSectionStepOne" color="primary" @click="goToAddSectionStepTwo">Next</v-btn>
         <v-btn v-else color="primary" :disabled="!addSectionName.trim()" @click="confirmAddSection">Save</v-btn>
       </div>
       </template>
