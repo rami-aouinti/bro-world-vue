@@ -9,7 +9,6 @@ try {
 catch {
   throw new Error('Missing dependency "playwright". Run: pnpm add -D playwright && pnpm exec playwright install chromium')
 }
-
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const root = path.resolve(__dirname, '..')
