@@ -67,6 +67,7 @@ const barMenuOpen = ref(false)
 const borderMenuOpen = ref(false)
 const decorMenuOpen = ref(false)
 const selectedPalette = ref('template')
+const paletteOverrides = ref<Record<string, Record<string, string>>>({})
 const signatureDataUrl = ref('')
 const signatureDialogOpen = ref(false)
 const aiModalOpen = ref(false)
@@ -139,8 +140,13 @@ const palettePresetOptions = computed(() =>
     100,
   ),
 )
+const currentPalette = computed(() => ({
+  ...(activeTemplate.value?.theme?.palette || {}),
+  ...(paletteOverrides.value[selectedTemplate.value] || {}),
+}))
+
 const activeColors = computed(() => {
-  const palette = activeTemplate.value?.theme?.palette || {}
+  const palette = currentPalette.value
   const selected = palettePresetOptions.value.find(
     (option) => option.value === selectedPalette.value,
   )
@@ -174,6 +180,30 @@ if (
   palettePresetOptions.value.some((option) => option.value === queryPaletteId)
 ) {
   selectedPalette.value = queryPaletteId
+}
+
+const initialPaletteState = ref<Record<string, string>>({})
+watch(
+  () => selectedTemplate.value,
+  () => {
+    initialPaletteState.value = { ...(activeTemplate.value?.theme?.palette || {}) }
+    if (!paletteOverrides.value[selectedTemplate.value]) paletteOverrides.value[selectedTemplate.value] = {}
+  },
+  { immediate: true },
+)
+
+function updatePaletteColor(payload: { key: 'primary' | 'secondary' | 'text' | 'pageBackground'; value: string }) {
+  const color = String(payload?.value || '').trim()
+  if (!color) return
+  selectedPalette.value = 'template'
+  const templateId = selectedTemplate.value
+  if (!paletteOverrides.value[templateId]) paletteOverrides.value[templateId] = {}
+  paletteOverrides.value[templateId][payload.key] = color
+}
+
+function resetPaletteColors() {
+  selectedPalette.value = 'template'
+paletteOverrides.value[selectedTemplate.value] = {}
 }
 
 function toPercentNumber(value: unknown, fallback = 50): number {
@@ -1361,6 +1391,7 @@ watch(
         v-model:border-menu-open="borderMenuOpen"
         v-model:decor-menu-open="decorMenuOpen"
         :palettes="palettePresetOptions"
+        :active-colors="activeColors"
         show-decor
         show-section
         :selected-palette="selectedPalette"
@@ -1373,6 +1404,8 @@ watch(
         template-key-prefix="cv-preview"
         @select-template="applyPreviewTemplate"
         @select-palette="selectedPalette = $event"
+        @update-palette-color="updatePaletteColor"
+        @reset-palette="resetPaletteColors"
       >
         <template #decor>
           <v-btn

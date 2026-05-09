@@ -269,8 +269,13 @@ const sectionSpacing = computed(() =>
     ? '40px'
     : '24px',
 )
+const currentPalette = computed(() => ({
+  ...(activeTemplate.value?.theme?.palette || {}),
+  ...(paletteOverrides.value[selectedTemplate.value] || {}),
+}))
+
 const activeColors = computed(() => {
-  const palette = activeTemplate.value.theme.palette
+  const palette = currentPalette.value
   const selected = palettePresetOptions.value.find(
     (option) => option.value === selectedPalette.value,
   )
@@ -285,6 +290,30 @@ const activeColors = computed(() => {
     })
   return applyReadablePageTextColors(palette)
 })
+
+const initialPaletteState = ref<Record<string, string>>({})
+watch(
+  () => selectedTemplate.value,
+  () => {
+    initialPaletteState.value = { ...(activeTemplate.value?.theme?.palette || {}) }
+    if (!paletteOverrides.value[selectedTemplate.value]) paletteOverrides.value[selectedTemplate.value] = {}
+  },
+  { immediate: true },
+)
+
+function updatePaletteColor(payload: { key: 'primary' | 'secondary' | 'text' | 'pageBackground'; value: string }) {
+  const color = String(payload?.value || '').trim()
+  if (!color) return
+  selectedPalette.value = 'template'
+  const templateId = selectedTemplate.value
+  if (!paletteOverrides.value[templateId]) paletteOverrides.value[templateId] = {}
+  paletteOverrides.value[templateId][payload.key] = color
+}
+
+function resetPaletteColors() {
+  selectedPalette.value = 'template'
+paletteOverrides.value[selectedTemplate.value] = {}
+}
 function readableCoverTextColor(color = '#0F172A') {
   return readableTextColorForBackground(activeColors.value.pageBackground, color)
 }
@@ -748,6 +777,7 @@ watch(aiModalOpen, (isOpen) => {
         v-model:border-menu-open="borderMenuOpen"
         v-model:decor-menu-open="decorMenuOpen"
         :palettes="palettePresetOptions"
+        :active-colors="activeColors"
         show-decor
         show-section
         :selected-palette="selectedPalette"
@@ -757,6 +787,8 @@ watch(aiModalOpen, (isOpen) => {
         template-key-prefix="cover-page-preview"
                 @select-template="applyPreviewTemplate"
         @select-palette="selectedPalette = $event"
+        @update-palette-color="updatePaletteColor"
+        @reset-palette="resetPaletteColors"
       >
         <template #decor>
           <v-btn
