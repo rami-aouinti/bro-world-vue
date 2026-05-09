@@ -1,6 +1,7 @@
 <script setup lang="ts">
 type PreviewTemplate = { id?: string; value?: string; label?: string; name?: string; title?: string }
 type PaletteOption = { value?: string; title?: string; name?: string; primary?: string; secondary?: string; tertiary?: string; quaternary?: string; text?: string; dark?: string; light?: string }
+type PaletteColorKey = 'primary' | 'secondary' | 'text' | 'pageBackground'
 
 withDefaults(
   defineProps<{
@@ -20,6 +21,7 @@ withDefaults(
     decorMenuOpen?: boolean
     showDecor?: boolean
     showSection?: boolean
+    activeColors?: Partial<Record<PaletteColorKey, string>>
   }>(),
   {
     menuOpen: false,
@@ -38,13 +40,15 @@ withDefaults(
     decorMenuOpen: false,
     showDecor: false,
     showSection: false,
+    activeColors: () => ({}),
   },
 )
 
 const emit = defineEmits<{
   (e: 'update:menu-open' | 'update:palette-menu-open' | 'update:aside-menu-open' | 'update:bar-menu-open' | 'update:border-menu-open' | 'update:decor-menu-open', value: boolean): void
   (e: 'select-template' | 'select-palette', value: string): void
-  (e: 'save' | 'ai' | 'signature' | 'pdf' | 'section'): void
+  (e: 'update-palette-color', payload: { key: PaletteColorKey; value: string }): void
+  (e: 'reset-palette' | 'save' | 'ai' | 'signature' | 'pdf' | 'section'): void
 }>()
 
 function templateId(template: PreviewTemplate) {
@@ -55,12 +59,24 @@ function templateLabel(template: PreviewTemplate) {
   return template.label || template.title || template.name || templateId(template)
 }
 
-function paletteLabel(palette: PaletteOption) {
-  return palette.title || palette.name || palette.value || 'Palette'
+
+
+const editablePaletteFields: Array<{ key: PaletteColorKey; label: string }> = [
+  { key: 'primary', label: 'Primary' },
+  { key: 'secondary', label: 'Secondary' },
+  { key: 'text', label: 'Text' },
+  { key: 'pageBackground', label: 'Page background' },
+]
+
+function normalizeColor(value: string | undefined, fallback = '#000000') {
+  if (!value) return fallback
+  const raw = String(value).trim()
+  if (/^#[0-9a-fA-F]{6}$/.test(raw)) return raw
+  return fallback
 }
 
-function paletteValue(palette: PaletteOption) {
-  return String(palette.value || '')
+function onColorUpdate(key: PaletteColorKey, value: string) {
+  emit('update-palette-color', { key, value: normalizeColor(value) })
 }
 </script>
 
@@ -158,22 +174,36 @@ function paletteValue(palette: PaletteOption) {
         </v-card>
       </v-menu>
 
-      <v-menu :model-value="paletteMenuOpen" location="bottom start" @update:model-value="emit('update:palette-menu-open', $event)">
+      <v-menu
+        :model-value="paletteMenuOpen"
+        location="bottom start"
+        :close-on-content-click="false"
+        @update:model-value="emit('update:palette-menu-open', $event)"
+      >
         <template #activator="{ props: menuProps }">
           <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-palette">Palette</v-btn>
         </template>
         <v-card class="pa-3" min-width="280">
-          <div class="palette-grid" :style="{ '--palette-cols': String(paletteColumns) }">
-            <button
-              v-for="palette in palettes"
-              :key="`palette-${paletteValue(palette)}`"
-              class="palette-dot"
-              :class="{ 'palette-dot--active': selectedPalette === paletteValue(palette) }"
-              :title="paletteLabel(palette)"
-              :style="{ '--palette-primary': palette.primary || '#cbd5e1', '--palette-secondary': palette.secondary || palette.dark || '#94a3b8', '--palette-tertiary': palette.tertiary || palette.text || '#475569', '--palette-quaternary': palette.quaternary || palette.light || '#e2e8f0' }"
-              @click="emit('select-palette', paletteValue(palette))"
-            />
+          <div class="d-flex flex-column ga-2">
+            <div
+              v-for="field in editablePaletteFields"
+              :key="field.key"
+              class="palette-color-row"
+            >
+              <span class="palette-color-row__label">{{ field.label }}</span>
+              <div class="palette-color-row__controls">
+                <input
+                  class="palette-color-row__input"
+                  :value="normalizeColor(activeColors?.[field.key], '#0f172a')"
+                  type="color"
+                  @input="onColorUpdate(field.key, ($event.target as HTMLInputElement)?.value || '')"
+                  @change="onColorUpdate(field.key, ($event.target as HTMLInputElement)?.value || '')"
+                >
+                <span class="palette-color-row__hex">{{ normalizeColor(activeColors?.[field.key], '#0f172a').toUpperCase() }}</span>
+              </div>
+            </div>
           </div>
+          <v-btn class="mt-3" size="small" variant="text" prepend-icon="mdi-restore" @click="emit('reset-palette')">Reset</v-btn>
         </v-card>
       </v-menu>
 
@@ -274,6 +304,42 @@ function paletteValue(palette: PaletteOption) {
 .palette-dot--active {
   outline: 2px solid rgb(var(--v-theme-primary));
   outline-offset: 2px;
+}
+
+
+.palette-color-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.palette-color-row__label {
+  font-weight: 600;
+  color: rgb(var(--v-theme-on-surface));
+}
+
+.palette-color-row__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.palette-color-row__input {
+  width: 46px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-on-surface)) 22%, transparent);
+  background: transparent;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.palette-color-row__hex {
+  min-width: 76px;
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  color: color-mix(in srgb, rgb(var(--v-theme-on-surface)) 74%, transparent);
 }
 
 :deep(.resume-toolbar-fixed-menu) {
