@@ -81,8 +81,11 @@
       "references": {
         "zone": "aside",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "dot",
         "enabled": true
       },
@@ -550,8 +553,11 @@
       "references": {
         "zone": "aside",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "dot",
         "enabled": true
       },
@@ -1023,8 +1029,11 @@
         "zone": "content",
         "order": 90,
         "column": "half",
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "cards",
         "enabled": true
       },
@@ -1502,8 +1511,11 @@
         "zone": "content",
         "order": 90,
         "column": "half",
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "classic",
         "enabled": true
       },
@@ -1976,8 +1988,11 @@
       "references": {
         "zone": "aside-left",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "list",
         "enabled": true
       },
@@ -2448,8 +2463,11 @@
       "references": {
         "zone": "aside-left",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "dot",
         "enabled": true
       },
@@ -2920,8 +2938,11 @@
       "references": {
         "zone": "aside-right",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "cards",
         "enabled": true
       },
@@ -3392,8 +3413,11 @@
       "references": {
         "zone": "aside-right",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "classic",
         "enabled": true
       },
@@ -3864,8 +3888,11 @@
       "references": {
         "zone": "aside-left",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "list",
         "enabled": true
       },
@@ -4336,8 +4363,11 @@
       "references": {
         "zone": "aside-left",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "dot",
         "enabled": true
       },
@@ -4808,8 +4838,11 @@
       "references": {
         "zone": "aside-right",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "cards",
         "enabled": true
       },
@@ -5276,8 +5309,11 @@
       "references": {
         "zone": "aside-right",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "classic",
         "enabled": true
       },
@@ -5744,8 +5780,11 @@
       "references": {
         "zone": "aside-left",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "cards",
         "enabled": true
       },
@@ -6216,8 +6255,11 @@
       "references": {
         "zone": "aside-right",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "classic",
         "enabled": true
       },
@@ -6688,8 +6730,11 @@
       "references": {
         "zone": "aside",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "list",
         "enabled": true
       },
@@ -7158,8 +7203,11 @@
       "references": {
         "zone": "aside-left",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "dot",
         "enabled": true
       },
@@ -7628,8 +7676,11 @@
       "references": {
         "zone": "aside-right",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "cards",
         "enabled": true
       },
@@ -8100,8 +8151,11 @@
       "references": {
         "zone": "aside-left",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "classic",
         "enabled": true
       },
@@ -8571,8 +8625,11 @@
       "references": {
         "zone": "aside-right",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "list",
         "enabled": true
       },
@@ -9042,8 +9099,11 @@
       "references": {
         "zone": "aside-left",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "dot",
         "enabled": true
       },
@@ -9513,8 +9573,11 @@
       "references": {
         "zone": "aside-right",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "cards",
         "enabled": true
       },
@@ -9988,8 +10051,11 @@
         "zone": "content",
         "order": 90,
         "column": "half",
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "classic",
         "enabled": true
       },
@@ -10465,8 +10531,11 @@
         "zone": "content",
         "order": 90,
         "column": "half",
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "list",
         "enabled": true
       },
@@ -10942,8 +11011,11 @@
         "zone": "content",
         "order": 90,
         "column": "half",
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "dot",
         "enabled": true
       },
@@ -11415,8 +11487,11 @@
       "references": {
         "zone": "aside",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "dot",
         "enabled": true
       },
@@ -11884,8 +11959,11 @@
       "references": {
         "zone": "aside",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "dot",
         "enabled": true
       },
@@ -12362,8 +12440,11 @@
       "references": {
         "zone": "aside",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "dot",
         "enabled": true
       },
@@ -12844,8 +12925,11 @@
         "zone": "content",
         "order": 90,
         "column": "half",
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "cards",
         "enabled": true
       },
@@ -13332,8 +13416,11 @@
         "zone": "content",
         "order": 90,
         "column": "half",
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "classic",
         "enabled": true
       },
@@ -13816,8 +13903,11 @@
       "references": {
         "zone": "aside-left",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "list",
         "enabled": true
       },
@@ -14298,8 +14388,11 @@
       "references": {
         "zone": "aside-left",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "dot",
         "enabled": true
       },
@@ -14780,8 +14873,11 @@
       "references": {
         "zone": "aside-right",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "cards",
         "enabled": true
       },
@@ -15262,8 +15358,11 @@
       "references": {
         "zone": "aside-right",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "classic",
         "enabled": true
       },
@@ -15744,8 +15843,11 @@
       "references": {
         "zone": "aside-left",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "list",
         "enabled": true
       },
@@ -16226,8 +16328,11 @@
       "references": {
         "zone": "aside-left",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "dot",
         "enabled": true
       },
@@ -16708,8 +16813,11 @@
       "references": {
         "zone": "aside-right",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "cards",
         "enabled": true
       },
@@ -17186,8 +17294,11 @@
       "references": {
         "zone": "aside-right",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "classic",
         "enabled": true
       },
@@ -17664,8 +17775,11 @@
       "references": {
         "zone": "aside-left",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "cards",
         "enabled": true
       },
@@ -18146,8 +18260,11 @@
       "references": {
         "zone": "aside-right",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "classic",
         "enabled": true
       },
@@ -18628,8 +18745,11 @@
       "references": {
         "zone": "aside",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "list",
         "enabled": true
       },
@@ -19107,8 +19227,11 @@
       "references": {
         "zone": "aside-left",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "dot",
         "enabled": true
       },
@@ -19586,8 +19709,11 @@
       "references": {
         "zone": "aside-right",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "cards",
         "enabled": true
       },
@@ -20067,8 +20193,11 @@
       "references": {
         "zone": "aside-left",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "classic",
         "enabled": true
       },
@@ -20548,8 +20677,11 @@
       "references": {
         "zone": "aside-right",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "list",
         "enabled": true
       },
@@ -21029,8 +21161,11 @@
       "references": {
         "zone": "aside-left",
         "order": 40,
-        "icon": "mdi-account-voice",
-        "iconAlternatives": ["mdi-comment-account-outline"],
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": [
+          "mdi-account-voice",
+          "mdi-comment-account-outline"
+        ],
         "form": "dot",
         "enabled": true
       },

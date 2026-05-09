@@ -4,15 +4,51 @@
     "layout": "aside-left",
     "structure": "structure-1",
     "sections": {
-      "experience": "timeline",
-      "education": "timeline",
-      "skills": "progress-line",
-      "languages": "dots",
-      "languagesLabel": "classic",
-      "certifications": "list",
-      "references": "classic",
-      "projects": "cards",
-      "interests": "classic"
+      "experience": {
+        "form": "timeline",
+        "icon": "mdi-briefcase-outline",
+        "iconAlternatives": ["mdi-timeline-clock-outline"]
+      },
+      "education": {
+        "form": "timeline",
+        "icon": "mdi-school-outline",
+        "iconAlternatives": ["mdi-book-open-variant-outline"]
+      },
+      "skills": {
+        "form": "progress-line",
+        "icon": "mdi-tools",
+        "iconAlternatives": ["mdi-lightning-bolt-outline"]
+      },
+      "languages": {
+        "form": "dots",
+        "icon": "mdi-translate",
+        "iconAlternatives": ["mdi-earth"]
+      },
+      "languagesLabel": {
+        "form": "classic",
+        "icon": "mdi-format-letter-case",
+        "iconAlternatives": ["mdi-label-outline"]
+      },
+      "certifications": {
+        "form": "list",
+        "icon": "mdi-certificate-outline",
+        "iconAlternatives": ["mdi-seal-variant"]
+      },
+      "references": {
+        "form": "classic",
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": ["mdi-account-voice", "mdi-comment-account-outline"]
+      },
+      "projects": {
+        "form": "cards",
+        "icon": "mdi-folder-star-outline",
+        "iconAlternatives": ["mdi-rocket-launch-outline"]
+      },
+      "interests": {
+        "form": "classic",
+        "icon": "mdi-heart-outline",
+        "iconAlternatives": ["mdi-star-outline"]
+      }
     },
     "line": "soft",
     "density": "comfortable",
@@ -28,195 +64,559 @@
       "line": "soft",
       "density": "comfortable"
     },
-    "photo": { "position": "left", "size": "96px", "shape": "circle" }
+    "photo": {
+      "position": "left",
+      "size": "96px",
+      "shape": "circle"
+    }
   },
   {
     "key": "modern-cards",
     "layout": "aside-right",
     "structure": "structure-2",
     "sections": {
-      "experience": "cards",
-      "education": "cards",
-      "skills": "dots",
-      "languages": "progress-circle",
-      "languagesLabel": "flags",
-      "certifications": "cards",
-      "references": "list",
-      "projects": "cards",
-      "interests": "list"
+      "experience": {
+        "form": "cards",
+        "icon": "mdi-briefcase-outline",
+        "iconAlternatives": ["mdi-timeline-clock-outline"]
+      },
+      "education": {
+        "form": "cards",
+        "icon": "mdi-school-outline",
+        "iconAlternatives": ["mdi-book-open-variant-outline"]
+      },
+      "skills": {
+        "form": "dots",
+        "icon": "mdi-tools",
+        "iconAlternatives": ["mdi-lightning-bolt-outline"]
+      },
+      "languages": {
+        "form": "progress-circle",
+        "icon": "mdi-translate",
+        "iconAlternatives": ["mdi-earth"]
+      },
+      "languagesLabel": {
+        "form": "flags",
+        "icon": "mdi-format-letter-case",
+        "iconAlternatives": ["mdi-label-outline"]
+      },
+      "certifications": {
+        "form": "cards",
+        "icon": "mdi-certificate-outline",
+        "iconAlternatives": ["mdi-seal-variant"]
+      },
+      "references": {
+        "form": "list",
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": ["mdi-account-voice", "mdi-comment-account-outline"]
+      },
+      "projects": {
+        "form": "cards",
+        "icon": "mdi-folder-star-outline",
+        "iconAlternatives": ["mdi-rocket-launch-outline"]
+      },
+      "interests": {
+        "form": "list",
+        "icon": "mdi-heart-outline",
+        "iconAlternatives": ["mdi-star-outline"]
+      }
     },
     "line": "block",
     "density": "comfortable",
     "textStyle": "roman",
     "showIcon": true,
-    "photo": { "position": "right", "size": "92px", "shape": "rounded" }
+    "photo": {
+      "position": "right",
+      "size": "92px",
+      "shape": "rounded"
+    }
   },
   {
     "key": "minimal-list",
     "layout": "no-aside",
     "structure": "structure-3",
     "sections": {
-      "experience": "list",
-      "education": "list",
-      "skills": "text",
-      "languages": "text",
-      "languagesLabel": "classic",
-      "certifications": "list",
-      "references": "list",
-      "projects": "list",
-      "interests": "classic"
+      "experience": {
+        "form": "list",
+        "icon": "mdi-briefcase-outline",
+        "iconAlternatives": ["mdi-timeline-clock-outline"]
+      },
+      "education": {
+        "form": "list",
+        "icon": "mdi-school-outline",
+        "iconAlternatives": ["mdi-book-open-variant-outline"]
+      },
+      "skills": {
+        "form": "text",
+        "icon": "mdi-tools",
+        "iconAlternatives": ["mdi-lightning-bolt-outline"]
+      },
+      "languages": {
+        "form": "text",
+        "icon": "mdi-translate",
+        "iconAlternatives": ["mdi-earth"]
+      },
+      "languagesLabel": {
+        "form": "classic",
+        "icon": "mdi-format-letter-case",
+        "iconAlternatives": ["mdi-label-outline"]
+      },
+      "certifications": {
+        "form": "list",
+        "icon": "mdi-certificate-outline",
+        "iconAlternatives": ["mdi-seal-variant"]
+      },
+      "references": {
+        "form": "list",
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": ["mdi-account-voice", "mdi-comment-account-outline"]
+      },
+      "projects": {
+        "form": "list",
+        "icon": "mdi-folder-star-outline",
+        "iconAlternatives": ["mdi-rocket-launch-outline"]
+      },
+      "interests": {
+        "form": "classic",
+        "icon": "mdi-heart-outline",
+        "iconAlternatives": ["mdi-star-outline"]
+      }
     },
     "line": "none",
     "density": "compact",
     "textStyle": "roman",
     "showIcon": false,
-    "photo": { "position": "left", "size": "84px", "shape": "square" }
+    "photo": {
+      "position": "left",
+      "size": "84px",
+      "shape": "square"
+    }
   },
   {
     "key": "executive-two-columns",
     "layout": "aside-left",
     "structure": "structure-4",
     "sections": {
-      "experience": "two-columns",
-      "education": "two-columns",
-      "skills": "stars",
-      "languages": "progress-line",
-      "languagesLabel": "classic",
-      "certifications": "two-columns",
-      "references": "classic",
-      "projects": "two-columns",
-      "interests": "list"
+      "experience": {
+        "form": "two-columns",
+        "icon": "mdi-briefcase-outline",
+        "iconAlternatives": ["mdi-timeline-clock-outline"]
+      },
+      "education": {
+        "form": "two-columns",
+        "icon": "mdi-school-outline",
+        "iconAlternatives": ["mdi-book-open-variant-outline"]
+      },
+      "skills": {
+        "form": "stars",
+        "icon": "mdi-tools",
+        "iconAlternatives": ["mdi-lightning-bolt-outline"]
+      },
+      "languages": {
+        "form": "progress-line",
+        "icon": "mdi-translate",
+        "iconAlternatives": ["mdi-earth"]
+      },
+      "languagesLabel": {
+        "form": "classic",
+        "icon": "mdi-format-letter-case",
+        "iconAlternatives": ["mdi-label-outline"]
+      },
+      "certifications": {
+        "form": "two-columns",
+        "icon": "mdi-certificate-outline",
+        "iconAlternatives": ["mdi-seal-variant"]
+      },
+      "references": {
+        "form": "classic",
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": ["mdi-account-voice", "mdi-comment-account-outline"]
+      },
+      "projects": {
+        "form": "two-columns",
+        "icon": "mdi-folder-star-outline",
+        "iconAlternatives": ["mdi-rocket-launch-outline"]
+      },
+      "interests": {
+        "form": "list",
+        "icon": "mdi-heart-outline",
+        "iconAlternatives": ["mdi-star-outline"]
+      }
     },
     "line": "soft",
     "density": "comfortable",
     "textStyle": "roman",
     "showIcon": true,
-    "photo": { "position": "left", "size": "100px", "shape": "circle" }
+    "photo": {
+      "position": "left",
+      "size": "100px",
+      "shape": "circle"
+    }
   },
   {
     "key": "creative-mix",
     "layout": "aside-right",
     "structure": "structure-5",
     "sections": {
-      "experience": "timeline",
-      "education": "cards",
-      "skills": "progress-circle",
-      "languages": "dots",
-      "languagesLabel": "flags",
-      "certifications": "cards",
-      "references": "list",
-      "projects": "timeline",
-      "interests": "cards"
+      "experience": {
+        "form": "timeline",
+        "icon": "mdi-briefcase-outline",
+        "iconAlternatives": ["mdi-timeline-clock-outline"]
+      },
+      "education": {
+        "form": "cards",
+        "icon": "mdi-school-outline",
+        "iconAlternatives": ["mdi-book-open-variant-outline"]
+      },
+      "skills": {
+        "form": "progress-circle",
+        "icon": "mdi-tools",
+        "iconAlternatives": ["mdi-lightning-bolt-outline"]
+      },
+      "languages": {
+        "form": "dots",
+        "icon": "mdi-translate",
+        "iconAlternatives": ["mdi-earth"]
+      },
+      "languagesLabel": {
+        "form": "flags",
+        "icon": "mdi-format-letter-case",
+        "iconAlternatives": ["mdi-label-outline"]
+      },
+      "certifications": {
+        "form": "cards",
+        "icon": "mdi-certificate-outline",
+        "iconAlternatives": ["mdi-seal-variant"]
+      },
+      "references": {
+        "form": "list",
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": ["mdi-account-voice", "mdi-comment-account-outline"]
+      },
+      "projects": {
+        "form": "timeline",
+        "icon": "mdi-folder-star-outline",
+        "iconAlternatives": ["mdi-rocket-launch-outline"]
+      },
+      "interests": {
+        "form": "cards",
+        "icon": "mdi-heart-outline",
+        "iconAlternatives": ["mdi-star-outline"]
+      }
     },
     "line": "block",
     "density": "comfortable",
     "textStyle": "italic",
     "showIcon": true,
-    "photo": { "position": "right", "size": "98px", "shape": "circle" }
+    "photo": {
+      "position": "right",
+      "size": "98px",
+      "shape": "circle"
+    }
   },
   {
     "key": "balanced-pro",
     "layout": "aside-left",
     "structure": "structure-2",
     "sections": {
-      "experience": "classic",
-      "education": "classic",
-      "skills": "classic",
-      "languages": "classic",
-      "languagesLabel": "classic",
-      "certifications": "classic",
-      "references": "classic",
-      "projects": "classic",
-      "interests": "classic"
+      "experience": {
+        "form": "classic",
+        "icon": "mdi-briefcase-outline",
+        "iconAlternatives": ["mdi-timeline-clock-outline"]
+      },
+      "education": {
+        "form": "classic",
+        "icon": "mdi-school-outline",
+        "iconAlternatives": ["mdi-book-open-variant-outline"]
+      },
+      "skills": {
+        "form": "classic",
+        "icon": "mdi-tools",
+        "iconAlternatives": ["mdi-lightning-bolt-outline"]
+      },
+      "languages": {
+        "form": "classic",
+        "icon": "mdi-translate",
+        "iconAlternatives": ["mdi-earth"]
+      },
+      "languagesLabel": {
+        "form": "classic",
+        "icon": "mdi-format-letter-case",
+        "iconAlternatives": ["mdi-label-outline"]
+      },
+      "certifications": {
+        "form": "classic",
+        "icon": "mdi-certificate-outline",
+        "iconAlternatives": ["mdi-seal-variant"]
+      },
+      "references": {
+        "form": "classic",
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": ["mdi-account-voice", "mdi-comment-account-outline"]
+      },
+      "projects": {
+        "form": "classic",
+        "icon": "mdi-folder-star-outline",
+        "iconAlternatives": ["mdi-rocket-launch-outline"]
+      },
+      "interests": {
+        "form": "classic",
+        "icon": "mdi-heart-outline",
+        "iconAlternatives": ["mdi-star-outline"]
+      }
     },
     "line": "soft",
     "density": "comfortable",
     "textStyle": "roman",
     "showIcon": true,
-    "photo": { "position": "left", "size": "90px", "shape": "rounded" }
+    "photo": {
+      "position": "left",
+      "size": "90px",
+      "shape": "rounded"
+    }
   },
   {
     "key": "airy-clean",
     "layout": "no-aside",
     "structure": "structure-6",
     "sections": {
-      "experience": "timeline",
-      "education": "list",
-      "skills": "progress-line",
-      "languages": "text",
-      "languagesLabel": "classic",
-      "certifications": "list",
-      "references": "list",
-      "projects": "cards",
-      "interests": "list"
+      "experience": {
+        "form": "timeline",
+        "icon": "mdi-briefcase-outline",
+        "iconAlternatives": ["mdi-timeline-clock-outline"]
+      },
+      "education": {
+        "form": "list",
+        "icon": "mdi-school-outline",
+        "iconAlternatives": ["mdi-book-open-variant-outline"]
+      },
+      "skills": {
+        "form": "progress-line",
+        "icon": "mdi-tools",
+        "iconAlternatives": ["mdi-lightning-bolt-outline"]
+      },
+      "languages": {
+        "form": "text",
+        "icon": "mdi-translate",
+        "iconAlternatives": ["mdi-earth"]
+      },
+      "languagesLabel": {
+        "form": "classic",
+        "icon": "mdi-format-letter-case",
+        "iconAlternatives": ["mdi-label-outline"]
+      },
+      "certifications": {
+        "form": "list",
+        "icon": "mdi-certificate-outline",
+        "iconAlternatives": ["mdi-seal-variant"]
+      },
+      "references": {
+        "form": "list",
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": ["mdi-account-voice", "mdi-comment-account-outline"]
+      },
+      "projects": {
+        "form": "cards",
+        "icon": "mdi-folder-star-outline",
+        "iconAlternatives": ["mdi-rocket-launch-outline"]
+      },
+      "interests": {
+        "form": "list",
+        "icon": "mdi-heart-outline",
+        "iconAlternatives": ["mdi-star-outline"]
+      }
     },
     "line": "none",
     "density": "comfortable",
     "textStyle": "roman",
     "showIcon": false,
-    "photo": { "position": "left", "size": "88px", "shape": "circle" }
+    "photo": {
+      "position": "left",
+      "size": "88px",
+      "shape": "circle"
+    }
   },
   {
     "key": "compact-tech",
     "layout": "aside-right",
     "structure": "structure-7",
     "sections": {
-      "experience": "list",
-      "education": "list",
-      "skills": "dots",
-      "languages": "progress-line",
-      "languagesLabel": "classic",
-      "certifications": "cards",
-      "references": "list",
-      "projects": "two-columns",
-      "interests": "classic"
+      "experience": {
+        "form": "list",
+        "icon": "mdi-briefcase-outline",
+        "iconAlternatives": ["mdi-timeline-clock-outline"]
+      },
+      "education": {
+        "form": "list",
+        "icon": "mdi-school-outline",
+        "iconAlternatives": ["mdi-book-open-variant-outline"]
+      },
+      "skills": {
+        "form": "dots",
+        "icon": "mdi-tools",
+        "iconAlternatives": ["mdi-lightning-bolt-outline"]
+      },
+      "languages": {
+        "form": "progress-line",
+        "icon": "mdi-translate",
+        "iconAlternatives": ["mdi-earth"]
+      },
+      "languagesLabel": {
+        "form": "classic",
+        "icon": "mdi-format-letter-case",
+        "iconAlternatives": ["mdi-label-outline"]
+      },
+      "certifications": {
+        "form": "cards",
+        "icon": "mdi-certificate-outline",
+        "iconAlternatives": ["mdi-seal-variant"]
+      },
+      "references": {
+        "form": "list",
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": ["mdi-account-voice", "mdi-comment-account-outline"]
+      },
+      "projects": {
+        "form": "two-columns",
+        "icon": "mdi-folder-star-outline",
+        "iconAlternatives": ["mdi-rocket-launch-outline"]
+      },
+      "interests": {
+        "form": "classic",
+        "icon": "mdi-heart-outline",
+        "iconAlternatives": ["mdi-star-outline"]
+      }
     },
     "line": "soft",
     "density": "compact",
     "textStyle": "roman",
     "showIcon": true,
-    "photo": { "position": "right", "size": "86px", "shape": "square" }
+    "photo": {
+      "position": "right",
+      "size": "86px",
+      "shape": "square"
+    }
   },
   {
     "key": "portfolio-showcase",
     "layout": "no-aside",
     "structure": "structure-8",
     "sections": {
-      "experience": "cards",
-      "education": "cards",
-      "skills": "stars",
-      "languages": "dots",
-      "languagesLabel": "flags",
-      "certifications": "cards",
-      "references": "classic",
-      "projects": "cards",
-      "interests": "cards"
+      "experience": {
+        "form": "cards",
+        "icon": "mdi-briefcase-outline",
+        "iconAlternatives": ["mdi-timeline-clock-outline"]
+      },
+      "education": {
+        "form": "cards",
+        "icon": "mdi-school-outline",
+        "iconAlternatives": ["mdi-book-open-variant-outline"]
+      },
+      "skills": {
+        "form": "stars",
+        "icon": "mdi-tools",
+        "iconAlternatives": ["mdi-lightning-bolt-outline"]
+      },
+      "languages": {
+        "form": "dots",
+        "icon": "mdi-translate",
+        "iconAlternatives": ["mdi-earth"]
+      },
+      "languagesLabel": {
+        "form": "flags",
+        "icon": "mdi-format-letter-case",
+        "iconAlternatives": ["mdi-label-outline"]
+      },
+      "certifications": {
+        "form": "cards",
+        "icon": "mdi-certificate-outline",
+        "iconAlternatives": ["mdi-seal-variant"]
+      },
+      "references": {
+        "form": "classic",
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": ["mdi-account-voice", "mdi-comment-account-outline"]
+      },
+      "projects": {
+        "form": "cards",
+        "icon": "mdi-folder-star-outline",
+        "iconAlternatives": ["mdi-rocket-launch-outline"]
+      },
+      "interests": {
+        "form": "cards",
+        "icon": "mdi-heart-outline",
+        "iconAlternatives": ["mdi-star-outline"]
+      }
     },
     "line": "block",
     "density": "comfortable",
     "textStyle": "italic",
     "showIcon": true,
-    "photo": { "position": "left", "size": "104px", "shape": "rounded" }
+    "photo": {
+      "position": "left",
+      "size": "104px",
+      "shape": "rounded"
+    }
   },
   {
     "key": "formal-academic",
     "layout": "aside-left",
     "structure": "structure-9",
     "sections": {
-      "experience": "classic",
-      "education": "timeline",
-      "skills": "text",
-      "languages": "classic",
-      "languagesLabel": "classic",
-      "certifications": "timeline",
-      "references": "timeline",
-      "projects": "classic",
-      "interests": "list"
+      "experience": {
+        "form": "classic",
+        "icon": "mdi-briefcase-outline",
+        "iconAlternatives": ["mdi-timeline-clock-outline"]
+      },
+      "education": {
+        "form": "timeline",
+        "icon": "mdi-school-outline",
+        "iconAlternatives": ["mdi-book-open-variant-outline"]
+      },
+      "skills": {
+        "form": "text",
+        "icon": "mdi-tools",
+        "iconAlternatives": ["mdi-lightning-bolt-outline"]
+      },
+      "languages": {
+        "form": "classic",
+        "icon": "mdi-translate",
+        "iconAlternatives": ["mdi-earth"]
+      },
+      "languagesLabel": {
+        "form": "classic",
+        "icon": "mdi-format-letter-case",
+        "iconAlternatives": ["mdi-label-outline"]
+      },
+      "certifications": {
+        "form": "timeline",
+        "icon": "mdi-certificate-outline",
+        "iconAlternatives": ["mdi-seal-variant"]
+      },
+      "references": {
+        "form": "timeline",
+        "icon": "mdi-account-group-outline",
+        "iconAlternatives": ["mdi-account-voice", "mdi-comment-account-outline"]
+      },
+      "projects": {
+        "form": "classic",
+        "icon": "mdi-folder-star-outline",
+        "iconAlternatives": ["mdi-rocket-launch-outline"]
+      },
+      "interests": {
+        "form": "list",
+        "icon": "mdi-heart-outline",
+        "iconAlternatives": ["mdi-star-outline"]
+      }
     },
     "line": "soft",
     "density": "comfortable",
     "textStyle": "roman",
     "showIcon": false,
-    "photo": { "position": "left", "size": "92px", "shape": "circle" }
+    "photo": {
+      "position": "left",
+      "size": "92px",
+      "shape": "circle"
+    }
   }
 ]

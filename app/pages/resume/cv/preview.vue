@@ -590,10 +590,44 @@ const fakeData = computed(() => userResumeData.value || templateFakeData.value)
 const sectionType = (key: keyof (typeof sectionVariantMap)['value']) =>
   sectionVariantMap.value[key] || 'classic'
 
+type TemplateSectionIconConfig = {
+  icon?: string
+  iconAlternatives?: string[]
+}
+
+const normalizedTemplateSections = computed<
+  Record<string, TemplateSectionIconConfig>
+>(() => {
+  const sections = (activeTemplate.value as any)?.sections || {}
+  return Object.entries(sections).reduce(
+    (acc, [sourceKey, rawValue]) => {
+      const key = normalizeSectionKey(sourceKey)
+      const config =
+        rawValue && typeof rawValue === 'object'
+          ? (rawValue as Record<string, any>)
+          : {}
+      const icon = typeof config.icon === 'string' ? config.icon : undefined
+      const iconAlternatives = Array.isArray(config.iconAlternatives)
+        ? config.iconAlternatives.filter(
+            (icon): icon is string => typeof icon === 'string' && !!icon,
+          )
+        : []
+
+      acc[key] = {
+        icon,
+        iconAlternatives,
+      }
+      return acc
+    },
+    {} as Record<string, TemplateSectionIconConfig>,
+  )
+})
+
 function normalizeSectionKey(raw: string) {
   const key = raw.toLowerCase()
   if (key === 'certification') return 'certifications'
-  if (key === 'hobby') return 'hobbies'
+  if (key === 'hobby' || key === 'interest' || key === 'interests')
+    return 'hobbies'
   return key
 }
 
@@ -751,7 +785,7 @@ function confirmAddSection() {
     ...addSectionVariantOptions.map((v) => v.value),
   ]
   sectionTypeOverrides[key] = addSectionVariant.value
-  sectionIconMap[key] = 'mdi-text-box-outline'
+  fallbackSectionIconMap[key] = 'mdi-text-box-outline'
   editableSectionItems[key] = ['Label name · Label value']
   addSectionModalOpen.value = false
 }
@@ -901,22 +935,34 @@ const sectionTitleMap: Record<string, string> = {
   hobbies: 'Hobby',
   projects: 'Projects',
 }
-const sectionIconMap: Record<string, string> = {
+const fallbackSectionIconMap: Record<string, string> = {
   profile: 'mdi-account-outline',
   experience: 'mdi-briefcase-outline',
   education: 'mdi-school-outline',
-  skills: 'mdi-star-outline',
+  skills: 'mdi-tools',
   certifications: 'mdi-certificate-outline',
   languages: 'mdi-translate',
   references: 'mdi-account-group-outline',
   hobbies: 'mdi-heart-outline',
-  projects: 'mdi-folder-outline',
+  interests: 'mdi-heart-outline',
+  projects: 'mdi-folder-star-outline',
+  contact: 'mdi-card-account-phone-outline',
+  languagesLabel: 'mdi-format-letter-case',
+}
+
+function sectionIcon(sectionKey: string) {
+  return (
+    normalizedTemplateSections.value[sectionKey]?.icon ||
+    fallbackSectionIconMap[sectionKey] ||
+    'mdi-circle-small'
+  )
 }
 
 function toSectionKey(section?: string) {
   const key = String(section || '').toLowerCase()
   if (key === 'certification') return 'certifications'
-  if (key === 'hobby') return 'hobbies'
+  if (key === 'hobby' || key === 'interest' || key === 'interests')
+    return 'hobbies'
   return key
 }
 
@@ -2497,10 +2543,7 @@ watch(
                 </div>
                 <strong class="cv-section-title"
                   ><v-icon
-                    :icon="
-                      sectionIconMap[toSectionKey(section)] ||
-                      'mdi-circle-small'
-                    "
+                    :icon="sectionIcon(toSectionKey(section))"
                     size="16"
                     class="mr-1" /><HoverRichTextEditor
                     class="cv-section-title-editor"
@@ -2599,10 +2642,7 @@ watch(
                 </div>
                 <strong class="cv-section-title"
                   ><v-icon
-                    :icon="
-                      sectionIconMap[toSectionKey(section)] ||
-                      'mdi-circle-small'
-                    "
+                    :icon="sectionIcon(toSectionKey(section))"
                     size="16"
                     class="mr-1" /><HoverRichTextEditor
                     class="cv-section-title-editor"
@@ -2695,10 +2735,7 @@ watch(
                 </div>
                 <strong class="cv-section-title"
                   ><v-icon
-                    :icon="
-                      sectionIconMap[toSectionKey(section)] ||
-                      'mdi-circle-small'
-                    "
+                    :icon="sectionIcon(toSectionKey(section))"
                     size="16"
                     class="mr-1" /><HoverRichTextEditor
                     class="cv-section-title-editor"
@@ -2789,10 +2826,7 @@ watch(
                 </div>
                 <strong class="cv-section-title"
                   ><v-icon
-                    :icon="
-                      sectionIconMap[toSectionKey(section)] ||
-                      'mdi-circle-small'
-                    "
+                    :icon="sectionIcon(toSectionKey(section))"
                     size="16"
                     class="mr-1" /><HoverRichTextEditor
                     class="cv-section-title-editor"
@@ -2877,10 +2911,7 @@ watch(
                 </div>
                 <strong class="cv-section-title"
                   ><v-icon
-                    :icon="
-                      sectionIconMap[toSectionKey(section)] ||
-                      'mdi-circle-small'
-                    "
+                    :icon="sectionIcon(toSectionKey(section))"
                     size="16"
                     class="mr-1" /><HoverRichTextEditor
                     class="cv-section-title-editor"
@@ -2969,10 +3000,7 @@ watch(
                 </div>
                 <strong class="cv-section-title"
                   ><v-icon
-                    :icon="
-                      sectionIconMap[toSectionKey(section)] ||
-                      'mdi-circle-small'
-                    "
+                    :icon="sectionIcon(toSectionKey(section))"
                     size="16"
                     class="mr-1" /><HoverRichTextEditor
                     class="cv-section-title-editor"
@@ -3058,10 +3086,7 @@ watch(
                     </div>
                     <strong class="cv-section-title"
                       ><v-icon
-                        :icon="
-                          sectionIconMap[toSectionKey(section)] ||
-                          'mdi-circle-small'
-                        "
+                        :icon="sectionIcon(toSectionKey(section))"
                         size="16"
                         class="mr-1" /><HoverRichTextEditor
                         class="cv-section-title-editor"
@@ -3147,10 +3172,7 @@ watch(
                     </div>
                     <strong class="cv-section-title"
                       ><v-icon
-                        :icon="
-                          sectionIconMap[toSectionKey(section)] ||
-                          'mdi-circle-small'
-                        "
+                        :icon="sectionIcon(toSectionKey(section))"
                         size="16"
                         class="mr-1" /><HoverRichTextEditor
                         class="cv-section-title-editor"
