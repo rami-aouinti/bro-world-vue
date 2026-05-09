@@ -7,16 +7,8 @@ const faqs = computed(() => tm('resumeResources.help.faqs') as HelpFaq[])
 </script>
 
 <template>
-  <v-container class="py-8" max-width="1100">
-    <div class="mb-8">
-      <v-chip
-        color="primary"
-        variant="tonal"
-        prepend-icon="mdi-frequently-asked-questions"
-        class="mb-3"
-      >
-        FAQ
-      </v-chip>
+  <v-container fluid>
+    <div class="hero mb-8">
       <h1 class="text-h3 font-weight-bold mb-2">
         {{ t('resumeResources.help.title') }}
       </h1>
@@ -27,7 +19,7 @@ const faqs = computed(() => tm('resumeResources.help.faqs') as HelpFaq[])
 
     <v-row>
       <v-col v-for="faq in faqs" :key="faq.q" cols="12" md="6">
-        <v-card class="faq-card h-100" variant="outlined">
+        <v-card class="faq-card h-100 postcard-gradient-card" variant="text">
           <v-card-title class="text-wrap">{{ rt(faq.q) }}</v-card-title>
           <v-card-text class="text-medium-emphasis">{{
             rt(faq.a)
@@ -39,6 +31,11 @@ const faqs = computed(() => tm('resumeResources.help.faqs') as HelpFaq[])
 </template>
 
 <style scoped>
+.hero {
+  border-left: 4px solid rgb(var(--v-theme-primary));
+  padding-left: 16px;
+}
+
 .faq-card {
   transition:
     transform 0.25s ease,

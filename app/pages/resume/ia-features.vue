@@ -12,14 +12,14 @@ const benefits = computed(() => (tm('resumeResources.iaFeatures.benefits') as un
 </script>
 
 <template>
-  <v-container class="py-8 resume-resource-page" max-width="1100">
+  <v-container fluid>
     <div class="hero mb-8">
       <h1 class="text-h3 font-weight-bold mb-2">{{ t('resumeResources.iaFeatures.title') }}</h1>
       <p class="text-medium-emphasis text-body-1">{{ t('resumeResources.iaFeatures.description') }}</p>
     </div>
 
     <v-row>
-      <v-col v-for="(section, index) in sections" :key="section.title" cols="12" md="6" lg="4">
+      <v-col v-for="(section, index) in sections" :key="section.title" cols="12" md="6">
         <v-card class="feature-card h-100 postcard-gradient-card" :style="{ animationDelay: `${index * 0.08}s` }" elevation="4">
           <v-card-item>
             <template #prepend>
@@ -41,7 +41,7 @@ const benefits = computed(() => (tm('resumeResources.iaFeatures.benefits') as un
       </v-col>
     </v-row>
 
-    <v-card class="mt-8 postcard-gradient-card" color="surface-variant" variant="tonal">
+    <v-card class="mt-8 postcard-gradient-card" color="surface-variant" variant="text">
       <v-card-title class="text-h6">Impact</v-card-title>
       <v-list bg-color="transparent">
         <v-list-item v-for="(benefit, i) in benefits" :key="i" :title="benefit" prepend-icon="mdi-check-decagram" />

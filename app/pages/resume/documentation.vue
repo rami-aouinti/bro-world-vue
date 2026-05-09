@@ -12,15 +12,17 @@ const tips = computed(() => (tm('resumeResources.documentation.tips') as unknown
 </script>
 
 <template>
-  <v-container class="py-8" max-width="1100">
-    <h1 class="text-h3 font-weight-bold mb-2">{{ t('resumeResources.documentation.title') }}</h1>
-    <p class="text-medium-emphasis mb-8">{{ t('resumeResources.documentation.description') }}</p>
+  <v-container fluid>
+    <div class="hero mb-8">
+      <h1 class="text-h3 font-weight-bold mb-2">{{ t('resumeResources.documentation.title') }}</h1>
+      <p class="text-medium-emphasis mb-8">{{ t('resumeResources.documentation.description') }}</p>
+    </div>
 
     <v-row>
-      <v-col v-for="category in categories" :key="category.title" cols="12" md="6" lg="4">
+      <v-col v-for="category in categories" :key="category.title" cols="12" md="6">
         <v-card class="doc-card h-100 postcard-gradient-card" elevation="3">
           <v-card-title class="text-wrap">{{ rt(category.title) }}</v-card-title>
-          <v-list density="compact">
+          <v-list density="compact" class="postcard-gradient-card">
             <v-list-item
               v-for="(point, index) in category.points"
               :key="index"
@@ -44,6 +46,11 @@ const tips = computed(() => (tm('resumeResources.documentation.tips') as unknown
 </template>
 
 <style scoped>
+.hero {
+  border-left: 4px solid rgb(var(--v-theme-primary));
+  padding-left: 16px;
+}
+
 .doc-card {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
