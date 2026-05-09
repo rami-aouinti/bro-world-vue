@@ -12,12 +12,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -59,7 +63,8 @@
         "paragraphSpacing": "normal",
         "showDivider": true,
         "signatureAlign": "center",
-        "headerAlignment": "center"
+        "headerAlignment": "center",
+        "calloutStyle": "quote"
       },
       "textStyles": {
         "date": {
@@ -277,6 +282,9 @@
         },
         "photoType": "square",
         "photoSize": 120
+      },
+      "hero": {
+        "photoPosition": "left"
       }
     },
     "fakeData": {
@@ -303,12 +311,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -371,7 +383,8 @@
         "paragraphSpacing": "wide",
         "showDivider": false,
         "signatureAlign": "right",
-        "headerAlignment": "left"
+        "headerAlignment": "left",
+        "calloutStyle": "highlight-box"
       },
       "textStyles": {
         "date": {
@@ -569,6 +582,9 @@
         },
         "photoType": "circle",
         "photoSize": 84
+      },
+      "hero": {
+        "photoPosition": "right"
       }
     },
     "fakeData": {
@@ -595,12 +611,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -663,7 +683,8 @@
         "paragraphSpacing": "tight",
         "showDivider": true,
         "signatureAlign": "left",
-        "headerAlignment": "center"
+        "headerAlignment": "center",
+        "calloutStyle": "none"
       },
       "textStyles": {
         "date": {
@@ -857,6 +878,9 @@
         },
         "photoType": "square",
         "photoSize": 84
+      },
+      "hero": {
+        "photoPosition": "left"
       }
     },
     "fakeData": {
@@ -883,12 +907,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -951,7 +979,8 @@
         "paragraphSpacing": "normal",
         "showDivider": false,
         "signatureAlign": "center",
-        "headerAlignment": "left"
+        "headerAlignment": "left",
+        "calloutStyle": "quote"
       },
       "textStyles": {
         "date": {
@@ -1149,6 +1178,9 @@
         },
         "photoType": "circle",
         "photoSize": 84
+      },
+      "hero": {
+        "photoPosition": "right"
       }
     },
     "fakeData": {
@@ -1175,12 +1207,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -1243,7 +1279,8 @@
         "paragraphSpacing": "wide",
         "showDivider": true,
         "signatureAlign": "right",
-        "headerAlignment": "center"
+        "headerAlignment": "center",
+        "calloutStyle": "highlight-box"
       },
       "textStyles": {
         "date": {
@@ -1437,6 +1474,9 @@
         },
         "photoType": "square",
         "photoSize": 84
+      },
+      "hero": {
+        "photoPosition": "left"
       }
     },
     "fakeData": {
@@ -1463,12 +1503,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -1531,7 +1575,8 @@
         "paragraphSpacing": "tight",
         "showDivider": false,
         "signatureAlign": "left",
-        "headerAlignment": "left"
+        "headerAlignment": "left",
+        "calloutStyle": "none"
       },
       "textStyles": {
         "date": {
@@ -1729,6 +1774,9 @@
         },
         "photoType": "circle",
         "photoSize": 144
+      },
+      "hero": {
+        "photoPosition": "right"
       }
     },
     "fakeData": {
@@ -1755,12 +1803,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -1823,7 +1875,8 @@
         "paragraphSpacing": "normal",
         "showDivider": true,
         "signatureAlign": "center",
-        "headerAlignment": "center"
+        "headerAlignment": "center",
+        "calloutStyle": "quote"
       },
       "textStyles": {
         "date": {
@@ -2021,6 +2074,9 @@
         },
         "photoType": "square",
         "photoSize": 84
+      },
+      "hero": {
+        "photoPosition": "left"
       }
     },
     "fakeData": {
@@ -2047,12 +2103,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -2115,7 +2175,8 @@
         "paragraphSpacing": "wide",
         "showDivider": false,
         "signatureAlign": "right",
-        "headerAlignment": "left"
+        "headerAlignment": "left",
+        "calloutStyle": "highlight-box"
       },
       "textStyles": {
         "date": {
@@ -2313,6 +2374,9 @@
         },
         "photoType": "circle",
         "photoSize": 94
+      },
+      "hero": {
+        "photoPosition": "right"
       }
     },
     "fakeData": {
@@ -2339,12 +2403,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -2407,7 +2475,8 @@
         "paragraphSpacing": "tight",
         "showDivider": true,
         "signatureAlign": "left",
-        "headerAlignment": "center"
+        "headerAlignment": "center",
+        "calloutStyle": "none"
       },
       "textStyles": {
         "date": {
@@ -2605,6 +2674,9 @@
         },
         "photoType": "square",
         "photoSize": 100
+      },
+      "hero": {
+        "photoPosition": "left"
       }
     },
     "fakeData": {
@@ -2631,12 +2703,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -2699,7 +2775,8 @@
         "paragraphSpacing": "normal",
         "showDivider": false,
         "signatureAlign": "center",
-        "headerAlignment": "left"
+        "headerAlignment": "left",
+        "calloutStyle": "quote"
       },
       "textStyles": {
         "date": {
@@ -2897,6 +2974,9 @@
         },
         "photoType": "circle",
         "photoSize": 84
+      },
+      "hero": {
+        "photoPosition": "right"
       }
     },
     "fakeData": {
@@ -2923,12 +3003,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -2970,7 +3054,8 @@
         "paragraphSpacing": "normal",
         "showDivider": true,
         "signatureAlign": "center",
-        "headerAlignment": "center"
+        "headerAlignment": "center",
+        "calloutStyle": "quote"
       },
       "textStyles": {
         "date": {
@@ -3188,6 +3273,9 @@
         },
         "photoType": "square",
         "photoSize": 120
+      },
+      "hero": {
+        "photoPosition": "left"
       }
     },
     "fakeData": {
@@ -3214,12 +3302,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -3261,7 +3353,8 @@
         "paragraphSpacing": "normal",
         "showDivider": true,
         "signatureAlign": "center",
-        "headerAlignment": "center"
+        "headerAlignment": "center",
+        "calloutStyle": "quote"
       },
       "textStyles": {
         "date": {
@@ -3479,6 +3572,9 @@
         },
         "photoType": "square",
         "photoSize": 120
+      },
+      "hero": {
+        "photoPosition": "left"
       }
     },
     "fakeData": {
@@ -3505,12 +3601,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -3561,7 +3661,8 @@
         "headerAlignment": "center",
         "borderRadius": 0,
         "asideWidth": 28,
-        "gutter": 16
+        "gutter": 16,
+        "calloutStyle": "quote"
       },
       "textStyles": {
         "date": {
@@ -3783,6 +3884,9 @@
         },
         "photoType": "square",
         "photoSize": 120
+      },
+      "hero": {
+        "photoPosition": "left"
       }
     },
     "fakeData": {
@@ -3809,12 +3913,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -3886,7 +3994,8 @@
         "headerAlignment": "left",
         "borderRadius": 4,
         "asideWidth": 30,
-        "gutter": 18
+        "gutter": 18,
+        "calloutStyle": "highlight-box"
       },
       "textStyles": {
         "date": {
@@ -4088,6 +4197,9 @@
         },
         "photoType": "circle",
         "photoSize": 84
+      },
+      "hero": {
+        "photoPosition": "right"
       }
     },
     "fakeData": {
@@ -4114,12 +4226,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -4191,7 +4307,8 @@
         "headerAlignment": "center",
         "borderRadius": 8,
         "asideWidth": 32,
-        "gutter": 20
+        "gutter": 20,
+        "calloutStyle": "none"
       },
       "textStyles": {
         "date": {
@@ -4389,6 +4506,9 @@
         },
         "photoType": "square",
         "photoSize": 84
+      },
+      "hero": {
+        "photoPosition": "left"
       }
     },
     "fakeData": {
@@ -4415,12 +4535,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -4492,7 +4616,8 @@
         "headerAlignment": "left",
         "borderRadius": 12,
         "asideWidth": 34,
-        "gutter": 22
+        "gutter": 22,
+        "calloutStyle": "quote"
       },
       "textStyles": {
         "date": {
@@ -4694,6 +4819,9 @@
         },
         "photoType": "circle",
         "photoSize": 84
+      },
+      "hero": {
+        "photoPosition": "right"
       }
     },
     "fakeData": {
@@ -4720,12 +4848,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -4797,7 +4929,8 @@
         "headerAlignment": "center",
         "borderRadius": 16,
         "asideWidth": 36,
-        "gutter": 24
+        "gutter": 24,
+        "calloutStyle": "highlight-box"
       },
       "textStyles": {
         "date": {
@@ -4995,6 +5128,9 @@
         },
         "photoType": "square",
         "photoSize": 84
+      },
+      "hero": {
+        "photoPosition": "left"
       }
     },
     "fakeData": {
@@ -5021,12 +5157,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -5098,7 +5238,8 @@
         "headerAlignment": "left",
         "borderRadius": 20,
         "asideWidth": 28,
-        "gutter": 16
+        "gutter": 16,
+        "calloutStyle": "none"
       },
       "textStyles": {
         "date": {
@@ -5300,6 +5441,9 @@
         },
         "photoType": "circle",
         "photoSize": 144
+      },
+      "hero": {
+        "photoPosition": "right"
       }
     },
     "fakeData": {
@@ -5326,12 +5470,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -5403,7 +5551,8 @@
         "headerAlignment": "center",
         "borderRadius": 0,
         "asideWidth": 30,
-        "gutter": 18
+        "gutter": 18,
+        "calloutStyle": "quote"
       },
       "textStyles": {
         "date": {
@@ -5605,6 +5754,9 @@
         },
         "photoType": "square",
         "photoSize": 84
+      },
+      "hero": {
+        "photoPosition": "left"
       }
     },
     "fakeData": {
@@ -5631,12 +5783,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -5708,7 +5864,8 @@
         "headerAlignment": "left",
         "borderRadius": 4,
         "asideWidth": 32,
-        "gutter": 20
+        "gutter": 20,
+        "calloutStyle": "highlight-box"
       },
       "textStyles": {
         "date": {
@@ -5910,6 +6067,9 @@
         },
         "photoType": "circle",
         "photoSize": 94
+      },
+      "hero": {
+        "photoPosition": "right"
       }
     },
     "fakeData": {
@@ -5936,12 +6096,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -6013,7 +6177,8 @@
         "headerAlignment": "center",
         "borderRadius": 8,
         "asideWidth": 34,
-        "gutter": 22
+        "gutter": 22,
+        "calloutStyle": "none"
       },
       "textStyles": {
         "date": {
@@ -6215,6 +6380,9 @@
         },
         "photoType": "square",
         "photoSize": 100
+      },
+      "hero": {
+        "photoPosition": "left"
       }
     },
     "fakeData": {
@@ -6241,12 +6409,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -6318,7 +6490,8 @@
         "headerAlignment": "left",
         "borderRadius": 12,
         "asideWidth": 36,
-        "gutter": 24
+        "gutter": 24,
+        "calloutStyle": "quote"
       },
       "textStyles": {
         "date": {
@@ -6520,6 +6693,9 @@
         },
         "photoType": "circle",
         "photoSize": 84
+      },
+      "hero": {
+        "photoPosition": "right"
       }
     },
     "fakeData": {
@@ -6546,12 +6722,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -6602,7 +6782,8 @@
         "headerAlignment": "center",
         "borderRadius": 16,
         "asideWidth": 28,
-        "gutter": 16
+        "gutter": 16,
+        "calloutStyle": "quote"
       },
       "textStyles": {
         "date": {
@@ -6824,6 +7005,9 @@
         },
         "photoType": "square",
         "photoSize": 120
+      },
+      "hero": {
+        "photoPosition": "left"
       }
     },
     "fakeData": {
@@ -6850,12 +7034,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -6906,7 +7094,8 @@
         "headerAlignment": "center",
         "borderRadius": 20,
         "asideWidth": 30,
-        "gutter": 18
+        "gutter": 18,
+        "calloutStyle": "quote"
       },
       "textStyles": {
         "date": {
@@ -7128,6 +7317,9 @@
         },
         "photoType": "square",
         "photoSize": 120
+      },
+      "hero": {
+        "photoPosition": "left"
       }
     },
     "fakeData": {
@@ -7154,12 +7346,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -7210,7 +7406,8 @@
         "headerAlignment": "center",
         "borderRadius": 0,
         "asideWidth": 32,
-        "gutter": 20
+        "gutter": 20,
+        "calloutStyle": "quote"
       },
       "textStyles": {
         "date": {
@@ -7432,6 +7629,9 @@
         },
         "photoType": "square",
         "photoSize": 120
+      },
+      "hero": {
+        "photoPosition": "left"
       }
     },
     "fakeData": {
@@ -7458,12 +7658,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -7535,7 +7739,8 @@
         "headerAlignment": "left",
         "borderRadius": 4,
         "asideWidth": 34,
-        "gutter": 22
+        "gutter": 22,
+        "calloutStyle": "highlight-box"
       },
       "textStyles": {
         "date": {
@@ -7737,6 +7942,9 @@
         },
         "photoType": "circle",
         "photoSize": 84
+      },
+      "hero": {
+        "photoPosition": "right"
       }
     },
     "fakeData": {
@@ -7763,12 +7971,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -7840,7 +8052,8 @@
         "headerAlignment": "center",
         "borderRadius": 8,
         "asideWidth": 36,
-        "gutter": 24
+        "gutter": 24,
+        "calloutStyle": "none"
       },
       "textStyles": {
         "date": {
@@ -8038,6 +8251,9 @@
         },
         "photoType": "square",
         "photoSize": 84
+      },
+      "hero": {
+        "photoPosition": "left"
       }
     },
     "fakeData": {
@@ -8064,12 +8280,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -8141,7 +8361,8 @@
         "headerAlignment": "left",
         "borderRadius": 12,
         "asideWidth": 28,
-        "gutter": 16
+        "gutter": 16,
+        "calloutStyle": "quote"
       },
       "textStyles": {
         "date": {
@@ -8343,6 +8564,9 @@
         },
         "photoType": "circle",
         "photoSize": 84
+      },
+      "hero": {
+        "photoPosition": "right"
       }
     },
     "fakeData": {
@@ -8369,12 +8593,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -8446,7 +8674,8 @@
         "headerAlignment": "center",
         "borderRadius": 16,
         "asideWidth": 30,
-        "gutter": 18
+        "gutter": 18,
+        "calloutStyle": "highlight-box"
       },
       "textStyles": {
         "date": {
@@ -8644,6 +8873,9 @@
         },
         "photoType": "square",
         "photoSize": 84
+      },
+      "hero": {
+        "photoPosition": "left"
       }
     },
     "fakeData": {
@@ -8670,12 +8902,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -8747,7 +8983,8 @@
         "headerAlignment": "left",
         "borderRadius": 20,
         "asideWidth": 32,
-        "gutter": 20
+        "gutter": 20,
+        "calloutStyle": "none"
       },
       "textStyles": {
         "date": {
@@ -8949,6 +9186,9 @@
         },
         "photoType": "circle",
         "photoSize": 144
+      },
+      "hero": {
+        "photoPosition": "right"
       }
     },
     "fakeData": {
@@ -8975,12 +9215,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -9052,7 +9296,8 @@
         "headerAlignment": "center",
         "borderRadius": 0,
         "asideWidth": 34,
-        "gutter": 22
+        "gutter": 22,
+        "calloutStyle": "quote"
       },
       "textStyles": {
         "date": {
@@ -9254,6 +9499,9 @@
         },
         "photoType": "square",
         "photoSize": 84
+      },
+      "hero": {
+        "photoPosition": "left"
       }
     },
     "fakeData": {
@@ -9280,12 +9528,16 @@
         "form": "minimal"
       },
       "body": {
+        "zone": "content",
         "order": 20,
+        "column": "full",
         "icon": "mdi-text-box-outline",
         "form": "narrative"
       },
       "signature": {
+        "zone": "content",
         "order": 30,
+        "column": "full",
         "icon": "mdi-draw",
         "form": "simple"
       }
@@ -9357,7 +9609,8 @@
         "headerAlignment": "left",
         "borderRadius": 4,
         "asideWidth": 36,
-        "gutter": 24
+        "gutter": 24,
+        "calloutStyle": "highlight-box"
       },
       "textStyles": {
         "date": {
@@ -9559,6 +9812,9 @@
         },
         "photoType": "circle",
         "photoSize": 94
+      },
+      "hero": {
+        "photoPosition": "right"
       }
     },
     "fakeData": {
