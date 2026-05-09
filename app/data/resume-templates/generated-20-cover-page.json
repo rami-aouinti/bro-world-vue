@@ -5,7 +5,23 @@
     "version": 1,
     "layout": "layout-left",
     "structure": "cover-structure-1",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -211,7 +227,23 @@
     "version": 1,
     "layout": "layout-left",
     "structure": "cover-structure-2",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -442,7 +474,23 @@
     "version": 1,
     "layout": "layout-left",
     "structure": "cover-structure-3",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -669,7 +717,23 @@
     "version": 1,
     "layout": "layout-left",
     "structure": "cover-structure-4",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -900,7 +964,23 @@
     "version": 1,
     "layout": "layout-left",
     "structure": "cover-structure-1",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -1127,7 +1207,23 @@
     "version": 1,
     "layout": "layout-right",
     "structure": "cover-structure-2",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -1358,7 +1454,23 @@
     "version": 1,
     "layout": "layout-right",
     "structure": "cover-structure-3",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -1585,7 +1697,23 @@
     "version": 1,
     "layout": "layout-right",
     "structure": "cover-structure-4",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -1816,7 +1944,23 @@
     "version": 1,
     "layout": "layout-right",
     "structure": "cover-structure-1",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -2043,7 +2187,23 @@
     "version": 1,
     "layout": "layout-right",
     "structure": "cover-structure-2",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -2274,7 +2434,23 @@
     "version": 1,
     "layout": "layout-left",
     "structure": "cover-structure-1",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -2480,7 +2656,23 @@
     "version": 1,
     "layout": "layout-left",
     "structure": "cover-structure-1",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -2686,7 +2878,23 @@
     "version": "1.1.0",
     "layout": "modern",
     "structure": "cover-structure-1",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -2905,7 +3113,23 @@
     "version": "1.1.0",
     "layout": "classic",
     "structure": "cover-structure-2",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -3149,7 +3373,23 @@
     "version": "1.1.0",
     "layout": "split",
     "structure": "cover-structure-3",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -3389,7 +3629,23 @@
     "version": "1.1.0",
     "layout": "minimal",
     "structure": "cover-structure-4",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -3633,7 +3889,23 @@
     "version": "1.1.0",
     "layout": "timeline",
     "structure": "cover-structure-1",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -3873,7 +4145,23 @@
     "version": "1.1.0",
     "layout": "executive",
     "structure": "cover-structure-2",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -4117,7 +4405,23 @@
     "version": "1.1.0",
     "layout": "modern",
     "structure": "cover-structure-3",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -4357,7 +4661,23 @@
     "version": "1.1.0",
     "layout": "classic",
     "structure": "cover-structure-4",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -4601,7 +4921,23 @@
     "version": "1.1.0",
     "layout": "split",
     "structure": "cover-structure-1",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -4841,7 +5177,23 @@
     "version": "1.1.0",
     "layout": "minimal",
     "structure": "cover-structure-2",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -5085,7 +5437,23 @@
     "version": "1.1.0",
     "layout": "timeline",
     "structure": "cover-structure-1",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -5304,7 +5672,23 @@
     "version": "1.1.0",
     "layout": "executive",
     "structure": "cover-structure-1",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -5523,7 +5907,23 @@
     "version": "1.1.0",
     "layout": "modern",
     "structure": "cover-structure-1",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -5742,7 +6142,23 @@
     "version": "1.1.0",
     "layout": "classic",
     "structure": "cover-structure-2",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -5986,7 +6402,23 @@
     "version": "1.1.0",
     "layout": "split",
     "structure": "cover-structure-3",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -6226,7 +6658,23 @@
     "version": "1.1.0",
     "layout": "minimal",
     "structure": "cover-structure-4",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -6470,7 +6918,23 @@
     "version": "1.1.0",
     "layout": "timeline",
     "structure": "cover-structure-1",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -6710,7 +7174,23 @@
     "version": "1.1.0",
     "layout": "executive",
     "structure": "cover-structure-2",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -6954,7 +7434,23 @@
     "version": "1.1.0",
     "layout": "modern",
     "structure": "cover-structure-3",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {
@@ -7194,7 +7690,23 @@
     "version": "1.1.0",
     "layout": "classic",
     "structure": "cover-structure-4",
-    "sections": {},
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
     "design": {
       "theme": {
         "palette": {

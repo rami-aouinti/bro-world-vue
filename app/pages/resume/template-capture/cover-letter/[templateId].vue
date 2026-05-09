@@ -54,9 +54,11 @@ const selectedTemplate = computed(() => {
   )
 })
 
-const selectedTemplateDesign = computed(() =>
-  getGeneratedTemplateDesign(selectedTemplate.value),
-)
+function getSelectedTemplateDesign() {
+  return getGeneratedTemplateDesign(selectedTemplate.value)
+}
+
+const selectedTemplateDesign = computed(() => getSelectedTemplateDesign())
 const spacingMap: Record<string, number> = {
   compact: 24,
   normal: 30,

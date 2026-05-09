@@ -1,12 +1,31 @@
 export type GeneratedTemplateLike = Record<string, any> | null | undefined
 
+const LEGACY_DESIGN_KEYS = [
+  'theme',
+  'decor',
+  'layoutOptions',
+  'designTokens',
+  'designConfig',
+  'hero',
+  'textStyles',
+  'typography',
+  'items',
+] as const
+
 export function getGeneratedTemplateDesign(template: GeneratedTemplateLike) {
   if (!template || typeof template !== 'object') return {}
-  return (
+
+  const embeddedDesign =
     template.design && typeof template.design === 'object'
-      ? template.design
-      : template
-  ) as Record<string, any>
+      ? { ...template.design }
+      : {}
+
+  for (const key of LEGACY_DESIGN_KEYS) {
+    if (embeddedDesign[key] === undefined && template[key] !== undefined)
+      embeddedDesign[key] = template[key]
+  }
+
+  return embeddedDesign as Record<string, any>
 }
 
 export function getGeneratedTemplateFakeData(template: GeneratedTemplateLike) {
