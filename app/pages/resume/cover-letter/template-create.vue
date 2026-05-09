@@ -4,6 +4,10 @@ import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.
 import ResumePreviewToolbar from '~/components/ResumePreviewToolbar.vue'
 import ResumePreviewPageBreak from '~/components/ResumePreviewPageBreak.vue'
 import GENERATED_COVER_LETTER_TEMPLATES from '~/data/resume-templates/generated-20-cover-letter.json'
+import {
+  getGeneratedTemplateDesign,
+  getGeneratedTemplateFakeData,
+} from '~/utils/generatedTemplateNormalizer'
 import PALETTE_PRESETS from '~/data/resume-templates/palettes.json'
 import {
   applyReadablePageTextColors,
@@ -15,7 +19,10 @@ import {
   useResumeGoogleFonts,
 } from '~/composables/useResumeGoogleFonts'
 
-definePageMeta({ title: 'resumePreview.coverLetter.metaTitle', layout: 'resume' })
+definePageMeta({
+  title: 'resumePreview.coverLetter.metaTitle',
+  layout: 'resume',
+})
 const { t } = useI18n()
 useHead(() => ({
   title: t('resumePreview.coverLetter.metaTitle'),
@@ -28,8 +35,10 @@ useHead(() => ({
 
 useSeoMeta({
   title: 'New Cover Letter - Free AI Builder | Bro World',
-  description: 'Generate and preview a free AI cover letter with job-ready templates.',
-  keywords: 'new cover letter, free cover letter, ai cover letter generator, job application letter',
+  description:
+    'Generate and preview a free AI cover letter with job-ready templates.',
+  keywords:
+    'new cover letter, free cover letter, ai cover letter generator, job application letter',
   ogImage: '/img/cv/generated/cletter-001.png',
   twitterCard: 'summary_large_image',
   twitterImage: '/img/cv/generated/cletter-001.png',
@@ -88,7 +97,7 @@ const borderMenuOpen = ref(false)
 const decorMenuOpen = ref(false)
 const palettePresetOptions = computed(() =>
   buildToolbarPaletteOptions(
-    activeTemplate.value.theme.palette,
+    activeTemplateDesign.value.theme.palette,
     PALETTE_PRESETS,
     100,
   ),
@@ -150,12 +159,15 @@ const activeTemplate = computed(
     ) || GENERATED_COVER_LETTER_TEMPLATES[0],
 )
 useResumeGoogleFonts(activeTemplate)
+const activeTemplateDesign = computed(() =>
+  getGeneratedTemplateDesign(activeTemplate.value),
+)
 function textFontFamily(
   key: string,
   fallback: 'sans' | 'serif' | 'mono' | 'display' = 'sans',
 ) {
   return resolveResumeTextFont(
-    (activeTemplate.value as any)?.textStyles?.[key],
+    activeTemplateDesign.value?.textStyles?.[key],
     fallback,
   )
 }
@@ -168,7 +180,7 @@ const defaultDecorPresets = [
   { type: 'square', x: 82, y: 10, size: 24, opacity: 0.08 },
 ]
 const templateDecorPresets = computed(() => {
-  const fromTemplate = (activeTemplate.value?.decor?.objects || []).map(
+  const fromTemplate = (activeTemplateDesign.value?.decor?.objects || []).map(
     (obj: any) => normalizeDecorObject(obj),
   )
   return fromTemplate.length
@@ -183,7 +195,7 @@ const defaultBarDesignConfig = {
   secondaryBarWidth: { min: 2, max: 20 },
 }
 const activeTemplateDesignConfig = computed(
-  () => (activeTemplate.value as any)?.designConfig || {},
+  () => activeTemplateDesign.value?.designConfig || {},
 )
 const activeBarDesignConfig = computed(
   () => activeTemplateDesignConfig.value || defaultBarDesignConfig,
@@ -259,7 +271,7 @@ function decorObjectStyle(obj: any) {
 }
 
 function applyTemplateDefaults(tpl: any) {
-  const defaults = tpl?.defaultValues || {}
+  const defaults = getGeneratedTemplateFakeData(tpl)
   if (defaults.fullName) {
     model.fullName = String(defaults.fullName)
     model.phone = String(defaults.fullName)
@@ -274,7 +286,8 @@ function applyTemplateDefaults(tpl: any) {
   if (defaults.summary) model.summary = String(defaults.summary)
 }
 const sectionDividerStyle = computed(() => {
-  const showDivider = activeTemplate.value?.layoutOptions?.showDivider ?? true
+  const showDivider =
+    activeTemplateDesign.value?.layoutOptions?.showDivider ?? true
   if (!showDivider) return 'none'
   if (selectedDividerType.value === 'none') return 'none'
   if (selectedDividerType.value === 'dashed') return 'dashed'
@@ -286,12 +299,12 @@ const sectionDividerColor = computed(() =>
     : activeColors.value.secondary,
 )
 const sectionSpacing = computed(() =>
-  activeTemplate.value?.layoutOptions?.sectionSpacing === 'wide'
+  activeTemplateDesign.value?.layoutOptions?.sectionSpacing === 'wide'
     ? '40px'
     : '24px',
 )
 const currentPalette = computed(() => ({
-  ...(activeTemplate.value?.theme?.palette || {}),
+  ...(activeTemplateDesign.value?.theme?.palette || {}),
   ...(paletteOverrides.value[selectedTemplate.value] || {}),
 }))
 
@@ -316,27 +329,37 @@ const initialPaletteState = ref<Record<string, string>>({})
 watch(
   () => selectedTemplate.value,
   () => {
-    initialPaletteState.value = { ...(activeTemplate.value?.theme?.palette || {}) }
-    if (!paletteOverrides.value[selectedTemplate.value]) paletteOverrides.value[selectedTemplate.value] = {}
+    initialPaletteState.value = {
+      ...(activeTemplateDesign.value?.theme?.palette || {}),
+    }
+    if (!paletteOverrides.value[selectedTemplate.value])
+      paletteOverrides.value[selectedTemplate.value] = {}
   },
   { immediate: true },
 )
 
-function updatePaletteColor(payload: { key: 'primary' | 'secondary' | 'text' | 'pageBackground'; value: string }) {
+function updatePaletteColor(payload: {
+  key: 'primary' | 'secondary' | 'text' | 'pageBackground'
+  value: string
+}) {
   const color = String(payload?.value || '').trim()
   if (!color) return
   selectedPalette.value = 'template'
   const templateId = selectedTemplate.value
-  if (!paletteOverrides.value[templateId]) paletteOverrides.value[templateId] = {}
+  if (!paletteOverrides.value[templateId])
+    paletteOverrides.value[templateId] = {}
   paletteOverrides.value[templateId][payload.key] = color
 }
 
 function resetPaletteColors() {
   selectedPalette.value = 'template'
-paletteOverrides.value[selectedTemplate.value] = {}
+  paletteOverrides.value[selectedTemplate.value] = {}
 }
 function readableCoverTextColor(color = '#0F172A') {
-  return readableTextColorForBackground(activeColors.value.pageBackground, color)
+  return readableTextColorForBackground(
+    activeColors.value.pageBackground,
+    color,
+  )
 }
 
 const readableBodyTextColor = computed(() =>
@@ -412,19 +435,20 @@ watch(
   activeTemplate,
   (tpl) => {
     applyTemplateDefaults(tpl)
-    editableDecorObjects.value = (tpl?.decor?.objects || []).map((obj: any) =>
-      normalizeDecorObject(obj),
+    const design = getGeneratedTemplateDesign(tpl)
+    editableDecorObjects.value = (design?.decor?.objects || []).map(
+      (obj: any) => normalizeDecorObject(obj),
     )
-    selectedDividerType.value = String(tpl?.decor?.divider || 'line')
+    selectedDividerType.value = String(design?.decor?.divider || 'line')
     photoPosition.value =
-      tpl?.hero?.photoPosition || tpl?.sections?.photoPosition || 'left'
+      design?.hero?.photoPosition ||
+      getGeneratedTemplateSectionForm(tpl?.sections, 'photoPosition', '') ||
+      'left'
     imageShape.value =
-      (tpl as any)?.designConfig?.photoType === 'square' ? 'square' : 'circle'
-    imageSize.value = Number(
-      (tpl as any)?.designConfig?.photoSize ?? imageSize.value,
-    )
-    const items = (tpl as any)?.items || {}
-    const designConfig = (tpl as any)?.designConfig || defaultBarDesignConfig
+      design?.designConfig?.photoType === 'square' ? 'square' : 'circle'
+    imageSize.value = Number(design?.designConfig?.photoSize ?? imageSize.value)
+    const items = design?.items || {}
+    const designConfig = design?.designConfig || defaultBarDesignConfig
     barRadius.value =
       designConfig?.barRadius?.min ?? defaultBarDesignConfig.barRadius.min
     primaryBarWidth.value =
@@ -452,7 +476,6 @@ watch(
   { immediate: true },
 )
 
-
 watch(
   activeTemplate,
   (template) => {
@@ -469,18 +492,20 @@ watch(
 watch(
   [pageBorderEnabled, pageBorderWidth, pageBorderRadius, pageBorderColor],
   () => {
-    if (!activeTemplate.value.theme) activeTemplate.value.theme = {} as any
-    if (!activeTemplate.value.theme.pageBorder)
-      activeTemplate.value.theme.pageBorder = {
+    if (!activeTemplateDesign.value.theme)
+      activeTemplateDesign.value.theme = {} as any
+    if (!activeTemplateDesign.value.theme.pageBorder)
+      activeTemplateDesign.value.theme.pageBorder = {
         enabled: false,
         width: 0,
         radius: 0,
         color: '#0f172a',
       } as any
-    activeTemplate.value.theme.pageBorder.enabled = pageBorderEnabled.value
-    activeTemplate.value.theme.pageBorder.width = pageBorderWidth.value
-    activeTemplate.value.theme.pageBorder.radius = pageBorderRadius.value
-    activeTemplate.value.theme.pageBorder.color = pageBorderColor.value
+    activeTemplateDesign.value.theme.pageBorder.enabled =
+      pageBorderEnabled.value
+    activeTemplateDesign.value.theme.pageBorder.width = pageBorderWidth.value
+    activeTemplateDesign.value.theme.pageBorder.radius = pageBorderRadius.value
+    activeTemplateDesign.value.theme.pageBorder.color = pageBorderColor.value
   },
 )
 
@@ -600,19 +625,22 @@ async function saveFromPreview() {
   )
   const token = user.value?.token?.trim()
   if (!token) return
-  await $fetch('https://bro-world.org/api/v1/recruit/private/me/cover-letters', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body: {
-      fullName: model.fullName,
-      role: model.role,
-      location: model.location,
-      header: model.heading,
-      description1: model.companyParagraph,
-      description2: model.summary,
-      templateId: templateResponse.id,
+  await $fetch(
+    'https://bro-world.org/api/v1/recruit/private/me/cover-letters',
+    {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: {
+        fullName: model.fullName,
+        role: model.role,
+        location: model.location,
+        header: model.heading,
+        description1: model.companyParagraph,
+        description2: model.summary,
+        templateId: templateResponse.id,
+      },
     },
-  })
+  )
 }
 async function downloadPdf() {
   const node = document.querySelector(
@@ -787,11 +815,51 @@ watch(aiModalOpen, (isOpen) => {
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-btn class="mt-1" variant="tonal" color="primary" prepend-icon="mdi-content-save" block @click="saveFromPreview">Save</v-btn>
-        <v-btn class="mt-2" variant="tonal"  color="primary" prepend-icon="mdi-file-pdf-box" block @click="downloadPdf">PDF</v-btn>
-        <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-draw" block @click="openSignatureDialog">Signature</v-btn>
-        <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-robot" block @click="openAiModal">AI</v-btn>
-        <v-btn class="mt-2" variant="tonal" color="primary" prepend-icon="mdi-plus" block to="/resume/cover-letter/template-create">Template</v-btn>
+        <v-btn
+          class="mt-1"
+          variant="tonal"
+          color="primary"
+          prepend-icon="mdi-content-save"
+          block
+          @click="saveFromPreview"
+          >Save</v-btn
+        >
+        <v-btn
+          class="mt-2"
+          variant="tonal"
+          color="primary"
+          prepend-icon="mdi-file-pdf-box"
+          block
+          @click="downloadPdf"
+          >PDF</v-btn
+        >
+        <v-btn
+          class="mt-2"
+          variant="tonal"
+          color="primary"
+          prepend-icon="mdi-draw"
+          block
+          @click="openSignatureDialog"
+          >Signature</v-btn
+        >
+        <v-btn
+          class="mt-2"
+          variant="tonal"
+          color="primary"
+          prepend-icon="mdi-robot"
+          block
+          @click="openAiModal"
+          >AI</v-btn
+        >
+        <v-btn
+          class="mt-2"
+          variant="tonal"
+          color="primary"
+          prepend-icon="mdi-plus"
+          block
+          to="/resume/cover-letter/template-create"
+          >Template</v-btn
+        >
       </template>
     </AppPageDrawers>
     <v-container fluid>
@@ -811,7 +879,7 @@ watch(aiModalOpen, (isOpen) => {
         :templates="coverLetterTemplates"
         :selected-template="selectedTemplate"
         template-key-prefix="cover-letter-preview"
-                @select-template="applyPreviewTemplate"
+        @select-template="applyPreviewTemplate"
         @select-palette="selectedPalette = $event"
         @update-palette-color="updatePaletteColor"
         @reset-palette="resetPaletteColors"
@@ -872,7 +940,12 @@ watch(aiModalOpen, (isOpen) => {
               <v-card class="pa-3" min-width="260" @click.stop>
                 <AppSelect
                   v-model="obj.type"
-                  :items="decorShapeOptions.map((shape) => ({ title: shape, value: shape }))"
+                  :items="
+                    decorShapeOptions.map((shape) => ({
+                      title: shape,
+                      value: shape,
+                    }))
+                  "
                   label="Type"
                   hide-details
                 />
@@ -893,39 +966,150 @@ watch(aiModalOpen, (isOpen) => {
                     @click.stop="obj.color = color"
                   />
                 </div>
-                <v-slider v-model="obj.size" label="Size" min="20" max="420" step="1" hide-details class="mt-3" />
-                <v-slider v-model="obj.opacity" label="Opacity" min="0.02" max="0.4" step="0.01" hide-details class="mt-3" />
-                <v-slider v-model="obj.x" label="X slider" min="0" max="100" step="1" hide-details class="mt-3" />
-                <v-slider v-model="obj.y" label="Y slider" min="0" max="100" step="1" hide-details class="mt-3" />
-                <v-btn size="x-small" color="error" variant="text" class="mt-2" @click.stop="removeDecorObject(i)">remove</v-btn>
+                <v-slider
+                  v-model="obj.size"
+                  label="Size"
+                  min="20"
+                  max="420"
+                  step="1"
+                  hide-details
+                  class="mt-3"
+                />
+                <v-slider
+                  v-model="obj.opacity"
+                  label="Opacity"
+                  min="0.02"
+                  max="0.4"
+                  step="0.01"
+                  hide-details
+                  class="mt-3"
+                />
+                <v-slider
+                  v-model="obj.x"
+                  label="X slider"
+                  min="0"
+                  max="100"
+                  step="1"
+                  hide-details
+                  class="mt-3"
+                />
+                <v-slider
+                  v-model="obj.y"
+                  label="Y slider"
+                  min="0"
+                  max="100"
+                  step="1"
+                  hide-details
+                  class="mt-3"
+                />
+                <v-btn
+                  size="x-small"
+                  color="error"
+                  variant="text"
+                  class="mt-2"
+                  @click.stop="removeDecorObject(i)"
+                  >remove</v-btn
+                >
               </v-card>
             </v-menu>
           </div>
         </template>
         <template #aside>
-        <v-card-text>
-          <v-row dense>
-            <v-col cols="12"><AppSelect v-model="selectedDividerType" :items="dividerTypeOptions" label="Divider type" hide-details class="mt-3" /></v-col>
-          </v-row>
-        </v-card-text>
+          <v-card-text>
+            <v-row dense>
+              <v-col cols="12"
+                ><AppSelect
+                  v-model="selectedDividerType"
+                  :items="dividerTypeOptions"
+                  label="Divider type"
+                  hide-details
+                  class="mt-3"
+              /></v-col>
+            </v-row>
+          </v-card-text>
         </template>
         <template #bar>
           <v-card-text>
             <v-row dense>
-              <v-col cols="6"><AppSelect v-model="barLayout" :items="[{ title: 'No bar', value: 'none' },{ title: 'Single bar', value: 'single' },{ title: 'Double bars', value: 'double' }]" label="Bar layout" hide-details class="mt-3" /></v-col>
-              <v-col cols="6"><p class="text-body-2">Bar radius</p><v-slider v-model="barRadius" :min="activeBarDesignConfig.barRadius.min" :max="activeBarDesignConfig.barRadius.max" step="1" hide-details /></v-col>
-              <v-col cols="6"><p class="text-body-2">Bar width</p><v-slider v-model="primaryBarWidth" :min="activeBarDesignConfig.barWidth.min" :max="activeBarDesignConfig.barWidth.max" step="1" hide-details /></v-col>
-              <v-col v-if="barLayout === 'double'" cols="6"><p class="text-body-2">Sec bar width</p><v-slider v-model="secondaryBarWidth" :min="activeBarDesignConfig.secondaryBarWidth.min" :max="activeBarDesignConfig.secondaryBarWidth.max" step="1" hide-details /></v-col>
+              <v-col cols="6"
+                ><AppSelect
+                  v-model="barLayout"
+                  :items="[
+                    { title: 'No bar', value: 'none' },
+                    { title: 'Single bar', value: 'single' },
+                    { title: 'Double bars', value: 'double' },
+                  ]"
+                  label="Bar layout"
+                  hide-details
+                  class="mt-3"
+              /></v-col>
+              <v-col cols="6"
+                ><p class="text-body-2">Bar radius</p>
+                <v-slider
+                  v-model="barRadius"
+                  :min="activeBarDesignConfig.barRadius.min"
+                  :max="activeBarDesignConfig.barRadius.max"
+                  step="1"
+                  hide-details
+              /></v-col>
+              <v-col cols="6"
+                ><p class="text-body-2">Bar width</p>
+                <v-slider
+                  v-model="primaryBarWidth"
+                  :min="activeBarDesignConfig.barWidth.min"
+                  :max="activeBarDesignConfig.barWidth.max"
+                  step="1"
+                  hide-details
+              /></v-col>
+              <v-col v-if="barLayout === 'double'" cols="6"
+                ><p class="text-body-2">Sec bar width</p>
+                <v-slider
+                  v-model="secondaryBarWidth"
+                  :min="activeBarDesignConfig.secondaryBarWidth.min"
+                  :max="activeBarDesignConfig.secondaryBarWidth.max"
+                  step="1"
+                  hide-details
+              /></v-col>
             </v-row>
           </v-card-text>
         </template>
         <template #border>
           <v-card-text>
             <v-row dense>
-              <v-col cols="6"><v-switch v-model="pageBorderEnabled" label="Page border" hide-details inset class="mt-2" /></v-col>
-              <v-col cols="6"><p class="text-body-2">Border width</p><v-slider v-model="pageBorderWidth" :min="0" :max="24" :step="1" hide-details /></v-col>
-              <v-col cols="6"><p class="text-body-2">Border radius</p><v-slider v-model="pageBorderRadius" :min="0" :max="60" :step="1" hide-details /></v-col>
-              <v-col cols="6"><p class="text-body-2">Border color</p><v-text-field v-model="pageBorderColor" type="color" hide-details density="compact" /></v-col>
+              <v-col cols="6"
+                ><v-switch
+                  v-model="pageBorderEnabled"
+                  label="Page border"
+                  hide-details
+                  inset
+                  class="mt-2"
+              /></v-col>
+              <v-col cols="6"
+                ><p class="text-body-2">Border width</p>
+                <v-slider
+                  v-model="pageBorderWidth"
+                  :min="0"
+                  :max="24"
+                  :step="1"
+                  hide-details
+              /></v-col>
+              <v-col cols="6"
+                ><p class="text-body-2">Border radius</p>
+                <v-slider
+                  v-model="pageBorderRadius"
+                  :min="0"
+                  :max="60"
+                  :step="1"
+                  hide-details
+              /></v-col>
+              <v-col cols="6"
+                ><p class="text-body-2">Border color</p>
+                <v-text-field
+                  v-model="pageBorderColor"
+                  type="color"
+                  hide-details
+                  density="compact"
+              /></v-col>
             </v-row>
           </v-card-text>
         </template>
@@ -942,7 +1126,9 @@ watch(aiModalOpen, (isOpen) => {
             '--cp-text': activeColors.text,
             '--cp-muted': activeColors.muted,
             '--cp-bg': activeColors.pageBackground,
-            '--cp-page-border-width': pageBorderEnabled ? `${pageBorderWidth}px` : '0px',
+            '--cp-page-border-width': pageBorderEnabled
+              ? `${pageBorderWidth}px`
+              : '0px',
             '--cp-page-border-color': pageBorderColor,
             '--cp-page-border-radius': `${pageBorderRadius}px`,
             '--section-divider-style': sectionDividerStyle,
@@ -968,12 +1154,13 @@ watch(aiModalOpen, (isOpen) => {
               'hero--no-bar': barLayout === 'none',
               'hero--double': barLayout === 'double',
               'hero--photo-right': photoPosition === 'right',
-              'hero--ribbon': activeTemplate?.decor?.headerStyle === 'ribbon',
+              'hero--ribbon':
+                activeTemplateDesign?.decor?.headerStyle === 'ribbon',
               'hero--layout-right': isLayoutRight,
             }"
             :style="
-              activeTemplate?.decor?.gradientStyle &&
-              activeTemplate.decor.gradientStyle !== 'none'
+              activeTemplateDesign?.decor?.gradientStyle &&
+              activeTemplateDesign.decor.gradientStyle !== 'none'
                 ? {
                     background: `linear-gradient(135deg, ${activeColors.primary}22, ${activeColors.secondary}33)`,
                   }
@@ -994,7 +1181,9 @@ watch(aiModalOpen, (isOpen) => {
               <HoverRichTextEditor
                 v-model="model.location"
                 :font-size="`${letterElementStyles.address.size}px`"
-                :color="readableCoverTextColor(letterElementStyles.address.color)"
+                :color="
+                  readableCoverTextColor(letterElementStyles.address.color)
+                "
                 :font-weight="letterElementStyles.address.weight"
                 :font-family="textFontFamily('address')"
               />
@@ -1172,13 +1361,25 @@ watch(aiModalOpen, (isOpen) => {
         <p class="mb-4">{{ aiPromptProgress }}</p>
         <v-row>
           <v-col cols="12" md="6"
-            ><v-text-field v-model="aiFullName" label="Full name" variant="outlined" hide-details
+            ><v-text-field
+              v-model="aiFullName"
+              label="Full name"
+              variant="outlined"
+              hide-details
           /></v-col>
           <v-col cols="12" md="6"
-            ><v-text-field v-model="aiRole" label="Role" variant="outlined" hide-details
+            ><v-text-field
+              v-model="aiRole"
+              label="Role"
+              variant="outlined"
+              hide-details
           /></v-col>
           <v-col cols="12" md="6"
-            ><v-text-field v-model="aiLocation" label="Location" variant="outlined" hide-details
+            ><v-text-field
+              v-model="aiLocation"
+              label="Location"
+              variant="outlined"
+              hide-details
           /></v-col>
           <v-col cols="12" md="6"
             ><v-text-field label="Email" variant="outlined" hide-details
@@ -1232,11 +1433,26 @@ watch(aiModalOpen, (isOpen) => {
           </v-btn>
         </div>
       </AppModal>
-      <AppModal v-model="sectionModalOpen" title="Section placement" :max-width="560">
+      <AppModal
+        v-model="sectionModalOpen"
+        title="Section placement"
+        :max-width="560"
+      >
         <v-card-text>
-          <p class="text-body-2 mb-3">Cover pages and cover letters use text by default. Choose where to place the new section.</p>
-          <v-text-field v-model="sectionAnchor" label="With / after which block" class="mb-2" />
-          <v-switch v-model="sectionInsertAfter" label="Insert after" hide-details />
+          <p class="text-body-2 mb-3">
+            Cover pages and cover letters use text by default. Choose where to
+            place the new section.
+          </p>
+          <v-text-field
+            v-model="sectionAnchor"
+            label="With / after which block"
+            class="mb-2"
+          />
+          <v-switch
+            v-model="sectionInsertAfter"
+            label="Insert after"
+            hide-details
+          />
         </v-card-text>
         <div class="d-flex justify-end ga-2 mt-2">
           <v-btn variant="text" @click="sectionModalOpen = false">Cancel</v-btn>
