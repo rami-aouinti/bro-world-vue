@@ -868,6 +868,11 @@ function hideSectionInZone(orderKey: SectionOrderKey, section: string) {
   hiddenSectionsByZone[orderKey][normalized] = true
 }
 
+function hideSectionFromZone(orderKey: SectionOrderKey, section: string) {
+  hideSection(section)
+  hideSectionInZone(orderKey, section)
+}
+
 function isSectionVisibleInZone(orderKey: SectionOrderKey, section: string) {
   const normalized = normalizeSectionKey(section)
   return !hiddenSectionsByZone[orderKey]?.[normalized]
@@ -2473,8 +2478,7 @@ watch(
                     size="x-small"
                     variant="text"
                     @click.stop="
-                      hideSection(toSectionKey(section))
-                      hideSectionInZone('asideOne', toSectionKey(section))
+                      hideSectionFromZone('asideOne', toSectionKey(section))
                     "
                   /><v-btn
                     icon="mdi-arrow-up"
@@ -2575,8 +2579,7 @@ watch(
                     size="x-small"
                     variant="text"
                     @click.stop="
-                      hideSection(toSectionKey(section))
-                      hideSectionInZone('asideTwo', toSectionKey(section))
+                      hideSectionFromZone('asideTwo', toSectionKey(section))
                     "
                   /><v-btn
                     icon="mdi-arrow-up"
