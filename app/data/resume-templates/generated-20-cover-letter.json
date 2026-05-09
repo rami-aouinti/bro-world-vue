@@ -7,7 +7,6 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -307,7 +306,6 @@
     "structure": "letter-structure-2",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -608,7 +606,6 @@
     "structure": "letter-structure-3",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -905,7 +902,6 @@
     "structure": "letter-structure-4",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -1206,7 +1202,6 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -1503,7 +1498,6 @@
     "structure": "letter-structure-2",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -1804,7 +1798,6 @@
     "structure": "letter-structure-3",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -2105,7 +2098,6 @@
     "structure": "letter-structure-4",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -2406,7 +2398,6 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -2707,7 +2698,6 @@
     "structure": "letter-structure-2",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -3008,7 +2998,6 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -3308,7 +3297,6 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -3608,7 +3596,6 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -3921,7 +3908,6 @@
     "structure": "letter-structure-2",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -4235,7 +4221,6 @@
     "structure": "letter-structure-3",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -4545,7 +4530,6 @@
     "structure": "letter-structure-4",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -4859,7 +4843,6 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -5169,7 +5152,6 @@
     "structure": "letter-structure-2",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -5483,7 +5465,6 @@
     "structure": "letter-structure-3",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -5797,7 +5778,6 @@
     "structure": "letter-structure-4",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -6111,7 +6091,6 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -6425,7 +6404,6 @@
     "structure": "letter-structure-2",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -6739,7 +6717,6 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -7052,7 +7029,6 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -7365,7 +7341,6 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -7678,7 +7653,6 @@
     "structure": "letter-structure-2",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -7992,7 +7966,6 @@
     "structure": "letter-structure-3",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -8302,7 +8275,6 @@
     "structure": "letter-structure-4",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -8616,7 +8588,6 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -8926,7 +8897,6 @@
     "structure": "letter-structure-2",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -9240,7 +9210,6 @@
     "structure": "letter-structure-3",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
@@ -9554,7 +9523,6 @@
     "structure": "letter-structure-4",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
         "form": "minimal"
