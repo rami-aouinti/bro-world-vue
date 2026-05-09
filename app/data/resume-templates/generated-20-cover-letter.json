@@ -7,42 +7,19 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
         "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
         "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "simple"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "quote"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "left"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -321,42 +298,19 @@
     "structure": "letter-structure-2",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
-        "form": "detailed"
+        "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
-        "form": "bullet-mix"
+        "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "formal"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "highlight-box"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "right"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -636,42 +590,19 @@
     "structure": "letter-structure-3",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
-        "form": "contact-band"
+        "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
-        "form": "impact"
+        "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "simple"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "none"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "left"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -947,42 +878,19 @@
     "structure": "letter-structure-4",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
         "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
         "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "formal"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "quote"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "right"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -1262,42 +1170,19 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
-        "form": "detailed"
+        "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
-        "form": "bullet-mix"
+        "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "simple"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "highlight-box"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "left"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -1573,42 +1458,19 @@
     "structure": "letter-structure-2",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
-        "form": "contact-band"
+        "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
-        "form": "impact"
+        "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "formal"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "none"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "right"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -1888,42 +1750,19 @@
     "structure": "letter-structure-3",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
         "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
         "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "simple"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "quote"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "left"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -2203,42 +2042,19 @@
     "structure": "letter-structure-4",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
-        "form": "detailed"
+        "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
-        "form": "bullet-mix"
+        "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "formal"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "highlight-box"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "right"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -2518,42 +2334,19 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
-        "form": "contact-band"
+        "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
-        "form": "impact"
+        "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "simple"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "none"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "left"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -2833,42 +2626,19 @@
     "structure": "letter-structure-2",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
         "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
         "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "formal"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "quote"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "right"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -3148,42 +2918,19 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
         "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
         "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "simple"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "quote"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "left"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -3462,42 +3209,19 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
         "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
         "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "simple"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "quote"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "left"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -3776,42 +3500,19 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
         "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
         "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "simple"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "quote"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "left"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -4103,42 +3804,19 @@
     "structure": "letter-structure-2",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
-        "form": "detailed"
+        "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
-        "form": "bullet-mix"
+        "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "formal"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "highlight-box"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "right"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -4431,42 +4109,19 @@
     "structure": "letter-structure-3",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
-        "form": "contact-band"
+        "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
-        "form": "impact"
+        "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "simple"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "none"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "left"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -4755,42 +4410,19 @@
     "structure": "letter-structure-4",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
         "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
         "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "formal"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "quote"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "right"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -5083,42 +4715,19 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
-        "form": "detailed"
+        "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
-        "form": "bullet-mix"
+        "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "simple"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "highlight-box"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "left"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -5407,42 +5016,19 @@
     "structure": "letter-structure-2",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
-        "form": "contact-band"
+        "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
-        "form": "impact"
+        "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "formal"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "none"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "right"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -5735,42 +5321,19 @@
     "structure": "letter-structure-3",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
         "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
         "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "simple"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "quote"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "left"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -6063,42 +5626,19 @@
     "structure": "letter-structure-4",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
-        "form": "detailed"
+        "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
-        "form": "bullet-mix"
+        "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "formal"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "highlight-box"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "right"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -6391,42 +5931,19 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
-        "form": "contact-band"
+        "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
-        "form": "impact"
+        "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "simple"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "none"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "left"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -6719,42 +6236,19 @@
     "structure": "letter-structure-2",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
         "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
         "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "formal"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "quote"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "right"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -7047,42 +6541,19 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
         "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
         "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "simple"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "quote"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "left"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -7374,42 +6845,19 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
         "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
         "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "simple"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "quote"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "left"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -7701,42 +7149,19 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
         "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
         "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "simple"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "quote"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "left"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -8028,42 +7453,19 @@
     "structure": "letter-structure-2",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
-        "form": "detailed"
+        "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
-        "form": "bullet-mix"
+        "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "formal"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "highlight-box"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "right"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -8356,42 +7758,19 @@
     "structure": "letter-structure-3",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
-        "form": "contact-band"
+        "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
-        "form": "impact"
+        "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "simple"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "none"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "left"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -8680,42 +8059,19 @@
     "structure": "letter-structure-4",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
         "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
         "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "formal"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "quote"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "right"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -9008,42 +8364,19 @@
     "structure": "letter-structure-1",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
-        "form": "detailed"
+        "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
-        "form": "bullet-mix"
+        "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "simple"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "highlight-box"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "left"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -9332,42 +8665,19 @@
     "structure": "letter-structure-2",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
-        "form": "contact-band"
+        "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
-        "form": "impact"
+        "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "formal"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "none"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "right"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -9660,42 +8970,19 @@
     "structure": "letter-structure-3",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
         "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
         "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "simple"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "quote"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "left"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
@@ -9988,42 +9275,19 @@
     "structure": "letter-structure-4",
     "sections": {
       "header": {
-        "zone": "header",
         "order": 10,
         "icon": "mdi-page-layout-header",
-        "iconAlternatives": ["mdi-card-account-details-outline"],
-        "form": "detailed"
+        "form": "minimal"
       },
       "body": {
-        "zone": "content",
-        "order": 10,
-        "column": "full",
+        "order": 20,
         "icon": "mdi-text-box-outline",
-        "iconAlternatives": ["mdi-file-document-edit-outline"],
-        "form": "bullet-mix"
+        "form": "narrative"
       },
       "signature": {
-        "zone": "content",
-        "order": 20,
-        "column": "full",
-        "icon": "mdi-draw-pen",
-        "iconAlternatives": ["mdi-signature-freehand"],
-        "form": "formal"
-      },
-      "calloutStyle": {
-        "zone": "content",
         "order": 30,
-        "column": "full",
-        "icon": "mdi-format-quote-close-outline",
-        "iconAlternatives": ["mdi-message-text-outline"],
-        "form": "highlight-box"
-      },
-      "photoPosition": {
-        "zone": "header",
-        "order": 20,
-        "icon": "mdi-image-outline",
-        "iconAlternatives": ["mdi-account-box-outline"],
-        "form": "right"
+        "icon": "mdi-draw",
+        "form": "simple"
       }
     },
     "design": {
