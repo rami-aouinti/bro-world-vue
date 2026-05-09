@@ -921,6 +921,12 @@ function effectiveSectionColumn(sectionKey: string) {
   return sectionColumnOverrides.value[key] || sectionColumn(key)
 }
 
+function sectionColumnIcon(sectionKey: string) {
+  return effectiveSectionColumn(sectionKey) === 'half'
+    ? 'mdi-view-column-outline'
+    : 'mdi-view-day-outline'
+}
+
 function updateSectionColumn(sectionKey: string, value: unknown) {
   const key = toSectionKey(sectionKey)
   if (!isSectionColumnEditable(key)) return
@@ -2567,7 +2573,9 @@ watch(
                     density="compact"
                     variant="outlined"
                     hide-details
-                    prepend-inner-icon="mdi-view-column-outline"
+                    :prepend-inner-icon="
+                      sectionColumnIcon(toSectionKey(section))
+                    "
                     class="cv-column-select"
                     @update:model-value="
                       updateSectionColumn(toSectionKey(section), $event)
@@ -2679,7 +2687,9 @@ watch(
                     density="compact"
                     variant="outlined"
                     hide-details
-                    prepend-inner-icon="mdi-view-column-outline"
+                    :prepend-inner-icon="
+                      sectionColumnIcon(toSectionKey(section))
+                    "
                     class="cv-column-select"
                     @update:model-value="
                       updateSectionColumn(toSectionKey(section), $event)
@@ -2789,7 +2799,9 @@ watch(
                     density="compact"
                     variant="outlined"
                     hide-details
-                    prepend-inner-icon="mdi-view-column-outline"
+                    :prepend-inner-icon="
+                      sectionColumnIcon(toSectionKey(section))
+                    "
                     class="cv-column-select"
                     @update:model-value="
                       updateSectionColumn(toSectionKey(section), $event)
@@ -2895,7 +2907,9 @@ watch(
                     density="compact"
                     variant="outlined"
                     hide-details
-                    prepend-inner-icon="mdi-view-column-outline"
+                    :prepend-inner-icon="
+                      sectionColumnIcon(toSectionKey(section))
+                    "
                     class="cv-column-select"
                     @update:model-value="
                       updateSectionColumn(toSectionKey(section), $event)
@@ -3003,7 +3017,9 @@ watch(
                     density="compact"
                     variant="outlined"
                     hide-details
-                    prepend-inner-icon="mdi-view-column-outline"
+                    :prepend-inner-icon="
+                      sectionColumnIcon(toSectionKey(section))
+                    "
                     class="cv-column-select"
                     @update:model-value="
                       updateSectionColumn(toSectionKey(section), $event)
@@ -3105,7 +3121,9 @@ watch(
                     density="compact"
                     variant="outlined"
                     hide-details
-                    prepend-inner-icon="mdi-view-column-outline"
+                    :prepend-inner-icon="
+                      sectionColumnIcon(toSectionKey(section))
+                    "
                     class="cv-column-select"
                     @update:model-value="
                       updateSectionColumn(toSectionKey(section), $event)
@@ -3208,7 +3226,9 @@ watch(
                         density="compact"
                         variant="outlined"
                         hide-details
-                        prepend-inner-icon="mdi-view-column-outline"
+                        :prepend-inner-icon="
+                          sectionColumnIcon(toSectionKey(section))
+                        "
                         class="cv-column-select"
                         @update:model-value="
                           updateSectionColumn(toSectionKey(section), $event)
@@ -3313,7 +3333,9 @@ watch(
                         density="compact"
                         variant="outlined"
                         hide-details
-                        prepend-inner-icon="mdi-view-column-outline"
+                        :prepend-inner-icon="
+                          sectionColumnIcon(toSectionKey(section))
+                        "
                         class="cv-column-select"
                         @update:model-value="
                           updateSectionColumn(toSectionKey(section), $event)
@@ -4132,7 +4154,13 @@ watch(
   transform: translateY(0);
 }
 .cv-column-select {
-  width: 132px;
+  width: 54px;
+}
+.cv-column-select :deep(.v-select__selection span) {
+  display: none;
+}
+.cv-column-select :deep(.v-field__input) {
+  padding-inline-start: 0;
 }
 
 .cv-section-toolbar :deep(.v-field) {
