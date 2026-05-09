@@ -176,6 +176,28 @@ if (
   selectedPalette.value = queryPaletteId
 }
 
+const initialPaletteState = ref<Record<string, string>>({})
+watch(
+  () => selectedTemplate.value,
+  () => {
+    initialPaletteState.value = { ...(activeTemplate.value?.theme?.palette || {}) }
+  },
+  { immediate: true },
+)
+
+function updatePaletteColor(payload: { key: 'primary' | 'secondary' | 'text' | 'pageBackground'; value: string }) {
+  const color = String(payload?.value || '').trim()
+  if (!color) return
+  selectedPalette.value = 'template'
+  if (!activeTemplate.value.theme.palette) activeTemplate.value.theme.palette = {} as any
+  ;(activeTemplate.value.theme.palette as Record<string, string>)[payload.key] = color
+}
+
+function resetPaletteColors() {
+  selectedPalette.value = 'template'
+  activeTemplate.value.theme.palette = { ...initialPaletteState.value } as any
+}
+
 function toPercentNumber(value: unknown, fallback = 50): number {
   if (typeof value === 'number' && Number.isFinite(value))
     return Math.min(100, Math.max(0, value))
@@ -1361,6 +1383,7 @@ watch(
         v-model:border-menu-open="borderMenuOpen"
         v-model:decor-menu-open="decorMenuOpen"
         :palettes="palettePresetOptions"
+        :active-colors="activeColors"
         show-decor
         show-section
         :selected-palette="selectedPalette"
@@ -1373,6 +1396,8 @@ watch(
         template-key-prefix="cv-preview"
         @select-template="applyPreviewTemplate"
         @select-palette="selectedPalette = $event"
+        @update-palette-color="updatePaletteColor"
+        @reset-palette="resetPaletteColors"
       >
         <template #decor>
           <v-btn
