@@ -3508,5 +3508,6142 @@
         "lineHeight": 1.35
       }
     }
+  },
+  {
+    "id": "cpage-023",
+    "name": "Executive Cover · Pro Palette 023",
+    "version": "1.1.0",
+    "layout": "modern",
+    "structure": "cover-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#2563EB",
+        "secondary": "#93C5FD",
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#1F2937"
+      },
+      "density": "airy",
+      "textStyle": "sans",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#2563EB",
+      "accent": "#38BDF8",
+      "background": "#E2E8F0",
+      "text": "#0F172A"
+    },
+    "hero": {
+      "alignment": "left",
+      "showPhoto": true,
+      "accent": "bar",
+      "accentIntensity": "medium",
+      "photoPosition": "left"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "normal",
+      "titleCase": "upper",
+      "contentWidth": "normal",
+      "photoShape": "rounded",
+      "borderRadius": 0,
+      "asideWidth": 28,
+      "gutter": 16
+    },
+    "designTokens": {
+      "borderRadius": "sm",
+      "shadowDepth": "soft",
+      "gradientStyle": "linear-soft",
+      "patternOverlay": "dots",
+      "typographyScale": "balanced",
+      "primary": "#2563EB",
+      "secondary": "#38BDF8",
+      "surface": "#E2E8F0",
+      "text": "#0F172A"
+    },
+    "decor": {
+      "headerStyle": "band",
+      "footerStyle": "line",
+      "divider": "none",
+      "iconStyle": "rounded",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "12%",
+          "y": "0%",
+          "size": "230",
+          "opacity": 0.18
+        }
+      ],
+      "borderStyle": "solid",
+      "cornerRadius": 0
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 60,
+          "max": 68
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 28,
+          "max": 36
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F4C81",
+          "#111827",
+          "#5FA8D3"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 16,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 4,
+        "max": 18
+      },
+      "barLayout": [
+        "single"
+      ],
+      "barWidth": {
+        "min": 6,
+        "max": 18
+      },
+      "photoType": "square",
+      "photoSize": 124
+    },
+    "defaultValues": {
+      "fullName": "Alex Martin",
+      "role": "Product Designer",
+      "image": "/img/team-1.jpg",
+      "description": "Alex Martin is a product designer focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Inter",
+        "Playfair Display"
+      ],
+      "scale": "comfortable",
+      "fonts": {
+        "display": "Playfair Display",
+        "body": "Inter"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Playfair Display",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Playfair Display",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-024",
+    "name": "Modern Front · Pro Palette 024",
+    "version": "1.1.0",
+    "layout": "classic",
+    "structure": "cover-structure-2",
+    "theme": {
+      "palette": {
+        "primary": "#1E40AF",
+        "secondary": "#22C55E",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#F8FAFC"
+      },
+      "density": "comfortable",
+      "textStyle": "roman",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#7C3AED",
+      "accent": "#C4B5FD",
+      "background": "#EDE9FE",
+      "text": "#111827"
+    },
+    "hero": {
+      "alignment": "center",
+      "showPhoto": false,
+      "accent": "shape",
+      "accentIntensity": "bold",
+      "photoPosition": "right"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "relaxed",
+      "titleCase": "normal",
+      "contentWidth": "wide",
+      "photoShape": "square",
+      "borderRadius": 4,
+      "asideWidth": 30,
+      "gutter": 18
+    },
+    "designTokens": {
+      "borderRadius": "md",
+      "shadowDepth": "medium",
+      "gradientStyle": "linear-vivid",
+      "patternOverlay": "grid",
+      "typographyScale": "spacious",
+      "primary": "#7C3AED",
+      "secondary": "#C4B5FD",
+      "surface": "#EDE9FE",
+      "text": "#111827"
+    },
+    "decor": {
+      "headerStyle": "split-band",
+      "footerStyle": "block",
+      "divider": "line",
+      "iconStyle": "outline",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "15%",
+          "y": "17%",
+          "size": "100",
+          "opacity": 0.11
+        },
+        {
+          "type": "square",
+          "x": "65%",
+          "y": "72%",
+          "size": "138",
+          "opacity": 0.11
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
+          "opacity": 0.08
+        }
+      ],
+      "borderStyle": "double",
+      "cornerRadius": 6
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 50,
+          "max": 80
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#7C3AED",
+          "#111827",
+          "#C4B5FD"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 20,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#7C3AED"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#7C3AED"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 12,
+        "max": 28
+      },
+      "barLayout": [
+        "single",
+        "double"
+      ],
+      "barWidth": {
+        "min": 8,
+        "max": 24
+      },
+      "secondaryBarWidth": {
+        "min": 3,
+        "max": 10
+      },
+      "photoType": "circle",
+      "photoSize": 100
+    },
+    "defaultValues": {
+      "fullName": "Jordan Lee",
+      "role": "Full Stack Developer",
+      "image": "/img/team-2.jpg",
+      "description": "Jordan Lee is a full stack developer focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Montserrat",
+        "Open Sans"
+      ],
+      "scale": "compact",
+      "fonts": {
+        "display": "Montserrat",
+        "body": "Open Sans"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Montserrat",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Montserrat",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-025",
+    "name": "Editorial Profile · Pro Palette 025",
+    "version": "1.1.0",
+    "layout": "split",
+    "structure": "cover-structure-3",
+    "theme": {
+      "palette": {
+        "primary": "#0EA5E9",
+        "secondary": "#F97316",
+        "text": "#E2E8F0",
+        "muted": "#94A3B8",
+        "pageBackground": "#0F172A"
+      },
+      "density": "compact",
+      "textStyle": "serif",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#16A34A",
+      "accent": "#86EFAC",
+      "background": "#DCFCE7",
+      "text": "#052E16"
+    },
+    "hero": {
+      "alignment": "right",
+      "showPhoto": true,
+      "accent": "line",
+      "accentIntensity": "subtle",
+      "photoPosition": "left"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "tight",
+      "titleCase": "upper",
+      "contentWidth": "narrow",
+      "photoShape": "circle",
+      "borderRadius": 8,
+      "asideWidth": 32,
+      "gutter": 20
+    },
+    "designTokens": {
+      "borderRadius": "lg",
+      "shadowDepth": "strong",
+      "gradientStyle": "radial-glow",
+      "patternOverlay": "noise",
+      "typographyScale": "tight",
+      "primary": "#16A34A",
+      "secondary": "#86EFAC",
+      "surface": "#DCFCE7",
+      "text": "#052E16"
+    },
+    "decor": {
+      "headerStyle": "ribbon",
+      "footerStyle": "signature-bar",
+      "divider": "dashed",
+      "iconStyle": "minimal",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "22%",
+          "y": "28%",
+          "size": "120",
+          "opacity": 0.14
+        },
+        {
+          "type": "diamond",
+          "x": "60%",
+          "y": "69%",
+          "size": "156",
+          "opacity": 0.14
+        },
+        {
+          "type": "star",
+          "x": "14%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "82%",
+          "y": "10%",
+          "size": "24",
+          "opacity": 0.08
+        }
+      ],
+      "borderStyle": "dashed",
+      "cornerRadius": 12
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 50,
+          "max": 80
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#BE123C",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#BE123C",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#BE123C",
+          "#111827",
+          "#FDA4AF"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 20,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#BE123C"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#BE123C"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#BE123C"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#BE123C"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#BE123C"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 0,
+        "max": 12
+      },
+      "barLayout": [
+        "single"
+      ],
+      "barWidth": {
+        "min": 4,
+        "max": 12
+      },
+      "photoType": "circle",
+      "photoSize": 84
+    },
+    "defaultValues": {
+      "fullName": "Alex Martin",
+      "role": "Marketing Manager",
+      "image": "/img/team-3.jpg",
+      "description": "Alex Martin is a marketing manager focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Cormorant Garamond",
+        "Lato"
+      ],
+      "scale": "comfortable",
+      "fonts": {
+        "display": "Cormorant Garamond",
+        "body": "Lato"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Cormorant Garamond",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Cormorant Garamond",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-026",
+    "name": "Minimal Intro · Pro Palette 026",
+    "version": "1.1.0",
+    "layout": "minimal",
+    "structure": "cover-structure-4",
+    "theme": {
+      "palette": {
+        "primary": "#0F766E",
+        "secondary": "#EA580C",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#F5F5F4"
+      },
+      "density": "airy",
+      "textStyle": "sans",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#DB2777",
+      "accent": "#F9A8D4",
+      "background": "#FCE7F3",
+      "text": "#3F1D2E"
+    },
+    "hero": {
+      "alignment": "left",
+      "showPhoto": false,
+      "accent": "badge",
+      "accentIntensity": "medium",
+      "photoPosition": "right"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "normal",
+      "titleCase": "normal",
+      "contentWidth": "normal",
+      "photoShape": "rounded",
+      "borderRadius": 12,
+      "asideWidth": 34,
+      "gutter": 22
+    },
+    "designTokens": {
+      "borderRadius": "xl",
+      "shadowDepth": "flat",
+      "gradientStyle": "none",
+      "patternOverlay": "none",
+      "typographyScale": "balanced",
+      "primary": "#DB2777",
+      "secondary": "#F9A8D4",
+      "surface": "#FCE7F3",
+      "text": "#3F1D2E"
+    },
+    "decor": {
+      "headerStyle": "plain",
+      "footerStyle": "none",
+      "divider": "gradient",
+      "iconStyle": "rounded",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "29%",
+          "y": "39%",
+          "size": "140",
+          "opacity": 0.17
+        },
+        {
+          "type": "square",
+          "x": "55%",
+          "y": "66%",
+          "size": "174",
+          "opacity": 0.16
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "84%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
+          "opacity": 0.08
+        }
+      ],
+      "borderStyle": "solid",
+      "cornerRadius": 18
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 50,
+          "max": 80
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#065F46",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#065F46",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#065F46",
+          "#111827",
+          "#6EE7B7"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 20,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#065F46"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#065F46"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#065F46"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#065F46"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#065F46"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 16,
+        "max": 30
+      },
+      "barLayout": [
+        "single",
+        "double"
+      ],
+      "barWidth": {
+        "min": 10,
+        "max": 22
+      },
+      "secondaryBarWidth": {
+        "min": 6,
+        "max": 14
+      },
+      "photoType": "square",
+      "photoSize": 92
+    },
+    "defaultValues": {
+      "fullName": "Jordan Lee",
+      "role": "Data Analyst",
+      "image": "/img/team-4.jpg",
+      "description": "Jordan Lee is a data analyst focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Bebas Neue",
+        "Roboto"
+      ],
+      "scale": "compact",
+      "fonts": {
+        "display": "Bebas Neue",
+        "body": "Roboto"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Bebas Neue",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Bebas Neue",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-027",
+    "name": "Corporate Portfolio · Pro Palette 027",
+    "version": "1.1.0",
+    "layout": "timeline",
+    "structure": "cover-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#A855F7",
+        "secondary": "#22C55E",
+        "text": "#F3F4F6",
+        "muted": "#9CA3AF",
+        "pageBackground": "#111827"
+      },
+      "density": "comfortable",
+      "textStyle": "roman",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#EA580C",
+      "accent": "#FDBA74",
+      "background": "#FFF7ED",
+      "text": "#3B1D0A"
+    },
+    "hero": {
+      "alignment": "center",
+      "showPhoto": true,
+      "accent": "bar",
+      "accentIntensity": "bold",
+      "photoPosition": "left"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "relaxed",
+      "titleCase": "upper",
+      "contentWidth": "wide",
+      "photoShape": "square",
+      "borderRadius": 16,
+      "asideWidth": 36,
+      "gutter": 24
+    },
+    "designTokens": {
+      "borderRadius": "none",
+      "shadowDepth": "soft",
+      "gradientStyle": "linear-soft",
+      "patternOverlay": "dots",
+      "typographyScale": "spacious",
+      "primary": "#EA580C",
+      "secondary": "#FDBA74",
+      "surface": "#FFF7ED",
+      "text": "#3B1D0A"
+    },
+    "decor": {
+      "headerStyle": "band",
+      "footerStyle": "line",
+      "divider": "double-line",
+      "iconStyle": "outline",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "36%",
+          "y": "50%",
+          "size": "160",
+          "opacity": 0.08
+        },
+        {
+          "type": "diamond",
+          "x": "50%",
+          "y": "63%",
+          "size": "192",
+          "opacity": 0.06
+        },
+        {
+          "type": "star",
+          "x": "14%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "82%",
+          "y": "10%",
+          "size": "24",
+          "opacity": 0.08
+        }
+      ],
+      "borderStyle": "double",
+      "cornerRadius": 0
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 50,
+          "max": 80
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#9A3412",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#9A3412",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#9A3412",
+          "#111827",
+          "#FDBA74"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 20,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#9A3412"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#9A3412"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#9A3412"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#9A3412"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#9A3412"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 8,
+        "max": 20
+      },
+      "barLayout": [
+        "single"
+      ],
+      "barWidth": {
+        "min": 12,
+        "max": 20
+      },
+      "photoType": "circle",
+      "photoSize": 110
+    },
+    "defaultValues": {
+      "fullName": "Alex Martin",
+      "role": "HR Specialist",
+      "image": "/img/team-5.jpg",
+      "description": "Alex Martin is a hr specialist focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Abril Fatface",
+        "Source Sans 3"
+      ],
+      "scale": "comfortable",
+      "fonts": {
+        "display": "Abril Fatface",
+        "body": "Source Sans 3"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Abril Fatface",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Abril Fatface",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-028",
+    "name": "Leadership Cover · Pro Palette 028",
+    "version": "1.1.0",
+    "layout": "executive",
+    "structure": "cover-structure-2",
+    "theme": {
+      "palette": {
+        "primary": "#7C3AED",
+        "secondary": "#06B6D4",
+        "text": "#1F1147",
+        "muted": "#6D5A99",
+        "pageBackground": "#F5F3FF"
+      },
+      "density": "compact",
+      "textStyle": "serif",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#0891B2",
+      "accent": "#67E8F9",
+      "background": "#ECFEFF",
+      "text": "#082F49"
+    },
+    "hero": {
+      "alignment": "right",
+      "showPhoto": false,
+      "accent": "shape",
+      "accentIntensity": "subtle",
+      "photoPosition": "right"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "tight",
+      "titleCase": "normal",
+      "contentWidth": "narrow",
+      "photoShape": "circle",
+      "borderRadius": 20,
+      "asideWidth": 28,
+      "gutter": 16
+    },
+    "designTokens": {
+      "borderRadius": "sm",
+      "shadowDepth": "medium",
+      "gradientStyle": "linear-vivid",
+      "patternOverlay": "grid",
+      "typographyScale": "tight",
+      "primary": "#0891B2",
+      "secondary": "#67E8F9",
+      "surface": "#ECFEFF",
+      "text": "#082F49"
+    },
+    "decor": {
+      "headerStyle": "split-band",
+      "footerStyle": "block",
+      "divider": "dots",
+      "iconStyle": "minimal",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "43%",
+          "y": "61%",
+          "size": "80",
+          "opacity": 0.11
+        },
+        {
+          "type": "square",
+          "x": "45%",
+          "y": "60%",
+          "size": "210",
+          "opacity": 0.08
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
+          "opacity": 0.08
+        }
+      ],
+      "borderStyle": "dashed",
+      "cornerRadius": 6
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 50,
+          "max": 80
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F4C81",
+          "#111827",
+          "#5FA8D3"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 20,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 2,
+        "max": 16
+      },
+      "barLayout": [
+        "single",
+        "double"
+      ],
+      "barWidth": {
+        "min": 6,
+        "max": 16
+      },
+      "secondaryBarWidth": {
+        "min": 2,
+        "max": 8
+      },
+      "photoType": "circle",
+      "photoSize": 105
+    },
+    "defaultValues": {
+      "fullName": "Jordan Lee",
+      "role": "Project Manager",
+      "image": "/img/team-9.jpeg",
+      "description": "Jordan Lee is a project manager focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Nunito Sans",
+        "Raleway"
+      ],
+      "scale": "compact",
+      "fonts": {
+        "display": "Raleway",
+        "body": "Nunito Sans"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Raleway",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Raleway",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-029",
+    "name": "Polished Front · Pro Palette 029",
+    "version": "1.1.0",
+    "layout": "modern",
+    "structure": "cover-structure-3",
+    "theme": {
+      "palette": {
+        "primary": "#2563EB",
+        "secondary": "#93C5FD",
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#1F2937"
+      },
+      "density": "airy",
+      "textStyle": "sans",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#F59E0B",
+      "accent": "#FDE68A",
+      "background": "#FFFBEB",
+      "text": "#1F2937"
+    },
+    "hero": {
+      "alignment": "left",
+      "showPhoto": true,
+      "accent": "line",
+      "accentIntensity": "medium",
+      "photoPosition": "left"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "normal",
+      "titleCase": "upper",
+      "contentWidth": "normal",
+      "photoShape": "rounded",
+      "borderRadius": 0,
+      "asideWidth": 30,
+      "gutter": 18
+    },
+    "designTokens": {
+      "borderRadius": "md",
+      "shadowDepth": "strong",
+      "gradientStyle": "radial-glow",
+      "patternOverlay": "noise",
+      "typographyScale": "balanced",
+      "primary": "#F59E0B",
+      "secondary": "#FDE68A",
+      "surface": "#FFFBEB",
+      "text": "#1F2937"
+    },
+    "decor": {
+      "headerStyle": "ribbon",
+      "footerStyle": "signature-bar",
+      "divider": "zigzag",
+      "iconStyle": "rounded",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "50%",
+          "y": "72%",
+          "size": "100",
+          "opacity": 0.14
+        },
+        {
+          "type": "diamond",
+          "x": "40%",
+          "y": "57%",
+          "size": "120",
+          "opacity": 0.11
+        },
+        {
+          "type": "star",
+          "x": "14%",
+          "y": "84%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "82%",
+          "y": "10%",
+          "size": "24",
+          "opacity": 0.08
+        }
+      ],
+      "borderStyle": "solid",
+      "cornerRadius": 12
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 50,
+          "max": 80
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#7C3AED",
+          "#111827",
+          "#C4B5FD"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 20,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#7C3AED"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#7C3AED"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 18,
+        "max": 30
+      },
+      "barLayout": [
+        "single"
+      ],
+      "barWidth": {
+        "min": 14,
+        "max": 24
+      },
+      "photoType": "square",
+      "photoSize": 84
+    },
+    "defaultValues": {
+      "fullName": "Emma Wilson",
+      "role": "UX Researcher",
+      "image": "/img/team-1.jpg",
+      "description": "Emma Wilson is a ux researcher focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Manrope",
+        "Prata"
+      ],
+      "scale": "comfortable",
+      "fonts": {
+        "display": "Prata",
+        "body": "Manrope"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Prata",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Prata",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-030",
+    "name": "Premium Profile · Pro Palette 030",
+    "version": "1.1.0",
+    "layout": "classic",
+    "structure": "cover-structure-4",
+    "theme": {
+      "palette": {
+        "primary": "#1E40AF",
+        "secondary": "#22C55E",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#F8FAFC"
+      },
+      "density": "comfortable",
+      "textStyle": "roman",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#4F46E5",
+      "accent": "#A5B4FC",
+      "background": "#EEF2FF",
+      "text": "#172554"
+    },
+    "hero": {
+      "alignment": "center",
+      "showPhoto": false,
+      "accent": "badge",
+      "accentIntensity": "bold",
+      "photoPosition": "right"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "relaxed",
+      "titleCase": "normal",
+      "contentWidth": "wide",
+      "photoShape": "square",
+      "borderRadius": 4,
+      "asideWidth": 32,
+      "gutter": 20
+    },
+    "designTokens": {
+      "borderRadius": "lg",
+      "shadowDepth": "flat",
+      "gradientStyle": "none",
+      "patternOverlay": "none",
+      "typographyScale": "spacious",
+      "primary": "#4F46E5",
+      "secondary": "#A5B4FC",
+      "surface": "#EEF2FF",
+      "text": "#172554"
+    },
+    "decor": {
+      "headerStyle": "plain",
+      "footerStyle": "none",
+      "divider": "wave",
+      "iconStyle": "outline",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "57%",
+          "y": "13%",
+          "size": "120",
+          "opacity": 0.17
+        },
+        {
+          "type": "square",
+          "x": "35%",
+          "y": "54%",
+          "size": "138",
+          "opacity": 0.14
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
+          "opacity": 0.08
+        }
+      ],
+      "borderStyle": "double",
+      "cornerRadius": 18
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 50,
+          "max": 80
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#BE123C",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#BE123C",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#BE123C",
+          "#111827",
+          "#FDA4AF"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 20,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#BE123C"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#BE123C"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#BE123C"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#BE123C"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#BE123C"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 6,
+        "max": 24
+      },
+      "barLayout": [
+        "single",
+        "double"
+      ],
+      "barWidth": {
+        "min": 4,
+        "max": 20
+      },
+      "secondaryBarWidth": {
+        "min": 8,
+        "max": 18
+      },
+      "photoType": "circle",
+      "photoSize": 84
+    },
+    "defaultValues": {
+      "fullName": "Noah Turner",
+      "role": "DevOps Engineer",
+      "image": "/img/team-2.jpg",
+      "description": "Noah Turner is a devops engineer focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Inter",
+        "Space Grotesk"
+      ],
+      "scale": "compact",
+      "fonts": {
+        "display": "Space Grotesk",
+        "body": "Inter"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Space Grotesk",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Space Grotesk",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-031",
+    "name": "Strategic Intro · Pro Palette 031",
+    "version": "1.1.0",
+    "layout": "split",
+    "structure": "cover-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#0EA5E9",
+        "secondary": "#F97316",
+        "text": "#E2E8F0",
+        "muted": "#94A3B8",
+        "pageBackground": "#0F172A"
+      },
+      "density": "compact",
+      "textStyle": "serif",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#2563EB",
+      "accent": "#38BDF8",
+      "background": "#E2E8F0",
+      "text": "#0F172A"
+    },
+    "hero": {
+      "alignment": "right",
+      "showPhoto": true,
+      "accent": "bar",
+      "accentIntensity": "subtle",
+      "photoPosition": "left"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "tight",
+      "titleCase": "upper",
+      "contentWidth": "narrow",
+      "photoShape": "circle",
+      "borderRadius": 8,
+      "asideWidth": 34,
+      "gutter": 22
+    },
+    "designTokens": {
+      "borderRadius": "xl",
+      "shadowDepth": "soft",
+      "gradientStyle": "linear-soft",
+      "patternOverlay": "dots",
+      "typographyScale": "tight",
+      "primary": "#2563EB",
+      "secondary": "#38BDF8",
+      "surface": "#E2E8F0",
+      "text": "#0F172A"
+    },
+    "decor": {
+      "headerStyle": "band",
+      "footerStyle": "line",
+      "divider": "solid",
+      "iconStyle": "minimal",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "64%",
+          "y": "24%",
+          "size": "140",
+          "opacity": 0.08
+        },
+        {
+          "type": "diamond",
+          "x": "30%",
+          "y": "51%",
+          "size": "156",
+          "opacity": 0.16
+        },
+        {
+          "type": "star",
+          "x": "14%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "82%",
+          "y": "10%",
+          "size": "24",
+          "opacity": 0.08
+        }
+      ],
+      "borderStyle": "dashed",
+      "cornerRadius": 0
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 50,
+          "max": 80
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#065F46",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#065F46",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#065F46",
+          "#111827",
+          "#6EE7B7"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 20,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#065F46"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#065F46"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#065F46"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#065F46"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#065F46"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 10,
+        "max": 26
+      },
+      "barLayout": [
+        "single"
+      ],
+      "barWidth": {
+        "min": 6,
+        "max": 14
+      },
+      "photoType": "circle",
+      "photoSize": 84
+    },
+    "defaultValues": {
+      "fullName": "Emma Wilson",
+      "role": "Business Consultant",
+      "image": "/img/team-3.jpg",
+      "description": "Emma Wilson is a business consultant focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Libre Baskerville",
+        "Public Sans"
+      ],
+      "scale": "comfortable",
+      "fonts": {
+        "display": "Libre Baskerville",
+        "body": "Public Sans"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Libre Baskerville",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Public Sans",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Libre Baskerville",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Public Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Public Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Public Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-032",
+    "name": "Creative Portfolio · Pro Palette 032",
+    "version": "1.1.0",
+    "layout": "minimal",
+    "structure": "cover-structure-2",
+    "theme": {
+      "palette": {
+        "primary": "#0F766E",
+        "secondary": "#EA580C",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#F5F5F4"
+      },
+      "density": "airy",
+      "textStyle": "sans",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#7C3AED",
+      "accent": "#C4B5FD",
+      "background": "#EDE9FE",
+      "text": "#111827"
+    },
+    "hero": {
+      "alignment": "left",
+      "showPhoto": false,
+      "accent": "shape",
+      "accentIntensity": "medium",
+      "photoPosition": "right"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "normal",
+      "titleCase": "normal",
+      "contentWidth": "normal",
+      "photoShape": "rounded",
+      "borderRadius": 12,
+      "asideWidth": 36,
+      "gutter": 24
+    },
+    "designTokens": {
+      "borderRadius": "none",
+      "shadowDepth": "medium",
+      "gradientStyle": "linear-vivid",
+      "patternOverlay": "grid",
+      "typographyScale": "balanced",
+      "primary": "#7C3AED",
+      "secondary": "#C4B5FD",
+      "surface": "#EDE9FE",
+      "text": "#111827"
+    },
+    "decor": {
+      "headerStyle": "split-band",
+      "footerStyle": "block",
+      "divider": "soft",
+      "iconStyle": "rounded",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "71%",
+          "y": "35%",
+          "size": "160",
+          "opacity": 0.11
+        },
+        {
+          "type": "square",
+          "x": "25%",
+          "y": "48%",
+          "size": "174",
+          "opacity": 0.06
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "84%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
+          "opacity": 0.08
+        }
+      ],
+      "borderStyle": "solid",
+      "cornerRadius": 6
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 50,
+          "max": 80
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#9A3412",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#9A3412",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#9A3412",
+          "#111827",
+          "#FDBA74"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 20,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#9A3412"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#9A3412"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#9A3412"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#9A3412"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#9A3412"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 0,
+        "max": 30
+      },
+      "barLayout": [
+        "single",
+        "double"
+      ],
+      "barWidth": {
+        "min": 4,
+        "max": 24
+      },
+      "secondaryBarWidth": {
+        "min": 2,
+        "max": 20
+      },
+      "photoType": "square",
+      "photoSize": 124
+    },
+    "defaultValues": {
+      "fullName": "Noah Turner",
+      "role": "Mobile Developer",
+      "image": "/img/team-4.jpg",
+      "description": "Noah Turner is a mobile developer focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Lato",
+        "Oswald"
+      ],
+      "scale": "compact",
+      "fonts": {
+        "display": "Oswald",
+        "body": "Lato"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Oswald",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Oswald",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-033",
+    "name": "Classic Cover · Pro Palette 033",
+    "version": "1.1.0",
+    "layout": "timeline",
+    "structure": "cover-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#A855F7",
+        "secondary": "#22C55E",
+        "text": "#F3F4F6",
+        "muted": "#9CA3AF",
+        "pageBackground": "#111827"
+      },
+      "density": "airy",
+      "textStyle": "sans",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#16A34A",
+      "accent": "#86EFAC",
+      "background": "#DCFCE7",
+      "text": "#052E16"
+    },
+    "hero": {
+      "alignment": "left",
+      "showPhoto": true,
+      "accent": "bar",
+      "accentIntensity": "medium",
+      "photoPosition": "left"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "normal",
+      "titleCase": "upper",
+      "contentWidth": "normal",
+      "photoShape": "rounded",
+      "borderRadius": 16,
+      "asideWidth": 28,
+      "gutter": 16
+    },
+    "designTokens": {
+      "borderRadius": "sm",
+      "shadowDepth": "soft",
+      "gradientStyle": "linear-soft",
+      "patternOverlay": "dots",
+      "typographyScale": "balanced",
+      "primary": "#16A34A",
+      "secondary": "#86EFAC",
+      "surface": "#DCFCE7",
+      "text": "#052E16"
+    },
+    "decor": {
+      "headerStyle": "band",
+      "footerStyle": "line",
+      "divider": "none",
+      "iconStyle": "rounded",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "12%",
+          "y": "0%",
+          "size": "230",
+          "opacity": 0.18
+        }
+      ],
+      "borderStyle": "double",
+      "cornerRadius": 12
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 60,
+          "max": 68
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 28,
+          "max": 36
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F4C81",
+          "#111827",
+          "#5FA8D3"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 16,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 4,
+        "max": 18
+      },
+      "barLayout": [],
+      "barWidth": {
+        "min": 6,
+        "max": 18
+      },
+      "photoType": "square",
+      "photoSize": 124
+    },
+    "defaultValues": {
+      "fullName": "Emma Wilson",
+      "role": "Content Strategist",
+      "image": "/img/team-5.jpg",
+      "description": "Emma Wilson is a content strategist focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "DM Sans",
+        "DM Serif Display"
+      ],
+      "scale": "comfortable",
+      "fonts": {
+        "display": "DM Serif Display",
+        "body": "DM Sans"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "DM Serif Display",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "DM Sans",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "DM Serif Display",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "DM Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "DM Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "DM Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-034",
+    "name": "Refined Front · Pro Palette 034",
+    "version": "1.1.0",
+    "layout": "executive",
+    "structure": "cover-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#7C3AED",
+        "secondary": "#06B6D4",
+        "text": "#1F1147",
+        "muted": "#6D5A99",
+        "pageBackground": "#F5F3FF"
+      },
+      "density": "airy",
+      "textStyle": "sans",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#DB2777",
+      "accent": "#F9A8D4",
+      "background": "#FCE7F3",
+      "text": "#3F1D2E"
+    },
+    "hero": {
+      "alignment": "left",
+      "showPhoto": true,
+      "accent": "bar",
+      "accentIntensity": "medium",
+      "photoPosition": "left"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "normal",
+      "titleCase": "upper",
+      "contentWidth": "normal",
+      "photoShape": "rounded",
+      "borderRadius": 20,
+      "asideWidth": 30,
+      "gutter": 18
+    },
+    "designTokens": {
+      "borderRadius": "sm",
+      "shadowDepth": "soft",
+      "gradientStyle": "linear-soft",
+      "patternOverlay": "dots",
+      "typographyScale": "balanced",
+      "primary": "#DB2777",
+      "secondary": "#F9A8D4",
+      "surface": "#FCE7F3",
+      "text": "#3F1D2E"
+    },
+    "decor": {
+      "headerStyle": "band",
+      "footerStyle": "line",
+      "divider": "none",
+      "iconStyle": "rounded",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "12%",
+          "y": "0%",
+          "size": "230",
+          "opacity": 0.18
+        }
+      ],
+      "borderStyle": "dashed",
+      "cornerRadius": 18
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 60,
+          "max": 68
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 28,
+          "max": 36
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F4C81",
+          "#111827",
+          "#5FA8D3"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 16,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 4,
+        "max": 18
+      },
+      "barLayout": [],
+      "barWidth": {
+        "min": 6,
+        "max": 18
+      },
+      "photoType": "square",
+      "photoSize": 124
+    },
+    "defaultValues": {
+      "fullName": "Noah Turner",
+      "role": "Operations Lead",
+      "image": "/img/team-9.jpeg",
+      "description": "Noah Turner is a operations lead focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Cinzel",
+        "Work Sans"
+      ],
+      "scale": "compact",
+      "fonts": {
+        "display": "Cinzel",
+        "body": "Work Sans"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Cinzel",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Work Sans",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Cinzel",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Work Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Work Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Work Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-035",
+    "name": "Executive Cover · Pro Palette 035",
+    "version": "1.1.0",
+    "layout": "modern",
+    "structure": "cover-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#2563EB",
+        "secondary": "#93C5FD",
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#1F2937"
+      },
+      "density": "airy",
+      "textStyle": "sans",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#EA580C",
+      "accent": "#FDBA74",
+      "background": "#FFF7ED",
+      "text": "#3B1D0A"
+    },
+    "hero": {
+      "alignment": "left",
+      "showPhoto": true,
+      "accent": "bar",
+      "accentIntensity": "medium",
+      "photoPosition": "left"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "normal",
+      "titleCase": "upper",
+      "contentWidth": "normal",
+      "photoShape": "rounded",
+      "borderRadius": 0,
+      "asideWidth": 32,
+      "gutter": 20
+    },
+    "designTokens": {
+      "borderRadius": "sm",
+      "shadowDepth": "soft",
+      "gradientStyle": "linear-soft",
+      "patternOverlay": "dots",
+      "typographyScale": "balanced",
+      "primary": "#EA580C",
+      "secondary": "#FDBA74",
+      "surface": "#FFF7ED",
+      "text": "#3B1D0A"
+    },
+    "decor": {
+      "headerStyle": "band",
+      "footerStyle": "line",
+      "divider": "none",
+      "iconStyle": "rounded",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "12%",
+          "y": "0%",
+          "size": "230",
+          "opacity": 0.18
+        }
+      ],
+      "borderStyle": "solid",
+      "cornerRadius": 0
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 60,
+          "max": 68
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 28,
+          "max": 36
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F4C81",
+          "#111827",
+          "#5FA8D3"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 16,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 4,
+        "max": 18
+      },
+      "barLayout": [
+        "single"
+      ],
+      "barWidth": {
+        "min": 6,
+        "max": 18
+      },
+      "photoType": "square",
+      "photoSize": 124
+    },
+    "defaultValues": {
+      "fullName": "Alex Martin",
+      "role": "Product Designer",
+      "image": "/img/team-1.jpg",
+      "description": "Alex Martin is a product designer focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Inter",
+        "Playfair Display"
+      ],
+      "scale": "comfortable",
+      "fonts": {
+        "display": "Playfair Display",
+        "body": "Inter"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Playfair Display",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Playfair Display",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-036",
+    "name": "Modern Front · Pro Palette 036",
+    "version": "1.1.0",
+    "layout": "classic",
+    "structure": "cover-structure-2",
+    "theme": {
+      "palette": {
+        "primary": "#1E40AF",
+        "secondary": "#22C55E",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#F8FAFC"
+      },
+      "density": "comfortable",
+      "textStyle": "roman",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#0891B2",
+      "accent": "#67E8F9",
+      "background": "#ECFEFF",
+      "text": "#082F49"
+    },
+    "hero": {
+      "alignment": "center",
+      "showPhoto": false,
+      "accent": "shape",
+      "accentIntensity": "bold",
+      "photoPosition": "right"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "relaxed",
+      "titleCase": "normal",
+      "contentWidth": "wide",
+      "photoShape": "square",
+      "borderRadius": 4,
+      "asideWidth": 34,
+      "gutter": 22
+    },
+    "designTokens": {
+      "borderRadius": "md",
+      "shadowDepth": "medium",
+      "gradientStyle": "linear-vivid",
+      "patternOverlay": "grid",
+      "typographyScale": "spacious",
+      "primary": "#0891B2",
+      "secondary": "#67E8F9",
+      "surface": "#ECFEFF",
+      "text": "#082F49"
+    },
+    "decor": {
+      "headerStyle": "split-band",
+      "footerStyle": "block",
+      "divider": "line",
+      "iconStyle": "outline",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "15%",
+          "y": "17%",
+          "size": "100",
+          "opacity": 0.11
+        },
+        {
+          "type": "square",
+          "x": "65%",
+          "y": "72%",
+          "size": "138",
+          "opacity": 0.11
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
+          "opacity": 0.08
+        }
+      ],
+      "borderStyle": "double",
+      "cornerRadius": 6
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 50,
+          "max": 80
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#7C3AED",
+          "#111827",
+          "#C4B5FD"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 20,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#7C3AED"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#7C3AED"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 12,
+        "max": 28
+      },
+      "barLayout": [
+        "single",
+        "double"
+      ],
+      "barWidth": {
+        "min": 8,
+        "max": 24
+      },
+      "secondaryBarWidth": {
+        "min": 3,
+        "max": 10
+      },
+      "photoType": "circle",
+      "photoSize": 100
+    },
+    "defaultValues": {
+      "fullName": "Jordan Lee",
+      "role": "Full Stack Developer",
+      "image": "/img/team-2.jpg",
+      "description": "Jordan Lee is a full stack developer focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Montserrat",
+        "Open Sans"
+      ],
+      "scale": "compact",
+      "fonts": {
+        "display": "Montserrat",
+        "body": "Open Sans"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Montserrat",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Montserrat",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Open Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-037",
+    "name": "Editorial Profile · Pro Palette 037",
+    "version": "1.1.0",
+    "layout": "split",
+    "structure": "cover-structure-3",
+    "theme": {
+      "palette": {
+        "primary": "#0EA5E9",
+        "secondary": "#F97316",
+        "text": "#E2E8F0",
+        "muted": "#94A3B8",
+        "pageBackground": "#0F172A"
+      },
+      "density": "compact",
+      "textStyle": "serif",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#F59E0B",
+      "accent": "#FDE68A",
+      "background": "#FFFBEB",
+      "text": "#1F2937"
+    },
+    "hero": {
+      "alignment": "right",
+      "showPhoto": true,
+      "accent": "line",
+      "accentIntensity": "subtle",
+      "photoPosition": "left"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "tight",
+      "titleCase": "upper",
+      "contentWidth": "narrow",
+      "photoShape": "circle",
+      "borderRadius": 8,
+      "asideWidth": 36,
+      "gutter": 24
+    },
+    "designTokens": {
+      "borderRadius": "lg",
+      "shadowDepth": "strong",
+      "gradientStyle": "radial-glow",
+      "patternOverlay": "noise",
+      "typographyScale": "tight",
+      "primary": "#F59E0B",
+      "secondary": "#FDE68A",
+      "surface": "#FFFBEB",
+      "text": "#1F2937"
+    },
+    "decor": {
+      "headerStyle": "ribbon",
+      "footerStyle": "signature-bar",
+      "divider": "dashed",
+      "iconStyle": "minimal",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "22%",
+          "y": "28%",
+          "size": "120",
+          "opacity": 0.14
+        },
+        {
+          "type": "diamond",
+          "x": "60%",
+          "y": "69%",
+          "size": "156",
+          "opacity": 0.14
+        },
+        {
+          "type": "star",
+          "x": "14%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "82%",
+          "y": "10%",
+          "size": "24",
+          "opacity": 0.08
+        }
+      ],
+      "borderStyle": "dashed",
+      "cornerRadius": 12
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 50,
+          "max": 80
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#BE123C",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#BE123C",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#BE123C",
+          "#111827",
+          "#FDA4AF"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 20,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#BE123C"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#BE123C"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#BE123C"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#BE123C"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#BE123C"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 0,
+        "max": 12
+      },
+      "barLayout": [
+        "single"
+      ],
+      "barWidth": {
+        "min": 4,
+        "max": 12
+      },
+      "photoType": "circle",
+      "photoSize": 84
+    },
+    "defaultValues": {
+      "fullName": "Alex Martin",
+      "role": "Marketing Manager",
+      "image": "/img/team-3.jpg",
+      "description": "Alex Martin is a marketing manager focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Cormorant Garamond",
+        "Lato"
+      ],
+      "scale": "comfortable",
+      "fonts": {
+        "display": "Cormorant Garamond",
+        "body": "Lato"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Cormorant Garamond",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Cormorant Garamond",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Lato",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-038",
+    "name": "Minimal Intro · Pro Palette 038",
+    "version": "1.1.0",
+    "layout": "minimal",
+    "structure": "cover-structure-4",
+    "theme": {
+      "palette": {
+        "primary": "#0F766E",
+        "secondary": "#EA580C",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#F5F5F4"
+      },
+      "density": "airy",
+      "textStyle": "sans",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#4F46E5",
+      "accent": "#A5B4FC",
+      "background": "#EEF2FF",
+      "text": "#172554"
+    },
+    "hero": {
+      "alignment": "left",
+      "showPhoto": false,
+      "accent": "badge",
+      "accentIntensity": "medium",
+      "photoPosition": "right"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "normal",
+      "titleCase": "normal",
+      "contentWidth": "normal",
+      "photoShape": "rounded",
+      "borderRadius": 12,
+      "asideWidth": 28,
+      "gutter": 16
+    },
+    "designTokens": {
+      "borderRadius": "xl",
+      "shadowDepth": "flat",
+      "gradientStyle": "none",
+      "patternOverlay": "none",
+      "typographyScale": "balanced",
+      "primary": "#4F46E5",
+      "secondary": "#A5B4FC",
+      "surface": "#EEF2FF",
+      "text": "#172554"
+    },
+    "decor": {
+      "headerStyle": "plain",
+      "footerStyle": "none",
+      "divider": "gradient",
+      "iconStyle": "rounded",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "29%",
+          "y": "39%",
+          "size": "140",
+          "opacity": 0.17
+        },
+        {
+          "type": "square",
+          "x": "55%",
+          "y": "66%",
+          "size": "174",
+          "opacity": 0.16
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "84%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
+          "opacity": 0.08
+        }
+      ],
+      "borderStyle": "solid",
+      "cornerRadius": 18
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 50,
+          "max": 80
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#065F46",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#065F46",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#065F46",
+          "#111827",
+          "#6EE7B7"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 20,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#065F46"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#065F46"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#065F46"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#065F46"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#065F46"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 16,
+        "max": 30
+      },
+      "barLayout": [
+        "single",
+        "double"
+      ],
+      "barWidth": {
+        "min": 10,
+        "max": 22
+      },
+      "secondaryBarWidth": {
+        "min": 6,
+        "max": 14
+      },
+      "photoType": "square",
+      "photoSize": 92
+    },
+    "defaultValues": {
+      "fullName": "Jordan Lee",
+      "role": "Data Analyst",
+      "image": "/img/team-4.jpg",
+      "description": "Jordan Lee is a data analyst focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Bebas Neue",
+        "Roboto"
+      ],
+      "scale": "compact",
+      "fonts": {
+        "display": "Bebas Neue",
+        "body": "Roboto"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Bebas Neue",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Bebas Neue",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Roboto",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-039",
+    "name": "Corporate Portfolio · Pro Palette 039",
+    "version": "1.1.0",
+    "layout": "timeline",
+    "structure": "cover-structure-1",
+    "theme": {
+      "palette": {
+        "primary": "#A855F7",
+        "secondary": "#22C55E",
+        "text": "#F3F4F6",
+        "muted": "#9CA3AF",
+        "pageBackground": "#111827"
+      },
+      "density": "comfortable",
+      "textStyle": "roman",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#2563EB",
+      "accent": "#38BDF8",
+      "background": "#E2E8F0",
+      "text": "#0F172A"
+    },
+    "hero": {
+      "alignment": "center",
+      "showPhoto": true,
+      "accent": "bar",
+      "accentIntensity": "bold",
+      "photoPosition": "left"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "relaxed",
+      "titleCase": "upper",
+      "contentWidth": "wide",
+      "photoShape": "square",
+      "borderRadius": 16,
+      "asideWidth": 30,
+      "gutter": 18
+    },
+    "designTokens": {
+      "borderRadius": "none",
+      "shadowDepth": "soft",
+      "gradientStyle": "linear-soft",
+      "patternOverlay": "dots",
+      "typographyScale": "spacious",
+      "primary": "#2563EB",
+      "secondary": "#38BDF8",
+      "surface": "#E2E8F0",
+      "text": "#0F172A"
+    },
+    "decor": {
+      "headerStyle": "band",
+      "footerStyle": "line",
+      "divider": "double-line",
+      "iconStyle": "outline",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "36%",
+          "y": "50%",
+          "size": "160",
+          "opacity": 0.08
+        },
+        {
+          "type": "diamond",
+          "x": "50%",
+          "y": "63%",
+          "size": "192",
+          "opacity": 0.06
+        },
+        {
+          "type": "star",
+          "x": "14%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "82%",
+          "y": "10%",
+          "size": "24",
+          "opacity": 0.08
+        }
+      ],
+      "borderStyle": "double",
+      "cornerRadius": 0
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 50,
+          "max": 80
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#9A3412",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#9A3412",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#9A3412",
+          "#111827",
+          "#FDBA74"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 20,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#9A3412"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#9A3412"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#9A3412"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#9A3412"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#9A3412"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 8,
+        "max": 20
+      },
+      "barLayout": [
+        "single"
+      ],
+      "barWidth": {
+        "min": 12,
+        "max": 20
+      },
+      "photoType": "circle",
+      "photoSize": 110
+    },
+    "defaultValues": {
+      "fullName": "Alex Martin",
+      "role": "HR Specialist",
+      "image": "/img/team-5.jpg",
+      "description": "Alex Martin is a hr specialist focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Abril Fatface",
+        "Source Sans 3"
+      ],
+      "scale": "comfortable",
+      "fonts": {
+        "display": "Abril Fatface",
+        "body": "Source Sans 3"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Abril Fatface",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Abril Fatface",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Source Sans 3",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-040",
+    "name": "Leadership Cover · Pro Palette 040",
+    "version": "1.1.0",
+    "layout": "executive",
+    "structure": "cover-structure-2",
+    "theme": {
+      "palette": {
+        "primary": "#7C3AED",
+        "secondary": "#06B6D4",
+        "text": "#1F1147",
+        "muted": "#6D5A99",
+        "pageBackground": "#F5F3FF"
+      },
+      "density": "compact",
+      "textStyle": "serif",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#7C3AED",
+      "accent": "#C4B5FD",
+      "background": "#EDE9FE",
+      "text": "#111827"
+    },
+    "hero": {
+      "alignment": "right",
+      "showPhoto": false,
+      "accent": "shape",
+      "accentIntensity": "subtle",
+      "photoPosition": "right"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "tight",
+      "titleCase": "normal",
+      "contentWidth": "narrow",
+      "photoShape": "circle",
+      "borderRadius": 20,
+      "asideWidth": 32,
+      "gutter": 20
+    },
+    "designTokens": {
+      "borderRadius": "sm",
+      "shadowDepth": "medium",
+      "gradientStyle": "linear-vivid",
+      "patternOverlay": "grid",
+      "typographyScale": "tight",
+      "primary": "#7C3AED",
+      "secondary": "#C4B5FD",
+      "surface": "#EDE9FE",
+      "text": "#111827"
+    },
+    "decor": {
+      "headerStyle": "split-band",
+      "footerStyle": "block",
+      "divider": "dots",
+      "iconStyle": "minimal",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "43%",
+          "y": "61%",
+          "size": "80",
+          "opacity": 0.11
+        },
+        {
+          "type": "square",
+          "x": "45%",
+          "y": "60%",
+          "size": "210",
+          "opacity": 0.08
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
+          "opacity": 0.08
+        }
+      ],
+      "borderStyle": "dashed",
+      "cornerRadius": 6
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 50,
+          "max": 80
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#0F4C81",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F4C81",
+          "#111827",
+          "#5FA8D3"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 20,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#0F4C81"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#0F4C81"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 2,
+        "max": 16
+      },
+      "barLayout": [
+        "single",
+        "double"
+      ],
+      "barWidth": {
+        "min": 6,
+        "max": 16
+      },
+      "secondaryBarWidth": {
+        "min": 2,
+        "max": 8
+      },
+      "photoType": "circle",
+      "photoSize": 105
+    },
+    "defaultValues": {
+      "fullName": "Jordan Lee",
+      "role": "Project Manager",
+      "image": "/img/team-9.jpeg",
+      "description": "Jordan Lee is a project manager focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Nunito Sans",
+        "Raleway"
+      ],
+      "scale": "compact",
+      "fonts": {
+        "display": "Raleway",
+        "body": "Nunito Sans"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Raleway",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Raleway",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Nunito Sans",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-041",
+    "name": "Polished Front · Pro Palette 041",
+    "version": "1.1.0",
+    "layout": "modern",
+    "structure": "cover-structure-3",
+    "theme": {
+      "palette": {
+        "primary": "#2563EB",
+        "secondary": "#93C5FD",
+        "text": "#F8FAFC",
+        "muted": "#CBD5E1",
+        "pageBackground": "#1F2937"
+      },
+      "density": "airy",
+      "textStyle": "sans",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#16A34A",
+      "accent": "#86EFAC",
+      "background": "#DCFCE7",
+      "text": "#052E16"
+    },
+    "hero": {
+      "alignment": "left",
+      "showPhoto": true,
+      "accent": "line",
+      "accentIntensity": "medium",
+      "photoPosition": "left"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "normal",
+      "titleCase": "upper",
+      "contentWidth": "normal",
+      "photoShape": "rounded",
+      "borderRadius": 0,
+      "asideWidth": 34,
+      "gutter": 22
+    },
+    "designTokens": {
+      "borderRadius": "md",
+      "shadowDepth": "strong",
+      "gradientStyle": "radial-glow",
+      "patternOverlay": "noise",
+      "typographyScale": "balanced",
+      "primary": "#16A34A",
+      "secondary": "#86EFAC",
+      "surface": "#DCFCE7",
+      "text": "#052E16"
+    },
+    "decor": {
+      "headerStyle": "ribbon",
+      "footerStyle": "signature-bar",
+      "divider": "zigzag",
+      "iconStyle": "rounded",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "50%",
+          "y": "72%",
+          "size": "100",
+          "opacity": 0.14
+        },
+        {
+          "type": "diamond",
+          "x": "40%",
+          "y": "57%",
+          "size": "120",
+          "opacity": 0.11
+        },
+        {
+          "type": "star",
+          "x": "14%",
+          "y": "84%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "82%",
+          "y": "10%",
+          "size": "24",
+          "opacity": 0.08
+        }
+      ],
+      "borderStyle": "solid",
+      "cornerRadius": 12
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 50,
+          "max": 80
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#7C3AED",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#7C3AED",
+          "#111827",
+          "#C4B5FD"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 20,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#7C3AED"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#7C3AED"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#7C3AED"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 18,
+        "max": 30
+      },
+      "barLayout": [
+        "single"
+      ],
+      "barWidth": {
+        "min": 14,
+        "max": 24
+      },
+      "photoType": "square",
+      "photoSize": 84
+    },
+    "defaultValues": {
+      "fullName": "Emma Wilson",
+      "role": "UX Researcher",
+      "image": "/img/team-1.jpg",
+      "description": "Emma Wilson is a ux researcher focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Manrope",
+        "Prata"
+      ],
+      "scale": "comfortable",
+      "fonts": {
+        "display": "Prata",
+        "body": "Manrope"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Prata",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Prata",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
+  },
+  {
+    "id": "cpage-042",
+    "name": "Premium Profile · Pro Palette 042",
+    "version": "1.1.0",
+    "layout": "classic",
+    "structure": "cover-structure-4",
+    "theme": {
+      "palette": {
+        "primary": "#1E40AF",
+        "secondary": "#22C55E",
+        "text": "#0F172A",
+        "muted": "#64748B",
+        "pageBackground": "#F8FAFC"
+      },
+      "density": "comfortable",
+      "textStyle": "roman",
+      "pageBorder": {
+        "enabled": false,
+        "width": 2,
+        "color": "#CBD5E1",
+        "radius": 16
+      },
+      "primary": "#DB2777",
+      "accent": "#F9A8D4",
+      "background": "#FCE7F3",
+      "text": "#3F1D2E"
+    },
+    "hero": {
+      "alignment": "center",
+      "showPhoto": false,
+      "accent": "badge",
+      "accentIntensity": "bold",
+      "photoPosition": "right"
+    },
+    "layoutOptions": {
+      "sectionSpacing": "relaxed",
+      "titleCase": "normal",
+      "contentWidth": "wide",
+      "photoShape": "square",
+      "borderRadius": 4,
+      "asideWidth": 36,
+      "gutter": 24
+    },
+    "designTokens": {
+      "borderRadius": "lg",
+      "shadowDepth": "flat",
+      "gradientStyle": "none",
+      "patternOverlay": "none",
+      "typographyScale": "spacious",
+      "primary": "#DB2777",
+      "secondary": "#F9A8D4",
+      "surface": "#FCE7F3",
+      "text": "#3F1D2E"
+    },
+    "decor": {
+      "headerStyle": "plain",
+      "footerStyle": "none",
+      "divider": "wave",
+      "iconStyle": "outline",
+      "objects": [
+        {
+          "type": "circle",
+          "x": "57%",
+          "y": "13%",
+          "size": "120",
+          "opacity": 0.17
+        },
+        {
+          "type": "square",
+          "x": "35%",
+          "y": "54%",
+          "size": "138",
+          "opacity": 0.14
+        },
+        {
+          "type": "star",
+          "x": "86%",
+          "y": "14%",
+          "size": "28",
+          "opacity": 0.1
+        },
+        {
+          "type": "square",
+          "x": "18%",
+          "y": "90%",
+          "size": "24",
+          "opacity": 0.08
+        }
+      ],
+      "borderStyle": "double",
+      "cornerRadius": 18
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 50,
+          "max": 80
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#BE123C",
+          "#6B7280"
+        ]
+      },
+      "role": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#111827",
+          "#BE123C",
+          "#6B7280"
+        ]
+      },
+      "heading": {
+        "size": {
+          "min": 25,
+          "max": 40
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#BE123C",
+          "#111827",
+          "#FDA4AF"
+        ]
+      },
+      "summary": {
+        "size": {
+          "min": 20,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#BE123C"
+        ]
+      },
+      "email": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#BE123C"
+        ]
+      },
+      "phone": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#111827",
+          "#6B7280",
+          "#BE123C"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#BE123C"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 14,
+          "max": 20
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#6B7280",
+          "#111827",
+          "#BE123C"
+        ]
+      }
+    },
+    "designConfig": {
+      "barRadius": {
+        "min": 6,
+        "max": 24
+      },
+      "barLayout": [
+        "single",
+        "double"
+      ],
+      "barWidth": {
+        "min": 4,
+        "max": 20
+      },
+      "secondaryBarWidth": {
+        "min": 8,
+        "max": 18
+      },
+      "photoType": "circle",
+      "photoSize": 84
+    },
+    "defaultValues": {
+      "fullName": "Noah Turner",
+      "role": "DevOps Engineer",
+      "image": "/img/team-2.jpg",
+      "description": "Noah Turner is a devops engineer focused on impact, collaboration, and measurable results."
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Inter",
+        "Space Grotesk"
+      ],
+      "scale": "compact",
+      "fonts": {
+        "display": "Space Grotesk",
+        "body": "Inter"
+      }
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Space Grotesk",
+        "fallback": "serif",
+        "fontWeight": 800,
+        "letterSpacing": "-0.04em",
+        "lineHeight": 0.98
+      },
+      "role": {
+        "kind": "subtitle",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 600,
+        "letterSpacing": "0.025em",
+        "lineHeight": 1.18
+      },
+      "heading": {
+        "kind": "heading",
+        "fontFamily": "Space Grotesk",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.02em",
+        "lineHeight": 1.12
+      },
+      "summary": {
+        "kind": "body",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.55
+      },
+      "email": {
+        "kind": "meta",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      },
+      "phone": {
+        "kind": "meta",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 500,
+        "letterSpacing": "0.01em",
+        "lineHeight": 1.35
+      }
+    }
   }
 ]
