@@ -289,8 +289,13 @@ const sectionSpacing = computed(() =>
     ? '40px'
     : '24px',
 )
+const currentPalette = computed(() => ({
+  ...(activeTemplate.value?.theme?.palette || {}),
+  ...(paletteOverrides.value[selectedTemplate.value] || {}),
+}))
+
 const activeColors = computed(() => {
-  const palette = activeTemplate.value.theme.palette
+  const palette = currentPalette.value
   const selected = palettePresetOptions.value.find(
     (option) => option.value === selectedPalette.value,
   )
@@ -311,6 +316,7 @@ watch(
   () => selectedTemplate.value,
   () => {
     initialPaletteState.value = { ...(activeTemplate.value?.theme?.palette || {}) }
+    if (!paletteOverrides.value[selectedTemplate.value]) paletteOverrides.value[selectedTemplate.value] = {}
   },
   { immediate: true },
 )
@@ -319,13 +325,14 @@ function updatePaletteColor(payload: { key: 'primary' | 'secondary' | 'text' | '
   const color = String(payload?.value || '').trim()
   if (!color) return
   selectedPalette.value = 'template'
-  if (!activeTemplate.value.theme.palette) activeTemplate.value.theme.palette = {} as any
-  ;(activeTemplate.value.theme.palette as Record<string, string>)[payload.key] = color
+  const templateId = selectedTemplate.value
+  if (!paletteOverrides.value[templateId]) paletteOverrides.value[templateId] = {}
+  paletteOverrides.value[templateId][payload.key] = color
 }
 
 function resetPaletteColors() {
   selectedPalette.value = 'template'
-  activeTemplate.value.theme.palette = { ...initialPaletteState.value } as any
+paletteOverrides.value[selectedTemplate.value] = {}
 }
 function readableCoverTextColor(color = '#0F172A') {
   return readableTextColorForBackground(activeColors.value.pageBackground, color)
