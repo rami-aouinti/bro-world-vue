@@ -128,6 +128,10 @@ const {
   allSections,
   contentSections,
   asideSections,
+  headerSections,
+  identitySections,
+  leftAsideSections,
+  rightAsideSections,
   sectionIcon: runtimeSectionIcon,
   sectionForm,
   sectionColumn,
@@ -348,8 +352,19 @@ const templateHalfContentSections = computed(() =>
     .filter((section) => section.column === 'half')
     .map((section) => section.key),
 )
-const templateAsideSections = computed(() =>
-  asideSections.value.map((section) => section.key),
+const templateAsideSections = computed(() => {
+  const layout = String(activeTemplate.value?.layout || '')
+  if (layout.includes('left'))
+    return leftAsideSections.value.map((section) => section.key)
+  if (layout.includes('right'))
+    return rightAsideSections.value.map((section) => section.key)
+  return asideSections.value.map((section) => section.key)
+})
+const templateHeaderSections = computed(() =>
+  headerSections.value.map((section) => section.key),
+)
+const templateIdentitySections = computed(() =>
+  identitySections.value.map((section) => section.key),
 )
 const templateMainTwoSideSections = computed(() => [
   ...templateHalfContentSections.value,
@@ -1255,7 +1270,20 @@ const headerProfile = computed(() => {
   }
 })
 
-const headerContactItems = computed(() => headerProfile.value.contact)
+const shouldRenderIdentityProfile = computed(() => {
+  const sections = templateIdentitySections.value
+  return (
+    sections.length === 0 ||
+    sections.some((section) =>
+      ['identity', 'photo', 'fullname', 'role', 'profile'].includes(section),
+    )
+  )
+})
+const headerContactItems = computed(() => {
+  const sections = templateHeaderSections.value
+  if (sections.length > 0 && !sections.includes('contact')) return []
+  return headerProfile.value.contact
+})
 
 const photoMenuOpen = ref(false)
 const photoFileInput = ref<HTMLInputElement | null>(null)
@@ -2091,7 +2119,7 @@ watch(
         >
           <template #identity>
             <div
-              v-if="isIdentityAsideLayout"
+              v-if="isIdentityAsideLayout && shouldRenderIdentityProfile"
               class="cv-header-identity cv-header-identity--aside"
             >
               <div class="cv-photo-wrap">
