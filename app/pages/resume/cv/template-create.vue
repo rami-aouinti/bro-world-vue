@@ -594,6 +594,7 @@ const sectionIconOverrides = reactive<Record<string, string>>({})
 type TemplateSectionIconConfig = {
   icon?: string
   iconAlternatives?: string[]
+  column?: string
 }
 
 const normalizedTemplateSections = computed<
@@ -616,10 +617,13 @@ const normalizedTemplateSections = computed<
             (icon): icon is string => typeof icon === 'string' && !!icon,
           )
         : []
+      const column =
+        typeof config.column === 'string' ? config.column : undefined
 
       acc[key] = {
         icon,
         iconAlternatives,
+        column,
       }
       return acc
     },
@@ -989,6 +993,11 @@ function toSectionKey(section?: string) {
   if (key === 'hobby' || key === 'interest' || key === 'interests')
     return 'hobbies'
   return key
+}
+
+function contentColumnClass(sectionKey: string) {
+  const column = normalizedTemplateSections.value[sectionKey]?.column
+  return column === 'half' ? 'cv-section-row--half' : 'cv-section-row--full'
 }
 
 function getSectionItems(rawSection: string): string[] {
@@ -1642,7 +1651,7 @@ watch(
 </script>
 
 <template>
-  <div>
+  <div :class="{ 'cv-page--capture': isCaptureMode }">
     <input
       v-if="!isCaptureMode"
       ref="photoFileInput"
@@ -2732,7 +2741,10 @@ watch(
               <div
                 v-for="section in visibleContentBaseSections"
                 :key="`content-base-${section}`"
-                class="cv-section-row"
+                :class="[
+                  'cv-section-row',
+                  contentColumnClass(toSectionKey(section)),
+                ]"
                 :style="sectionOffsetStyle('contentBase', section)"
                 draggable="true"
                 @dragstart="onSectionDragStart('contentBase', section)"
@@ -2833,7 +2845,10 @@ watch(
               <div
                 v-for="section in visibleContentStructure2Sections"
                 :key="`content-s2-${section}`"
-                class="cv-section-row"
+                :class="[
+                  'cv-section-row',
+                  contentColumnClass(toSectionKey(section)),
+                ]"
                 :style="sectionOffsetStyle('contentStructure2', section)"
                 draggable="true"
                 @dragstart="onSectionDragStart('contentStructure2', section)"
@@ -2936,7 +2951,10 @@ watch(
               <div
                 v-for="section in visibleMainOneSections"
                 :key="`s1-${section}`"
-                class="cv-section-row"
+                :class="[
+                  'cv-section-row',
+                  contentColumnClass(toSectionKey(section)),
+                ]"
                 :style="sectionOffsetStyle('mainOne', section)"
                 draggable="true"
                 @dragstart="onSectionDragStart('mainOne', section)"
@@ -3033,7 +3051,10 @@ watch(
               <div
                 v-for="section in visibleMainTwoTopSections"
                 :key="`s2-top-${section}`"
-                class="cv-section-row"
+                :class="[
+                  'cv-section-row',
+                  contentColumnClass(toSectionKey(section)),
+                ]"
                 :style="sectionOffsetStyle('mainTwoTop', section)"
                 draggable="true"
                 @dragstart="onSectionDragStart('mainTwoTop', section)"
@@ -3129,7 +3150,10 @@ watch(
                   <div
                     v-for="section in visibleMainTwoLeftSections"
                     :key="`s2-left-${section}`"
-                    class="cv-section-row"
+                    :class="[
+                      'cv-section-row',
+                      contentColumnClass(toSectionKey(section)),
+                    ]"
                     :style="sectionOffsetStyle('mainTwoLeft', section)"
                     draggable="true"
                     @dragstart="onSectionDragStart('mainTwoLeft', section)"
@@ -3227,7 +3251,10 @@ watch(
                   <div
                     v-for="section in visibleMainTwoRightSections"
                     :key="`s2-right-${section}`"
-                    class="cv-section-row"
+                    :class="[
+                      'cv-section-row',
+                      contentColumnClass(toSectionKey(section)),
+                    ]"
                     :style="sectionOffsetStyle('mainTwoRight', section)"
                     draggable="true"
                     @dragstart="onSectionDragStart('mainTwoRight', section)"
@@ -3919,7 +3946,29 @@ watch(
 
 .cv-sections-list,
 .cv-sections-structure-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 12px;
   width: 100%;
+}
+
+.cv-section-row--full {
+  grid-column: 1 / -1;
+}
+
+.cv-section-row--half {
+  grid-column: span 1;
+}
+.cv-page--capture .cv-section-row--half,
+.cv-page--capture .cv-section-row--full {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 720px) {
+  .cv-section-row--half,
+  .cv-section-row--full {
+    grid-column: 1 / -1;
+  }
 }
 
 .cv-aside-sections {
