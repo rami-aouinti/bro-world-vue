@@ -912,8 +912,8 @@ function toSectionKey(section?: string) {
   return key
 }
 
-function isContentColumnEditable(sectionKey: string) {
-  return templateContentSections.value.includes(toSectionKey(sectionKey))
+function isSectionColumnEditable(sectionKey: string) {
+  return templateMainSections.value.includes(toSectionKey(sectionKey))
 }
 
 function effectiveSectionColumn(sectionKey: string) {
@@ -923,7 +923,7 @@ function effectiveSectionColumn(sectionKey: string) {
 
 function updateSectionColumn(sectionKey: string, value: unknown) {
   const key = toSectionKey(sectionKey)
-  if (!isContentColumnEditable(key)) return
+  if (!isSectionColumnEditable(key)) return
   sectionColumnOverrides.value[key] = value === 'half' ? 'half' : 'full'
 }
 
@@ -2559,7 +2559,7 @@ watch(
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
                   /><AppSelect
-                    v-if="isContentColumnEditable(toSectionKey(section))"
+                    v-if="isSectionColumnEditable(toSectionKey(section))"
                     :model-value="effectiveSectionColumn(toSectionKey(section))"
                     :items="sectionColumnOptions"
                     item-title="title"
@@ -2671,7 +2671,7 @@ watch(
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
                   /><AppSelect
-                    v-if="isContentColumnEditable(toSectionKey(section))"
+                    v-if="isSectionColumnEditable(toSectionKey(section))"
                     :model-value="effectiveSectionColumn(toSectionKey(section))"
                     :items="sectionColumnOptions"
                     item-title="title"
@@ -2781,7 +2781,7 @@ watch(
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
                   /><AppSelect
-                    v-if="isContentColumnEditable(toSectionKey(section))"
+                    v-if="isSectionColumnEditable(toSectionKey(section))"
                     :model-value="effectiveSectionColumn(toSectionKey(section))"
                     :items="sectionColumnOptions"
                     item-title="title"
@@ -2887,7 +2887,7 @@ watch(
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
                   /><AppSelect
-                    v-if="isContentColumnEditable(toSectionKey(section))"
+                    v-if="isSectionColumnEditable(toSectionKey(section))"
                     :model-value="effectiveSectionColumn(toSectionKey(section))"
                     :items="sectionColumnOptions"
                     item-title="title"
@@ -2995,7 +2995,7 @@ watch(
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
                   /><AppSelect
-                    v-if="isContentColumnEditable(toSectionKey(section))"
+                    v-if="isSectionColumnEditable(toSectionKey(section))"
                     :model-value="effectiveSectionColumn(toSectionKey(section))"
                     :items="sectionColumnOptions"
                     item-title="title"
@@ -3097,7 +3097,7 @@ watch(
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
                   /><AppSelect
-                    v-if="isContentColumnEditable(toSectionKey(section))"
+                    v-if="isSectionColumnEditable(toSectionKey(section))"
                     :model-value="effectiveSectionColumn(toSectionKey(section))"
                     :items="sectionColumnOptions"
                     item-title="title"
@@ -3198,7 +3198,7 @@ watch(
                         prepend-inner-icon="mdi-shape-outline"
                         class="cv-variant-select"
                       /><AppSelect
-                        v-if="isContentColumnEditable(toSectionKey(section))"
+                        v-if="isSectionColumnEditable(toSectionKey(section))"
                         :model-value="
                           effectiveSectionColumn(toSectionKey(section))
                         "
@@ -3303,7 +3303,7 @@ watch(
                         prepend-inner-icon="mdi-shape-outline"
                         class="cv-variant-select"
                       /><AppSelect
-                        v-if="isContentColumnEditable(toSectionKey(section))"
+                        v-if="isSectionColumnEditable(toSectionKey(section))"
                         :model-value="
                           effectiveSectionColumn(toSectionKey(section))
                         "
