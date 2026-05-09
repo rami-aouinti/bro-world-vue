@@ -150,6 +150,9 @@ export function useGeneratedCvTemplateRuntime(
   })
 
   const templateDesign = computed(() => normalizedTemplate.value.design)
+  const allSections = computed(() =>
+    normalizedTemplate.value.sections.filter((section) => section.enabled),
+  )
   const contentSections = computed(() =>
     normalizedTemplate.value.sections.filter(
       (section) => section.enabled && section.zone === 'content',
@@ -206,6 +209,7 @@ export function useGeneratedCvTemplateRuntime(
 
   return {
     normalizedTemplate,
+    allSections,
     contentSections,
     asideSections,
     sectionIcon,

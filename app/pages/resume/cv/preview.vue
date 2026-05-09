@@ -120,6 +120,7 @@ const activeTemplate = computed(
 )
 useResumeGoogleFonts(activeTemplate)
 const {
+  allSections,
   contentSections,
   asideSections,
   sectionIcon: runtimeSectionIcon,
@@ -313,12 +314,15 @@ function removeDecorObject(index: number) {
 
 const sectionColumnOverrides = ref<Record<string, 'full' | 'half'>>({})
 const sectionColumnOptions = [
-  { title: 'Full column', value: 'full' },
-  { title: 'Half column', value: 'half' },
+  { title: 'Full', value: 'full' },
+  { title: 'Half', value: 'half' },
 ]
 
 const templateContentSections = computed(() =>
   contentSections.value.map((section) => section.key),
+)
+const templateMainSections = computed(() =>
+  allSections.value.map((section) => section.key),
 )
 const templateFullContentSections = computed(() =>
   contentSections.value
@@ -333,11 +337,15 @@ const templateHalfContentSections = computed(() =>
 const templateAsideSections = computed(() =>
   asideSections.value.map((section) => section.key),
 )
-const templateHalfContentLeftSections = computed(() =>
-  templateHalfContentSections.value.filter((_, index) => index % 2 === 0),
+const templateMainTwoSideSections = computed(() => [
+  ...templateHalfContentSections.value,
+  ...templateAsideSections.value,
+])
+const templateMainTwoLeftSections = computed(() =>
+  templateMainTwoSideSections.value.filter((_, index) => index % 2 === 0),
 )
-const templateHalfContentRightSections = computed(() =>
-  templateHalfContentSections.value.filter((_, index) => index % 2 === 1),
+const templateMainTwoRightSections = computed(() =>
+  templateMainTwoSideSections.value.filter((_, index) => index % 2 === 1),
 )
 const normalizedStructure = computed(() => {
   const structure = String(activeTemplate.value?.structure || '')
@@ -392,10 +400,10 @@ const templateSectionFallbacks = computed<Record<SectionOrderKey, string[]>>(
     asideTwo: [...templateAsideSections.value],
     contentBase: [...templateContentSections.value],
     contentStructure2: [...templateContentSections.value],
-    mainOne: [...templateContentSections.value],
+    mainOne: [...templateMainSections.value],
     mainTwoTop: [...templateFullContentSections.value],
-    mainTwoLeft: [...templateHalfContentLeftSections.value],
-    mainTwoRight: [...templateHalfContentRightSections.value],
+    mainTwoLeft: [...templateMainTwoLeftSections.value],
+    mainTwoRight: [...templateMainTwoRightSections.value],
   }),
 )
 
