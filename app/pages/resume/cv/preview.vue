@@ -69,6 +69,7 @@ const decorMenuOpen = ref(false)
 const selectedPalette = ref('template')
 const paletteOverrides = ref<Record<string, Record<string, string>>>({})
 const signatureDataUrl = ref('')
+
 const signatureDialogOpen = ref(false)
 const aiModalOpen = ref(false)
 const aiPrompt =
