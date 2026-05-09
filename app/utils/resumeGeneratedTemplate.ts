@@ -1,4 +1,10 @@
-export type GeneratedResumeTemplateZone = 'content' | 'aside'
+export type GeneratedResumeTemplateZone =
+  | 'content'
+  | 'aside'
+  | 'aside-left'
+  | 'aside-right'
+  | 'header'
+  | 'identity'
 export type GeneratedResumeTemplateColumn = 'full' | 'half'
 
 export type NormalizedGeneratedTemplateSection = {
@@ -32,7 +38,42 @@ const DEFAULT_SECTION_ORDER: Record<
   hobbies: { zone: 'aside', order: 90 },
 }
 
-const RENDERABLE_SECTION_KEYS = new Set(Object.keys(DEFAULT_SECTION_ORDER))
+const ADDITIONAL_SECTION_ORDER: Record<
+  string,
+  {
+    zone: GeneratedResumeTemplateZone
+    order: number
+    column?: GeneratedResumeTemplateColumn
+  }
+> = {
+  contact: { zone: 'header', order: 5 },
+  identity: { zone: 'identity', order: 1 },
+  photo: { zone: 'identity', order: 2 },
+  fullname: { zone: 'identity', order: 3 },
+  role: { zone: 'identity', order: 4 },
+}
+
+const SECTION_DEFAULTS = {
+  ...DEFAULT_SECTION_ORDER,
+  ...ADDITIONAL_SECTION_ORDER,
+}
+
+const RENDERABLE_SECTION_KEYS = new Set(Object.keys(SECTION_DEFAULTS))
+
+const GENERATED_RESUME_TEMPLATE_ZONES = new Set<GeneratedResumeTemplateZone>([
+  'content',
+  'aside',
+  'aside-left',
+  'aside-right',
+  'header',
+  'identity',
+])
+
+const ASIDE_ZONES = new Set<GeneratedResumeTemplateZone>([
+  'aside',
+  'aside-left',
+  'aside-right',
+])
 
 function normalizeSectionKey(raw: string) {
   const key = raw.trim().toLowerCase()
@@ -43,7 +84,28 @@ function normalizeSectionKey(raw: string) {
 }
 
 function normalizeZone(value: unknown, fallback: GeneratedResumeTemplateZone) {
-  return value === 'aside' || value === 'content' ? value : fallback
+  return GENERATED_RESUME_TEMPLATE_ZONES.has(
+    value as GeneratedResumeTemplateZone,
+  )
+    ? (value as GeneratedResumeTemplateZone)
+    : fallback
+}
+
+function normalizeSectionZone(
+  key: string,
+  value: unknown,
+  fallback: GeneratedResumeTemplateZone,
+): GeneratedResumeTemplateZone {
+  const zone = normalizeZone(value, fallback)
+  if (key === 'contact') return 'header'
+  if (
+    key === 'identity' ||
+    key === 'photo' ||
+    key === 'fullname' ||
+    key === 'role'
+  )
+    return 'identity'
+  return zone
 }
 
 function normalizeColumn(value: unknown): GeneratedResumeTemplateColumn {
@@ -77,13 +139,13 @@ export function normalizeGeneratedTemplate(template: any) {
         const key = normalizeSectionKey(sourceKey)
         if (!RENDERABLE_SECTION_KEYS.has(key)) return
 
-        const defaults = DEFAULT_SECTION_ORDER[key]
+        const defaults = SECTION_DEFAULTS[key]
         if (!defaults) return
         const config =
           rawValue && typeof rawValue === 'object'
             ? (rawValue as Record<string, any>)
             : {}
-        const zone = normalizeZone(config.zone, defaults.zone)
+        const zone = normalizeSectionZone(key, config.zone, defaults.zone)
         const section: NormalizedGeneratedTemplateSection = {
           key,
           sourceKey,
@@ -135,7 +197,22 @@ export function getContentSections(template: any) {
 }
 
 export function getAsideSections(template: any, side?: string) {
-  const sections = getTemplateSectionsByZone(template, 'aside')
+  const sections = normalizeGeneratedTemplate(template).filter(
+    (section) => section.enabled && ASIDE_ZONES.has(section.zone),
+  )
   if (!side) return sections
-  return sections.filter((section) => !section.side || section.side === side)
+
+  const normalizedSide = side.toLowerCase()
+  const sideZone =
+    normalizedSide === 'left'
+      ? 'aside-left'
+      : normalizedSide === 'right'
+        ? 'aside-right'
+        : undefined
+
+  return sections.filter((section) => {
+    if (sideZone && section.zone === sideZone) return true
+    if (section.zone !== 'aside') return false
+    return !section.side || section.side.toLowerCase() === normalizedSide
+  })
 }

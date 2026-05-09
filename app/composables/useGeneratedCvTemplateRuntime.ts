@@ -43,6 +43,11 @@ const SECTION_FORM_ALIASES: Record<string, string> = {
 }
 
 const SECTION_RUNTIME_KEYS = [
+  'contact',
+  'identity',
+  'photo',
+  'fullName',
+  'role',
   'profile',
   'experience',
   'education',
@@ -102,6 +107,10 @@ function normalizeColumn(value: unknown): GeneratedResumeTemplateColumn {
   return value === 'half' ? 'half' : 'full'
 }
 
+function isAsideZone(zone: NormalizedGeneratedTemplateSection['zone']) {
+  return zone === 'aside' || zone === 'aside-left' || zone === 'aside-right'
+}
+
 export function useGeneratedCvTemplateRuntime(
   activeTemplate: MaybeRefOrGetter<any>,
   options: GeneratedCvTemplateRuntimeOptions = {},
@@ -151,7 +160,11 @@ export function useGeneratedCvTemplateRuntime(
 
   const templateDesign = computed(() => normalizedTemplate.value.design)
   const allSections = computed(() =>
-    normalizedTemplate.value.sections.filter((section) => section.enabled),
+    normalizedTemplate.value.sections.filter(
+      (section) =>
+        section.enabled &&
+        (section.zone === 'content' || isAsideZone(section.zone)),
+    ),
   )
   const contentSections = computed(() =>
     normalizedTemplate.value.sections.filter(
@@ -160,7 +173,35 @@ export function useGeneratedCvTemplateRuntime(
   )
   const asideSections = computed(() =>
     normalizedTemplate.value.sections.filter(
-      (section) => section.enabled && section.zone === 'aside',
+      (section) => section.enabled && isAsideZone(section.zone),
+    ),
+  )
+  const headerSections = computed(() =>
+    normalizedTemplate.value.sections.filter(
+      (section) => section.enabled && section.zone === 'header',
+    ),
+  )
+  const identitySections = computed(() =>
+    normalizedTemplate.value.sections.filter(
+      (section) => section.enabled && section.zone === 'identity',
+    ),
+  )
+  const leftAsideSections = computed(() =>
+    normalizedTemplate.value.sections.filter(
+      (section) =>
+        section.enabled &&
+        (section.zone === 'aside-left' ||
+          (section.zone === 'aside' &&
+            (!section.side || section.side === 'left'))),
+    ),
+  )
+  const rightAsideSections = computed(() =>
+    normalizedTemplate.value.sections.filter(
+      (section) =>
+        section.enabled &&
+        (section.zone === 'aside-right' ||
+          (section.zone === 'aside' &&
+            (!section.side || section.side === 'right'))),
     ),
   )
   const sectionByKey = computed(() =>
@@ -212,6 +253,10 @@ export function useGeneratedCvTemplateRuntime(
     allSections,
     contentSections,
     asideSections,
+    headerSections,
+    identitySections,
+    leftAsideSections,
+    rightAsideSections,
     sectionIcon,
     sectionForm,
     sectionColumn,
