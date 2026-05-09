@@ -80,7 +80,7 @@ const sidebarRoutes = computed(() => {
 
   if (loggedIn.value) {
     routes.splice(1, 0, {
-      label: 'Mes Files',
+      label: 'My Files',
       to: '/resume/my-files',
       icon: 'mdi-folder-multiple-outline',
     })
