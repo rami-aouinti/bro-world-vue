@@ -12974,9 +12974,9 @@
   },
   {
     "id": "tpl-032",
-    "name": "Executive Profile · Pro Palette 032",
+    "name": "Executive Profile · Studio 01",
     "version": "1.1.0",
-    "layout": "modern",
+    "layout": "aside",
     "structure": "structure-1",
     "sections": {
       "experience": "timeline",
@@ -13009,16 +13009,15 @@
         "color": "#1F2937",
         "radius": 16
       },
-      "primary": "#2563EB",
-      "accent": "#38BDF8",
-      "background": "#E2E8F0",
-      "text": "#0F172A"
+      "primary": "#2563eb",
+      "accent": "#bfdbfe",
+      "text": "#0f172a",
+      "background": "#f8fafc"
     },
     "aside": {
       "width": "794",
       "height": "220px",
-      "radius": 0,
-      "position": "right"
+      "radius": 0
     },
     "photo": {
       "position": "left",
@@ -13047,13 +13046,12 @@
           "y": "0"
         }
       ],
-      "borderStyle": "solid",
-      "cornerRadius": 0
+      "cornerRadius": 0,
+      "borderStyle": "solid"
     },
     "layoutOptions": {
       "asideStartsAtTop": true,
       "borderRadius": 0,
-      "asideWidth": 28,
       "gutter": 16
     },
     "photoOptions": {
@@ -13282,7 +13280,7 @@
         "Inter",
         "Playfair Display"
       ],
-      "scale": "comfortable",
+      "scale": "balanced",
       "fonts": {
         "display": "Playfair Display",
         "body": "Inter",
@@ -13294,8 +13292,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 0,
-      "style": "soft"
+      "radius": 0
     },
     "items": {
       "fullName": {
@@ -13503,9 +13500,9 @@
   },
   {
     "id": "tpl-033",
-    "name": "Modern Portfolio · Pro Palette 033",
+    "name": "Modern Portfolio · Studio 02",
     "version": "1.1.0",
-    "layout": "classic",
+    "layout": "aside",
     "structure": "structure-2",
     "sections": {
       "experience": "list",
@@ -13538,16 +13535,15 @@
         "color": "#061504",
         "radius": 16
       },
-      "primary": "#7C3AED",
-      "accent": "#C4B5FD",
-      "background": "#EDE9FE",
-      "text": "#111827"
+      "primary": "#7c3aed",
+      "accent": "#ddd6fe",
+      "text": "#111827",
+      "background": "#faf5ff"
     },
     "aside": {
       "width": "672",
       "height": "220px",
-      "radius": 6,
-      "position": "left"
+      "radius": 8
     },
     "photo": {
       "position": "left",
@@ -13576,13 +13572,12 @@
           "y": "0"
         }
       ],
-      "borderStyle": "double",
-      "cornerRadius": 6
+      "cornerRadius": 6,
+      "borderStyle": "dashed"
     },
     "layoutOptions": {
       "asideStartsAtTop": true,
-      "borderRadius": 4,
-      "asideWidth": 30,
+      "borderRadius": 6,
       "gutter": 18
     },
     "photoOptions": {
@@ -13811,7 +13806,7 @@
         "Fira Code",
         "Lato"
       ],
-      "scale": "compact",
+      "scale": "balanced",
       "fonts": {
         "display": "Cormorant Garamond",
         "body": "Lato",
@@ -13823,8 +13818,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 4,
-      "style": "solid"
+      "radius": 4
     },
     "items": {
       "fullName": {
@@ -14032,9 +14026,9 @@
   },
   {
     "id": "tpl-034",
-    "name": "Corporate Brief · Pro Palette 034",
+    "name": "Corporate Brief · Studio 03",
     "version": "1.1.0",
-    "layout": "split",
+    "layout": "no-aside",
     "structure": "structure-2",
     "sections": {
       "experience": "dot",
@@ -14067,16 +14061,15 @@
         "color": "#CBD5E1",
         "radius": 16
       },
-      "primary": "#16A34A",
-      "accent": "#86EFAC",
-      "background": "#DCFCE7",
-      "text": "#052E16"
+      "primary": "#16a34a",
+      "accent": "#bbf7d0",
+      "text": "#052e16",
+      "background": "#f0fdf4"
     },
     "aside": {
       "width": "400",
       "height": "220px",
-      "radius": 10,
-      "position": "right"
+      "radius": 12
     },
     "photo": {
       "position": "left",
@@ -14105,15 +14098,14 @@
           "y": "0"
         }
       ],
-      "borderStyle": "dashed",
-      "cornerRadius": 12
+      "cornerRadius": 12,
+      "borderStyle": "double"
     },
     "layoutOptions": {
       "columnsGap": "wide",
       "asideWidthMode": "standard",
       "sectionSpacing": "normal",
-      "borderRadius": 8,
-      "asideWidth": 32,
+      "borderRadius": 10,
       "gutter": 20
     },
     "photoOptions": {
@@ -14344,7 +14336,7 @@
         "Merriweather",
         "Source Sans 3"
       ],
-      "scale": "comfortable",
+      "scale": "balanced",
       "fonts": {
         "display": "Merriweather",
         "body": "Source Sans 3",
@@ -14356,8 +14348,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 8,
-      "style": "soft"
+      "radius": 8
     },
     "items": {
       "fullName": {
@@ -14565,9 +14556,9 @@
   },
   {
     "id": "tpl-035",
-    "name": "Strategic Resume · Pro Palette 035",
+    "name": "Strategic Resume · Studio 04",
     "version": "1.1.0",
-    "layout": "minimal",
+    "layout": "no-aside",
     "structure": "structure-1",
     "sections": {
       "experience": "timeline",
@@ -14600,16 +14591,15 @@
         "color": "#CBD5E1",
         "radius": 16
       },
-      "primary": "#DB2777",
-      "accent": "#F9A8D4",
-      "background": "#FCE7F3",
-      "text": "#3F1D2E"
+      "primary": "#db2777",
+      "accent": "#fbcfe8",
+      "text": "#3f1d2e",
+      "background": "#fdf2f8"
     },
     "aside": {
       "width": "260px",
       "height": "1400px",
-      "radius": 14,
-      "position": "left"
+      "radius": 16
     },
     "photo": {
       "position": "left",
@@ -14638,15 +14628,14 @@
           "y": "0"
         }
       ],
-      "borderStyle": "solid",
-      "cornerRadius": 18
+      "cornerRadius": 18,
+      "borderStyle": "solid"
     },
     "layoutOptions": {
       "columnsGap": "wide",
       "asideWidthMode": "standard",
       "sectionSpacing": "normal",
-      "borderRadius": 12,
-      "asideWidth": 34,
+      "borderRadius": 14,
       "gutter": 22
     },
     "photoOptions": {
@@ -14877,7 +14866,7 @@
         "Libre Baskerville",
         "Nunito Sans"
       ],
-      "scale": "compact",
+      "scale": "balanced",
       "fonts": {
         "display": "Libre Baskerville",
         "body": "Nunito Sans",
@@ -14889,8 +14878,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 12,
-      "style": "solid"
+      "radius": 12
     },
     "items": {
       "fullName": {
@@ -15098,9 +15086,9 @@
   },
   {
     "id": "tpl-036",
-    "name": "Leadership Format · Pro Palette 036",
+    "name": "Leadership Format · Studio 05",
     "version": "1.1.0",
-    "layout": "timeline",
+    "layout": "aside-left",
     "structure": "structure-1",
     "sections": {
       "experience": "cards",
@@ -15133,16 +15121,15 @@
         "color": "#CBD5E1",
         "radius": 16
       },
-      "primary": "#EA580C",
-      "accent": "#FDBA74",
-      "background": "#FFF7ED",
-      "text": "#3B1D0A"
+      "primary": "#ea580c",
+      "accent": "#fed7aa",
+      "text": "#3b1d0a",
+      "background": "#fff7ed"
     },
     "aside": {
       "width": "240px",
       "height": "1200px",
-      "radius": 18,
-      "position": "right"
+      "radius": 0
     },
     "photo": {
       "position": "left",
@@ -15171,15 +15158,14 @@
           "y": "0"
         }
       ],
-      "borderStyle": "double",
-      "cornerRadius": 0
+      "cornerRadius": 0,
+      "borderStyle": "dashed"
     },
     "layoutOptions": {
       "columnsGap": "normal",
       "asideWidthMode": "standard",
       "sectionSpacing": "normal",
-      "borderRadius": 16,
-      "asideWidth": 36,
+      "borderRadius": 18,
       "gutter": 24
     },
     "photoOptions": {
@@ -15410,7 +15396,7 @@
         "Roboto",
         "Roboto Slab"
       ],
-      "scale": "comfortable",
+      "scale": "balanced",
       "fonts": {
         "display": "Roboto Slab",
         "body": "Roboto",
@@ -15422,8 +15408,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 0,
-      "style": "soft"
+      "radius": 0
     },
     "items": {
       "fullName": {
@@ -15631,9 +15616,9 @@
   },
   {
     "id": "tpl-037",
-    "name": "Professional Slate · Pro Palette 037",
+    "name": "Professional Slate · Studio 06",
     "version": "1.1.0",
-    "layout": "executive",
+    "layout": "aside-left",
     "structure": "structure-2",
     "sections": {
       "experience": "classic",
@@ -15666,16 +15651,15 @@
         "color": "#CBD5E1",
         "radius": 16
       },
-      "primary": "#0891B2",
-      "accent": "#67E8F9",
-      "background": "#ECFEFF",
-      "text": "#082F49"
+      "primary": "#2563eb",
+      "accent": "#bfdbfe",
+      "text": "#0f172a",
+      "background": "#f8fafc"
     },
     "aside": {
       "width": "240px",
       "height": "1200px",
-      "radius": 0,
-      "position": "left"
+      "radius": 8
     },
     "photo": {
       "position": "left",
@@ -15704,15 +15688,14 @@
           "y": "0"
         }
       ],
-      "borderStyle": "dashed",
-      "cornerRadius": 6
+      "cornerRadius": 6,
+      "borderStyle": "double"
     },
     "layoutOptions": {
       "columnsGap": "normal",
       "asideWidthMode": "standard",
       "sectionSpacing": "normal",
-      "borderRadius": 20,
-      "asideWidth": 28,
+      "borderRadius": 0,
       "gutter": 16
     },
     "photoOptions": {
@@ -15943,7 +15926,7 @@
         "Manrope",
         "Prata"
       ],
-      "scale": "compact",
+      "scale": "balanced",
       "fonts": {
         "display": "Prata",
         "body": "Manrope",
@@ -15955,8 +15938,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 4,
-      "style": "solid"
+      "radius": 4
     },
     "items": {
       "fullName": {
@@ -16164,9 +16146,9 @@
   },
   {
     "id": "tpl-038",
-    "name": "Career Focus · Pro Palette 038",
+    "name": "Career Focus · Studio 07",
     "version": "1.1.0",
-    "layout": "modern",
+    "layout": "aside-right",
     "structure": "structure-1",
     "sections": {
       "experience": "list",
@@ -16199,16 +16181,15 @@
         "color": "#CBD5E1",
         "radius": 16
       },
-      "primary": "#F59E0B",
-      "accent": "#FDE68A",
-      "background": "#FFFBEB",
-      "text": "#1F2937"
+      "primary": "#7c3aed",
+      "accent": "#ddd6fe",
+      "text": "#111827",
+      "background": "#faf5ff"
     },
     "aside": {
       "width": "240px",
       "height": "1200px",
-      "radius": 6,
-      "position": "right"
+      "radius": 12
     },
     "photo": {
       "position": "left",
@@ -16237,15 +16218,14 @@
           "y": "0"
         }
       ],
-      "borderStyle": "solid",
-      "cornerRadius": 12
+      "cornerRadius": 12,
+      "borderStyle": "solid"
     },
     "layoutOptions": {
       "columnsGap": "wide",
       "asideWidthMode": "standard",
       "sectionSpacing": "normal",
-      "borderRadius": 0,
-      "asideWidth": 30,
+      "borderRadius": 6,
       "gutter": 18
     },
     "photoOptions": {
@@ -16476,7 +16456,7 @@
         "Inter",
         "Space Grotesk"
       ],
-      "scale": "comfortable",
+      "scale": "balanced",
       "fonts": {
         "display": "Space Grotesk",
         "body": "Inter",
@@ -16488,8 +16468,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 8,
-      "style": "soft"
+      "radius": 8
     },
     "items": {
       "fullName": {
@@ -16697,9 +16676,9 @@
   },
   {
     "id": "tpl-039",
-    "name": "Talent Summary · Pro Palette 039",
+    "name": "Talent Summary · Studio 08",
     "version": "1.1.0",
-    "layout": "classic",
+    "layout": "aside-right",
     "structure": "structure-2",
     "sections": {
       "experience": "dot",
@@ -16732,16 +16711,15 @@
         "color": "#CBD5E1",
         "radius": 16
       },
-      "primary": "#4F46E5",
-      "accent": "#A5B4FC",
-      "background": "#EEF2FF",
-      "text": "#172554"
+      "primary": "#16a34a",
+      "accent": "#bbf7d0",
+      "text": "#052e16",
+      "background": "#f0fdf4"
     },
     "aside": {
       "width": "240px",
       "height": "1200px",
-      "radius": 10,
-      "position": "left"
+      "radius": 16
     },
     "photo": {
       "position": "left",
@@ -16770,15 +16748,14 @@
           "y": "0"
         }
       ],
-      "borderStyle": "double",
-      "cornerRadius": 18
+      "cornerRadius": 18,
+      "borderStyle": "dashed"
     },
     "layoutOptions": {
       "columnsGap": "wide",
       "asideWidthMode": "standard",
       "sectionSpacing": "normal",
-      "borderRadius": 4,
-      "asideWidth": 32,
+      "borderRadius": 10,
       "gutter": 20
     },
     "photoOptions": {
@@ -17009,7 +16986,7 @@
         "Montserrat",
         "Open Sans"
       ],
-      "scale": "compact",
+      "scale": "balanced",
       "fonts": {
         "display": "Montserrat",
         "body": "Open Sans",
@@ -17021,8 +16998,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 12,
-      "style": "solid"
+      "radius": 12
     },
     "items": {
       "fullName": {
@@ -17230,9 +17206,9 @@
   },
   {
     "id": "tpl-040",
-    "name": "Executive Sidebar · Pro Palette 040",
+    "name": "Executive Sidebar · Studio 09",
     "version": "1.1.0",
-    "layout": "split",
+    "layout": "aside-full-left",
     "structure": "structure-1",
     "sections": {
       "experience": "timeline",
@@ -17265,16 +17241,15 @@
         "color": "#CBD5E1",
         "radius": 16
       },
-      "primary": "#2563EB",
-      "accent": "#38BDF8",
-      "background": "#E2E8F0",
-      "text": "#0F172A"
+      "primary": "#db2777",
+      "accent": "#fbcfe8",
+      "text": "#3f1d2e",
+      "background": "#fdf2f8"
     },
     "aside": {
       "width": "240px",
       "height": "1200px",
-      "radius": 14,
-      "position": "right"
+      "radius": 0
     },
     "photo": {
       "position": "right",
@@ -17303,15 +17278,14 @@
           "y": "0"
         }
       ],
-      "borderStyle": "dashed",
-      "cornerRadius": 0
+      "cornerRadius": 0,
+      "borderStyle": "double"
     },
     "layoutOptions": {
       "columnsGap": "wide",
       "asideWidthMode": "standard",
       "sectionSpacing": "normal",
-      "borderRadius": 8,
-      "asideWidth": 34,
+      "borderRadius": 14,
       "gutter": 22
     },
     "photoOptions": {
@@ -17542,7 +17516,7 @@
         "Lato",
         "Oswald"
       ],
-      "scale": "comfortable",
+      "scale": "balanced",
       "fonts": {
         "display": "Oswald",
         "body": "Lato",
@@ -17554,8 +17528,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 0,
-      "style": "soft"
+      "radius": 0
     },
     "items": {
       "fullName": {
@@ -17763,9 +17736,9 @@
   },
   {
     "id": "tpl-041",
-    "name": "Balanced Profile · Pro Palette 041",
+    "name": "Balanced Profile · Studio 10",
     "version": "1.1.0",
-    "layout": "minimal",
+    "layout": "aside-full-left",
     "structure": "structure-2",
     "sections": {
       "experience": "cards",
@@ -17798,16 +17771,15 @@
         "color": "#CBD5E1",
         "radius": 16
       },
-      "primary": "#7C3AED",
-      "accent": "#C4B5FD",
-      "background": "#EDE9FE",
-      "text": "#111827"
+      "primary": "#ea580c",
+      "accent": "#fed7aa",
+      "text": "#3b1d0a",
+      "background": "#fff7ed"
     },
     "aside": {
       "width": "240px",
       "height": "1200px",
-      "radius": 18,
-      "position": "left"
+      "radius": 8
     },
     "photo": {
       "position": "right",
@@ -17836,15 +17808,14 @@
           "y": "0"
         }
       ],
-      "borderStyle": "solid",
-      "cornerRadius": 6
+      "cornerRadius": 6,
+      "borderStyle": "solid"
     },
     "layoutOptions": {
       "columnsGap": "wide",
       "asideWidthMode": "standard",
       "sectionSpacing": "normal",
-      "borderRadius": 12,
-      "asideWidth": 36,
+      "borderRadius": 18,
       "gutter": 24
     },
     "photoOptions": {
@@ -18075,7 +18046,7 @@
         "Nunito Sans",
         "Raleway"
       ],
-      "scale": "compact",
+      "scale": "balanced",
       "fonts": {
         "display": "Raleway",
         "body": "Nunito Sans",
@@ -18087,8 +18058,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 4,
-      "style": "solid"
+      "radius": 4
     },
     "items": {
       "fullName": {
@@ -18296,9 +18266,9 @@
   },
   {
     "id": "tpl-042",
-    "name": "Director Resume · Pro Palette 042",
+    "name": "Director Resume · Studio 11",
     "version": "1.1.0",
-    "layout": "timeline",
+    "layout": "aside-full-right",
     "structure": "structure-1",
     "sections": {
       "experience": "classic",
@@ -18331,16 +18301,15 @@
         "color": "#CBD5E1",
         "radius": 16
       },
-      "primary": "#16A34A",
-      "accent": "#86EFAC",
-      "background": "#DCFCE7",
-      "text": "#052E16"
+      "primary": "#2563eb",
+      "accent": "#bfdbfe",
+      "text": "#0f172a",
+      "background": "#f8fafc"
     },
     "aside": {
       "width": "240px",
       "height": "1200px",
-      "radius": 0,
-      "position": "right"
+      "radius": 12
     },
     "photo": {
       "position": "left",
@@ -18369,8 +18338,8 @@
           "y": "0"
         }
       ],
-      "borderStyle": "double",
-      "cornerRadius": 12
+      "cornerRadius": 12,
+      "borderStyle": "dashed"
     },
     "decorOptions": {
       "enabled": true,
@@ -18585,7 +18554,7 @@
         "Poppins",
         "Source Sans 3"
       ],
-      "scale": "comfortable",
+      "scale": "balanced",
       "fonts": {
         "display": "Poppins",
         "body": "Source Sans 3",
@@ -18597,8 +18566,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 8,
-      "style": "soft"
+      "radius": 8
     },
     "items": {
       "fullName": {
@@ -18745,8 +18713,7 @@
     },
     "layoutOptions": {
       "asideStartsAtTop": true,
-      "borderRadius": 16,
-      "asideWidth": 28,
+      "borderRadius": 0,
       "gutter": 16
     },
     "photoOptions": {
@@ -18825,9 +18792,9 @@
   },
   {
     "id": "tpl-043",
-    "name": "Manager Portfolio · Pro Palette 043",
+    "name": "Manager Portfolio · Studio 12",
     "version": "1.1.0",
-    "layout": "executive",
+    "layout": "aside-full-right",
     "structure": "structure-2",
     "sections": {
       "experience": "list",
@@ -18860,16 +18827,15 @@
         "color": "#CBD5E1",
         "radius": 16
       },
-      "primary": "#DB2777",
-      "accent": "#F9A8D4",
-      "background": "#FCE7F3",
-      "text": "#3F1D2E"
+      "primary": "#7c3aed",
+      "accent": "#ddd6fe",
+      "text": "#111827",
+      "background": "#faf5ff"
     },
     "aside": {
       "width": "240px",
       "height": "1200px",
-      "radius": 6,
-      "position": "left"
+      "radius": 16
     },
     "photo": {
       "position": "left",
@@ -18898,8 +18864,8 @@
           "y": "0"
         }
       ],
-      "borderStyle": "dashed",
-      "cornerRadius": 18
+      "cornerRadius": 18,
+      "borderStyle": "double"
     },
     "decorOptions": {
       "enabled": true,
@@ -19114,7 +19080,7 @@
         "DM Serif Display",
         "Fira Code"
       ],
-      "scale": "compact",
+      "scale": "balanced",
       "fonts": {
         "display": "DM Serif Display",
         "body": "DM Sans",
@@ -19126,8 +19092,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 12,
-      "style": "solid"
+      "radius": 12
     },
     "items": {
       "fullName": {
@@ -19274,8 +19239,7 @@
     },
     "layoutOptions": {
       "asideStartsAtTop": true,
-      "borderRadius": 20,
-      "asideWidth": 30,
+      "borderRadius": 6,
       "gutter": 18
     },
     "photoOptions": {
@@ -19354,9 +19318,9 @@
   },
   {
     "id": "tpl-044",
-    "name": "Premium Column · Pro Palette 044",
+    "name": "Premium Column · Studio 13",
     "version": "1.1.0",
-    "layout": "modern",
+    "layout": "aside-bar-left",
     "structure": "structure-1",
     "sections": {
       "experience": "list",
@@ -19389,16 +19353,15 @@
         "color": "#CBD5E1",
         "radius": 16
       },
-      "primary": "#EA580C",
-      "accent": "#FDBA74",
-      "background": "#FFF7ED",
-      "text": "#3B1D0A"
+      "primary": "#16a34a",
+      "accent": "#bbf7d0",
+      "text": "#052e16",
+      "background": "#f0fdf4"
     },
     "aside": {
       "width": "240px",
       "height": "1200px",
-      "radius": 10,
-      "position": "right"
+      "radius": 0
     },
     "photo": {
       "position": "left",
@@ -19427,15 +19390,14 @@
           "y": "0"
         }
       ],
-      "borderStyle": "solid",
-      "cornerRadius": 0
+      "cornerRadius": 0,
+      "borderStyle": "solid"
     },
     "layoutOptions": {
       "columnsGap": "wide",
       "asideWidthMode": "standard",
       "sectionSpacing": "normal",
-      "borderRadius": 0,
-      "asideWidth": 32,
+      "borderRadius": 10,
       "gutter": 20
     },
     "photoOptions": {
@@ -19666,7 +19628,7 @@
         "Fira Code",
         "Work Sans"
       ],
-      "scale": "comfortable",
+      "scale": "balanced",
       "fonts": {
         "display": "Bitter",
         "body": "Work Sans",
@@ -19678,8 +19640,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 0,
-      "style": "soft"
+      "radius": 0
     },
     "items": {
       "fullName": {
@@ -19887,9 +19848,9 @@
   },
   {
     "id": "tpl-045",
-    "name": "Polished Format · Pro Palette 045",
+    "name": "Polished Format · Studio 14",
     "version": "1.1.0",
-    "layout": "classic",
+    "layout": "aside-bar-right",
     "structure": "structure-2",
     "sections": {
       "experience": "timeline",
@@ -19922,16 +19883,15 @@
         "color": "#CBD5E1",
         "radius": 16
       },
-      "primary": "#0891B2",
-      "accent": "#67E8F9",
-      "background": "#ECFEFF",
-      "text": "#082F49"
+      "primary": "#db2777",
+      "accent": "#fbcfe8",
+      "text": "#3f1d2e",
+      "background": "#fdf2f8"
     },
     "aside": {
       "width": "240px",
       "height": "1200px",
-      "radius": 14,
-      "position": "left"
+      "radius": 8
     },
     "photo": {
       "position": "left",
@@ -19960,15 +19920,14 @@
           "y": "0"
         }
       ],
-      "borderStyle": "double",
-      "cornerRadius": 6
+      "cornerRadius": 6,
+      "borderStyle": "dashed"
     },
     "layoutOptions": {
       "columnsGap": "wide",
       "asideWidthMode": "standard",
       "sectionSpacing": "normal",
-      "borderRadius": 4,
-      "asideWidth": 34,
+      "borderRadius": 14,
       "gutter": 22
     },
     "photoOptions": {
@@ -20199,7 +20158,7 @@
         "Fraunces",
         "Public Sans"
       ],
-      "scale": "compact",
+      "scale": "balanced",
       "fonts": {
         "display": "Fraunces",
         "body": "Public Sans",
@@ -20211,8 +20170,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 4,
-      "style": "solid"
+      "radius": 4
     },
     "items": {
       "fullName": {
@@ -20420,9 +20378,9 @@
   },
   {
     "id": "tpl-046",
-    "name": "Midnight Executive · Pro Palette 046",
+    "name": "Midnight Executive · Studio 15",
     "version": "1.1.0",
-    "layout": "split",
+    "layout": "aside",
     "structure": "structure-1",
     "sections": {
       "experience": "classic",
@@ -20455,16 +20413,15 @@
         "color": "#CBD5E1",
         "radius": 16
       },
-      "primary": "#F59E0B",
-      "accent": "#FDE68A",
-      "background": "#FFFBEB",
-      "text": "#1F2937"
+      "primary": "#ea580c",
+      "accent": "#fed7aa",
+      "text": "#3b1d0a",
+      "background": "#fff7ed"
     },
     "aside": {
       "width": "792",
       "height": "220px",
-      "radius": 18,
-      "position": "right"
+      "radius": 12
     },
     "photo": {
       "position": "left",
@@ -20493,14 +20450,13 @@
           "y": "0"
         }
       ],
-      "borderStyle": "dashed",
-      "cornerRadius": 12
+      "cornerRadius": 12,
+      "borderStyle": "double"
     },
     "layoutOptions": {
       "asideStartsAtTop": true,
       "sectionSpacing": "relaxed",
-      "borderRadius": 8,
-      "asideWidth": 36,
+      "borderRadius": 18,
       "gutter": 24
     },
     "decorOptions": {
@@ -20716,7 +20672,7 @@
         "Inter",
         "Playfair Display"
       ],
-      "scale": "comfortable",
+      "scale": "balanced",
       "fonts": {
         "display": "Playfair Display",
         "body": "Inter",
@@ -20728,8 +20684,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 8,
-      "style": "soft"
+      "radius": 8
     },
     "items": {
       "fullName": {
@@ -20950,9 +20905,9 @@
   },
   {
     "id": "tpl-047",
-    "name": "Noir Portfolio · Pro Palette 047",
+    "name": "Noir Portfolio · Studio 16",
     "version": "1.1.0",
-    "layout": "minimal",
+    "layout": "aside-left",
     "structure": "structure-2",
     "sections": {
       "experience": "list",
@@ -20985,16 +20940,15 @@
         "color": "#CBD5E1",
         "radius": 16
       },
-      "primary": "#4F46E5",
-      "accent": "#A5B4FC",
-      "background": "#EEF2FF",
-      "text": "#172554"
+      "primary": "#2563eb",
+      "accent": "#bfdbfe",
+      "text": "#0f172a",
+      "background": "#f8fafc"
     },
     "aside": {
       "width": "792",
       "height": "220px",
-      "radius": 0,
-      "position": "left"
+      "radius": 16
     },
     "photo": {
       "position": "left",
@@ -21023,14 +20977,13 @@
           "y": "0"
         }
       ],
-      "borderStyle": "solid",
-      "cornerRadius": 18
+      "cornerRadius": 18,
+      "borderStyle": "solid"
     },
     "layoutOptions": {
       "asideStartsAtTop": false,
       "sectionSpacing": "normal",
-      "borderRadius": 12,
-      "asideWidth": 28,
+      "borderRadius": 0,
       "gutter": 16
     },
     "decorOptions": {
@@ -21246,7 +21199,7 @@
         "Fira Code",
         "Lato"
       ],
-      "scale": "compact",
+      "scale": "balanced",
       "fonts": {
         "display": "Cormorant Garamond",
         "body": "Lato",
@@ -21258,8 +21211,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 12,
-      "style": "solid"
+      "radius": 12
     },
     "items": {
       "fullName": {
@@ -21480,9 +21432,9 @@
   },
   {
     "id": "tpl-048",
-    "name": "Charcoal Profile · Pro Palette 048",
+    "name": "Charcoal Profile · Studio 17",
     "version": "1.1.0",
-    "layout": "timeline",
+    "layout": "aside-right",
     "structure": "structure-3",
     "sections": {
       "experience": "dot",
@@ -21515,16 +21467,15 @@
         "color": "#CBD5E1",
         "radius": 16
       },
-      "primary": "#2563EB",
-      "accent": "#38BDF8",
-      "background": "#E2E8F0",
-      "text": "#0F172A"
+      "primary": "#7c3aed",
+      "accent": "#ddd6fe",
+      "text": "#111827",
+      "background": "#faf5ff"
     },
     "aside": {
       "width": "400",
       "height": "220px",
-      "radius": 6,
-      "position": "right"
+      "radius": 0
     },
     "photo": {
       "position": "left",
@@ -21553,16 +21504,15 @@
           "y": "0"
         }
       ],
-      "borderStyle": "double",
-      "cornerRadius": 0
+      "cornerRadius": 0,
+      "borderStyle": "dashed"
     },
     "layoutOptions": {
       "columnsGap": "wide",
       "asideWidthMode": "standard",
       "sectionSpacing": "normal",
       "asideStartsAtTop": true,
-      "borderRadius": 16,
-      "asideWidth": 30,
+      "borderRadius": 6,
       "gutter": 18
     },
     "photoOptions": {
@@ -21791,7 +21741,7 @@
         "Merriweather",
         "Source Sans 3"
       ],
-      "scale": "comfortable",
+      "scale": "balanced",
       "fonts": {
         "display": "Merriweather",
         "body": "Source Sans 3",
@@ -21803,8 +21753,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 0,
-      "style": "soft"
+      "radius": 0
     },
     "items": {
       "fullName": {
@@ -22012,9 +21961,9 @@
   },
   {
     "id": "tpl-049",
-    "name": "Slate Resume · Pro Palette 049",
+    "name": "Slate Resume · Studio 18",
     "version": "1.1.0",
-    "layout": "executive",
+    "layout": "aside-full-left",
     "structure": "structure-4",
     "sections": {
       "experience": "timeline",
@@ -22047,16 +21996,15 @@
         "color": "#CBD5E1",
         "radius": 16
       },
-      "primary": "#7C3AED",
-      "accent": "#C4B5FD",
-      "background": "#EDE9FE",
-      "text": "#111827"
+      "primary": "#16a34a",
+      "accent": "#bbf7d0",
+      "text": "#052e16",
+      "background": "#f0fdf4"
     },
     "aside": {
       "width": "260px",
       "height": "1400px",
-      "radius": 10,
-      "position": "left"
+      "radius": 8
     },
     "photo": {
       "position": "left",
@@ -22085,16 +22033,15 @@
           "y": "0"
         }
       ],
-      "borderStyle": "dashed",
-      "cornerRadius": 6
+      "cornerRadius": 6,
+      "borderStyle": "double"
     },
     "layoutOptions": {
       "columnsGap": "wide",
       "asideWidthMode": "standard",
       "sectionSpacing": "relaxed",
       "asideStartsAtTop": false,
-      "borderRadius": 20,
-      "asideWidth": 32,
+      "borderRadius": 10,
       "gutter": 20
     },
     "photoOptions": {
@@ -22323,7 +22270,7 @@
         "Libre Baskerville",
         "Nunito Sans"
       ],
-      "scale": "compact",
+      "scale": "balanced",
       "fonts": {
         "display": "Libre Baskerville",
         "body": "Nunito Sans",
@@ -22335,8 +22282,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 4,
-      "style": "solid"
+      "radius": 4
     },
     "items": {
       "fullName": {
@@ -22544,9 +22490,9 @@
   },
   {
     "id": "tpl-050",
-    "name": "Obsidian Brief · Pro Palette 050",
+    "name": "Obsidian Brief · Studio 19",
     "version": "1.1.0",
-    "layout": "modern",
+    "layout": "aside-full-right",
     "structure": "structure-5",
     "sections": {
       "experience": "cards",
@@ -22579,16 +22525,15 @@
         "color": "#CBD5E1",
         "radius": 16
       },
-      "primary": "#16A34A",
-      "accent": "#86EFAC",
-      "background": "#DCFCE7",
-      "text": "#052E16"
+      "primary": "#db2777",
+      "accent": "#fbcfe8",
+      "text": "#3f1d2e",
+      "background": "#fdf2f8"
     },
     "aside": {
       "width": "240px",
       "height": "1200px",
-      "radius": 14,
-      "position": "right"
+      "radius": 12
     },
     "photo": {
       "position": "left",
@@ -22617,16 +22562,15 @@
           "y": "0"
         }
       ],
-      "borderStyle": "solid",
-      "cornerRadius": 12
+      "cornerRadius": 12,
+      "borderStyle": "solid"
     },
     "layoutOptions": {
       "columnsGap": "normal",
       "asideWidthMode": "standard",
       "sectionSpacing": "normal",
       "asideStartsAtTop": true,
-      "borderRadius": 0,
-      "asideWidth": 34,
+      "borderRadius": 14,
       "gutter": 22
     },
     "photoOptions": {
@@ -22855,7 +22799,7 @@
         "Roboto",
         "Roboto Slab"
       ],
-      "scale": "comfortable",
+      "scale": "balanced",
       "fonts": {
         "display": "Roboto Slab",
         "body": "Roboto",
@@ -22867,8 +22811,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 8,
-      "style": "soft"
+      "radius": 8
     },
     "items": {
       "fullName": {
@@ -23076,9 +23019,9 @@
   },
   {
     "id": "tpl-051",
-    "name": "Graphite Summary · Pro Palette 051",
+    "name": "Graphite Summary · Studio 20",
     "version": "1.1.0",
-    "layout": "classic",
+    "layout": "aside-bar-left",
     "structure": "structure-6",
     "sections": {
       "experience": "classic",
@@ -23111,16 +23054,15 @@
         "color": "#CBD5E1",
         "radius": 16
       },
-      "primary": "#DB2777",
-      "accent": "#F9A8D4",
-      "background": "#FCE7F3",
-      "text": "#3F1D2E"
+      "primary": "#ea580c",
+      "accent": "#fed7aa",
+      "text": "#3b1d0a",
+      "background": "#fff7ed"
     },
     "aside": {
       "width": "240px",
       "height": "1200px",
-      "radius": 18,
-      "position": "left"
+      "radius": 16
     },
     "photo": {
       "position": "left",
@@ -23149,16 +23091,15 @@
           "y": "0"
         }
       ],
-      "borderStyle": "double",
-      "cornerRadius": 18
+      "cornerRadius": 18,
+      "borderStyle": "dashed"
     },
     "layoutOptions": {
       "columnsGap": "normal",
       "asideWidthMode": "standard",
       "sectionSpacing": "normal",
       "asideStartsAtTop": false,
-      "borderRadius": 4,
-      "asideWidth": 36,
+      "borderRadius": 18,
       "gutter": 24
     },
     "photoOptions": {
@@ -23387,7 +23328,7 @@
         "Manrope",
         "Prata"
       ],
-      "scale": "compact",
+      "scale": "balanced",
       "fonts": {
         "display": "Prata",
         "body": "Manrope",
@@ -23399,8 +23340,7 @@
       "height": 3,
       "width": "flex",
       "raduis": 999,
-      "radius": 12,
-      "style": "solid"
+      "radius": 12
     },
     "items": {
       "fullName": {
