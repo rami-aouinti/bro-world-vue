@@ -1,6 +1,7 @@
 <script setup lang="ts">
 type PreviewTemplate = { id?: string; value?: string; label?: string; name?: string; title?: string }
 type PaletteOption = { value?: string; title?: string; name?: string; primary?: string; secondary?: string; tertiary?: string; quaternary?: string; text?: string; dark?: string; light?: string }
+type PaletteColorKey = 'primary' | 'secondary' | 'text' | 'pageBackground'
 
 withDefaults(
   defineProps<{
@@ -20,6 +21,7 @@ withDefaults(
     decorMenuOpen?: boolean
     showDecor?: boolean
     showSection?: boolean
+    activeColors?: Partial<Record<PaletteColorKey, string>>
   }>(),
   {
     menuOpen: false,
@@ -38,12 +40,14 @@ withDefaults(
     decorMenuOpen: false,
     showDecor: false,
     showSection: false,
+    activeColors: () => ({}),
   },
 )
 
 const emit = defineEmits<{
   (e: 'update:menu-open' | 'update:palette-menu-open' | 'update:aside-menu-open' | 'update:bar-menu-open' | 'update:border-menu-open' | 'update:decor-menu-open', value: boolean): void
   (e: 'select-template' | 'select-palette', value: string): void
+  (e: 'update-palette-color', payload: { key: PaletteColorKey; value: string }): void
   (e: 'save' | 'ai' | 'signature' | 'pdf' | 'section'): void
 }>()
 
@@ -55,12 +59,18 @@ function templateLabel(template: PreviewTemplate) {
   return template.label || template.title || template.name || templateId(template)
 }
 
-function paletteLabel(palette: PaletteOption) {
-  return palette.title || palette.name || palette.value || 'Palette'
-}
 
-function paletteValue(palette: PaletteOption) {
-  return String(palette.value || '')
+
+const editablePaletteFields: Array<{ key: PaletteColorKey; label: string }> = [
+  { key: 'primary', label: 'Primary' },
+  { key: 'secondary', label: 'Secondary' },
+  { key: 'text', label: 'Text' },
+  { key: 'pageBackground', label: 'Page background' },
+]
+
+function onColorUpdate(key: PaletteColorKey, event: Event) {
+  const target = event.target as HTMLInputElement | null
+  emit('update-palette-color', { key, value: target?.value || '' })
 }
 </script>
 
@@ -158,21 +168,29 @@ function paletteValue(palette: PaletteOption) {
         </v-card>
       </v-menu>
 
-      <v-menu :model-value="paletteMenuOpen" location="bottom start" @update:model-value="emit('update:palette-menu-open', $event)">
+      <v-menu
+        :model-value="paletteMenuOpen"
+        location="bottom start"
+        :close-on-content-click="false"
+        @update:model-value="emit('update:palette-menu-open', $event)"
+      >
         <template #activator="{ props: menuProps }">
           <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-palette">Palette</v-btn>
         </template>
         <v-card class="pa-3" min-width="280">
-          <div class="palette-grid" :style="{ '--palette-cols': String(paletteColumns) }">
-            <button
-              v-for="palette in palettes"
-              :key="`palette-${paletteValue(palette)}`"
-              class="palette-dot"
-              :class="{ 'palette-dot--active': selectedPalette === paletteValue(palette) }"
-              :title="paletteLabel(palette)"
-              :style="{ '--palette-primary': palette.primary || '#cbd5e1', '--palette-secondary': palette.secondary || palette.dark || '#94a3b8', '--palette-tertiary': palette.tertiary || palette.text || '#475569', '--palette-quaternary': palette.quaternary || palette.light || '#e2e8f0' }"
-              @click="emit('select-palette', paletteValue(palette))"
-            />
+          <div class="d-flex flex-column ga-2">
+            <label
+              v-for="field in editablePaletteFields"
+              :key="field.key"
+              class="palette-color-row"
+            >
+              <span>{{ field.label }}</span>
+              <input
+                :value="activeColors?.[field.key] || '#000000'"
+                type="color"
+                @input="onColorUpdate(field.key, $event)"
+              >
+            </label>
           </div>
         </v-card>
       </v-menu>
