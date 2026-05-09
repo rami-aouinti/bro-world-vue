@@ -68,11 +68,6 @@ const borderMenuOpen = ref(false)
 const decorMenuOpen = ref(false)
 const selectedPalette = ref('template')
 const paletteOverrides = ref<Record<string, Record<string, string>>>({})
-const sectionColumnOverrides = reactive<Record<string, 6 | 12>>({})
-const sectionColumnOptions = [
-  { title: 'Full Column', value: 12 },
-  { title: 'Half Column', value: 6 },
-]
 const signatureDataUrl = ref('')
 const signatureDialogOpen = ref(false)
 const aiModalOpen = ref(false)
