@@ -74,6 +74,7 @@ const sidebarRoutes = computed(() => {
     { label: 'New Cover Letter', to: '/resume/cover-letter/preview', icon: 'mdi-email-edit-outline' },
     { label: 'IA Features', to: '/resume/ia-features', icon: 'mdi-robot-outline' },
     { label: 'Documentation', to: '/resume/documentation', icon: 'mdi-book-open-page-variant-outline' },
+    { label: 'Help', to: '/resume/help', icon: 'mdi-help-circle-outline' },
     { label: 'FAQ', to: '/resume/faq', icon: 'mdi-frequently-asked-questions' },
   ]
 
