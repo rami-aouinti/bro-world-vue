@@ -514,18 +514,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -1043,18 +1031,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -1576,18 +1552,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -2108,18 +2072,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -2640,18 +2592,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -3172,18 +3112,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -3704,18 +3632,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -4236,18 +4152,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -4768,18 +4672,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -5300,18 +5192,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -5828,18 +5708,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -6356,18 +6224,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -6888,18 +6744,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -7420,18 +7264,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -7950,18 +7782,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -8480,18 +8300,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -9012,18 +8820,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -9543,18 +9339,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -10074,18 +9858,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -10605,18 +10377,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -11136,18 +10896,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -11667,18 +11415,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -12198,18 +11934,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -12729,18 +12453,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -13258,18 +12970,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -13796,18 +13496,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -14334,18 +14022,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -14876,18 +14552,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -15418,18 +15082,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -15960,18 +15612,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -16502,18 +16142,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -17044,18 +16672,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -17586,18 +17202,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -18128,18 +17732,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -18670,18 +18262,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -19208,18 +18788,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -19746,18 +19314,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -20288,18 +19844,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -20830,18 +20374,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -21369,18 +20901,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -21908,18 +21428,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -22449,18 +21957,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -22990,18 +22486,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -23531,18 +23015,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   },
   {
@@ -24072,18 +23544,6 @@
         "renderer": "classic",
         "enabled": true
       }
-    },
-    "sectionColumns": {
-      "profile": 12,
-      "contact": 12,
-      "experience": 12,
-      "education": 12,
-      "skills": 12,
-      "languages": 12,
-      "certifications": 12,
-      "projects": 12,
-      "references": 12,
-      "hobbies": 12
     }
   }
 ]
