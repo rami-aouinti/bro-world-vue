@@ -168,7 +168,12 @@ function onColorUpdate(key: PaletteColorKey, event: Event) {
         </v-card>
       </v-menu>
 
-      <v-menu :model-value="paletteMenuOpen" location="bottom start" @update:model-value="emit('update:palette-menu-open', $event)">
+      <v-menu
+        :model-value="paletteMenuOpen"
+        location="bottom start"
+        :close-on-content-click="false"
+        @update:model-value="emit('update:palette-menu-open', $event)"
+      >
         <template #activator="{ props: menuProps }">
           <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-palette">Palette</v-btn>
         </template>
