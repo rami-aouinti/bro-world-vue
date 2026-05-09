@@ -12,6 +12,10 @@ import {
   readableTextColorForBackground,
 } from '~/utils/resumeColorContrast'
 import { buildToolbarPaletteOptions } from '~/modules/resume/theme/paletteOptions'
+import {
+  getAsideSections,
+  getContentSections,
+} from '~/utils/resumeGeneratedTemplate'
 import CvLayoutAside from '~/components/cv/layouts/CvLayoutAside.vue'
 import CvLayoutNoAside from '~/components/cv/layouts/CvLayoutNoAside.vue'
 import CvLayoutAsideLeft from '~/components/cv/layouts/CvLayoutAsideLeft.vue'
@@ -307,26 +311,28 @@ function removeDecorObject(index: number) {
     decorMenuOpenIndex.value -= 1
 }
 
-const structureOneSections = [
-  'Profile',
-  'Experience',
-  'Education',
-  'Skills',
-  'Projects',
-  'Languages',
-  'Certification',
-  'References',
-  'Hobby',
-]
-const structureTwoTopSections = ['Profile', 'Experience', 'Education']
-const structureTwoLeftSections = ['Skills']
-const structureTwoRightSections = [
-  'Projects',
-  'Languages',
-  'Certification',
-  'References',
-  'Hobby',
-]
+const templateContentSections = computed(() =>
+  getContentSections(activeTemplate.value).map((section) => section.key),
+)
+const templateFullContentSections = computed(() =>
+  getContentSections(activeTemplate.value)
+    .filter((section) => section.column !== 'half')
+    .map((section) => section.key),
+)
+const templateHalfContentSections = computed(() =>
+  getContentSections(activeTemplate.value)
+    .filter((section) => section.column === 'half')
+    .map((section) => section.key),
+)
+const templateAsideSections = computed(() =>
+  getAsideSections(activeTemplate.value).map((section) => section.key),
+)
+const templateHalfContentLeftSections = computed(() =>
+  templateHalfContentSections.value.filter((_, index) => index % 2 === 0),
+)
+const templateHalfContentRightSections = computed(() =>
+  templateHalfContentSections.value.filter((_, index) => index % 2 === 1),
+)
 const normalizedStructure = computed(() => {
   const structure = String(activeTemplate.value?.structure || '')
   if (structure === 'structure-1' || structure === 'structure-2')
@@ -341,22 +347,6 @@ const isMainStructureLayout = computed(() =>
   ),
 )
 
-const structureAsideOneSections = [
-  'Profile',
-  'Skills',
-  'Languages',
-  'Certification',
-  'References',
-  'Hobby',
-]
-const structureAsideTwoSections = [
-  'Profile',
-  'Languages',
-  'Certifications',
-  'References',
-  'Hobby',
-]
-const structureContentBaseSections = ['Experience', 'Education', 'Projects']
 const isSideContentLayout = computed(() =>
   [
     'aside-left',
@@ -368,32 +358,85 @@ const isSideContentLayout = computed(() =>
   ].includes(String(activeTemplate.value?.layout || '')),
 )
 
-const sectionOrders = reactive<Record<string, string[]>>({
-  asideOne: [...structureAsideOneSections],
-  asideTwo: [...structureAsideTwoSections],
-  contentBase: [...structureContentBaseSections],
-  contentStructure2: [...structureContentBaseSections, 'Skills'],
-  mainOne: [...structureOneSections],
-  mainTwoTop: [...structureTwoTopSections],
-  mainTwoLeft: [...structureTwoLeftSections],
-  mainTwoRight: [...structureTwoRightSections],
-})
+type SectionOrderKey =
+  | 'asideOne'
+  | 'asideTwo'
+  | 'contentBase'
+  | 'contentStructure2'
+  | 'mainOne'
+  | 'mainTwoTop'
+  | 'mainTwoLeft'
+  | 'mainTwoRight'
 
-function orderedSections(
-  orderKey: keyof typeof sectionOrders,
-  fallback: string[],
-) {
+const sectionOrders = reactive<Record<SectionOrderKey, string[]>>({
+  asideOne: [],
+  asideTwo: [],
+  contentBase: [],
+  contentStructure2: [],
+  mainOne: [],
+  mainTwoTop: [],
+  mainTwoLeft: [],
+  mainTwoRight: [],
+})
+const orderMap = sectionOrders
+
+const templateSectionFallbacks = computed<Record<SectionOrderKey, string[]>>(
+  () => ({
+    asideOne: [...templateAsideSections.value],
+    asideTwo: [...templateAsideSections.value],
+    contentBase: [...templateContentSections.value],
+    contentStructure2: [...templateContentSections.value],
+    mainOne: [...templateContentSections.value],
+    mainTwoTop: [...templateFullContentSections.value],
+    mainTwoLeft: [...templateHalfContentLeftSections.value],
+    mainTwoRight: [...templateHalfContentRightSections.value],
+  }),
+)
+
+function syncSectionOrdersWithTemplate() {
+  const fallbacks = templateSectionFallbacks.value
+  ;(Object.keys(sectionOrders) as SectionOrderKey[]).forEach((orderKey) => {
+    const nextFallback = fallbacks[orderKey] || []
+    const nextFallbackSet = new Set(nextFallback.map(toSectionKey))
+    const current = sectionOrders[orderKey] || []
+    const preserved = current.filter((section) =>
+      nextFallbackSet.has(toSectionKey(section)),
+    )
+    const preservedSet = new Set(preserved.map(toSectionKey))
+    sectionOrders[orderKey] = [
+      ...preserved,
+      ...nextFallback.filter(
+        (section) => !preservedSet.has(toSectionKey(section)),
+      ),
+    ]
+  })
+}
+
+watch(
+  () => activeTemplate.value?.id,
+  () => syncSectionOrdersWithTemplate(),
+  { immediate: true },
+)
+
+function orderedSections(orderKey: SectionOrderKey) {
+  const fallback = templateSectionFallbacks.value[orderKey] || []
   const order = sectionOrders[orderKey] || []
-  const known = new Set(order)
-  return [...order, ...fallback.filter((item) => !known.has(item))]
+  const fallbackKeys = new Set(fallback.map(toSectionKey))
+  const known = new Set(order.map(toSectionKey))
+  return [
+    ...order.filter((section) => {
+      const key = toSectionKey(section)
+      return fallbackKeys.has(key) || key.startsWith('custom_')
+    }),
+    ...fallback.filter((item) => !known.has(toSectionKey(item))),
+  ]
 }
 
 function visibleOrderedSections(
-  orderKey: keyof typeof sectionOrders,
-  fallback: string[],
-  zoneKey?: keyof typeof sectionOrders,
+  orderKey: SectionOrderKey,
+  zoneKey?: SectionOrderKey,
 ) {
-  return orderedSections(orderKey, fallback).filter((section) => {
+  return orderedSections(orderKey).filter((section) => {
     const normalized = toSectionKey(section)
     const visible = isSectionVisible(normalized)
     if (!visible) return false
@@ -401,6 +444,29 @@ function visibleOrderedSections(
     return isSectionVisibleInZone(zoneKey, normalized)
   })
 }
+
+const visibleAsideOneSections = computed(() =>
+  visibleOrderedSections('asideOne', 'asideOne'),
+)
+const visibleAsideTwoSections = computed(() =>
+  visibleOrderedSections('asideTwo', 'asideTwo'),
+)
+const visibleContentBaseSections = computed(() =>
+  visibleOrderedSections('contentBase'),
+)
+const visibleContentStructure2Sections = computed(() =>
+  visibleOrderedSections('contentStructure2'),
+)
+const visibleMainOneSections = computed(() => visibleOrderedSections('mainOne'))
+const visibleMainTwoTopSections = computed(() =>
+  visibleOrderedSections('mainTwoTop'),
+)
+const visibleMainTwoLeftSections = computed(() =>
+  visibleOrderedSections('mainTwoLeft'),
+)
+const visibleMainTwoRightSections = computed(() =>
+  visibleOrderedSections('mainTwoRight'),
+)
 
 const CV_PREVIEW_PDF_PAGE_HEIGHT = 1100
 const CV_PREVIEW_PAGE_WIDTH = 794
@@ -448,20 +514,14 @@ function scheduleCvPreviewMeasure(reset = false) {
 }
 
 const dragSection = ref<string>('')
-const dragOrderKey = ref<keyof typeof sectionOrders | ''>('')
+const dragOrderKey = ref<SectionOrderKey | ''>('')
 
-function onSectionDragStart(
-  orderKey: keyof typeof sectionOrders,
-  section: string,
-) {
+function onSectionDragStart(orderKey: SectionOrderKey, section: string) {
   dragOrderKey.value = orderKey
   dragSection.value = section
 }
 
-function onSectionDrop(
-  orderKey: keyof typeof sectionOrders,
-  targetSection: string,
-) {
+function onSectionDrop(orderKey: SectionOrderKey, targetSection: string) {
   if (!dragSection.value || dragOrderKey.value !== orderKey) return
   const order = sectionOrders[orderKey]
   if (!order) return
@@ -470,6 +530,7 @@ function onSectionDrop(
   if (from === -1 || to === -1 || from === to) return
   const next = [...order]
   const [item] = next.splice(from, 1)
+  if (!item) return
   next.splice(to, 0, item)
   sectionOrders[orderKey] = next
 }
@@ -480,7 +541,7 @@ function onSectionDragEnd() {
 }
 
 function moveSection(
-  orderKey: keyof typeof sectionOrders,
+  orderKey: SectionOrderKey,
   section: string,
   direction: 'up' | 'down' = 'down',
 ) {
@@ -495,6 +556,7 @@ function moveSection(
   if (next === idx) return
   const swapped = [...order]
   const [item] = swapped.splice(idx, 1)
+  if (!item) return
   swapped.splice(next, 0, item)
   sectionOrders[orderKey] = swapped
 }
@@ -509,8 +571,10 @@ const sectionVariantMap = computed(() => {
     projects: getGeneratedTemplateSectionForm(sections, 'projects'),
     languages: getGeneratedTemplateSectionForm(sections, 'languages'),
     certification: getGeneratedTemplateSectionForm(sections, 'certifications'),
+    certifications: getGeneratedTemplateSectionForm(sections, 'certifications'),
     references: getGeneratedTemplateSectionForm(sections, 'references'),
     hobby: getGeneratedTemplateSectionForm(sections, 'interests'),
+    hobbies: getGeneratedTemplateSectionForm(sections, 'interests'),
   }
 })
 
@@ -523,9 +587,8 @@ const templateFakeData = computed(() =>
 )
 const userResumeData = computed<any>(() => myResumes.value[0] || null)
 const fakeData = computed(() => userResumeData.value || templateFakeData.value)
-const sectionType = (
-  key: keyof ReturnType<(typeof sectionVariantMap)['value']>,
-) => sectionVariantMap.value[key] || 'classic'
+const sectionType = (key: keyof (typeof sectionVariantMap)['value']) =>
+  sectionVariantMap.value[key] || 'classic'
 
 function normalizeSectionKey(raw: string) {
   const key = raw.toLowerCase()
@@ -553,7 +616,11 @@ const addSectionStep = ref<1 | 2>(1)
 const isAddSectionStepOne = computed(() => Number(addSectionStep.value) === 1)
 const addSectionVariant = ref('classic')
 const addSectionName = ref('')
-const addSectionOrder = reactive({
+const addSectionOrder = reactive<{
+  zone: SectionOrderKey
+  withSection: string
+  after: boolean
+}>({
   zone: 'mainOne',
   withSection: '',
   after: true,
@@ -580,17 +647,11 @@ const sectionLineOffsets = reactive<Record<string, number>>({})
 const CV_SECTION_LINE_OFFSET_PX = 18
 const CV_SECTION_MAX_LINE_OFFSET = 24
 
-function sectionOffsetKey(
-  orderKey: keyof typeof sectionOrders,
-  section: string,
-) {
+function sectionOffsetKey(orderKey: SectionOrderKey, section: string) {
   return `${orderKey}:${normalizeSectionKey(section)}`
 }
 
-function sectionOffsetStyle(
-  orderKey: keyof typeof sectionOrders,
-  section: string,
-) {
+function sectionOffsetStyle(orderKey: SectionOrderKey, section: string) {
   const lines = sectionLineOffsets[sectionOffsetKey(orderKey, section)] || 0
   return lines > 0
     ? { marginTop: `${lines * CV_SECTION_LINE_OFFSET_PX}px` }
@@ -598,7 +659,7 @@ function sectionOffsetStyle(
 }
 
 function shiftSectionByLine(
-  orderKey: keyof typeof sectionOrders,
+  orderKey: SectionOrderKey,
   section: string,
   direction: 'up' | 'down',
 ) {
@@ -801,19 +862,13 @@ const hiddenSectionsByZone = reactive<Record<string, Record<string, boolean>>>(
   {},
 )
 
-function hideSectionInZone(
-  orderKey: keyof typeof sectionOrders,
-  section: string,
-) {
+function hideSectionInZone(orderKey: SectionOrderKey, section: string) {
   const normalized = normalizeSectionKey(section)
   hiddenSectionsByZone[orderKey] = hiddenSectionsByZone[orderKey] || {}
   hiddenSectionsByZone[orderKey][normalized] = true
 }
 
-function isSectionVisibleInZone(
-  orderKey: keyof typeof sectionOrders,
-  section: string,
-) {
+function isSectionVisibleInZone(orderKey: SectionOrderKey, section: string) {
   const normalized = normalizeSectionKey(section)
   return !hiddenSectionsByZone[orderKey]?.[normalized]
 }
@@ -2387,11 +2442,7 @@ watch(
               ]"
             >
               <div
-                v-for="section in visibleOrderedSections(
-                  'asideOne',
-                  structureAsideOneSections,
-                  'asideOne',
-                )"
+                v-for="section in visibleAsideOneSections"
                 :key="`aside-s1-${section}`"
                 class="cv-aside-section-item"
                 :style="sectionOffsetStyle('asideOne', section)"
@@ -2493,11 +2544,7 @@ watch(
               ]"
             >
               <div
-                v-for="section in visibleOrderedSections(
-                  'asideTwo',
-                  structureAsideTwoSections,
-                  'asideTwo',
-                )"
+                v-for="section in visibleAsideTwoSections"
                 :key="`aside-s2-${section}`"
                 class="cv-aside-section-item"
                 :style="sectionOffsetStyle('asideTwo', section)"
@@ -2594,10 +2641,7 @@ watch(
               class="cv-sections-list"
             >
               <div
-                v-for="section in visibleOrderedSections(
-                  'contentBase',
-                  structureContentBaseSections,
-                )"
+                v-for="section in visibleContentBaseSections"
                 :key="`content-base-${section}`"
                 class="cv-section-row"
                 :style="sectionOffsetStyle('contentBase', section)"
@@ -2689,10 +2733,7 @@ watch(
               class="cv-sections-structure-2"
             >
               <div
-                v-for="section in visibleOrderedSections('contentStructure2', [
-                  ...structureContentBaseSections,
-                  'Skills',
-                ])"
+                v-for="section in visibleContentStructure2Sections"
                 :key="`content-s2-${section}`"
                 class="cv-section-row"
                 :style="sectionOffsetStyle('contentStructure2', section)"
@@ -2786,10 +2827,7 @@ watch(
               class="cv-sections-list"
             >
               <div
-                v-for="section in visibleOrderedSections(
-                  'mainOne',
-                  structureOneSections,
-                )"
+                v-for="section in visibleMainOneSections"
                 :key="`s1-${section}`"
                 class="cv-section-row"
                 :style="sectionOffsetStyle('mainOne', section)"
@@ -2877,10 +2915,7 @@ watch(
               class="cv-sections-structure-2"
             >
               <div
-                v-for="section in visibleOrderedSections(
-                  'mainTwoTop',
-                  structureTwoTopSections,
-                )"
+                v-for="section in visibleMainTwoTopSections"
                 :key="`s2-top-${section}`"
                 class="cv-section-row"
                 :style="sectionOffsetStyle('mainTwoTop', section)"
@@ -2967,10 +3002,7 @@ watch(
               <v-row class="mt-1" dense>
                 <v-col cols="6">
                   <div
-                    v-for="section in visibleOrderedSections(
-                      'mainTwoLeft',
-                      structureTwoLeftSections,
-                    )"
+                    v-for="section in visibleMainTwoLeftSections"
                     :key="`s2-left-${section}`"
                     class="cv-section-row"
                     :style="sectionOffsetStyle('mainTwoLeft', section)"
@@ -3059,10 +3091,7 @@ watch(
                 </v-col>
                 <v-col cols="6">
                   <div
-                    v-for="section in visibleOrderedSections(
-                      'mainTwoRight',
-                      structureTwoRightSections,
-                    )"
+                    v-for="section in visibleMainTwoRightSections"
                     :key="`s2-right-${section}`"
                     class="cv-section-row"
                     :style="sectionOffsetStyle('mainTwoRight', section)"
@@ -3323,7 +3352,7 @@ watch(
           <v-select
             v-model="addSectionOrder.withSection"
             :items="
-              (orderMap[addSectionOrder.zone] || []).map((s) => ({
+              (orderMap[addSectionOrder.zone] || []).map((s: string) => ({
                 title: sectionTitleMap[toSectionKey(s)] || s,
                 value: s,
               }))
