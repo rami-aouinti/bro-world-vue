@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import RandomResumeDrawerCards
+  from "~/components/Resume/RandomResumeDrawerCards.vue";
+
 useSeoMeta({
   robots: 'index, follow',
   keywords: 'free, IA, AI, resume help, resume documentation, cv assistant',

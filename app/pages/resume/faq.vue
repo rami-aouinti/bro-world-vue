@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import RandomResumeDrawerCards
+  from "~/components/Resume/RandomResumeDrawerCards.vue";
+
 definePageMeta({ layout: 'resume', title: 'FAQ' })
 const { t, tm, rt } = useI18n()
 

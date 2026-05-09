@@ -1,6 +1,9 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'resume', title: 'Mes Files' })
 
+import RandomResumeDrawerCards
+  from "~/components/Resume/RandomResumeDrawerCards.vue";
+
 const myFileCards = [
   {
     title: 'CV',
