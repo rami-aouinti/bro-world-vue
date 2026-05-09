@@ -2,8 +2,9 @@
 import type { RecruitResume } from '~/types/world/jobs'
 import { privateApi } from '~/utils/http/privateApi'
 import RandomResumeDrawerCards from '~/components/Resume/RandomResumeDrawerCards.vue'
+const { t } = useI18n()
 
-definePageMeta({ layout: 'resume', title: 'Mes Files' })
+definePageMeta({ layout: 'resume', title: 'resumePreview.myFiles.metaTitle' })
 
 interface RecruitTemplateRef {
   name: string
@@ -56,7 +57,7 @@ async function fetchMyFiles() {
     coverPages.value = coverPagesResponse
     coverLetters.value = coverLettersResponse
   } catch {
-    error.value = 'Impossible de charger vos fichiers pour le moment.'
+    error.value = t('resumePreview.myFiles.errors.load')
   } finally {
     loading.value = false
   }
@@ -75,9 +76,9 @@ onMounted(fetchMyFiles)
 
     <v-container class="py-8" max-width="1200">
       <div class="hero mb-8">
-        <h1 class="text-h3 font-weight-bold mb-2">Mes Files</h1>
+        <h1 class="text-h3 font-weight-bold mb-2">{{ t('resumePreview.myFiles.heading') }}</h1>
         <p class="text-medium-emphasis text-body-1">
-          Tous mes CV, cover pages et cover letters dans un seul espace.
+          {{ t('resumePreview.myFiles.subheading') }}
         </p>
       </div>
 
@@ -89,14 +90,14 @@ onMounted(fetchMyFiles)
           <v-card-title>My CV</v-card-title>
           <v-divider />
           <v-card-text>
-            <v-empty-state v-if="!hasResumes" icon="mdi-file-document-outline" title="Aucun CV" />
+            <v-empty-state v-if="!hasResumes" icon="mdi-file-document-outline" :title="t('resumePreview.myFiles.empty.noResume')" />
             <v-row v-else>
               <v-col v-for="resume in resumes" :key="resume.id" cols="12" md="6" lg="4">
                 <v-card rounded="xl" class="h-100 postcard-gradient-card my-file-card">
                   <v-card-text>
-                    <h3 class="text-subtitle-1 font-weight-bold mb-2">CV #{{ resume.id.slice(0, 8) }}</h3>
+                    <h3 class="text-subtitle-1 font-weight-bold mb-2">{{ t('resumePreview.myFiles.labels.resumeId', { id: resume.id.slice(0, 8) }) }}</h3>
                     <p class="text-body-2 text-medium-emphasis mb-4">
-                      {{ resume.documentUrl ? 'CV PDF uploadé' : 'CV généré depuis vos données' }}
+                      {{ resume.documentUrl ? t('resumePreview.myFiles.labels.resumeUploaded') : t('resumePreview.myFiles.labels.resumeGenerated') }}
                     </p>
                     <div class="actions-row">
                       <v-btn color="primary" variant="tonal" prepend-icon="mdi-eye-outline" :href="resume.documentUrl || undefined" :to="resume.documentUrl ? undefined : '/resume/cv/preview'" target="_blank">Show</v-btn>
@@ -113,7 +114,7 @@ onMounted(fetchMyFiles)
           <v-card-title>My Cover Pages</v-card-title>
           <v-divider />
           <v-card-text>
-            <v-empty-state v-if="!hasCoverPages" icon="mdi-file-account-outline" title="Aucune cover page" />
+            <v-empty-state v-if="!hasCoverPages" icon="mdi-file-account-outline" :title="t('resumePreview.myFiles.empty.noCoverPage')" />
             <v-row v-else>
               <v-col v-for="coverPage in coverPages" :key="coverPage.id" cols="12" md="6" lg="4">
                 <v-card rounded="xl" class="h-100 postcard-gradient-card my-file-card">
@@ -135,7 +136,7 @@ onMounted(fetchMyFiles)
           <v-card-title>My Cover Letters</v-card-title>
           <v-divider />
           <v-card-text>
-            <v-empty-state v-if="!hasCoverLetters" icon="mdi-email-outline" title="Aucune cover letter" />
+            <v-empty-state v-if="!hasCoverLetters" icon="mdi-email-outline" :title="t('resumePreview.myFiles.empty.noCoverLetter')" />
             <v-row v-else>
               <v-col v-for="coverLetter in coverLetters" :key="coverLetter.id" cols="12" md="6" lg="4">
                 <v-card rounded="xl" class="h-100 postcard-gradient-card my-file-card">

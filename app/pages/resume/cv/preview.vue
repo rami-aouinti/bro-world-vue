@@ -574,7 +574,7 @@ function shiftSectionByLine(
 const languageOption = ref<any | null>(null)
 const languageStars = ref(3)
 const languageCatalog = [
-  { title: '🇫🇷 Français', name: 'Français', countryCode: 'FR', flag: '🇫🇷' },
+  { title: '🇫🇷 French', name: 'French', countryCode: 'FR', flag: '🇫🇷' },
   { title: '🇬🇧 English', name: 'English', countryCode: 'GB', flag: '🇬🇧' },
   { title: '🇩🇪 Deutsch', name: 'Deutsch', countryCode: 'DE', flag: '🇩🇪' },
   { title: '🇪🇸 Español', name: 'Español', countryCode: 'ES', flag: '🇪🇸' },
@@ -2650,7 +2650,7 @@ watch(
             </div>
             <div v-else class="empty-state">
               <p class="text-medium-emphasis">
-                Aucune section CV affichée pour le moment.
+                {{ t('resumePreview.cv.noSections') }}
               </p>
             </div>
             <footer v-if="signatureDataUrl" class="signature-footer">
@@ -2776,7 +2776,7 @@ watch(
 
     <AppModal
       v-model="sectionModalOpen"
-      title="Ajouter un élément"
+      :title="t('resumePreview.cv.addItem')"
       max-width="520"
     >
       <v-card-text>

@@ -3098,7 +3098,9 @@
   },
   "resumePreview": {
     "cv": {
-      "metaTitle": "Lebenslauf · Vorschau"
+      "metaTitle": "Lebenslauf · Vorschau",
+      "noSections": "Derzeit werden keine Lebenslaufabschnitte angezeigt.",
+      "addItem": "Element hinzufügen"
     },
     "coverPage": {
       "metaTitle": "Lebenslauf · Deckblatt-Vorschau"
@@ -3138,6 +3140,37 @@
         "line": "Linie",
         "density": "Dichte"
       }
+    },
+    "myFiles": {
+      "metaTitle": "Lebenslauf · Meine Dateien",
+      "heading": "Meine Dateien",
+      "subheading": "Alle meine Lebensläufe, Deckblätter und Anschreiben an einem Ort.",
+      "errors": {
+        "load": "Deine Dateien können derzeit nicht geladen werden."
+      },
+      "empty": {
+        "noResume": "Kein Lebenslauf",
+        "noCoverPage": "Kein Deckblatt",
+        "noCoverLetter": "Kein Anschreiben"
+      },
+      "labels": {
+        "resumeId": "Lebenslauf #{id}",
+        "resumeUploaded": "Lebenslauf-PDF hochgeladen",
+        "resumeGenerated": "Lebenslauf aus deinen Daten erstellt"
+      }
+    },
+    "publicProfile": {
+      "present": "Heute",
+      "errors": {
+        "loadTitle": "Dieser öffentliche Lebenslauf konnte nicht geladen werden"
+      },
+      "sections": {
+        "profile": "Profil",
+        "experience": "Berufserfahrung",
+        "education": "Ausbildung",
+        "skills": "Fähigkeiten"
+      },
+      "photoAlt": "Profilfoto"
     }
   },
   "resumeResources": {

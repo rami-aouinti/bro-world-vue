@@ -2,6 +2,7 @@
 import type { ResumeApiItem } from '~/services/resumeApi'
 
 const route = useRoute()
+const { t } = useI18n()
 const username = computed(() => String(route.params.username || '').trim())
 
 const { data: resume, pending, error } = await useAsyncData<ResumeApiItem | null>(
@@ -14,7 +15,7 @@ const { data: resume, pending, error } = await useAsyncData<ResumeApiItem | null
 )
 
 const formatDate = (value?: string | null) => {
-  if (!value) return 'Présent'
+  if (!value) return t('resumePreview.publicProfile.present')
   const parsed = new Date(value)
   if (Number.isNaN(parsed.getTime())) return value
   return parsed.toLocaleDateString('fr-FR', { year: 'numeric', month: 'short' })
@@ -37,7 +38,7 @@ definePageMeta({ layout: 'resume' })
 <template>
   <section class="public-resume" :style="{ '--primary': templatePalette.primary, '--secondary': templatePalette.secondary, '--text': templatePalette.text, '--muted': templatePalette.muted, '--page-bg': templatePalette.pageBackground }">
     <v-container class="py-8">
-      <v-alert v-if="error" type="error" variant="tonal" title="Impossible de charger ce CV public" :text="String(error)" />
+      <v-alert v-if="error" type="error" variant="tonal" :title="t('resumePreview.publicProfile.errors.loadTitle')" :text="String(error)" />
       <v-skeleton-loader v-else-if="pending" type="article, article, article" />
       <v-card v-else-if="resume" class="mx-auto public-resume__sheet" max-width="980" rounded="xl">
         <div class="public-resume__header">
@@ -46,16 +47,16 @@ definePageMeta({ layout: 'resume' })
             <p class="text-h6 mb-0">{{ resume.resumeInformation?.title }}</p>
           </div>
           <v-avatar v-if="resume.resumeInformation?.photo" size="112">
-            <v-img :src="resume.resumeInformation.photo" alt="Photo profil" cover />
+            <v-img :src="resume.resumeInformation.photo" :alt="t('resumePreview.publicProfile.photoAlt')" cover />
           </v-avatar>
         </div>
         <v-divider class="my-4" />
         <div class="public-resume__section">
-          <h2>Profil</h2>
+          <h2>{{ t('resumePreview.publicProfile.sections.profile') }}</h2>
           <p class="mb-0 pre-wrap">{{ resume.resumeInformation?.profileText }}</p>
         </div>
         <div class="public-resume__section">
-          <h2>Expériences</h2>
+          <h2>{{ t('resumePreview.publicProfile.sections.experience') }}</h2>
           <div v-for="item in resume.experiences || []" :key="item.title + item.startDate" class="mb-4">
             <div class="d-flex justify-space-between flex-wrap ga-2">
               <strong>{{ item.title }} · {{ item.company }}</strong>
@@ -65,14 +66,14 @@ definePageMeta({ layout: 'resume' })
           </div>
         </div>
         <div class="public-resume__section">
-          <h2>Éducation</h2>
+          <h2>{{ t('resumePreview.publicProfile.sections.education') }}</h2>
           <div v-for="item in resume.educations || []" :key="item.title + item.startDate" class="mb-3">
             <strong>{{ item.title }} · {{ item.school }}</strong>
             <p class="mb-0 text-caption text-medium-emphasis">{{ formatDate(item.startDate) }} - {{ formatDate(item.endDate) }} · {{ item.location }}</p>
           </div>
         </div>
         <div class="public-resume__section">
-          <h2>Compétences</h2>
+          <h2>{{ t('resumePreview.publicProfile.sections.skills') }}</h2>
           <div class="d-flex flex-wrap ga-2">
             <v-chip v-for="skill in resume.skills || []" :key="skill.name" color="primary" variant="outlined">{{ skill.name }}</v-chip>
           </div>

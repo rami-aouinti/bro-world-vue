@@ -3070,7 +3070,9 @@
   },
   "resumePreview": {
     "cv": {
-      "metaTitle": "Currículum · Vista previa"
+      "metaTitle": "Currículum · Vista previa",
+      "noSections": "No se muestra ninguna sección del CV por ahora.",
+      "addItem": "Añadir elemento"
     },
     "coverPage": {
       "metaTitle": "Currículum · Vista previa de portada"
@@ -3110,6 +3112,37 @@
         "line": "Línea",
         "density": "Densidad"
       }
+    },
+    "myFiles": {
+      "metaTitle": "Currículum · Mis archivos",
+      "heading": "Mis archivos",
+      "subheading": "Todos mis currículums, portadas y cartas de presentación en un solo lugar.",
+      "errors": {
+        "load": "No se pueden cargar tus archivos en este momento."
+      },
+      "empty": {
+        "noResume": "Sin currículum",
+        "noCoverPage": "Sin portada",
+        "noCoverLetter": "Sin carta de presentación"
+      },
+      "labels": {
+        "resumeId": "Currículum #{id}",
+        "resumeUploaded": "Currículum PDF subido",
+        "resumeGenerated": "Currículum generado a partir de tus datos"
+      }
+    },
+    "publicProfile": {
+      "present": "Actualidad",
+      "errors": {
+        "loadTitle": "No se puede cargar este currículum público"
+      },
+      "sections": {
+        "profile": "Perfil",
+        "experience": "Experiencia",
+        "education": "Educación",
+        "skills": "Habilidades"
+      },
+      "photoAlt": "Foto de perfil"
     }
   },
   "resumeResources": {

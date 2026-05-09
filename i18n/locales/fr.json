@@ -3319,7 +3319,9 @@
   },
   "resumePreview": {
     "cv": {
-      "metaTitle": "CV · Aperçu"
+      "metaTitle": "CV · Aperçu",
+      "noSections": "Aucune section de CV n'est affichée pour le moment.",
+      "addItem": "Ajouter un élément"
     },
     "coverPage": {
       "metaTitle": "CV · Aperçu de la page de garde"
@@ -3359,6 +3361,37 @@
         "line": "Ligne",
         "density": "Densité"
       }
+    },
+    "myFiles": {
+      "metaTitle": "CV · Mes fichiers",
+      "heading": "Mes fichiers",
+      "subheading": "Tous mes CV, pages de garde et lettres de motivation dans un seul espace.",
+      "errors": {
+        "load": "Impossible de charger vos fichiers pour le moment."
+      },
+      "empty": {
+        "noResume": "Aucun CV",
+        "noCoverPage": "Aucune page de garde",
+        "noCoverLetter": "Aucune lettre de motivation"
+      },
+      "labels": {
+        "resumeId": "CV #{id}",
+        "resumeUploaded": "CV PDF téléversé",
+        "resumeGenerated": "CV généré depuis vos données"
+      }
+    },
+    "publicProfile": {
+      "present": "Présent",
+      "errors": {
+        "loadTitle": "Impossible de charger ce CV public"
+      },
+      "sections": {
+        "profile": "Profil",
+        "experience": "Expériences",
+        "education": "Éducation",
+        "skills": "Compétences"
+      },
+      "photoAlt": "Photo de profil"
     }
   },
   "resumeResources": {

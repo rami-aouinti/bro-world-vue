@@ -3337,7 +3337,9 @@
   },
   "resumePreview": {
     "cv": {
-      "metaTitle": "Resume · CV Preview"
+      "metaTitle": "Resume · CV Preview",
+      "noSections": "No CV sections are displayed at the moment.",
+      "addItem": "Add item"
     },
     "coverPage": {
       "metaTitle": "Resume · Cover Page Preview"
@@ -3377,6 +3379,37 @@
         "line": "Line",
         "density": "Density"
       }
+    },
+    "myFiles": {
+      "metaTitle": "Resume · My Files",
+      "heading": "My Files",
+      "subheading": "All my resumes, cover pages, and cover letters in one place.",
+      "errors": {
+        "load": "Unable to load your files at the moment."
+      },
+      "empty": {
+        "noResume": "No resume",
+        "noCoverPage": "No cover page",
+        "noCoverLetter": "No cover letter"
+      },
+      "labels": {
+        "resumeId": "Resume #{id}",
+        "resumeUploaded": "Uploaded resume PDF",
+        "resumeGenerated": "Resume generated from your data"
+      }
+    },
+    "publicProfile": {
+      "present": "Present",
+      "errors": {
+        "loadTitle": "Unable to load this public resume"
+      },
+      "sections": {
+        "profile": "Profile",
+        "experience": "Experience",
+        "education": "Education",
+        "skills": "Skills"
+      },
+      "photoAlt": "Profile photo"
     }
   },
   "resumeResources": {
