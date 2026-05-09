@@ -21,6 +21,8 @@ import CvLayoutAsideTopFullLeft from '~/components/cv/layouts/CvLayoutAsideTopFu
 import CvLayoutAsideTopFullRight from '~/components/cv/layouts/CvLayoutAsideTopFullRight.vue'
 import CvLayoutAsideBarLeft from '~/components/cv/layouts/CvLayoutAsideBarLeft.vue'
 import CvLayoutAsideBarRight from '~/components/cv/layouts/CvLayoutAsideBarRight.vue'
+import CvLayoutIdentityAsideLeft from '~/components/cv/layouts/CvLayoutIdentityAsideLeft.vue'
+import CvLayoutIdentityAsideRight from '~/components/cv/layouts/CvLayoutIdentityAsideRight.vue'
 import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 import {
   resolveResumeTextFont,
@@ -144,6 +146,8 @@ const cvLayoutComponentMap = {
   'aside-top-full-right': CvLayoutAsideTopFullRight,
   'aside-bar-left': CvLayoutAsideBarLeft,
   'aside-bar-right': CvLayoutAsideBarRight,
+  'identity-aside-left': CvLayoutIdentityAsideLeft,
+  'identity-aside-right': CvLayoutIdentityAsideRight,
 } as const
 
 const activeLayoutComponent = computed(
