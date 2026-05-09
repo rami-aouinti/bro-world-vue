@@ -155,6 +155,11 @@ const activeLayoutComponent = computed(
       activeTemplate.value?.layout as keyof typeof cvLayoutComponentMap
     ] || CvLayoutNoAside,
 )
+const isIdentityAsideLayout = computed(() =>
+  ['identity-aside-left', 'identity-aside-right'].includes(
+    String(activeTemplate.value?.layout || ''),
+  ),
+)
 const palettePresetOptions = computed(() =>
   buildToolbarPaletteOptions(
     activeTemplateDesign.value.theme.palette,
@@ -1227,6 +1232,8 @@ const headerProfile = computed(() => {
   }
 })
 
+const headerContactItems = computed(() => headerProfile.value.contact)
+
 const photoMenuOpen = ref(false)
 const photoFileInput = ref<HTMLInputElement | null>(null)
 const photoPreview = ref('')
@@ -2059,8 +2066,116 @@ watch(
                 : 'calc(100% + 18px)',
           }"
         >
-          <template #header>
+          <template #identity>
             <div
+              v-if="isIdentityAsideLayout"
+              class="cv-header-identity cv-header-identity--aside"
+            >
+              <div class="cv-photo-wrap">
+                <img
+                  :src="photoPreview || headerProfile.image"
+                  alt="profile"
+                  class="cv-header-avatar"
+                  :style="{
+                    width: `${photoSize}px`,
+                    height: `${photoSize}px`,
+                    borderRadius: `${photoRadius}px`,
+                    border: `${photoBorderWidth}px solid ${photoBorderColor}`,
+                  }"
+                  @click="openPhotoPicker"
+                />
+              </div>
+              <HoverRichTextEditor
+                class="cv-header-editor cv-header-editor--name"
+                :model-value="headerProfile.fullName"
+                placeholder="Full name"
+                font-size="22px"
+                font-weight="700"
+                :font-family="textFontPreset('fullName')"
+                color="inherit"
+                @update:model-value="updateHeaderField('fullName', $event)"
+              />
+              <HoverRichTextEditor
+                class="cv-header-editor cv-header-editor--role"
+                :model-value="headerProfile.role"
+                placeholder="Role"
+                font-size="13px"
+                font-weight="600"
+                :font-family="textFontPreset('body')"
+                color="inherit"
+                @update:model-value="updateHeaderField('role', $event)"
+              />
+            </div>
+          </template>
+          <template #header>
+            <div v-if="isIdentityAsideLayout" class="cv-header-contact-grid">
+              <div
+                v-for="(item, idx) in headerContactItems"
+                :key="`identity-contact-${idx}`"
+                class="cv-contact-item"
+              >
+                <v-menu location="bottom start" :close-on-content-click="true">
+                  <template #activator="{ props }">
+                    <v-btn
+                      v-bind="props"
+                      icon
+                      size="x-small"
+                      variant="text"
+                      class="cv-contact-icon-btn"
+                    >
+                      <v-icon :icon="item.icon" size="16" />
+                    </v-btn>
+                  </template>
+                  <v-list density="compact" class="cv-icon-menu-list">
+                    <v-list-item
+                      v-for="altIcon in contactIconAlternatives[item.key] || [
+                        item.icon,
+                      ]"
+                      :key="`${item.key}-${altIcon}`"
+                      :title="altIcon"
+                      @click="updateContactIcon(item.key, altIcon)"
+                    >
+                      <template #prepend>
+                        <v-icon :icon="altIcon" size="16" />
+                      </template>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+                <template v-if="item.type === 'link'">
+                  <a
+                    class="cv-contact-link"
+                    :href="item.value"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    :title="item.value"
+                    >{{ item.label }}</a
+                  >
+                  <HoverRichTextEditor
+                    class="cv-header-editor cv-header-editor--contact cv-header-editor--link-value"
+                    :model-value="item.value"
+                    :placeholder="item.label || 'Contact'"
+                    font-size="12px"
+                    font-weight="600"
+                    :font-family="textFontPreset('body')"
+                    color="inherit"
+                    @update:model-value="updateHeaderField(item.key, $event)"
+                  />
+                </template>
+                <HoverRichTextEditor
+                  v-else
+                  class="cv-header-editor cv-header-editor--contact"
+                  :model-value="item.value"
+                  :placeholder="item.label || 'Contact'"
+                  font-size="13px"
+                  font-weight="700"
+                  :font-family="textFontPreset('body')"
+                  color="inherit"
+                  @update:model-value="updateHeaderField(item.key, $event)"
+                />
+              </div>
+            </div>
+            <div
+              v-else
               class="cv-header-layout"
               :class="`cv-header-layout--${headerType}`"
             >
@@ -2068,7 +2183,7 @@ watch(
                 <div class="cv-header-contact cv-col-8">
                   <div class="cv-header-contact-grid">
                     <div
-                      v-for="(item, idx) in headerProfile.contact"
+                      v-for="(item, idx) in headerContactItems"
                       :key="`left-${idx}`"
                       class="cv-contact-item"
                     >
@@ -2301,7 +2416,7 @@ watch(
                 <div class="cv-header-contact cv-col-8">
                   <div class="cv-header-contact-grid">
                     <div
-                      v-for="(item, idx) in headerProfile.contact"
+                      v-for="(item, idx) in headerContactItems"
                       :key="`right-${idx}`"
                       class="cv-contact-item"
                     >
@@ -2460,7 +2575,7 @@ watch(
                 <div class="cv-col-6 cv-header-contact">
                   <div class="cv-header-contact-grid">
                     <div
-                      v-for="(item, idx) in headerProfile.contact"
+                      v-for="(item, idx) in headerContactItems"
                       :key="`split-${idx}`"
                       class="cv-contact-item"
                     >
@@ -3993,6 +4108,10 @@ watch(
   align-items: flex-start;
   min-width: 0;
   text-align: start;
+}
+.cv-header-identity--aside {
+  color: inherit;
+  gap: 8px;
 }
 .cv-header-avatar {
   width: 52px;
