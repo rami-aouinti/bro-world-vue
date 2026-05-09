@@ -650,6 +650,9 @@ function selectAddSectionVariant(variant: string) {
   addSectionVariant.value = variant
   addSectionStep.value = 2
 }
+function goToAddSectionStepTwo() {
+  addSectionStep.value = 2
+}
 
 function confirmAddSection() {
   const sectionName = addSectionName.value.trim()
@@ -2839,7 +2842,7 @@ watch(
               <v-card
                 class="pa-5 cursor-pointer add-section-variant-card"
                 :variant="addSectionVariant === variant.value ? 'tonal' : 'outlined'"
-                @click="selectAddSectionVariant(variant.value)"
+                @click.stop.prevent="selectAddSectionVariant(variant.value)"
               >
                 <div class="text-h6 text-capitalize">{{ variant.title }}</div>
               </v-card>
@@ -2863,7 +2866,7 @@ watch(
       <template #actions>
       <div class="d-flex justify-end ga-2 mt-2 w-100">
         <v-btn variant="text" @click="addSectionModalOpen = false">Cancel</v-btn>
-        <v-btn v-if="addSectionStep === 1" color="primary" @click="addSectionStep = 2">Next</v-btn>
+        <v-btn v-if="addSectionStep === 1" color="primary" @click="goToAddSectionStepTwo">Next</v-btn>
         <v-btn v-else color="primary" :disabled="!addSectionName.trim()" @click="confirmAddSection">Save</v-btn>
       </div>
       </template>
