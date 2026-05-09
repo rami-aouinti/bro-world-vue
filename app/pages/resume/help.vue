@@ -13,9 +13,15 @@ const faqs = computed(() => tm('resumeResources.help.faqs') as HelpFaq[])
 </script>
 
 <template>
-  <v-container class="py-8" max-width="1100">
-    <h1 class="text-h3 font-weight-bold mb-2">{{ t('resumeResources.help.title') }}</h1>
-    <p class="text-medium-emphasis mb-8">{{ t('resumeResources.help.description') }}</p>
+  <div>
+    <AppPageDrawers>
+      <template #right>
+        <RandomResumeDrawerCards />
+      </template>
+    </AppPageDrawers>
+    <v-container class="py-8" max-width="1100">
+      <h1 class="text-h3 font-weight-bold mb-2">{{ t('resumeResources.help.title') }}</h1>
+      <p class="text-medium-emphasis mb-8">{{ t('resumeResources.help.description') }}</p>
 
     <v-timeline align="start" density="compact" side="end" class="mb-10">
       <v-timeline-item
@@ -32,15 +38,16 @@ const faqs = computed(() => tm('resumeResources.help.faqs') as HelpFaq[])
       </v-timeline-item>
     </v-timeline>
 
-    <v-row>
-      <v-col v-for="faq in faqs" :key="faq.q" cols="12" md="6">
-        <v-card class="faq-card h-100" variant="outlined">
-          <v-card-title class="text-wrap">{{ rt(faq.q) }}</v-card-title>
-          <v-card-text class="text-medium-emphasis">{{ rt(faq.a) }}</v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+      <v-row>
+        <v-col v-for="faq in faqs" :key="faq.q" cols="12" md="6">
+          <v-card class="faq-card h-100" variant="outlined">
+            <v-card-title class="text-wrap">{{ rt(faq.q) }}</v-card-title>
+            <v-card-text class="text-medium-emphasis">{{ rt(faq.a) }}</v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <style scoped>
