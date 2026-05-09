@@ -531,6 +531,11 @@ const sectionVariantOptionsMap: Record<string, string[]> = {
 }
 
 const sectionTypeOverrides = reactive<Record<string, string>>({})
+const sectionColumnOverrides = reactive<Record<string, 6 | 12>>({})
+const sectionColumnOptions = [
+  { title: 'Full Column', value: 12 },
+  { title: 'Half Column', value: 6 },
+]
 const customSectionCounter = ref(0)
 const addSectionModalOpen = ref(false)
 const addSectionStep = ref<1 | 2>(1)
@@ -798,6 +803,14 @@ function getSectionVariantOptions(section: string) {
 
 function effectiveSectionType(section: string, fallback: string) {
   return sectionTypeOverrides[section] || fallback
+}
+
+function sectionColumnSpan(section: string) {
+  return sectionColumnOverrides[toSectionKey(section)] || 12
+}
+
+function sectionColumnClass(section: string) {
+  return sectionColumnSpan(section) === 6 ? 'cv-section-row--half' : 'cv-section-row--full'
 }
 
 function formatShortDate(value: any) {
@@ -2143,6 +2156,7 @@ watch(
                   )"
                 :key="`content-base-${section}`"
                 class="cv-section-row"
+                :class="sectionColumnClass(section)"
                 :style="sectionOffsetStyle('contentBase', section)"
                 draggable="true"
                 @dragstart="onSectionDragStart('contentBase', section)"
@@ -2161,6 +2175,16 @@ watch(
                     hide-details
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
+                  /><AppSelect
+                    v-model="sectionColumnOverrides[toSectionKey(section)]"
+                    :items="sectionColumnOptions"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-view-column-outline"
+                    class="cv-column-select"
                   /><v-btn
                   icon="mdi-plus"
                   size="x-small"
@@ -2238,6 +2262,7 @@ watch(
                   )"
                 :key="`content-s2-${section}`"
                 class="cv-section-row"
+                :class="sectionColumnClass(section)"
                 :style="sectionOffsetStyle('contentStructure2', section)"
                 draggable="true"
                 @dragstart="onSectionDragStart('contentStructure2', section)"
@@ -2256,6 +2281,16 @@ watch(
                     hide-details
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
+                  /><AppSelect
+                    v-model="sectionColumnOverrides[toSectionKey(section)]"
+                    :items="sectionColumnOptions"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-view-column-outline"
+                    class="cv-column-select"
                   /><v-btn
                   icon="mdi-plus"
                   size="x-small"
@@ -2335,6 +2370,7 @@ watch(
                   )"
                 :key="`s1-${section}`"
                 class="cv-section-row"
+                :class="sectionColumnClass(section)"
                 :style="sectionOffsetStyle('mainOne', section)"
                 draggable="true"
                 @dragstart="onSectionDragStart('mainOne', section)"
@@ -2428,6 +2464,7 @@ watch(
                   )"
                 :key="`s2-top-${section}`"
                 class="cv-section-row"
+                :class="sectionColumnClass(section)"
                 :style="sectionOffsetStyle('mainTwoTop', section)"
                 draggable="true"
                 @dragstart="onSectionDragStart('mainTwoTop', section)"
@@ -2518,6 +2555,7 @@ watch(
                       )"
                     :key="`s2-left-${section}`"
                     class="cv-section-row"
+                    :class="sectionColumnClass(section)"
                     :style="sectionOffsetStyle('mainTwoLeft', section)"
                     draggable="true"
                     @dragstart="onSectionDragStart('mainTwoLeft', section)"
@@ -2612,6 +2650,7 @@ watch(
                       )"
                     :key="`s2-right-${section}`"
                     class="cv-section-row"
+                    :class="sectionColumnClass(section)"
                     :style="sectionOffsetStyle('mainTwoRight', section)"
                     draggable="true"
                     @dragstart="onSectionDragStart('mainTwoRight', section)"
@@ -3188,6 +3227,9 @@ watch(
 .cv-sections-list,
 .cv-sections-structure-2 {
   width: 100%;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .cv-aside-sections {
@@ -3270,15 +3312,17 @@ watch(
   line-height: 1.35;
 }
 .cv-section-row {
+  grid-column: span 12;
   position: relative;
   border: 0;
   border-radius: 0;
   padding: 8px 4px;
-  margin-bottom: 8px;
   font-weight: 600;
   color: var(--cv-page-muted, #334155);
   background: transparent;
 }
+.cv-section-row--half { grid-column: span 6; }
+.cv-section-row--full { grid-column: span 12; }
 .cv-section-row > strong {
   display: block;
   margin-bottom: 6px;
