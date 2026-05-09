@@ -332,6 +332,9 @@ const photoInput = ref<HTMLInputElement | null>(null)
 const layoutMenuOpen = ref(false)
 const photoQuickMenuOpen = ref(false)
 const aiModalOpen = ref(false)
+const sectionModalOpen = ref(false)
+const sectionInsertAfter = ref(true)
+const sectionAnchor = ref('')
 const aiPrompt =
   'Tell us about yourself and about the job you are applying for. The more precise details you provide, the better AI can generate a strong and relevant profile for your cover page.'
 const aiPromptProgress = ref('')
@@ -488,6 +491,14 @@ function removeDecorObject(i: number) {
 }
 function openAiModal() {
   aiModalOpen.value = true
+}
+
+function openSectionModal() {
+  sectionModalOpen.value = true
+}
+
+function saveSectionPlacement() {
+  sectionModalOpen.value = false
 }
 async function generateCoverPageWithAi() {
   if (!aiAboutText.value.trim() || aiGenerating.value) return
@@ -789,6 +800,7 @@ watch(aiModalOpen, (isOpen) => {
         @select-palette="selectedPalette = $event"
         @update-palette-color="updatePaletteColor"
         @reset-palette="resetPaletteColors"
+        @section="openSectionModal"
       >
         <template #decor>
           <v-btn
@@ -1178,6 +1190,17 @@ watch(aiModalOpen, (isOpen) => {
           >
             Generate
           </v-btn>
+        </div>
+      </AppModal>
+      <AppModal v-model="sectionModalOpen" title="Section placement" :max-width="560">
+        <v-card-text>
+          <p class="text-body-2 mb-3">Cover pages and cover letters use text by default. Choose where to place the new section.</p>
+          <v-text-field v-model="sectionAnchor" label="With / after which block" class="mb-2" />
+          <v-switch v-model="sectionInsertAfter" label="Insert after" hide-details />
+        </v-card-text>
+        <div class="d-flex justify-end ga-2 mt-2">
+          <v-btn variant="text" @click="sectionModalOpen = false">Cancel</v-btn>
+          <v-btn color="primary" @click="saveSectionPlacement">Save</v-btn>
         </div>
       </AppModal>
       <AppModal v-model="signatureDialogOpen" title="Signature" :max-width="760"
