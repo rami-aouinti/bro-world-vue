@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import GENERATED_RESUME_TEMPLATES from '~/data/resume-templates/generated-20-resume.json'
-import { getGeneratedTemplateFakeData } from '~/utils/generatedTemplateNormalizer'
+import {
+  getGeneratedTemplateDesign,
+  getGeneratedTemplateFakeData,
+} from '~/utils/generatedTemplateNormalizer'
 import PALETTE_PRESETS from '~/data/resume-templates/palettes.json'
 import {
   applyReadablePageTextColors,
@@ -307,6 +310,12 @@ function removeDecorObject(index: number) {
   if (decorMenuOpenIndex.value !== null && decorMenuOpenIndex.value > index)
     decorMenuOpenIndex.value -= 1
 }
+
+const sectionColumnOverrides = ref<Record<string, 'full' | 'half'>>({})
+const sectionColumnOptions = [
+  { title: 'Full column', value: 'full' },
+  { title: 'Half column', value: 'half' },
+]
 
 const templateContentSections = computed(() =>
   contentSections.value.map((section) => section.key),
@@ -895,8 +904,23 @@ function toSectionKey(section?: string) {
   return key
 }
 
+function isContentColumnEditable(sectionKey: string) {
+  return templateContentSections.value.includes(toSectionKey(sectionKey))
+}
+
+function effectiveSectionColumn(sectionKey: string) {
+  const key = toSectionKey(sectionKey)
+  return sectionColumnOverrides.value[key] || sectionColumn(key)
+}
+
+function updateSectionColumn(sectionKey: string, value: unknown) {
+  const key = toSectionKey(sectionKey)
+  if (!isContentColumnEditable(key)) return
+  sectionColumnOverrides.value[key] = value === 'half' ? 'half' : 'full'
+}
+
 function contentColumnClass(sectionKey: string) {
-  return sectionColumn(sectionKey) === 'half'
+  return effectiveSectionColumn(sectionKey) === 'half'
     ? 'cv-section-row--half'
     : 'cv-section-row--full'
 }
@@ -1206,7 +1230,8 @@ const photoColors = [
 watch(
   activeTemplate,
   (template) => {
-    const photo = (template as any)?.photo || {}
+    const design = getGeneratedTemplateDesign(template)
+    const photo = (design as any)?.photo || {}
     photoSize.value = parsePx(photo.photoSize || photo.size, 92)
     photoRadius.value = parsePx(
       photo.photoBorderRadius || (photo.shape === 'circle' ? '999px' : '8px'),
@@ -1268,18 +1293,96 @@ const headerMutedColor = computed(() =>
       ),
 )
 
+function defaultAsideDimensions(layout: string) {
+  if (layout === 'aside')
+    return { width: CV_PREVIEW_PAGE_WIDTH, height: 220, radius: 0 }
+  if (layout === 'aside-full-left' || layout === 'aside-full-right')
+    return { width: 260, height: 0, radius: 32 }
+  if (layout === 'aside-bar-left' || layout === 'aside-bar-right')
+    return { width: 160, height: 0, radius: 18 }
+  if (layout === 'aside-left' || layout === 'aside-right')
+    return { width: 220, height: 0, radius: 18 }
+  return { width: 240, height: 0, radius: 0 }
+}
+
+function clampNumber(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value))
+}
+
+function normalizeAsideWidth(value: unknown, layout: string) {
+  const defaults = defaultAsideDimensions(layout)
+  const raw = parsePx(value, defaults.width)
+  if (layout === 'aside') return clampNumber(raw, 320, CV_PREVIEW_PAGE_WIDTH)
+  if (layout === 'aside-full-left' || layout === 'aside-full-right')
+    return clampNumber(raw, 220, 340)
+  if (layout === 'aside-bar-left' || layout === 'aside-bar-right')
+    return clampNumber(raw, 120, 240)
+  if (layout === 'aside-left' || layout === 'aside-right')
+    return clampNumber(raw, 160, 280)
+  return clampNumber(raw, 120, 360)
+}
+
+function normalizeAsideHeight(value: unknown, layout: string) {
+  const defaults = defaultAsideDimensions(layout)
+  const raw = parsePx(value, defaults.height)
+  if (layout === 'aside') return clampNumber(raw, 120, 320)
+  return raw > 0 ? clampNumber(raw, 120, CV_PREVIEW_PDF_PAGE_HEIGHT) : 0
+}
+
+const asideDimensionBounds = computed(() => {
+  const layout = String(activeTemplate.value?.layout || '')
+  if (layout === 'aside')
+    return {
+      widthMin: 320,
+      widthMax: CV_PREVIEW_PAGE_WIDTH,
+      heightMin: 120,
+      heightMax: 320,
+    }
+  if (layout === 'aside-full-left' || layout === 'aside-full-right')
+    return {
+      widthMin: 220,
+      widthMax: 340,
+      heightMin: 0,
+      heightMax: CV_PREVIEW_PDF_PAGE_HEIGHT,
+    }
+  if (layout === 'aside-bar-left' || layout === 'aside-bar-right')
+    return {
+      widthMin: 120,
+      widthMax: 240,
+      heightMin: 0,
+      heightMax: CV_PREVIEW_PDF_PAGE_HEIGHT,
+    }
+  if (layout === 'aside-left' || layout === 'aside-right')
+    return {
+      widthMin: 160,
+      widthMax: 280,
+      heightMin: 0,
+      heightMax: CV_PREVIEW_PDF_PAGE_HEIGHT,
+    }
+  return {
+    widthMin: 120,
+    widthMax: 360,
+    heightMin: 0,
+    heightMax: CV_PREVIEW_PDF_PAGE_HEIGHT,
+  }
+})
+
 watch(
   activeTemplate,
   (template) => {
-    asideWidth.value = parsePx(template?.aside?.width, 850)
-    asideHeight.value = parsePx(template?.aside?.height, 1500)
-    asideRadius.value = parsePx(template?.aside?.radius, 0)
-    pageBorderEnabled.value = Boolean(template?.theme?.pageBorder?.enabled)
-    pageBorderWidth.value = parsePx(template?.theme?.pageBorder?.width, 0)
-    pageBorderRadius.value = parsePx(template?.theme?.pageBorder?.radius, 0)
-    pageBorderColor.value = String(
-      template?.theme?.pageBorder?.color || '#0f172a',
-    )
+    const layout = String(template?.layout || '')
+    const design = getGeneratedTemplateDesign(template)
+    const aside = (design as any)?.aside || {}
+    const pageBorder = (design as any)?.theme?.pageBorder || {}
+    const defaults = defaultAsideDimensions(layout)
+    asideWidth.value = normalizeAsideWidth(aside.width, layout)
+    asideHeight.value = normalizeAsideHeight(aside.height, layout)
+    asideRadius.value = parsePx(aside.radius, defaults.radius)
+    pageBorderEnabled.value = Boolean(pageBorder.enabled)
+    pageBorderWidth.value = parsePx(pageBorder.width, 0)
+    pageBorderRadius.value = parsePx(pageBorder.radius, 0)
+    pageBorderColor.value = String(pageBorder.color || '#0f172a')
+    sectionColumnOverrides.value = {}
   },
   { immediate: true },
 )
@@ -1307,6 +1410,9 @@ watch(
 
 watch(selectedTemplate, () => scheduleCvPreviewMeasure(true))
 watch(sectionTypeOverrides, () => scheduleCvPreviewMeasure(true), {
+  deep: true,
+})
+watch(sectionColumnOverrides, () => scheduleCvPreviewMeasure(true), {
   deep: true,
 })
 watch(sectionExtraItems, () => scheduleCvPreviewMeasure(true), { deep: true })
@@ -1766,8 +1872,8 @@ watch(
               ><p class="text-body-2">Aside width</p>
               <v-slider
                 v-model="asideWidth"
-                :min="240"
-                :max="1200"
+                :min="asideDimensionBounds.widthMin"
+                :max="asideDimensionBounds.widthMax"
                 :step="2"
                 hide-details
             /></v-col>
@@ -1775,8 +1881,8 @@ watch(
               ><p class="text-body-2">Aside height</p>
               <v-slider
                 v-model="asideHeight"
-                :min="120"
-                :max="2600"
+                :min="asideDimensionBounds.heightMin"
+                :max="asideDimensionBounds.heightMax"
                 :step="2"
                 hide-details
             /></v-col>
@@ -2444,6 +2550,20 @@ watch(
                     hide-details
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
+                  /><AppSelect
+                    v-if="isContentColumnEditable(toSectionKey(section))"
+                    :model-value="effectiveSectionColumn(toSectionKey(section))"
+                    :items="sectionColumnOptions"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-view-column-outline"
+                    class="cv-column-select"
+                    @update:model-value="
+                      updateSectionColumn(toSectionKey(section), $event)
+                    "
                   /><v-btn
                     icon="mdi-plus"
                     size="x-small"
@@ -2542,6 +2662,20 @@ watch(
                     hide-details
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
+                  /><AppSelect
+                    v-if="isContentColumnEditable(toSectionKey(section))"
+                    :model-value="effectiveSectionColumn(toSectionKey(section))"
+                    :items="sectionColumnOptions"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-view-column-outline"
+                    class="cv-column-select"
+                    @update:model-value="
+                      updateSectionColumn(toSectionKey(section), $event)
+                    "
                   /><v-btn
                     icon="mdi-plus"
                     size="x-small"
@@ -2638,6 +2772,20 @@ watch(
                     hide-details
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
+                  /><AppSelect
+                    v-if="isContentColumnEditable(toSectionKey(section))"
+                    :model-value="effectiveSectionColumn(toSectionKey(section))"
+                    :items="sectionColumnOptions"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-view-column-outline"
+                    class="cv-column-select"
+                    @update:model-value="
+                      updateSectionColumn(toSectionKey(section), $event)
+                    "
                   /><v-btn
                     icon="mdi-plus"
                     size="x-small"
@@ -2730,6 +2878,20 @@ watch(
                     hide-details
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
+                  /><AppSelect
+                    v-if="isContentColumnEditable(toSectionKey(section))"
+                    :model-value="effectiveSectionColumn(toSectionKey(section))"
+                    :items="sectionColumnOptions"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-view-column-outline"
+                    class="cv-column-select"
+                    @update:model-value="
+                      updateSectionColumn(toSectionKey(section), $event)
+                    "
                   /><v-btn
                     icon="mdi-plus"
                     size="x-small"
@@ -2824,6 +2986,20 @@ watch(
                     hide-details
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
+                  /><AppSelect
+                    v-if="isContentColumnEditable(toSectionKey(section))"
+                    :model-value="effectiveSectionColumn(toSectionKey(section))"
+                    :items="sectionColumnOptions"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-view-column-outline"
+                    class="cv-column-select"
+                    @update:model-value="
+                      updateSectionColumn(toSectionKey(section), $event)
+                    "
                   /><v-btn
                     icon="mdi-plus"
                     size="x-small"
@@ -2912,6 +3088,20 @@ watch(
                     hide-details
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
+                  /><AppSelect
+                    v-if="isContentColumnEditable(toSectionKey(section))"
+                    :model-value="effectiveSectionColumn(toSectionKey(section))"
+                    :items="sectionColumnOptions"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-view-column-outline"
+                    class="cv-column-select"
+                    @update:model-value="
+                      updateSectionColumn(toSectionKey(section), $event)
+                    "
                   /><v-btn
                     icon="mdi-plus"
                     size="x-small"
@@ -2999,6 +3189,22 @@ watch(
                         hide-details
                         prepend-inner-icon="mdi-shape-outline"
                         class="cv-variant-select"
+                      /><AppSelect
+                        v-if="isContentColumnEditable(toSectionKey(section))"
+                        :model-value="
+                          effectiveSectionColumn(toSectionKey(section))
+                        "
+                        :items="sectionColumnOptions"
+                        item-title="title"
+                        item-value="value"
+                        density="compact"
+                        variant="outlined"
+                        hide-details
+                        prepend-inner-icon="mdi-view-column-outline"
+                        class="cv-column-select"
+                        @update:model-value="
+                          updateSectionColumn(toSectionKey(section), $event)
+                        "
                       /><v-btn
                         icon="mdi-plus"
                         size="x-small"
@@ -3088,6 +3294,22 @@ watch(
                         hide-details
                         prepend-inner-icon="mdi-shape-outline"
                         class="cv-variant-select"
+                      /><AppSelect
+                        v-if="isContentColumnEditable(toSectionKey(section))"
+                        :model-value="
+                          effectiveSectionColumn(toSectionKey(section))
+                        "
+                        :items="sectionColumnOptions"
+                        item-title="title"
+                        item-value="value"
+                        density="compact"
+                        variant="outlined"
+                        hide-details
+                        prepend-inner-icon="mdi-view-column-outline"
+                        class="cv-column-select"
+                        @update:model-value="
+                          updateSectionColumn(toSectionKey(section), $event)
+                        "
                       /><v-btn
                         icon="mdi-plus"
                         size="x-small"
@@ -3901,6 +4123,10 @@ watch(
   pointer-events: auto;
   transform: translateY(0);
 }
+.cv-column-select {
+  width: 132px;
+}
+
 .cv-section-toolbar :deep(.v-field) {
   min-height: 26px;
   height: 26px;
