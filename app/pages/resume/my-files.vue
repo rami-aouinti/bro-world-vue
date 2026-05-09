@@ -24,12 +24,13 @@ const myFileCards = [
 </script>
 
 <template>
-  <v-container class="py-8" max-width="1100">
-    <h1>Mes Files</h1>
-    <p class="text-medium-emphasis mb-6">
-      Retrouvez ici vos CV, cover pages et cover letters sauvegardés.
-    </p>
-
+  <v-container fluid>
+    <div class="hero mb-8">
+      <h1 class="text-h3 font-weight-bold mb-2">Mes Files</h1>
+      <p class="text-medium-emphasis text-body-1">
+        My Files.
+      </p>
+    </div>
     <v-row>
       <v-col v-for="card in myFileCards" :key="card.title" cols="12" md="4">
         <v-card class="h-100 postcard-gradient-card my-file-card" rounded="xl" :to="card.to">
@@ -47,6 +48,10 @@ const myFileCards = [
 </template>
 
 <style scoped>
+.hero {
+  border-left: 4px solid rgb(var(--v-theme-primary));
+  padding-left: 16px;
+}
 .my-file-card {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }

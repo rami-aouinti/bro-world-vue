@@ -6,13 +6,13 @@
     "layout": "aside",
     "structure": "structure-1",
     "sections": {
-      "experience": "classic",
-      "education": "list",
-      "skills": "classic",
-      "languages": "dots",
+      "experience": "timeline",
+      "education": "timeline",
+      "skills": "progress-line",
+      "languages": "stars",
       "languagesLabel": "cards",
-      "certifications": "classic",
-      "references": "list",
+      "certifications": "dot",
+      "references": "dot",
       "projects": "dot",
       "interests": "dot",
       "contact": "icons",
@@ -20,10 +20,10 @@
     },
     "theme": {
       "palette": {
-        "primary": "#2563EB",
-        "secondary": "#93C5FD",
-        "text": "#F8FAFC",
-        "muted": "#CBD5E1",
+        "primary": "#121E2D",
+        "secondary": "#F97316",
+        "text": "#121E2D",
+        "muted": "#121E2D",
         "pageBackground": "#1F2937"
       },
       "line": "soft",
@@ -31,14 +31,14 @@
       "textStyle": "roman",
       "showIcon": true,
       "pageBorder": {
-        "enabled": false,
-        "width": 2,
-        "color": "#CBD5E1",
+        "enabled": true,
+        "width": 10,
+        "color": "#1F2937",
         "radius": 16
       }
     },
     "aside": {
-      "width": "792",
+      "width": "794",
       "height": "220px",
       "radius": "18px"
     },
@@ -537,27 +537,27 @@
     },
     "theme": {
       "palette": {
-        "primary": "#1E40AF",
+        "primary": "#061504",
         "secondary": "#22C55E",
         "text": "#0F172A",
         "muted": "#64748B",
-        "pageBackground": "#F8FAFC"
+        "pageBackground": "#D6EBD4"
       },
       "line": "strong",
       "density": "compact",
       "textStyle": "roman",
       "showIcon": true,
       "pageBorder": {
-        "enabled": false,
-        "width": 2,
-        "color": "#CBD5E1",
+        "enabled": true,
+        "width": 10,
+        "color": "#061504",
         "radius": 16
       }
     },
     "aside": {
-      "width": "792",
+      "width": "672",
       "height": "220px",
-      "radius": "18px"
+      "radius": "88px"
     },
     "photo": {
       "position": "left",
@@ -12442,6 +12442,523 @@
       },
       "interests": {
         "renderer": "cards",
+        "enabled": true,
+        "label": "hobbies"
+      },
+      "contact": {
+        "renderer": "labels",
+        "enabled": true
+      },
+      "profile": {
+        "renderer": "classic",
+        "enabled": true
+      }
+    }
+  },
+  {
+    "id": "tpl-031",
+    "name": "Executive Profile",
+    "version": 1,
+    "layout": "aside",
+    "structure": "structure-1",
+    "sections": {
+      "experience": "timeline",
+      "education": "timeline",
+      "skills": "progress-line",
+      "languages": "stars",
+      "languagesLabel": "cards",
+      "certifications": "dot",
+      "references": "dot",
+      "projects": "dot",
+      "interests": "dot",
+      "contact": "icons",
+      "profile": "classic"
+    },
+    "theme": {
+      "palette": {
+        "primary": "#121E2D",
+        "secondary": "#F97316",
+        "text": "#121E2D",
+        "muted": "#121E2D",
+        "pageBackground": "#1F2937"
+      },
+      "line": "soft",
+      "density": "comfortable",
+      "textStyle": "roman",
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": true,
+        "width": 10,
+        "color": "#1F2937",
+        "radius": 16
+      }
+    },
+    "aside": {
+      "width": "794",
+      "height": "220px",
+      "radius": "18px"
+    },
+    "photo": {
+      "position": "left",
+      "size": "92px",
+      "shape": "circle",
+      "border": "2px solid #2563EB",
+      "photoType": "circle",
+      "photoSize": "92px",
+      "photoBorderRadius": "999px",
+      "photoBorderColor": "#1F2937"
+    },
+    "decor": {
+      "corners": [
+        {
+          "shape": "circle",
+          "size": "280px",
+          "color": "#93C5FD",
+          "x": "top-right",
+          "y": "0"
+        },
+        {
+          "shape": "square",
+          "size": "220px",
+          "color": "#1D4ED8",
+          "x": "bottom-left",
+          "y": "0"
+        }
+      ]
+    },
+    "layoutOptions": {
+      "asideStartsAtTop": true
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "none",
+      "frame": "none"
+    },
+    "levelStyle": {
+      "skills": "dots",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "geo-duo"
+    },
+    "sectionTitleStyle": {
+      "underline": "thin"
+    },
+    "headerType": "header-left",
+    "fakeData": {
+      "id": "4472c3f0-00e2-4e88-91aa-cfa102183685",
+      "documentUrl": null,
+      "resumeInformation": {
+        "fullName": "Alex Martin",
+        "email": "alex.martin@example.com",
+        "phone": "+33 6 12 34 50 35",
+        "homepage": "https://portfolio-1.example.com",
+        "repo_profile": "https://github.com/profile-1",
+        "adresse": "Paris, France",
+        "birthDate": "1990-01-10",
+        "birthPlace": "Tunisia",
+        "profileText": "Alex Martin is a results-driven senior full stack developer focused on product quality, scalability, and collaboration.",
+        "title": "Senior Full Stack Developer",
+        "photo": "/img/team-1.jpg"
+      },
+      "experiences": [
+        {
+          "id": "ac3cd716-7769-4319-b2a0-523900243361",
+          "title": "Senior Full Stack Developer",
+          "description": "Led product delivery and built maintainable architecture.",
+          "company": "Bro Labs",
+          "startDate": "2021-01-01",
+          "endDate": null
+        },
+        {
+          "id": "1c51acea-dadd-4171-ab07-515ab1a579aa",
+          "title": "Engineer",
+          "description": "Implemented features with strong UX focus.",
+          "company": "Nova Digital",
+          "startDate": "2018-06-01",
+          "endDate": "2020-12-31"
+        }
+      ],
+      "educations": [
+        {
+          "id": "a70e3cfe-95e9-482a-95d0-d88b1872573e",
+          "title": "Master in Computer Science",
+          "description": "",
+          "school": "University of Lyon",
+          "startDate": "2016-09-01",
+          "endDate": "2018-06-30",
+          "location": "Paris, France"
+        },
+        {
+          "id": "572a6d22-daac-4d91-ba23-038279d4d40a",
+          "title": "Bachelor in Software Engineering",
+          "description": "",
+          "school": "Université Grenoble Alpes",
+          "startDate": "2013-09-01",
+          "endDate": "2016-06-30",
+          "location": "Paris, France"
+        }
+      ],
+      "skills": [
+        {
+          "name": "Vue.js",
+          "level": 80
+        },
+        {
+          "name": "TypeScript",
+          "level": 80
+        },
+        {
+          "name": "Node.js",
+          "level": 80
+        },
+        {
+          "name": "Nuxt",
+          "level": 80
+        },
+        {
+          "name": "PostgreSQL",
+          "level": 80
+        },
+        {
+          "name": "Docker",
+          "level": 80
+        }
+      ],
+      "languages": [
+        {
+          "name": "French",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸",
+          "languageType": "label"
+        },
+        {
+          "name": "English",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸",
+          "languageType": "label"
+        },
+        {
+          "name": "Spanish",
+          "level": 80,
+          "countryCode": "US",
+          "flag": "🇺🇸",
+          "languageType": "label"
+        }
+      ],
+      "certifications": [
+        {
+          "id": "f2264f4e-ee68-489a-b624-ad3b22781c72",
+          "title": "AWS Certified Developer",
+          "description": "",
+          "attachments": []
+        },
+        {
+          "id": "b6af9445-9fec-4c52-a51f-0751e4520068",
+          "title": "Scrum Master",
+          "description": "",
+          "attachments": []
+        }
+      ],
+      "projects": [
+        {
+          "id": "5010b7b0-1ba8-4d8c-8b7d-3ccbd76ba67a",
+          "title": "Recruitment Analytics",
+          "description": "Dashboard and reporting platform.",
+          "attachments": [],
+          "home_page": "https://portfolio-1.example.com"
+        }
+      ],
+      "references": [
+        {
+          "id": "96f61721-aec3-4390-8050-71267791083c",
+          "title": "Sophie Bernard · Engineering Manager",
+          "description": ""
+        },
+        {
+          "id": "657ee6b6-b3c9-4d4d-8fcc-c0355d6ce69a",
+          "title": "Julien Roche · Product Director",
+          "description": ""
+        }
+      ],
+      "hobbies": [
+        {
+          "id": "6ce201e5-e06b-4f99-aed0-69e76fe9a8ae",
+          "title": "Open-source",
+          "description": ""
+        },
+        {
+          "id": "4cd7c2c1-5aa0-4a0e-9716-2d23ac50314c",
+          "title": "Running",
+          "description": ""
+        },
+        {
+          "id": "da67edb6-1424-4415-9915-70efe53ab5a0",
+          "title": "Photography",
+          "description": ""
+        }
+      ]
+    },
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Playfair Display",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Fira Code",
+        "Inter",
+        "Playfair Display"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Playfair Display",
+        "body": "Inter",
+        "mono": "Fira Code"
+      }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "width": "flex",
+      "raduis": 999
+    },
+    "items": {
+      "fullName": {
+        "size": {
+          "min": 34,
+          "max": 54
+        },
+        "styles": [
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#111827"
+        ]
+      },
+      "title": {
+        "size": {
+          "min": 18,
+          "max": 30
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "sectionTitle": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#64748B"
+        ]
+      },
+      "entryTitle": {
+        "size": {
+          "min": 14,
+          "max": 22
+        },
+        "styles": [
+          "medium",
+          "semibold",
+          "bold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#1D4ED8",
+          "#64748B"
+        ]
+      },
+      "date": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "location": {
+        "size": {
+          "min": 11,
+          "max": 15
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#64748B",
+          "#0F172A",
+          "#1D4ED8"
+        ]
+      },
+      "description": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      },
+      "bullet": {
+        "size": {
+          "min": 12,
+          "max": 18
+        },
+        "styles": [
+          "regular",
+          "medium"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      },
+      "contact": {
+        "size": {
+          "min": 11,
+          "max": 16
+        },
+        "styles": [
+          "regular",
+          "medium",
+          "semibold"
+        ],
+        "colors": [
+          "#0F172A",
+          "#64748B",
+          "#1D4ED8"
+        ]
+      }
+    },
+    "sectionOrder": [
+      "profile",
+      "contact",
+      "experience",
+      "education",
+      "skills",
+      "languages",
+      "certifications",
+      "projects",
+      "references",
+      "interests"
+    ],
+    "sectionTypes": {
+      "experience": {
+        "renderer": "list",
+        "enabled": true
+      },
+      "education": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "skills": {
+        "renderer": "stars",
+        "enabled": true
+      },
+      "languages": {
+        "renderer": "progress-line",
+        "enabled": true
+      },
+      "languagesLabel": {
+        "renderer": "classic",
+        "enabled": true,
+        "label": "language-display"
+      },
+      "certifications": {
+        "renderer": "dot",
+        "enabled": true
+      },
+      "references": {
+        "renderer": "cards",
+        "enabled": true
+      },
+      "projects": {
+        "renderer": "timeline",
+        "enabled": true
+      },
+      "interests": {
+        "renderer": "classic",
         "enabled": true,
         "label": "hobbies"
       },
