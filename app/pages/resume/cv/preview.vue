@@ -188,6 +188,13 @@ watch(
   () => {
     initialPaletteState.value = { ...(activeTemplate.value?.theme?.palette || {}) }
     if (!paletteOverrides.value[selectedTemplate.value]) paletteOverrides.value[selectedTemplate.value] = {}
+    const templateColumns = ((activeTemplate.value as any)?.sectionColumns || {}) as Record<string, number>
+    Object.keys(sectionColumnOverrides).forEach((key) => {
+      Reflect.deleteProperty(sectionColumnOverrides, key)
+    })
+    Object.entries(templateColumns).forEach(([key, value]) => {
+      sectionColumnOverrides[toSectionKey(key)] = Number(value) === 6 ? 6 : 12
+    })
   },
   { immediate: true },
 )
