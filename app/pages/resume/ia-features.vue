@@ -12,11 +12,17 @@ const benefits = computed(() => (tm('resumeResources.iaFeatures.benefits') as un
 </script>
 
 <template>
-  <v-container fluid>
-    <div class="hero mb-8">
-      <h1 class="text-h3 font-weight-bold mb-2">{{ t('resumeResources.iaFeatures.title') }}</h1>
-      <p class="text-medium-emphasis text-body-1">{{ t('resumeResources.iaFeatures.description') }}</p>
-    </div>
+  <div>
+    <AppPageDrawers>
+      <template #right>
+        <RandomResumeDrawerCards />
+      </template>
+    </AppPageDrawers>
+    <v-container fluid>
+      <div class="hero mb-8">
+        <h1 class="text-h3 font-weight-bold mb-2">{{ t('resumeResources.iaFeatures.title') }}</h1>
+        <p class="text-medium-emphasis text-body-1">{{ t('resumeResources.iaFeatures.description') }}</p>
+      </div>
 
     <v-row>
       <v-col v-for="(section, index) in sections" :key="section.title" cols="12" md="6">
@@ -41,13 +47,14 @@ const benefits = computed(() => (tm('resumeResources.iaFeatures.benefits') as un
       </v-col>
     </v-row>
 
-    <v-card class="mt-8 postcard-gradient-card" color="surface-variant" variant="text">
-      <v-card-title class="text-h6">Impact</v-card-title>
-      <v-list bg-color="transparent">
-        <v-list-item v-for="(benefit, i) in benefits" :key="i" :title="benefit" prepend-icon="mdi-check-decagram" />
-      </v-list>
-    </v-card>
-  </v-container>
+      <v-card class="mt-8 postcard-gradient-card" color="surface-variant" variant="text">
+        <v-card-title class="text-h6">Impact</v-card-title>
+        <v-list bg-color="transparent">
+          <v-list-item v-for="(benefit, i) in benefits" :key="i" :title="benefit" prepend-icon="mdi-check-decagram" />
+        </v-list>
+      </v-card>
+    </v-container>
+  </div>
 </template>
 
 <style scoped>

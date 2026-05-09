@@ -12,11 +12,17 @@ const tips = computed(() => (tm('resumeResources.documentation.tips') as unknown
 </script>
 
 <template>
-  <v-container fluid>
-    <div class="hero mb-8">
-      <h1 class="text-h3 font-weight-bold mb-2">{{ t('resumeResources.documentation.title') }}</h1>
-      <p class="text-medium-emphasis mb-8">{{ t('resumeResources.documentation.description') }}</p>
-    </div>
+  <div>
+    <AppPageDrawers>
+      <template #right>
+        <RandomResumeDrawerCards />
+      </template>
+    </AppPageDrawers>
+    <v-container fluid>
+      <div class="hero mb-8">
+        <h1 class="text-h3 font-weight-bold mb-2">{{ t('resumeResources.documentation.title') }}</h1>
+        <p class="text-medium-emphasis mb-8">{{ t('resumeResources.documentation.description') }}</p>
+      </div>
 
     <v-row>
       <v-col v-for="category in categories" :key="category.title" cols="12" md="6">
@@ -34,15 +40,16 @@ const tips = computed(() => (tm('resumeResources.documentation.tips') as unknown
       </v-col>
     </v-row>
 
-    <v-card class="mt-8 postcard-gradient-card" color="primary" variant="tonal">
-      <v-card-title>Best Practices</v-card-title>
-      <v-card-text>
-        <v-chip-group column>
-          <v-chip v-for="(tip, i) in tips" :key="i" color="primary" variant="flat">{{ tip }}</v-chip>
-        </v-chip-group>
-      </v-card-text>
-    </v-card>
-  </v-container>
+      <v-card class="mt-8 postcard-gradient-card" color="primary" variant="tonal">
+        <v-card-title>Best Practices</v-card-title>
+        <v-card-text>
+          <v-chip-group column>
+            <v-chip v-for="(tip, i) in tips" :key="i" color="primary" variant="flat">{{ tip }}</v-chip>
+          </v-chip-group>
+        </v-card-text>
+      </v-card>
+    </v-container>
+  </div>
 </template>
 
 <style scoped>
