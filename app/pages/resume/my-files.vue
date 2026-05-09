@@ -74,7 +74,7 @@ onMounted(fetchMyFiles)
       </template>
     </AppPageDrawers>
 
-    <v-container class="py-8" max-width="1200">
+    <v-container fluid>
       <div class="hero mb-8">
         <h1 class="text-h3 font-weight-bold mb-2">{{ t('resumePreview.myFiles.heading') }}</h1>
         <p class="text-medium-emphasis text-body-1">
