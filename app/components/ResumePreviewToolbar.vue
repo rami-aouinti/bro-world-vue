@@ -48,7 +48,7 @@ const emit = defineEmits<{
   (e: 'update:menu-open' | 'update:palette-menu-open' | 'update:aside-menu-open' | 'update:bar-menu-open' | 'update:border-menu-open' | 'update:decor-menu-open', value: boolean): void
   (e: 'select-template' | 'select-palette', value: string): void
   (e: 'update-palette-color', payload: { key: PaletteColorKey; value: string }): void
-  (e: 'save' | 'ai' | 'signature' | 'pdf' | 'section'): void
+  (e: 'reset-palette' | 'save' | 'ai' | 'signature' | 'pdf' | 'section'): void
 }>()
 
 function templateId(template: PreviewTemplate) {
@@ -192,6 +192,7 @@ function onColorUpdate(key: PaletteColorKey, event: Event) {
               >
             </label>
           </div>
+          <v-btn class="mt-3" size="small" variant="text" prepend-icon="mdi-restore" @click="emit('reset-palette')">Reset</v-btn>
         </v-card>
       </v-menu>
 

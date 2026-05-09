@@ -306,12 +306,26 @@ const activeColors = computed(() => {
   return applyReadablePageTextColors(palette)
 })
 
+const initialPaletteState = ref<Record<string, string>>({})
+watch(
+  () => selectedTemplate.value,
+  () => {
+    initialPaletteState.value = { ...(activeTemplate.value?.theme?.palette || {}) }
+  },
+  { immediate: true },
+)
+
 function updatePaletteColor(payload: { key: 'primary' | 'secondary' | 'text' | 'pageBackground'; value: string }) {
   const color = String(payload?.value || '').trim()
   if (!color) return
   selectedPalette.value = 'template'
   if (!activeTemplate.value.theme.palette) activeTemplate.value.theme.palette = {} as any
   ;(activeTemplate.value.theme.palette as Record<string, string>)[payload.key] = color
+}
+
+function resetPaletteColors() {
+  selectedPalette.value = 'template'
+  activeTemplate.value.theme.palette = { ...initialPaletteState.value } as any
 }
 function readableCoverTextColor(color = '#0F172A') {
   return readableTextColorForBackground(activeColors.value.pageBackground, color)
@@ -781,6 +795,7 @@ watch(aiModalOpen, (isOpen) => {
                 @select-template="applyPreviewTemplate"
         @select-palette="selectedPalette = $event"
         @update-palette-color="updatePaletteColor"
+        @reset-palette="resetPaletteColors"
       >
         <template #decor>
           <v-card class="pa-3 mb-3" variant="outlined">
