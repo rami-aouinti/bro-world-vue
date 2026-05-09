@@ -531,6 +531,26 @@ const sectionVariantOptionsMap: Record<string, string[]> = {
 }
 
 const sectionTypeOverrides = reactive<Record<string, string>>({})
+const customSectionCounter = ref(0)
+const addSectionModalOpen = ref(false)
+const addSectionStep = ref<1 | 2>(1)
+const addSectionVariant = ref('classic')
+const addSectionName = ref('')
+const addSectionOrder = reactive({
+  zone: 'mainOne',
+  withSection: '',
+  after: true,
+})
+const addSectionOrderZoneOptions = [
+  { title: 'Main one', value: 'mainOne' },
+  { title: 'Main two top', value: 'mainTwoTop' },
+  { title: 'Main two left', value: 'mainTwoLeft' },
+  { title: 'Main two right', value: 'mainTwoRight' },
+  { title: 'Aside one', value: 'asideOne' },
+  { title: 'Aside two', value: 'asideTwo' },
+]
+const addSectionVariantOptions = ['classic', 'list', 'dot', 'timeline', 'cards']
+  .map((value) => ({ title: value, value }))
 
 const hiddenSections = reactive<Record<string, boolean>>({})
 const sectionExtraItems = reactive<Record<string, any[]>>({})
@@ -615,6 +635,33 @@ function addSectionItem(section: string) {
   sectionModalEndDate.value = ''
   sectionModalSkillName.value = ''
   sectionModalSkillStars.value = 5
+}
+
+function openAddSectionModal() {
+  addSectionStep.value = 1
+  addSectionVariant.value = 'classic'
+  addSectionName.value = ''
+  addSectionOrder.zone = 'mainOne'
+  addSectionOrder.withSection = ''
+  addSectionOrder.after = true
+  addSectionModalOpen.value = true
+}
+
+function confirmAddSection() {
+  const sectionName = addSectionName.value.trim()
+  if (!sectionName) return
+  const key = `custom_${++customSectionCounter.value}`
+  const order = orderMap[addSectionOrder.zone] || (orderMap.mainOne as string[])
+  const anchor = addSectionOrder.withSection
+  const at = anchor ? order.indexOf(anchor) : -1
+  const insertAt = at >= 0 ? at + (addSectionOrder.after ? 1 : 0) : order.length
+  order.splice(insertAt, 0, key)
+  sectionTitleMap[key] = sectionName
+  sectionVariantOptionsMap[key] = [...addSectionVariantOptions.map((v) => v.value)]
+  sectionTypeOverrides[key] = addSectionVariant.value
+  sectionIconMap[key] = 'mdi-text-box-outline'
+  editableSectionItems[key] = ['Label name · Label value']
+  addSectionModalOpen.value = false
 }
 function confirmAddSectionItem() {
   const key = sectionModalKey.value
@@ -1406,6 +1453,7 @@ watch(
         @select-palette="selectedPalette = $event"
         @update-palette-color="updatePaletteColor"
         @reset-palette="resetPaletteColors"
+        @section="openAddSectionModal"
       >
         <template #decor>
           <v-btn
@@ -2771,6 +2819,47 @@ watch(
           {{ matchOfferResult.percentage }}%
         </v-progress-circular>
         <p class="text-body-2 w-100">{{ matchOfferResult.note }}</p>
+      </div>
+    </AppModal>
+
+    <AppModal
+      v-model="addSectionModalOpen"
+      title="Add section"
+      max-width="760"
+    >
+      <v-card-text>
+        <template v-if="addSectionStep === 1">
+          <p class="text-body-2 mb-3">Choose a section form</p>
+          <v-row dense>
+            <v-col v-for="variant in addSectionVariantOptions" :key="variant.value" cols="12" sm="6" md="4">
+              <v-card
+                class="pa-3 cursor-pointer"
+                :variant="addSectionVariant === variant.value ? 'tonal' : 'outlined'"
+                @click="addSectionVariant = variant.value"
+              >
+                <div class="text-subtitle-2">{{ variant.title }}</div>
+              </v-card>
+            </v-col>
+          </v-row>
+        </template>
+        <template v-else>
+          <v-text-field v-model="addSectionName" label="Section name" class="mb-3" />
+          <v-text-field model-value="+" label="Add field" readonly class="mb-3" />
+          <v-select v-model="addSectionOrder.zone" :items="addSectionOrderZoneOptions" label="Zone" class="mb-3" />
+          <v-select
+            v-model="addSectionOrder.withSection"
+            :items="(orderMap[addSectionOrder.zone] || []).map((s) => ({ title: sectionTitleMap[toSectionKey(s)] || s, value: s }))"
+            label="With section"
+            clearable
+            class="mb-3"
+          />
+          <v-switch v-model="addSectionOrder.after" label="Insert after selected section" hide-details />
+        </template>
+      </v-card-text>
+      <div class="d-flex justify-end ga-2 mt-2">
+        <v-btn variant="text" @click="addSectionModalOpen = false">Cancel</v-btn>
+        <v-btn v-if="addSectionStep === 1" color="primary" @click="addSectionStep = 2">Next</v-btn>
+        <v-btn v-else color="primary" :disabled="!addSectionName.trim()" @click="confirmAddSection">Save</v-btn>
       </div>
     </AppModal>
 
