@@ -142,7 +142,7 @@ const randomVariants = computed(() => {
   <div>
     <AppPageDrawers>
       <template #right>
-        <v-row dense>
+        <v-row density="comfortable">
           <v-col v-for="variant in randomVariants" :key="variant.id" cols="12">
             <v-card
               class="preview-variant-card postcard-gradient-card"
