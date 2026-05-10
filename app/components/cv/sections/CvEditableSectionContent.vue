@@ -347,11 +347,17 @@ function isHobbyIconsSection() {
               />
             </span>
           </template>
-          <template v-else-if="variant === 'progress-line'">
-            <span class="cv-rich-progress"
-              ><i :style="{ width: `${splitLeveledItem(item).value}%` }"
-            /></span>
-          </template>
+          <div
+            v-else-if="variant === 'progress-line'"
+            class="cv-progress-line-row"
+          >
+            <span class="cv-progress-line-track">
+              <i :style="{ width: `${splitLeveledItem(item).value}%` }" />
+            </span>
+            <span class="cv-progress-line-value">
+              {{ splitLeveledItem(item).value }}%
+            </span>
+          </div>
           <template
             v-else-if="
               [
@@ -748,6 +754,47 @@ function isHobbyIconsSection() {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 8px;
+}
+
+.cv-rich-item--progress-line.cv-rich-item--leveled {
+  grid-template-columns: minmax(0, 1fr) minmax(88px, 130px) 34px;
+  align-items: center;
+  gap: 8px;
+}
+
+.cv-progress-line-row {
+  display: contents;
+}
+
+.cv-progress-line-track {
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--cv-secondary, #93c5fd) 18%, transparent);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--cv-secondary, #93c5fd) 18%, transparent);
+}
+
+.cv-progress-line-track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    var(--cv-primary, #0f172a),
+    var(--cv-secondary, #93c5fd)
+  );
+}
+
+.cv-progress-line-value {
+  font-size: 10px;
+  font-weight: 800;
+  color: color-mix(in srgb, currentColor 76%, transparent);
+  text-align: end;
+}
+
+.cv-aside-section-item .cv-rich-item--progress-line.cv-rich-item--leveled {
+  grid-template-columns: 1fr;
 }
 
 .cv-rich-entry-head {
