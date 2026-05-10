@@ -54,10 +54,10 @@ export type GeneratedCvTemplateRuntimeSection =
     form: string
     column: GeneratedResumeTemplateColumn
     titleStyle: CvSectionTitleStyle
-    contentStyle: CvSectionContentStyle
-    dateStyle: CvSectionDateStyle
-    levelStyle: CvSectionLevelStyle
-    hobbyStyle: CvHobbyStyle
+    contentStyle?: string
+    dateStyle?: string
+    levelStyle?: string
+    hobbyStyle?: string
   }
 
 export type GeneratedCvTemplateRuntimeOptions = {
@@ -170,66 +170,6 @@ function normalizeTitleStyle(value: unknown): CvSectionTitleStyle {
     : 'classic'
 }
 
-function normalizeContentStyle(value: unknown): CvSectionContentStyle {
-  const allowed = new Set<CvSectionContentStyle>([
-    'classic',
-    'cards',
-    'timeline-vertical',
-    'timeline-dots',
-    'timeline-date-badges',
-    'timeline-badges',
-    'timeline-line',
-    'progress-line',
-    'progress-circle',
-    'hobby-icons',
-    'hobby-icons-separated',
-  ])
-  return typeof value === 'string' &&
-    allowed.has(value as CvSectionContentStyle)
-    ? (value as CvSectionContentStyle)
-    : 'classic'
-}
-
-function normalizeDateStyle(value: unknown): CvSectionDateStyle {
-  const allowed = new Set<CvSectionDateStyle>([
-    'plain',
-    'stacked',
-    'vertical-year',
-    'badge-left',
-    'badge-right',
-    'pill',
-  ])
-  return typeof value === 'string' && allowed.has(value as CvSectionDateStyle)
-    ? (value as CvSectionDateStyle)
-    : 'plain'
-}
-
-function normalizeLevelStyle(value: unknown): CvSectionLevelStyle {
-  const allowed = new Set<CvSectionLevelStyle>([
-    'line',
-    'circle',
-    'circle-grid',
-    'dots',
-    'stars',
-    'line-gradient',
-  ])
-  return typeof value === 'string' && allowed.has(value as CvSectionLevelStyle)
-    ? (value as CvSectionLevelStyle)
-    : 'line'
-}
-
-function normalizeHobbyStyle(value: unknown): CvHobbyStyle {
-  const allowed = new Set<CvHobbyStyle>([
-    'text',
-    'icons',
-    'icons-separated',
-    'cards',
-  ])
-  return typeof value === 'string' && allowed.has(value as CvHobbyStyle)
-    ? (value as CvHobbyStyle)
-    : 'text'
-}
-
 function isAsideZone(zone: NormalizedGeneratedTemplateSection['zone']) {
   return zone === 'aside' || zone === 'aside-left' || zone === 'aside-right'
 }
@@ -271,10 +211,20 @@ export function useGeneratedCvTemplateRuntime(
           ),
           column: normalizeColumn(section.column ?? config.column),
           titleStyle: normalizeTitleStyle(config.titleStyle),
-          contentStyle: normalizeContentStyle(config.contentStyle),
-          dateStyle: normalizeDateStyle(config.dateStyle),
-          levelStyle: normalizeLevelStyle(config.levelStyle),
-          hobbyStyle: normalizeHobbyStyle(config.hobbyStyle),
+          contentStyle:
+            typeof config.contentStyle === 'string'
+              ? config.contentStyle
+              : undefined,
+          dateStyle:
+            typeof config.dateStyle === 'string' ? config.dateStyle : undefined,
+          levelStyle:
+            typeof config.levelStyle === 'string'
+              ? config.levelStyle
+              : undefined,
+          hobbyStyle:
+            typeof config.hobbyStyle === 'string'
+              ? config.hobbyStyle
+              : undefined,
         }
       },
     )
@@ -378,22 +328,22 @@ export function useGeneratedCvTemplateRuntime(
 
   function sectionContentStyle(sectionKey: string) {
     const key = normalizeSectionKey(sectionKey)
-    return sectionByKey.value[key]?.contentStyle || 'classic'
+    return sectionByKey.value[key]?.contentStyle
   }
 
   function sectionDateStyle(sectionKey: string) {
     const key = normalizeSectionKey(sectionKey)
-    return sectionByKey.value[key]?.dateStyle || 'plain'
+    return sectionByKey.value[key]?.dateStyle
   }
 
   function sectionLevelStyle(sectionKey: string) {
     const key = normalizeSectionKey(sectionKey)
-    return sectionByKey.value[key]?.levelStyle || 'line'
+    return sectionByKey.value[key]?.levelStyle
   }
 
   function sectionHobbyStyle(sectionKey: string) {
     const key = normalizeSectionKey(sectionKey)
-    return sectionByKey.value[key]?.hobbyStyle || 'text'
+    return sectionByKey.value[key]?.hobbyStyle
   }
 
   function sectionOrder(sectionKey: string) {
