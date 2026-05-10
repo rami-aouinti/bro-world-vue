@@ -141,6 +141,8 @@ const {
   sectionIcon: runtimeSectionIcon,
   sectionForm,
   sectionTitleStyle,
+  sectionContentStyle,
+  sectionDateStyle,
   sectionColumn,
   templateDesign: activeTemplateDesign,
 } = useGeneratedCvTemplateRuntime(activeTemplate, { sectionIconOverrides })
@@ -967,6 +969,14 @@ function toSectionKey(section?: string) {
 function effectiveSectionTitleStyle(sectionKey: string) {
   const key = toSectionKey(sectionKey)
   return sectionTitleStyleOverrides.value[key] || sectionTitleStyle(key)
+}
+
+function effectiveSectionContentStyle(sectionKey: string) {
+  return sectionContentStyle(toSectionKey(sectionKey))
+}
+
+function effectiveSectionDateStyle(sectionKey: string) {
+  return sectionDateStyle(toSectionKey(sectionKey))
 }
 
 function updateSectionTitleStyle(sectionKey: string, value: unknown) {
@@ -2866,6 +2876,10 @@ watch(
                     )
                   "
                   :items="getEditableSectionItems(section)"
+                  :content-style="
+                    effectiveSectionContentStyle(toSectionKey(section))
+                  "
+                  :date-style="effectiveSectionDateStyle(toSectionKey(section))"
                   @update-item="
                     (index, value) =>
                       updateEditableSectionItem(section, index, value)
@@ -2996,6 +3010,10 @@ watch(
                     )
                   "
                   :items="getEditableSectionItems(section)"
+                  :content-style="
+                    effectiveSectionContentStyle(toSectionKey(section))
+                  "
+                  :date-style="effectiveSectionDateStyle(toSectionKey(section))"
                   @update-item="
                     (index, value) =>
                       updateEditableSectionItem(section, index, value)
@@ -3124,6 +3142,10 @@ watch(
                     )
                   "
                   :items="getEditableSectionItems(section)"
+                  :content-style="
+                    effectiveSectionContentStyle(toSectionKey(section))
+                  "
+                  :date-style="effectiveSectionDateStyle(toSectionKey(section))"
                   @update-item="
                     (index, value) =>
                       updateEditableSectionItem(section, index, value)
@@ -3251,6 +3273,10 @@ watch(
                     )
                   "
                   :items="getEditableSectionItems(section)"
+                  :content-style="
+                    effectiveSectionContentStyle(toSectionKey(section))
+                  "
+                  :date-style="effectiveSectionDateStyle(toSectionKey(section))"
                   @update-item="
                     (index, value) =>
                       updateEditableSectionItem(section, index, value)
@@ -3372,6 +3398,10 @@ watch(
                     )
                   "
                   :items="getEditableSectionItems(section)"
+                  :content-style="
+                    effectiveSectionContentStyle(toSectionKey(section))
+                  "
+                  :date-style="effectiveSectionDateStyle(toSectionKey(section))"
                   @update-item="
                     (index, value) =>
                       updateEditableSectionItem(section, index, value)
@@ -3497,6 +3527,10 @@ watch(
                     )
                   "
                   :items="getEditableSectionItems(section)"
+                  :content-style="
+                    effectiveSectionContentStyle(toSectionKey(section))
+                  "
+                  :date-style="effectiveSectionDateStyle(toSectionKey(section))"
                   @update-item="
                     (index, value) =>
                       updateEditableSectionItem(section, index, value)
@@ -3621,6 +3655,12 @@ watch(
                         )
                       "
                       :items="getEditableSectionItems(section)"
+                      :content-style="
+                        effectiveSectionContentStyle(toSectionKey(section))
+                      "
+                      :date-style="
+                        effectiveSectionDateStyle(toSectionKey(section))
+                      "
                       @update-item="
                         (index, value) =>
                           updateEditableSectionItem(section, index, value)
@@ -3745,6 +3785,12 @@ watch(
                         )
                       "
                       :items="getEditableSectionItems(section)"
+                      :content-style="
+                        effectiveSectionContentStyle(toSectionKey(section))
+                      "
+                      :date-style="
+                        effectiveSectionDateStyle(toSectionKey(section))
+                      "
                       @update-item="
                         (index, value) =>
                           updateEditableSectionItem(section, index, value)
@@ -3863,6 +3909,10 @@ watch(
                     )
                   "
                   :items="getEditableSectionItems(section)"
+                  :content-style="
+                    effectiveSectionContentStyle(toSectionKey(section))
+                  "
+                  :date-style="effectiveSectionDateStyle(toSectionKey(section))"
                   @update-item="
                     (index, value) =>
                       updateEditableSectionItem(section, index, value)
