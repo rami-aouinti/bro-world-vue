@@ -547,13 +547,24 @@ function measureCvPreviewHeight() {
   )
 }
 
+let isMeasuringCvPreview = false
+
 function scheduleCvPreviewMeasure(reset = false) {
-  if (!import.meta.client) return
+  if (!import.meta.client || isMeasuringCvPreview) return
   if (reset) cvPreviewPageCount.value = 1
   if (cvPreviewMeasureTimer) window.clearTimeout(cvPreviewMeasureTimer)
-  cvPreviewMeasureTimer = window.setTimeout(() => {
+  cvPreviewMeasureTimer = window.setTimeout(async () => {
     cvPreviewMeasureTimer = undefined
-    measureCvPreviewHeight()
+    isMeasuringCvPreview = true
+    try {
+      resetSectionPageBreakOffsets()
+      await nextTick()
+      measureSectionPageBreakOffsets()
+      await nextTick()
+      measureCvPreviewHeight()
+    } finally {
+      isMeasuringCvPreview = false
+    }
   }, 80)
 }
 
@@ -737,6 +748,7 @@ const addSectionVariantOptions = [
 const hiddenSections = reactive<Record<string, boolean>>({})
 const sectionExtraItems = reactive<Record<string, any[]>>({})
 const sectionLineOffsets = reactive<Record<string, number>>({})
+const sectionPageOffsets = ref<Record<string, number>>({})
 const CV_SECTION_LINE_OFFSET_PX = 18
 const CV_SECTION_MAX_LINE_OFFSET = 24
 
@@ -744,11 +756,55 @@ function sectionOffsetKey(orderKey: SectionOrderKey, section: string) {
   return `${orderKey}:${toSectionKey(section)}`
 }
 
+function sectionPageBreakKey(orderKey: SectionOrderKey, section: string) {
+  return sectionOffsetKey(orderKey, section)
+}
+
 function sectionOffsetStyle(orderKey: SectionOrderKey, section: string) {
   const lines = sectionLineOffsets[sectionOffsetKey(orderKey, section)] || 0
   return lines > 0
     ? { marginTop: `${lines * CV_SECTION_LINE_OFFSET_PX}px` }
     : undefined
+}
+
+function sectionPageBreakStyle(sectionKey: string) {
+  const offset = sectionPageOffsets.value[sectionKey] || 0
+  if (offset <= 0) return undefined
+  const lines = sectionLineOffsets[sectionKey] || 0
+  return { marginTop: `${lines * CV_SECTION_LINE_OFFSET_PX + offset}px` }
+}
+
+function resetSectionPageBreakOffsets() {
+  if (Object.keys(sectionPageOffsets.value).length === 0) return
+  sectionPageOffsets.value = {}
+}
+
+function measureSectionPageBreakOffsets() {
+  if (!import.meta.client) return
+  const preview =
+    cvPreviewRef.value?.querySelector<HTMLElement>('.cv-preview-page')
+  if (!preview) return
+
+  const nextOffsets: Record<string, number> = {}
+  let currentOffset = 0
+  preview
+    .querySelectorAll<HTMLElement>('.cv-section-row[data-cv-section-key]')
+    .forEach((el) => {
+      const sectionKey = el.dataset.cvSectionKey
+      if (!sectionKey) return
+      const sectionTop = el.offsetTop + currentOffset
+      const sectionBottom = sectionTop + el.offsetHeight
+      const pageIndex = Math.floor(sectionTop / CV_PREVIEW_PDF_PAGE_HEIGHT)
+      const pageEnd = (pageIndex + 1) * CV_PREVIEW_PDF_PAGE_HEIGHT
+
+      if (sectionTop < pageEnd && sectionBottom > pageEnd) {
+        const offset = pageEnd - sectionTop
+        nextOffsets[sectionKey] = offset
+        currentOffset += offset
+      }
+    })
+
+  sectionPageOffsets.value = nextOffsets
 }
 
 function shiftSectionByLine(
@@ -1604,6 +1660,21 @@ watch(
 )
 
 watch(selectedTemplate, () => scheduleCvPreviewMeasure(true))
+watch([selectedPalette, activeColors], () => scheduleCvPreviewMeasure(true), {
+  deep: true,
+})
+watch(sectionOrders, () => scheduleCvPreviewMeasure(true), { deep: true })
+watch(editableSectionItems, () => scheduleCvPreviewMeasure(true), {
+  deep: true,
+})
+watch(sectionTitleOverrides, () => scheduleCvPreviewMeasure(true), {
+  deep: true,
+})
+watch(headerOverrides, () => scheduleCvPreviewMeasure(true), { deep: true })
+watch(contactIconOverrides, () => scheduleCvPreviewMeasure(true), {
+  deep: true,
+})
+watch([photoPreview, signatureDataUrl], () => scheduleCvPreviewMeasure(true))
 watch(sectionTypeOverrides, () => scheduleCvPreviewMeasure(true), {
   deep: true,
 })
@@ -2849,9 +2920,7 @@ watch(
               <div
                 v-for="section in visibleAsideOneSections"
                 :key="`aside-s1-${section}`"
-                :class="[
-                  'cv-aside-section-item',
-                ]"
+                :class="['cv-aside-section-item']"
                 :style="sectionOffsetStyle('asideOne', section)"
                 draggable="true"
                 @mouseenter="
@@ -2949,9 +3018,7 @@ watch(
               <div
                 v-for="section in visibleAsideTwoSections"
                 :key="`aside-s2-${section}`"
-                :class="[
-                  'cv-aside-section-item',
-                ]"
+                :class="['cv-aside-section-item']"
                 :style="sectionOffsetStyle('asideTwo', section)"
                 draggable="true"
                 @mouseenter="
@@ -3048,7 +3115,15 @@ watch(
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
                 ]"
-                :style="sectionOffsetStyle('contentBase', section)"
+                :data-cv-section-key="
+                  sectionPageBreakKey('contentBase', section)
+                "
+                :style="[
+                  sectionOffsetStyle('contentBase', section),
+                  sectionPageBreakStyle(
+                    sectionPageBreakKey('contentBase', section),
+                  ),
+                ]"
                 draggable="true"
                 @mouseenter="
                   activeSectionToolbarKey = sectionToolbarKey(
@@ -3143,7 +3218,15 @@ watch(
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
                 ]"
-                :style="sectionOffsetStyle('contentStructure2', section)"
+                :data-cv-section-key="
+                  sectionPageBreakKey('contentStructure2', section)
+                "
+                :style="[
+                  sectionOffsetStyle('contentStructure2', section),
+                  sectionPageBreakStyle(
+                    sectionPageBreakKey('contentStructure2', section),
+                  ),
+                ]"
                 draggable="true"
                 @mouseenter="
                   activeSectionToolbarKey = sectionToolbarKey(
@@ -3240,7 +3323,13 @@ watch(
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
                 ]"
-                :style="sectionOffsetStyle('mainOne', section)"
+                :data-cv-section-key="sectionPageBreakKey('mainOne', section)"
+                :style="[
+                  sectionOffsetStyle('mainOne', section),
+                  sectionPageBreakStyle(
+                    sectionPageBreakKey('mainOne', section),
+                  ),
+                ]"
                 draggable="true"
                 @mouseenter="
                   activeSectionToolbarKey = sectionToolbarKey(
@@ -3333,7 +3422,15 @@ watch(
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
                 ]"
-                :style="sectionOffsetStyle('mainTwoTop', section)"
+                :data-cv-section-key="
+                  sectionPageBreakKey('mainTwoTop', section)
+                "
+                :style="[
+                  sectionOffsetStyle('mainTwoTop', section),
+                  sectionPageBreakStyle(
+                    sectionPageBreakKey('mainTwoTop', section),
+                  ),
+                ]"
                 draggable="true"
                 @mouseenter="
                   activeSectionToolbarKey = sectionToolbarKey(
@@ -3421,7 +3518,15 @@ watch(
                       'cv-section-row',
                       contentColumnClass(toSectionKey(section)),
                     ]"
-                    :style="sectionOffsetStyle('mainTwoLeft', section)"
+                    :data-cv-section-key="
+                      sectionPageBreakKey('mainTwoLeft', section)
+                    "
+                    :style="[
+                      sectionOffsetStyle('mainTwoLeft', section),
+                      sectionPageBreakStyle(
+                        sectionPageBreakKey('mainTwoLeft', section),
+                      ),
+                    ]"
                     draggable="true"
                     @mouseenter="
                       activeSectionToolbarKey = sectionToolbarKey(
@@ -3517,7 +3622,15 @@ watch(
                       'cv-section-row',
                       contentColumnClass(toSectionKey(section)),
                     ]"
-                    :style="sectionOffsetStyle('mainTwoRight', section)"
+                    :data-cv-section-key="
+                      sectionPageBreakKey('mainTwoRight', section)
+                    "
+                    :style="[
+                      sectionOffsetStyle('mainTwoRight', section),
+                      sectionPageBreakStyle(
+                        sectionPageBreakKey('mainTwoRight', section),
+                      ),
+                    ]"
                     draggable="true"
                     @mouseenter="
                       activeSectionToolbarKey = sectionToolbarKey(
@@ -3615,7 +3728,13 @@ watch(
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
                 ]"
-                :style="sectionOffsetStyle('mainOne', section)"
+                :data-cv-section-key="sectionPageBreakKey('mainOne', section)"
+                :style="[
+                  sectionOffsetStyle('mainOne', section),
+                  sectionPageBreakStyle(
+                    sectionPageBreakKey('mainOne', section),
+                  ),
+                ]"
                 draggable="true"
                 @mouseenter="
                   activeSectionToolbarKey = sectionToolbarKey(
