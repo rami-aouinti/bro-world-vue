@@ -333,6 +333,17 @@ function removeDecorObject(index: number) {
     decorMenuOpenIndex.value -= 1
 }
 
+const sectionTitleStyleOverrides = ref<Record<string, string>>({})
+const sectionTitleStyleOptions = [
+  { title: 'Classic', value: 'classic' },
+  { title: 'Pill', value: 'pill-filled' },
+  { title: 'Outline', value: 'pill-outline' },
+  { title: 'Icon bar', value: 'icon-bar' },
+  { title: 'Ribbon', value: 'ribbon' },
+  { title: 'Hexagon', value: 'hexagon-icon' },
+  { title: 'Tab', value: 'tab' },
+]
+
 const sectionColumnOverrides = ref<Record<string, 'full' | 'half'>>({})
 const sectionColumnOptions = [
   { title: 'Full', value: 'full' },
@@ -960,6 +971,16 @@ function toSectionKey(section?: string) {
   return key
 }
 
+function effectiveSectionTitleStyle(sectionKey: string) {
+  const key = toSectionKey(sectionKey)
+  return sectionTitleStyleOverrides.value[key] || sectionTitleStyle(key)
+}
+
+function updateSectionTitleStyle(sectionKey: string, value: unknown) {
+  if (typeof value !== 'string') return
+  sectionTitleStyleOverrides.value[toSectionKey(sectionKey)] = value
+}
+
 function isSectionColumnEditable(sectionKey: string) {
   return templateMainSections.value.includes(toSectionKey(sectionKey))
 }
@@ -1489,6 +1510,7 @@ watch(
     pageBorderRadius.value = parsePx(pageBorder.radius, 0)
     pageBorderColor.value = String(pageBorder.color || '#0f172a')
     sectionColumnOverrides.value = {}
+    sectionTitleStyleOverrides.value = {}
   },
   { immediate: true },
 )
@@ -2765,6 +2787,21 @@ watch(
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
                   /><AppSelect
+                    :model-value="
+                      effectiveSectionTitleStyle(toSectionKey(section))
+                    "
+                    :items="sectionTitleStyleOptions"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-format-title"
+                    class="cv-title-style-select"
+                    @update:model-value="
+                      updateSectionTitleStyle(toSectionKey(section), $event)
+                    "
+                  /><AppSelect
                     v-if="isSectionColumnEditable(toSectionKey(section))"
                     :model-value="effectiveSectionColumn(toSectionKey(section))"
                     :items="sectionColumnOptions"
@@ -2820,7 +2857,9 @@ watch(
                       (item) => item.value,
                     )
                   "
-                  :title-style="sectionTitleStyle(toSectionKey(section))"
+                  :title-style="
+                    effectiveSectionTitleStyle(toSectionKey(section))
+                  "
                   :font-family="textFontPreset('sectionLabel')"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
@@ -2878,6 +2917,21 @@ watch(
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
                   /><AppSelect
+                    :model-value="
+                      effectiveSectionTitleStyle(toSectionKey(section))
+                    "
+                    :items="sectionTitleStyleOptions"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-format-title"
+                    class="cv-title-style-select"
+                    @update:model-value="
+                      updateSectionTitleStyle(toSectionKey(section), $event)
+                    "
+                  /><AppSelect
                     v-if="isSectionColumnEditable(toSectionKey(section))"
                     :model-value="effectiveSectionColumn(toSectionKey(section))"
                     :items="sectionColumnOptions"
@@ -2933,7 +2987,9 @@ watch(
                       (item) => item.value,
                     )
                   "
-                  :title-style="sectionTitleStyle(toSectionKey(section))"
+                  :title-style="
+                    effectiveSectionTitleStyle(toSectionKey(section))
+                  "
                   :font-family="textFontPreset('sectionLabel')"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
@@ -2988,6 +3044,21 @@ watch(
                     hide-details
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
+                  /><AppSelect
+                    :model-value="
+                      effectiveSectionTitleStyle(toSectionKey(section))
+                    "
+                    :items="sectionTitleStyleOptions"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-format-title"
+                    class="cv-title-style-select"
+                    @update:model-value="
+                      updateSectionTitleStyle(toSectionKey(section), $event)
+                    "
                   /><AppSelect
                     v-if="isSectionColumnEditable(toSectionKey(section))"
                     :model-value="effectiveSectionColumn(toSectionKey(section))"
@@ -3044,7 +3115,9 @@ watch(
                       (item) => item.value,
                     )
                   "
-                  :title-style="sectionTitleStyle(toSectionKey(section))"
+                  :title-style="
+                    effectiveSectionTitleStyle(toSectionKey(section))
+                  "
                   :font-family="textFontPreset('sectionLabel')"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
@@ -3096,6 +3169,21 @@ watch(
                     hide-details
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
+                  /><AppSelect
+                    :model-value="
+                      effectiveSectionTitleStyle(toSectionKey(section))
+                    "
+                    :items="sectionTitleStyleOptions"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-format-title"
+                    class="cv-title-style-select"
+                    @update:model-value="
+                      updateSectionTitleStyle(toSectionKey(section), $event)
+                    "
                   /><AppSelect
                     v-if="isSectionColumnEditable(toSectionKey(section))"
                     :model-value="effectiveSectionColumn(toSectionKey(section))"
@@ -3154,7 +3242,9 @@ watch(
                       (item) => item.value,
                     )
                   "
-                  :title-style="sectionTitleStyle(toSectionKey(section))"
+                  :title-style="
+                    effectiveSectionTitleStyle(toSectionKey(section))
+                  "
                   :font-family="textFontPreset('sectionLabel')"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
@@ -3207,6 +3297,21 @@ watch(
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
                   /><AppSelect
+                    :model-value="
+                      effectiveSectionTitleStyle(toSectionKey(section))
+                    "
+                    :items="sectionTitleStyleOptions"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-format-title"
+                    class="cv-title-style-select"
+                    @update:model-value="
+                      updateSectionTitleStyle(toSectionKey(section), $event)
+                    "
+                  /><AppSelect
                     v-if="isSectionColumnEditable(toSectionKey(section))"
                     :model-value="effectiveSectionColumn(toSectionKey(section))"
                     :items="sectionColumnOptions"
@@ -3258,7 +3363,9 @@ watch(
                       (item) => item.value,
                     )
                   "
-                  :title-style="sectionTitleStyle(toSectionKey(section))"
+                  :title-style="
+                    effectiveSectionTitleStyle(toSectionKey(section))
+                  "
                   :font-family="textFontPreset('sectionLabel')"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
@@ -3310,6 +3417,21 @@ watch(
                     hide-details
                     prepend-inner-icon="mdi-shape-outline"
                     class="cv-variant-select"
+                  /><AppSelect
+                    :model-value="
+                      effectiveSectionTitleStyle(toSectionKey(section))
+                    "
+                    :items="sectionTitleStyleOptions"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-format-title"
+                    class="cv-title-style-select"
+                    @update:model-value="
+                      updateSectionTitleStyle(toSectionKey(section), $event)
+                    "
                   /><AppSelect
                     v-if="isSectionColumnEditable(toSectionKey(section))"
                     :model-value="effectiveSectionColumn(toSectionKey(section))"
@@ -3366,7 +3488,9 @@ watch(
                       (item) => item.value,
                     )
                   "
-                  :title-style="sectionTitleStyle(toSectionKey(section))"
+                  :title-style="
+                    effectiveSectionTitleStyle(toSectionKey(section))
+                  "
                   :font-family="textFontPreset('sectionLabel')"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
@@ -3413,6 +3537,21 @@ watch(
                         hide-details
                         prepend-inner-icon="mdi-shape-outline"
                         class="cv-variant-select"
+                      /><AppSelect
+                        :model-value="
+                          effectiveSectionTitleStyle(toSectionKey(section))
+                        "
+                        :items="sectionTitleStyleOptions"
+                        item-title="title"
+                        item-value="value"
+                        density="compact"
+                        variant="outlined"
+                        hide-details
+                        prepend-inner-icon="mdi-format-title"
+                        class="cv-title-style-select"
+                        @update:model-value="
+                          updateSectionTitleStyle(toSectionKey(section), $event)
+                        "
                       /><AppSelect
                         v-if="isSectionColumnEditable(toSectionKey(section))"
                         :model-value="
@@ -3473,7 +3612,9 @@ watch(
                           (item) => item.value,
                         )
                       "
-                      :title-style="sectionTitleStyle(toSectionKey(section))"
+                      :title-style="
+                        effectiveSectionTitleStyle(toSectionKey(section))
+                      "
                       :font-family="textFontPreset('sectionLabel')"
                       @update:title="updateSectionDisplayTitle(section, $event)"
                       @update:icon="setSectionIcon(section, $event)"
@@ -3520,6 +3661,21 @@ watch(
                         hide-details
                         prepend-inner-icon="mdi-shape-outline"
                         class="cv-variant-select"
+                      /><AppSelect
+                        :model-value="
+                          effectiveSectionTitleStyle(toSectionKey(section))
+                        "
+                        :items="sectionTitleStyleOptions"
+                        item-title="title"
+                        item-value="value"
+                        density="compact"
+                        variant="outlined"
+                        hide-details
+                        prepend-inner-icon="mdi-format-title"
+                        class="cv-title-style-select"
+                        @update:model-value="
+                          updateSectionTitleStyle(toSectionKey(section), $event)
+                        "
                       /><AppSelect
                         v-if="isSectionColumnEditable(toSectionKey(section))"
                         :model-value="
@@ -3580,7 +3736,9 @@ watch(
                           (item) => item.value,
                         )
                       "
-                      :title-style="sectionTitleStyle(toSectionKey(section))"
+                      :title-style="
+                        effectiveSectionTitleStyle(toSectionKey(section))
+                      "
                       :font-family="textFontPreset('sectionLabel')"
                       @update:title="updateSectionDisplayTitle(section, $event)"
                       @update:icon="setSectionIcon(section, $event)"
@@ -4361,6 +4519,12 @@ watch(
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
+}
+.cv-title-style-select {
+  width: 54px;
+}
+.cv-title-style-select :deep(.v-select__selection span) {
+  display: none;
 }
 .cv-column-select {
   width: 54px;
