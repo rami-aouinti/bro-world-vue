@@ -58,14 +58,9 @@ onMounted(() => {
 
 <style scoped>
 .app-right-drawer {
-  background: transparent !important;
   border-radius: 24px;
   margin-top: 10px;
   margin-right: 8px;
-}
-
-.app-right-drawer :deep(.v-navigation-drawer__content) {
-  background: transparent !important;
 }
 
 .app-right-drawer-list {
@@ -74,14 +69,6 @@ onMounted(() => {
 }
 
 .app-right-drawer-card {
-  background:
-    linear-gradient(
-      240deg,
-      rgba(var(--v-theme-primary), 0.18) 0%,
-      transparent 24%
-    ),
-    #111 !important;
-  color: #fff;
   padding: 8px;
   height: calc(100% - 10px);
   overflow-y: auto;
