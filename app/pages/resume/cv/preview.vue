@@ -618,20 +618,20 @@ const sectionVariantOptionsMap: Record<string, string[]> = {
     'list',
     'dot',
     'timeline',
+    'timeline-dots',
+    'timeline-badges',
+    'timeline-stacked-dates',
     'cards',
-    'cards-accent-left',
-    'cards-soft',
-    'cards-bordered',
   ],
   education: [
     'classic',
     'list',
     'dot',
     'timeline',
+    'timeline-dots',
+    'timeline-badges',
+    'timeline-stacked-dates',
     'cards',
-    'cards-accent-left',
-    'cards-soft',
-    'cards-bordered',
   ],
   projects: [
     'classic',
@@ -1034,7 +1034,15 @@ function updateSectionTitleStyle(sectionKey: string, value: unknown) {
 }
 
 function effectiveSectionContentStyle(sectionKey: string) {
-  return sectionContentStyle(toSectionKey(sectionKey))
+  const key = toSectionKey(sectionKey)
+  const variant = effectiveSectionType(key, sectionType(key as any))
+  if (
+    ['timeline-dots', 'timeline-badges', 'timeline-stacked-dates'].includes(
+      variant,
+    )
+  )
+    return variant
+  return sectionContentStyle(key)
 }
 
 function effectiveSectionDateStyle(sectionKey: string) {
@@ -1123,38 +1131,45 @@ function getSectionItems(rawSection: string): string[] {
     return `${label}${suffix}`
   }
 
-  if (key === 'experience')
+  if (key === 'experience') {
+    const isStackedDates =
+      effectiveSectionType(key, sectionType(key as any)) ===
+      'timeline-stacked-dates'
+    const toExperienceItem = (item: any) => {
+      const from = formatShortDate(item.startDate)
+      const to = item.endDate ? formatShortDate(item.endDate) : 'Present'
+      const date = from
+        ? isStackedDates
+          ? `${from}\n${to}`
+          : `${from} - ${to}`
+        : ''
+      return `${item.title || 'Role'}§${item.company || ''}§${date}§${item.description || 'Description...'}`
+    }
     return [
-      ...(data.experiences || []).map((item: any) => {
-        const from = formatShortDate(item.startDate)
-        const to = item.endDate ? formatShortDate(item.endDate) : 'Present'
-        const date = from ? `${from} - ${to}` : ''
-        return `${item.title || 'Role'}§${item.company || ''}§${date}§${item.description || 'Description...'}`
-      }),
-      ...extra.map((item: any) => {
-        const from = formatShortDate(item.startDate)
-        const to = item.endDate ? formatShortDate(item.endDate) : 'Present'
-        const date = from ? `${from} - ${to}` : ''
-        return `${item.title || 'Role'}§${item.company || ''}§${date}§${item.description || 'Description...'}`
-      }),
+      ...(data.experiences || []).map(toExperienceItem),
+      ...extra.map(toExperienceItem),
     ]
-  if (key === 'education')
+  }
+  if (key === 'education') {
+    const isStackedDates =
+      effectiveSectionType(key, sectionType(key as any)) ===
+      'timeline-stacked-dates'
+    const toEducationItem = (item: any) => {
+      const from = formatShortDate(item.startDate)
+      const to = formatShortDate(item.endDate)
+      const date = from
+        ? isStackedDates
+          ? `${from}\n${to}`
+          : `${from}${to ? ` - ${to}` : ''}`
+        : ''
+      const schoolLine = `${item.school || ''}${item.location ? `, ${item.location}` : ''}`
+      return `${item.title || 'Degree'}§${schoolLine}§${date}§${item.description || 'Description...'}`
+    }
     return [
-      ...(data.educations || []).map((item: any) => {
-        const from = formatShortDate(item.startDate)
-        const to = formatShortDate(item.endDate)
-        const date = from ? `${from}${to ? ` - ${to}` : ''}` : ''
-        const schoolLine = `${item.school || ''}${item.location ? `, ${item.location}` : ''}`
-        return `${item.title || 'Degree'}§${schoolLine}§${date}§${item.description || 'Description...'}`
-      }),
-      ...extra.map((item: any) => {
-        const from = formatShortDate(item.startDate)
-        const to = formatShortDate(item.endDate)
-        const date = from ? `${from}${to ? ` - ${to}` : ''}` : ''
-        const schoolLine = `${item.school || ''}${item.location ? `, ${item.location}` : ''}`
-        return `${item.title || 'Degree'}§${schoolLine}§${date}§${item.description || 'Description...'}`
-      }),
+      ...(data.educations || []).map(toEducationItem),
+      ...extra.map(toEducationItem),
     ]
+  }
   if (key === 'projects')
     return [
       ...(data.projects || []).map((item: any) => toTitleDesc(item, 'Project')),
