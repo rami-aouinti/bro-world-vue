@@ -70,7 +70,7 @@ watch(mobile, (isMobile) => {
     :rail="rail"
     :temporary="mobile"
     :permanent="!mobile"
-    width="260"
+    width="220"
     floating
     class="app-left-drawer"
     @update:model-value="handleDrawerModelUpdate"
