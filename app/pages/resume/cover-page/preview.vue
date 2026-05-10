@@ -399,12 +399,16 @@ function measureCoverPreviewOverflow() {
   )
   if (!preview) return
 
-  const neededHeight = Math.max(
-    COVER_PREVIEW_PDF_PAGE_HEIGHT,
-    preview.scrollHeight,
-    Math.ceil(preview.getBoundingClientRect().height),
-  )
-  showCoverPreviewPageBreak.value = neededHeight > COVER_PREVIEW_PDF_PAGE_HEIGHT
+  const previewRect = preview.getBoundingClientRect()
+  const contentBottom = Array.from(preview.children).reduce((bottom, child) => {
+    if (!(child instanceof HTMLElement)) return bottom
+    if (child.classList.contains('decor-object')) return bottom
+    const childRect = child.getBoundingClientRect()
+    return Math.max(bottom, Math.ceil(childRect.bottom - previewRect.top))
+  }, 0)
+
+  showCoverPreviewPageBreak.value =
+    contentBottom > COVER_PREVIEW_PDF_PAGE_HEIGHT + 8
 }
 
 function scheduleCoverPreviewMeasure(reset = false) {
@@ -1345,6 +1349,7 @@ watch(aiModalOpen, (isOpen) => {
         <ResumePreviewPageBreak
           v-if="showCoverPreviewPageBreak"
           :page-number="1"
+          :top="COVER_PREVIEW_PDF_PAGE_HEIGHT"
         />
       </div>
       <input
