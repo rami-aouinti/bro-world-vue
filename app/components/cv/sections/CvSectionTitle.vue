@@ -165,6 +165,7 @@ defineEmits<{
   text-transform: uppercase;
 }
 
+.cv-section-title-shell--hexagon,
 .cv-section-title-shell--hexagon-icon {
   padding: 4px 16px 4px 8px;
   background: var(--section-primary);
@@ -173,6 +174,7 @@ defineEmits<{
   text-transform: uppercase;
 }
 
+.cv-section-title-shell--hexagon .cv-section-title-icon-btn,
 .cv-section-title-shell--hexagon-icon .cv-section-title-icon-btn {
   width: 42px;
   height: 42px;
@@ -182,6 +184,21 @@ defineEmits<{
   background: #fff;
   color: var(--section-primary);
   border: 3px solid var(--section-accent);
+}
+
+.cv-section-title-shell--underline-accent {
+  width: 100%;
+  padding-bottom: 5px;
+  border-bottom: 2px solid
+    color-mix(in srgb, var(--section-accent) 78%, transparent);
+  color: var(--section-primary);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cv-section-title-shell--underline-accent .cv-section-title-icon-btn {
+  color: var(--section-accent);
 }
 
 .cv-section-title-editor {
