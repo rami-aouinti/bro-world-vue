@@ -26,6 +26,12 @@ const emit = defineEmits<{
   (event: 'update-item', index: number, value: string): void
 }>()
 
+const circleProgressVariants = [
+  'progress-circle',
+  'progress-circle-grid',
+  'progress-circle-ring',
+]
+
 function splitComplexItem(raw: string) {
   const [title = '', subtitle = '', period = '', description = ''] = String(
     raw || '',
@@ -358,15 +364,7 @@ function isHobbyIconsSection() {
               {{ splitLeveledItem(item).value }}%
             </span>
           </div>
-          <template
-            v-else-if="
-              [
-                'progress-circle',
-                'progress-circle-grid',
-                'progress-circle-ring',
-              ].includes(variant)
-            "
-          >
+          <template v-else-if="circleProgressVariants.includes(variant)">
             <span
               class="cv-rich-circle"
               :style="{ '--level': splitLeveledItem(item).value }"
@@ -433,6 +431,12 @@ function isHobbyIconsSection() {
 .cv-rich-section--progress-circle-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px 18px;
+  justify-items: center;
+}
+
+.cv-rich-section--progress-circle-ring {
+  grid-template-columns: repeat(auto-fit, minmax(54px, 1fr));
+  gap: 12px;
   justify-items: center;
 }
 
@@ -908,13 +912,15 @@ function isHobbyIconsSection() {
 }
 
 .cv-rich-circle {
+  --level: 0;
   position: relative;
   width: 54px;
   height: 54px;
+  border: 0;
   border-radius: 999px;
   background: conic-gradient(
-    var(--cv-secondary) calc(var(--level) * 1%),
-    rgba(148, 163, 184, 0.25) 0
+    var(--cv-secondary, #93c5fd) calc(var(--level) * 1%),
+    color-mix(in srgb, var(--cv-secondary, #93c5fd) 18%, transparent) 0
   );
   display: inline-flex;
   align-items: center;
@@ -932,7 +938,8 @@ function isHobbyIconsSection() {
 .cv-rich-circle-value {
   position: relative;
   z-index: 1;
-  font-size: 11px;
-  font-weight: 800;
+  font-size: 10px;
+  font-weight: 900;
+  color: var(--cv-page-text, #0f172a);
 }
 </style>
