@@ -6,14 +6,15 @@ import {
   type NormalizedGeneratedTemplateSection,
 } from '~/utils/resumeGeneratedTemplate'
 
-export type GeneratedCvSectionTitleStyle =
+export type CvSectionTitleStyle =
   | 'classic'
   | 'pill-filled'
   | 'pill-outline'
   | 'icon-bar'
   | 'ribbon'
-  | 'hexagon-icon'
+  | 'hexagon'
   | 'tab'
+  | 'underline-accent'
 
 export type CvSectionContentStyle =
   | 'classic'
@@ -49,7 +50,7 @@ export type GeneratedCvTemplateRuntimeSection =
     iconAlternatives: string[]
     form: string
     column: GeneratedResumeTemplateColumn
-    titleStyle: GeneratedCvSectionTitleStyle
+    titleStyle: CvSectionTitleStyle
     contentStyle: CvSectionContentStyle
     dateStyle: CvSectionDateStyle
     levelStyle: CvSectionLevelStyle
@@ -149,18 +150,20 @@ function normalizeColumn(value: unknown): GeneratedResumeTemplateColumn {
   return value === 'half' ? 'half' : 'full'
 }
 
-function normalizeTitleStyle(value: unknown): GeneratedCvSectionTitleStyle {
+function normalizeTitleStyle(value: unknown): CvSectionTitleStyle {
   const allowed = new Set([
     'classic',
     'pill-filled',
     'pill-outline',
     'icon-bar',
     'ribbon',
-    'hexagon-icon',
+    'hexagon',
     'tab',
+    'underline-accent',
   ])
-  return typeof value === 'string' && allowed.has(value)
-    ? (value as GeneratedCvSectionTitleStyle)
+  const normalizedValue = value === 'hexagon-icon' ? 'hexagon' : value
+  return typeof normalizedValue === 'string' && allowed.has(normalizedValue)
+    ? (normalizedValue as CvSectionTitleStyle)
     : 'classic'
 }
 

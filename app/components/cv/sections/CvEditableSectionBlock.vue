@@ -4,6 +4,15 @@ import CvSectionTitle from '~/components/cv/sections/CvSectionTitle.vue'
 
 type SelectOption = { title: string; value: string }
 type SectionColumn = 'full' | 'half'
+type SectionTitleStyle =
+  | 'classic'
+  | 'pill-filled'
+  | 'pill-outline'
+  | 'icon-bar'
+  | 'ribbon'
+  | 'hexagon'
+  | 'tab'
+  | 'underline-accent'
 
 const props = defineProps<{
   section: string
@@ -16,7 +25,7 @@ const props = defineProps<{
   column: SectionColumn
   columnIcon: string
   items: string[]
-  titleStyle?: string
+  titleStyle?: SectionTitleStyle | string
   contentStyle?: string
   dateStyle?: string
 }>()
@@ -28,6 +37,7 @@ const emit = defineEmits<{
   (event: 'update:icon', value: string): void
   (event: 'update:variant', value: string): void
   (event: 'update:column', value: SectionColumn): void
+  (event: 'update:title-style', value: SectionTitleStyle): void
   (event: 'add-item'): void
   (event: 'hide'): void
   (event: 'move-up'): void
@@ -40,6 +50,29 @@ const emit = defineEmits<{
 const columnOptions: Array<{ title: string; value: SectionColumn }> = [
   { title: 'Full', value: 'full' },
   { title: 'Half', value: 'half' },
+]
+
+const titleStyleOptions: Array<{
+  title: string
+  value: SectionTitleStyle
+  icon: string
+}> = [
+  { title: 'Classic', value: 'classic', icon: 'mdi-format-title' },
+  { title: 'Pill', value: 'pill-filled', icon: 'mdi-pill' },
+  {
+    title: 'Outline',
+    value: 'pill-outline',
+    icon: 'mdi-checkbox-blank-badge-outline',
+  },
+  { title: 'Icon bar', value: 'icon-bar', icon: 'mdi-format-align-left' },
+  { title: 'Ribbon', value: 'ribbon', icon: 'mdi-ribbon' },
+  { title: 'Hexagon', value: 'hexagon', icon: 'mdi-hexagon-outline' },
+  { title: 'Tab', value: 'tab', icon: 'mdi-tab' },
+  {
+    title: 'Underline',
+    value: 'underline-accent',
+    icon: 'mdi-format-underline',
+  },
 ]
 
 const variantModel = computed({
@@ -61,6 +94,23 @@ const columnModel = computed({
   set: (value) => emit('update:column', value === 'half' ? 'half' : 'full'),
 })
 
+function normalizeTitleStyle(value: unknown): SectionTitleStyle {
+  return titleStyleOptions.some((option) => option.value === value)
+    ? (value as SectionTitleStyle)
+    : 'classic'
+}
+
+const titleStyleModel = computed({
+  get: () => normalizeTitleStyle(props.titleStyle),
+  set: (value) => emit('update:title-style', normalizeTitleStyle(value)),
+})
+
+const titleStyleIcon = computed(
+  () =>
+    titleStyleOptions.find((option) => option.value === titleStyleModel.value)
+      ?.icon || 'mdi-format-title',
+)
+
 const iconAlternativeValues = computed(() =>
   props.iconOptions.map((option) => option.value).filter(Boolean),
 )
@@ -79,6 +129,28 @@ const iconAlternativeValues = computed(() =>
       prepend-inner-icon="mdi-shape-outline"
       class="cv-variant-select"
     />
+    <AppSelect
+      v-model="titleStyleModel"
+      :items="titleStyleOptions"
+      item-title="title"
+      item-value="value"
+      density="compact"
+      variant="outlined"
+      hide-details
+      :prepend-inner-icon="titleStyleIcon"
+      class="cv-title-style-select"
+    >
+      <template #selection="{ item }">
+        <v-icon :icon="item?.raw?.icon || titleStyleIcon" size="16" />
+      </template>
+      <template #item="{ item, props: itemProps }">
+        <v-list-item v-bind="itemProps" :title="item?.title">
+          <template #prepend>
+            <v-icon :icon="item?.raw?.icon" size="16" />
+          </template>
+        </v-list-item>
+      </template>
+    </AppSelect>
     <AppSelect
       v-model="columnModel"
       :items="columnOptions"
@@ -253,16 +325,19 @@ const iconAlternativeValues = computed(() =>
   color: rgb(var(--v-theme-on-surface));
 }
 
+.cv-title-style-select,
 .cv-column-select,
 .cv-icon-select {
   width: 54px;
 }
 
+.cv-title-style-select :deep(.v-select__selection span),
 .cv-column-select :deep(.v-select__selection span),
 .cv-icon-select :deep(.v-select__selection span) {
   display: none;
 }
 
+.cv-title-style-select :deep(.v-field__input),
 .cv-column-select :deep(.v-field__input),
 .cv-icon-select :deep(.v-field__input) {
   padding-inline-start: 0;

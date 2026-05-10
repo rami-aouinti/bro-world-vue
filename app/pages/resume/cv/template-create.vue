@@ -980,6 +980,12 @@ function effectiveSectionTitleStyle(sectionKey: string) {
   return sectionTitleStyleOverrides.value[key] || sectionTitleStyle(key)
 }
 
+function updateSectionTitleStyle(sectionKey: string, value: unknown) {
+  if (typeof value !== 'string') return
+  const key = toSectionKey(sectionKey)
+  sectionTitleStyleOverrides.value[key] = value
+}
+
 function effectiveSectionContentStyle(sectionKey: string) {
   return sectionContentStyle(toSectionKey(sectionKey))
 }
@@ -1548,6 +1554,9 @@ watch(sectionTypeOverrides, () => scheduleCvPreviewMeasure(true), {
   deep: true,
 })
 watch(sectionColumnOverrides, () => scheduleCvPreviewMeasure(true), {
+  deep: true,
+})
+watch(sectionTitleStyleOverrides, () => scheduleCvPreviewMeasure(true), {
   deep: true,
 })
 watch(sectionExtraItems, () => scheduleCvPreviewMeasure(true), { deep: true })
@@ -2827,6 +2836,9 @@ watch(
                   @update:column="
                     updateSectionColumn(toSectionKey(section), $event)
                   "
+                  @update:title-style="
+                    updateSectionTitleStyle(toSectionKey(section), $event)
+                  "
                   @add-item="addSectionItem(toSectionKey(section))"
                   @hide="hideSectionFromZone('asideOne', toSectionKey(section))"
                   @move-up="shiftSectionByLine('asideOne', section, 'up')"
@@ -2897,6 +2909,9 @@ watch(
                   @update:column="
                     updateSectionColumn(toSectionKey(section), $event)
                   "
+                  @update:title-style="
+                    updateSectionTitleStyle(toSectionKey(section), $event)
+                  "
                   @add-item="addSectionItem(toSectionKey(section))"
                   @hide="hideSectionFromZone('asideTwo', toSectionKey(section))"
                   @move-up="shiftSectionByLine('asideTwo', section, 'up')"
@@ -2965,6 +2980,9 @@ watch(
                   @update:column="
                     updateSectionColumn(toSectionKey(section), $event)
                   "
+                  @update:title-style="
+                    updateSectionTitleStyle(toSectionKey(section), $event)
+                  "
                   @add-item="addSectionItem(toSectionKey(section))"
                   @hide="hideSection(toSectionKey(section))"
                   @move-up="shiftSectionByLine('contentBase', section, 'up')"
@@ -3031,6 +3049,9 @@ watch(
                   "
                   @update:column="
                     updateSectionColumn(toSectionKey(section), $event)
+                  "
+                  @update:title-style="
+                    updateSectionTitleStyle(toSectionKey(section), $event)
                   "
                   @add-item="addSectionItem(toSectionKey(section))"
                   @hide="hideSection(toSectionKey(section))"
@@ -3101,6 +3122,9 @@ watch(
                   @update:column="
                     updateSectionColumn(toSectionKey(section), $event)
                   "
+                  @update:title-style="
+                    updateSectionTitleStyle(toSectionKey(section), $event)
+                  "
                   @add-item="addSectionItem(toSectionKey(section))"
                   @hide="hideSection(toSectionKey(section))"
                   @move-up="shiftSectionByLine('mainOne', section, 'up')"
@@ -3166,6 +3190,9 @@ watch(
                   @update:column="
                     updateSectionColumn(toSectionKey(section), $event)
                   "
+                  @update:title-style="
+                    updateSectionTitleStyle(toSectionKey(section), $event)
+                  "
                   @add-item="addSectionItem(toSectionKey(section))"
                   @hide="hideSection(toSectionKey(section))"
                   @move-up="shiftSectionByLine('mainTwoTop', section, 'up')"
@@ -3229,6 +3256,9 @@ watch(
                       "
                       @update:column="
                         updateSectionColumn(toSectionKey(section), $event)
+                      "
+                      @update:title-style="
+                        updateSectionTitleStyle(toSectionKey(section), $event)
                       "
                       @add-item="addSectionItem(toSectionKey(section))"
                       @hide="hideSection(toSectionKey(section))"
@@ -3298,6 +3328,9 @@ watch(
                       @update:column="
                         updateSectionColumn(toSectionKey(section), $event)
                       "
+                      @update:title-style="
+                        updateSectionTitleStyle(toSectionKey(section), $event)
+                      "
                       @add-item="addSectionItem(toSectionKey(section))"
                       @hide="hideSection(toSectionKey(section))"
                       @move-up="
@@ -3363,6 +3396,9 @@ watch(
                   "
                   @update:column="
                     updateSectionColumn(toSectionKey(section), $event)
+                  "
+                  @update:title-style="
+                    updateSectionTitleStyle(toSectionKey(section), $event)
                   "
                   @add-item="addSectionItem(toSectionKey(section))"
                   @hide="hideSection(toSectionKey(section))"
