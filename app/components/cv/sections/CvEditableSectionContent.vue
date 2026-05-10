@@ -15,7 +15,7 @@ const props = withDefaults(
     items: () => [],
     sectionKey: '',
     variant: 'classic',
-    contentStyle: 'classic',
+    contentStyle: '',
     dateStyle: 'plain',
     levelStyle: 'line',
     hobbyStyle: 'text',
@@ -118,13 +118,13 @@ function isLeveledSection() {
 function isTimelineComplexItem(raw: string) {
   return (
     isComplexItem(raw) &&
-    (props.variant === 'timeline' ||
+    (props.variant.includes('timeline') ||
       [
         'timeline-vertical',
         'timeline-date-badges',
         'timeline-badges',
         'timeline-line',
-      ].includes(props.contentStyle))
+      ].includes(props.contentStyle || ''))
   )
 }
 
@@ -185,12 +185,13 @@ function isHobbyIconsSection() {
         class="cv-rich-item"
         :class="[
           `cv-rich-item--${variant}`,
-          `cv-rich-item--content-${contentStyle}`,
-          `cv-rich-item--date-${dateStyle}`,
+          `cv-rich-item--content-${contentStyle || variant}`,
+          `cv-rich-item--date-${dateStyle || 'plain'}`,
           `cv-rich-item--level-${levelStyle}`,
           {
             'cv-rich-item--complex': isComplexItem(item),
-            'cv-rich-item--timeline-complex': isTimelineComplexItem(item),
+            'cv-rich-item--timeline-complex':
+              isComplexItem(item) && variant.includes('timeline'),
             'cv-rich-item--leveled': isLeveledSection(),
           },
         ]"
@@ -346,11 +347,17 @@ function isHobbyIconsSection() {
               />
             </span>
           </template>
-          <template v-else-if="variant === 'progress-line'">
-            <span class="cv-rich-progress"
-              ><i :style="{ width: `${splitLeveledItem(item).value}%` }"
-            /></span>
-          </template>
+          <div
+            v-else-if="variant === 'progress-line'"
+            class="cv-progress-line-row"
+          >
+            <span class="cv-progress-line-track">
+              <i :style="{ width: `${splitLeveledItem(item).value}%` }" />
+            </span>
+            <span class="cv-progress-line-value">
+              {{ splitLeveledItem(item).value }}%
+            </span>
+          </div>
           <template
             v-else-if="
               [
@@ -570,6 +577,72 @@ function isHobbyIconsSection() {
   line-height: 1.15;
 }
 
+.cv-rich-section--timeline-dots,
+.cv-rich-section--timeline-badges,
+.cv-rich-section--timeline-stacked-dates {
+  position: relative;
+  padding-left: 26px;
+}
+
+.cv-rich-section--timeline-dots::before,
+.cv-rich-section--timeline-badges::before,
+.cv-rich-section--timeline-stacked-dates::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 8px;
+  bottom: 8px;
+  border-left: 1px dashed
+    color-mix(in srgb, var(--cv-secondary, #93c5fd) 58%, transparent);
+}
+
+.cv-rich-item--content-timeline-dots,
+.cv-rich-item--content-timeline-badges,
+.cv-rich-item--content-timeline-stacked-dates {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(70px, 96px) minmax(0, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.cv-rich-item--content-timeline-dots::before,
+.cv-rich-item--content-timeline-badges::before,
+.cv-rich-item--content-timeline-stacked-dates::before {
+  content: '';
+  position: absolute;
+  left: -22px;
+  top: 6px;
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  border: 2px solid var(--cv-secondary, #93c5fd);
+  background: var(--cv-page-background, #fff);
+}
+
+.cv-rich-item--content-timeline-badges .cv-rich-editor--period {
+  width: fit-content;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    var(--cv-primary, #0f172a),
+    var(--cv-secondary, #93c5fd)
+  );
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.cv-rich-item--content-timeline-stacked-dates .cv-rich-editor--period {
+  max-width: 42px;
+  white-space: normal;
+  line-height: 1.05;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 800;
+}
+
 .cv-rich-item--date-stacked .cv-rich-editor--period {
   display: inline-flex;
   flex-direction: column;
@@ -681,6 +754,47 @@ function isHobbyIconsSection() {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 8px;
+}
+
+.cv-rich-item--progress-line.cv-rich-item--leveled {
+  grid-template-columns: minmax(0, 1fr) minmax(88px, 130px) 34px;
+  align-items: center;
+  gap: 8px;
+}
+
+.cv-progress-line-row {
+  display: contents;
+}
+
+.cv-progress-line-track {
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--cv-secondary, #93c5fd) 18%, transparent);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--cv-secondary, #93c5fd) 18%, transparent);
+}
+
+.cv-progress-line-track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    var(--cv-primary, #0f172a),
+    var(--cv-secondary, #93c5fd)
+  );
+}
+
+.cv-progress-line-value {
+  font-size: 10px;
+  font-weight: 800;
+  color: color-mix(in srgb, currentColor 76%, transparent);
+  text-align: end;
+}
+
+.cv-aside-section-item .cv-rich-item--progress-line.cv-rich-item--leveled {
+  grid-template-columns: 1fr;
 }
 
 .cv-rich-entry-head {
