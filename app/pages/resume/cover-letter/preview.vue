@@ -162,6 +162,18 @@ useResumeGoogleFonts(activeTemplate)
 const activeTemplateDesign = computed(() =>
   getGeneratedTemplateDesign(activeTemplate.value),
 )
+
+const borderStyleClass = computed(() => {
+  const style = String(
+    activeTemplateDesign.value?.borderStyle?.id ||
+      activeTemplateDesign.value?.theme?.pageBorder?.style ||
+      '',
+  ).trim()
+
+  if (!style) return ''
+
+  return style.startsWith('cover-border--') ? style : `cover-border--${style}`
+})
 function textFontFamily(
   key: string,
   fallback: 'sans' | 'serif' | 'mono' | 'display' = 'sans',
@@ -1120,7 +1132,7 @@ watch(aiModalOpen, (isOpen) => {
         class="d-flex justify-center preview-single-page-frame"
       >
         <main
-          class="capture-cover-letter"
+          :class="['capture-cover-letter', borderStyleClass]"
           :style="{
             '--cp-primary': activeColors.primary,
             '--cp-secondary': activeColors.secondary,
@@ -1453,6 +1465,10 @@ watch(aiModalOpen, (isOpen) => {
     </v-container>
   </div>
 </template>
+<style lang="scss">
+@use '~/assets/styles/resume-cover-borders';
+</style>
+
 <style scoped>
 .preview-single-page-frame {
   position: relative;
