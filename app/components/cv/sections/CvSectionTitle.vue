@@ -18,10 +18,7 @@ withDefaults(
 )
 
 defineEmits<{
-  (
-    event: 'update:title' | 'update:icon' | 'update:titleStyle',
-    value: string,
-  ): void
+  (event: 'update:title' | 'update:icon', value: string): void
 }>()
 </script>
 
@@ -31,7 +28,7 @@ defineEmits<{
     :class="`cv-section-title-shell--${titleStyle}`"
     :data-section-key="sectionKey"
   >
-    <v-menu>
+    <v-menu v-if="iconAlternatives.length">
       <template #activator="{ props }">
         <button v-bind="props" class="cv-section-title-icon-btn" type="button">
           <v-icon :icon="icon" size="16" />
@@ -51,6 +48,9 @@ defineEmits<{
         </v-list-item>
       </v-list>
     </v-menu>
+    <button v-else class="cv-section-title-icon-btn" type="button">
+      <v-icon :icon="icon" size="16" />
+    </button>
 
     <HoverRichTextEditor
       class="cv-section-title-editor"
