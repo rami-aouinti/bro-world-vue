@@ -4,6 +4,7 @@ import {
   getGeneratedTemplateDesign,
   getGeneratedTemplateFakeData,
 } from '~/utils/generatedTemplateNormalizer'
+import { useCoverBorderStyle } from '~/composables/useCoverBorderStyle'
 
 definePageMeta({ layout: false })
 
@@ -59,6 +60,9 @@ function getSelectedTemplateDesign() {
 }
 
 const selectedTemplateDesign = computed(() => getSelectedTemplateDesign())
+const { borderStyleClass, coverBorderCssVars } = useCoverBorderStyle(
+  selectedTemplateDesign,
+)
 const spacingMap: Record<string, number> = {
   compact: 24,
   normal: 30,
@@ -97,7 +101,6 @@ function toNumber(value: unknown, fallback: number): number {
 
 const resolvedStyles = computed(() => {
   const tpl = selectedTemplateDesign.value as any
-  const items = tpl?.items || {}
   const designConfig = tpl?.designConfig || defaultBarDesignConfig
   return {
     sectionDividerStyle:
@@ -108,12 +111,12 @@ const resolvedStyles = computed(() => {
           : 'solid',
     sectionDividerColor:
       tpl?.decor?.divider === 'gradient'
-        ? 'color-mix(in srgb,var(--cl-primary) 55%, var(--cl-secondary) 45%)'
-        : 'var(--cl-secondary)',
+        ? 'color-mix(in srgb,var(--cp-primary) 55%, var(--cp-secondary) 45%)'
+        : 'var(--cp-secondary)',
     headerStyle: String(tpl?.decor?.headerStyle || ''),
     heroGradient:
       tpl?.decor?.gradientStyle && tpl?.decor?.gradientStyle !== 'none'
-        ? 'linear-gradient(135deg, color-mix(in srgb,var(--cl-primary) 14%, transparent), color-mix(in srgb,var(--cl-secondary) 24%, transparent))'
+        ? 'linear-gradient(135deg, color-mix(in srgb,var(--cp-primary) 14%, transparent), color-mix(in srgb,var(--cp-secondary) 24%, transparent))'
         : 'transparent',
     paragraphSpacing: spacingMap[tpl?.layoutOptions?.paragraphSpacing] || 30,
     radius: radiusMap[tpl?.designTokens?.borderRadius] || 8,
@@ -211,27 +214,21 @@ const isLayoutRight = computed(
 
 <template>
   <main
-    class="capture-cover-letter"
+    :class="['capture-cover-letter', borderStyleClass]"
     :style="{
-      '--cl-primary': selectedTemplateDesign.theme.palette.primary,
-      '--cl-secondary': selectedTemplateDesign.theme.palette.secondary,
-      '--cl-text': selectedTemplateDesign.theme.palette.text,
-      '--cl-muted': selectedTemplateDesign.theme.palette.muted,
-      '--cl-bg': selectedTemplateDesign.theme.palette.pageBackground,
-      '--cl-page-border-width': selectedTemplateDesign.theme?.pageBorder
-        ?.enabled
-        ? `${selectedTemplateDesign.theme?.pageBorder?.width ?? 0}px`
-        : '0px',
-      '--cl-page-border-color':
-        selectedTemplateDesign.theme?.pageBorder?.color ?? 'transparent',
-      '--cl-page-border-radius': `${selectedTemplateDesign.theme?.pageBorder?.radius ?? 0}px`,
+      '--cp-primary': selectedTemplateDesign.theme.palette.primary,
+      '--cp-secondary': selectedTemplateDesign.theme.palette.secondary,
+      '--cp-text': selectedTemplateDesign.theme.palette.text,
+      '--cp-muted': selectedTemplateDesign.theme.palette.muted,
+      '--cp-bg': selectedTemplateDesign.theme.palette.pageBackground,
+      ...coverBorderCssVars,
       '--section-divider-style': resolvedStyles.sectionDividerStyle,
       '--paragraph-spacing': `${resolvedStyles.paragraphSpacing}px`,
-      '--cl-radius': `${resolvedStyles.radius}px`,
-      '--cl-bar-primary-width': `${resolvedStyles.barPrimaryWidth}px`,
-      '--cl-bar-secondary-width': `${resolvedStyles.barSecondaryWidth}px`,
-      '--cl-shadow': resolvedStyles.shadow,
-      '--cl-bar-radius': `${resolvedStyles.barRadius}px`,
+      '--cp-radius': `${resolvedStyles.radius}px`,
+      '--bar-primary-width': `${resolvedStyles.barPrimaryWidth}px`,
+      '--bar-secondary-width': `${resolvedStyles.barSecondaryWidth}px`,
+      '--cp-shadow': resolvedStyles.shadow,
+      '--bar-radius': `${resolvedStyles.barRadius}px`,
     }"
   >
     <div
@@ -303,19 +300,34 @@ const isLayoutRight = computed(
   </main>
 </template>
 
+<style lang="scss">
+@use '~/assets/styles/resume-cover-borders';
+</style>
+
+<style>
+html,
+body,
+#__nuxt {
+  width: 794px;
+  min-height: 1123px;
+  margin: 0;
+  background: #fff;
+}
+</style>
+
 <style scoped>
 .capture-cover-letter {
   position: relative;
   overflow: hidden;
-  width: 850px;
-  height: 1123px;
-  padding: 64px 72px;
-  background: var(--cl-bg);
-  color: var(--cl-text);
-  border-radius: var(--cl-page-border-radius, var(--cl-radius));
-  border: var(--cl-page-border-width, 0px) solid
-    var(--cl-page-border-color, transparent);
-  box-shadow: var(--cl-shadow);
+  box-sizing: border-box;
+  width: 794px;
+  min-height: 1123px;
+  padding: 56px 64px;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  border-radius: var(--cp-page-border-radius);
+  border: var(--cp-page-border-width) solid var(--cp-page-border-color);
+  box-shadow: var(--cp-shadow);
 }
 .meta-top-right {
   position: absolute;
@@ -334,20 +346,20 @@ const isLayoutRight = computed(
   align-items: flex-start;
 }
 .date {
-  color: var(--cl-muted);
+  color: var(--cp-muted);
   margin: 0;
 }
 .address {
   margin: 0;
 }
 .hero {
-  border-left: var(--cl-bar-primary-width) solid var(--cl-primary);
+  border-left: var(--bar-primary-width) solid var(--cp-primary);
   padding-left: 24px;
   padding-top: 6px;
   margin-bottom: 42px;
   min-height: 140px;
   position: relative;
-  border-radius: var(--cl-bar-radius);
+  border-radius: var(--bar-radius);
 }
 .hero--ribbon {
   padding-top: 16px;
@@ -362,12 +374,12 @@ const isLayoutRight = computed(
 .hero--double::before {
   content: '';
   position: absolute;
-  left: calc(var(--cl-bar-primary-width) + 6px);
+  left: calc(var(--bar-primary-width) + 6px);
   top: 0;
   bottom: 0;
-  width: var(--cl-bar-secondary-width);
-  background: var(--cl-secondary);
-  border-radius: var(--cl-bar-radius);
+  width: var(--bar-secondary-width);
+  background: var(--cp-secondary);
+  border-radius: var(--bar-radius);
 }
 .hero-row {
   display: flex;
@@ -376,14 +388,14 @@ const isLayoutRight = computed(
 }
 .hero--layout-right {
   border-left: 0;
-  border-right: var(--cl-bar-primary-width) solid var(--cl-primary);
+  border-right: var(--bar-primary-width) solid var(--cp-primary);
   padding-left: 0;
   padding-right: 24px;
   text-align: right;
 }
 .hero--layout-right.hero--double::before {
   left: auto;
-  right: calc(var(--cl-bar-primary-width) + 6px);
+  right: calc(var(--bar-primary-width) + 6px);
 }
 .hero-row--layout-right {
   align-items: flex-end;
@@ -392,13 +404,13 @@ const isLayoutRight = computed(
   margin-left: auto;
 }
 h1 {
-  color: var(--cl-text);
+  color: var(--cp-text);
   margin: 0;
   font-size: 44px;
   line-height: 1.05;
 }
 .role {
-  color: var(--cl-muted);
+  color: var(--cp-muted);
   margin: 0;
   font-size: 24px;
 }
@@ -406,7 +418,7 @@ p {
   font-size: 24px;
   line-height: 1.55;
   margin: 0 0 18px;
-  color: color-mix(in srgb, var(--cl-text) 78%, #475569);
+  color: color-mix(in srgb, var(--cp-text) 78%, #475569);
 }
 section {
   border-top: 2px var(--section-divider-style) var(--section-divider-color);
@@ -415,12 +427,12 @@ section {
 }
 .intro {
   font-weight: 700;
-  color: var(--cl-text);
+  color: var(--cp-text);
   margin-bottom: 10px;
 }
 .target-role {
   font-weight: 600;
-  color: var(--cl-primary);
+  color: var(--cp-primary);
   margin-bottom: 22px;
 }
 .signature-label {
@@ -429,7 +441,7 @@ section {
 .decor-object {
   position: absolute;
   pointer-events: none;
-  background: color-mix(in srgb, var(--cl-primary) 35%, transparent);
+  background: color-mix(in srgb, var(--cp-primary) 35%, transparent);
 }
 .decor-circle {
   border-radius: 999px;
@@ -437,7 +449,7 @@ section {
 .decor-ring {
   border-radius: 999px;
   background: transparent;
-  border: 3px solid color-mix(in srgb, var(--cl-secondary) 55%, transparent);
+  border: 3px solid color-mix(in srgb, var(--cp-secondary) 55%, transparent);
 }
 .decor-blob {
   border-radius: 40% 60% 55% 45% / 50% 35% 65% 50%;

@@ -1,4 +1,5 @@
 import { computed, toValue, type MaybeRefOrGetter } from 'vue'
+import { COVER_BORDER_STYLE_BY_ID } from '~/constants/coverBorderStyles'
 
 export const COVER_BORDER_SIMPLE_CLASS = 'cover-border--simple'
 
@@ -31,6 +32,16 @@ const COVER_BORDER_STYLE_CLASS_MAP = {
   'rose-corner-bloom': 'cover-border--rose-corner-bloom',
   'slate-asymmetric-frame': 'cover-border--slate-asymmetric-frame',
   'ivory-editorial-mat': 'cover-border--ivory-editorial-mat',
+  'monogram-watermark-frame': 'cover-border--monogram-watermark-frame',
+  'executive-foil-corners': 'cover-border--executive-foil-corners',
+  'glassmorphism-orbital': 'cover-border--glassmorphism-orbital',
+  'luxury-vertical-ribbon': 'cover-border--luxury-vertical-ribbon',
+  'midnight-neon-trace': 'cover-border--midnight-neon-trace',
+  'botanical-corner-vine': 'cover-border--botanical-corner-vine',
+  'atlas-coordinate-grid': 'cover-border--atlas-coordinate-grid',
+  'platinum-inset-frame': 'cover-border--platinum-inset-frame',
+  'gradient-silk-sash': 'cover-border--gradient-silk-sash',
+  'architect-blueprint-lines': 'cover-border--architect-blueprint-lines',
 } as const
 
 type CoverBorderStyleId = keyof typeof COVER_BORDER_STYLE_CLASS_MAP
@@ -99,8 +110,15 @@ export function resolveCoverBorderStyle(design: CoverTemplateDesign) {
   }
 }
 
-export function getCoverBorderCssVars(values: CoverBorderValues) {
+export function getCoverBorderCssVars(
+  values: CoverBorderValues,
+  styleId: CoverBorderStyleId = 'simple',
+) {
+  const presetVars =
+    styleId === 'simple' ? {} : COVER_BORDER_STYLE_BY_ID[styleId]?.cssVars || {}
+
   return {
+    ...presetVars,
     '--cp-page-border-width': values.enabled ? `${values.width}px` : '0px',
     '--cp-page-border-color': values.color,
     '--cp-page-border-radius': `${values.radius}px`,
@@ -148,7 +166,10 @@ export function useCoverBorderStyle(
   })
 
   const coverBorderCssVars = computed(() =>
-    getCoverBorderCssVars(coverBorderValues.value),
+    getCoverBorderCssVars(
+      coverBorderValues.value,
+      resolvedBorderStyle.value.styleId,
+    ),
   )
 
   const borderStyleClass = computed(
