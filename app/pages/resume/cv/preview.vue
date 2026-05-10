@@ -142,6 +142,8 @@ const {
   sectionTitleStyle,
   sectionContentStyle,
   sectionDateStyle,
+  sectionLevelStyle,
+  sectionHobbyStyle,
   sectionColumn,
   templateDesign: activeTemplateDesign,
 } = useGeneratedCvTemplateRuntime(activeTemplate, { sectionIconOverrides })
@@ -1040,6 +1042,14 @@ function effectiveSectionContentStyle(sectionKey: string) {
 
 function effectiveSectionDateStyle(sectionKey: string) {
   return sectionDateStyle(toSectionKey(sectionKey))
+}
+
+function effectiveSectionLevelStyle(sectionKey: string) {
+  return sectionLevelStyle(toSectionKey(sectionKey))
+}
+
+function effectiveSectionHobbyStyle(sectionKey: string) {
+  return sectionHobbyStyle(toSectionKey(sectionKey))
 }
 
 function isSectionColumnEditable(sectionKey: string) {
@@ -2876,6 +2886,12 @@ watch(
                     effectiveSectionContentStyle(toSectionKey(section))
                   "
                   :date-style="effectiveSectionDateStyle(toSectionKey(section))"
+                  :level-style="
+                    effectiveSectionLevelStyle(toSectionKey(section))
+                  "
+                  :hobby-style="
+                    effectiveSectionHobbyStyle(toSectionKey(section))
+                  "
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -2949,6 +2965,12 @@ watch(
                     effectiveSectionContentStyle(toSectionKey(section))
                   "
                   :date-style="effectiveSectionDateStyle(toSectionKey(section))"
+                  :level-style="
+                    effectiveSectionLevelStyle(toSectionKey(section))
+                  "
+                  :hobby-style="
+                    effectiveSectionHobbyStyle(toSectionKey(section))
+                  "
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3020,6 +3042,12 @@ watch(
                     effectiveSectionContentStyle(toSectionKey(section))
                   "
                   :date-style="effectiveSectionDateStyle(toSectionKey(section))"
+                  :level-style="
+                    effectiveSectionLevelStyle(toSectionKey(section))
+                  "
+                  :hobby-style="
+                    effectiveSectionHobbyStyle(toSectionKey(section))
+                  "
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3090,6 +3118,12 @@ watch(
                     effectiveSectionContentStyle(toSectionKey(section))
                   "
                   :date-style="effectiveSectionDateStyle(toSectionKey(section))"
+                  :level-style="
+                    effectiveSectionLevelStyle(toSectionKey(section))
+                  "
+                  :hobby-style="
+                    effectiveSectionHobbyStyle(toSectionKey(section))
+                  "
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3162,6 +3196,12 @@ watch(
                     effectiveSectionContentStyle(toSectionKey(section))
                   "
                   :date-style="effectiveSectionDateStyle(toSectionKey(section))"
+                  :level-style="
+                    effectiveSectionLevelStyle(toSectionKey(section))
+                  "
+                  :hobby-style="
+                    effectiveSectionHobbyStyle(toSectionKey(section))
+                  "
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3230,6 +3270,12 @@ watch(
                     effectiveSectionContentStyle(toSectionKey(section))
                   "
                   :date-style="effectiveSectionDateStyle(toSectionKey(section))"
+                  :level-style="
+                    effectiveSectionLevelStyle(toSectionKey(section))
+                  "
+                  :hobby-style="
+                    effectiveSectionHobbyStyle(toSectionKey(section))
+                  "
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3296,6 +3342,12 @@ watch(
                       "
                       :date-style="
                         effectiveSectionDateStyle(toSectionKey(section))
+                      "
+                      :level-style="
+                        effectiveSectionLevelStyle(toSectionKey(section))
+                      "
+                      :hobby-style="
+                        effectiveSectionHobbyStyle(toSectionKey(section))
                       "
                       @update:title="updateSectionDisplayTitle(section, $event)"
                       @update:icon="setSectionIcon(section, $event)"
@@ -3368,6 +3420,12 @@ watch(
                       :date-style="
                         effectiveSectionDateStyle(toSectionKey(section))
                       "
+                      :level-style="
+                        effectiveSectionLevelStyle(toSectionKey(section))
+                      "
+                      :hobby-style="
+                        effectiveSectionHobbyStyle(toSectionKey(section))
+                      "
                       @update:title="updateSectionDisplayTitle(section, $event)"
                       @update:icon="setSectionIcon(section, $event)"
                       @update:variant="
@@ -3437,6 +3495,12 @@ watch(
                     effectiveSectionContentStyle(toSectionKey(section))
                   "
                   :date-style="effectiveSectionDateStyle(toSectionKey(section))"
+                  :level-style="
+                    effectiveSectionLevelStyle(toSectionKey(section))
+                  "
+                  :hobby-style="
+                    effectiveSectionHobbyStyle(toSectionKey(section))
+                  "
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="

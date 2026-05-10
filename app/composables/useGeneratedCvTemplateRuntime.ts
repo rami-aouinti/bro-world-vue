@@ -22,6 +22,8 @@ export type CvSectionContentStyle =
   | 'timeline-vertical'
   | 'timeline-dots'
   | 'timeline-date-badges'
+  | 'timeline-badges'
+  | 'timeline-line'
   | 'progress-line'
   | 'progress-circle'
   | 'hobby-icons'
@@ -41,6 +43,7 @@ export type CvSectionLevelStyle =
   | 'circle-grid'
   | 'dots'
   | 'stars'
+  | 'line-gradient'
 
 export type CvHobbyStyle = 'text' | 'icons' | 'icons-separated' | 'cards'
 
@@ -174,6 +177,8 @@ function normalizeContentStyle(value: unknown): CvSectionContentStyle {
     'timeline-vertical',
     'timeline-dots',
     'timeline-date-badges',
+    'timeline-badges',
+    'timeline-line',
     'progress-line',
     'progress-circle',
     'hobby-icons',
@@ -206,6 +211,7 @@ function normalizeLevelStyle(value: unknown): CvSectionLevelStyle {
     'circle-grid',
     'dots',
     'stars',
+    'line-gradient',
   ])
   return typeof value === 'string' && allowed.has(value as CvSectionLevelStyle)
     ? (value as CvSectionLevelStyle)

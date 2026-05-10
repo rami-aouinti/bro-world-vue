@@ -28,6 +28,8 @@ const props = defineProps<{
   titleStyle?: SectionTitleStyle | string
   contentStyle?: string
   dateStyle?: string
+  levelStyle?: string
+  hobbyStyle?: string
 }>()
 
 // Keep the event overloads explicit so parent templates get precise payloads.
@@ -234,6 +236,8 @@ const iconAlternativeValues = computed(() =>
     :items="items"
     :content-style="contentStyle"
     :date-style="dateStyle"
+    :level-style="levelStyle"
+    :hobby-style="hobbyStyle"
     @update-item="(index, value) => emit('update-item', index, value)"
   />
 </template>
