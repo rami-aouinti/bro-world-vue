@@ -37,7 +37,7 @@ import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.
 import ResumePreviewToolbar from '~/components/ResumePreviewToolbar.vue'
 import ResumePreviewPageBreak from '~/components/ResumePreviewPageBreak.vue'
 import CvEditableSectionContent from '~/components/cv/sections/CvEditableSectionContent.vue'
-import CvSectionTitleToolbar from '~/components/cv/sections/CvSectionTitleToolbar.vue'
+import CvSectionTitle from '~/components/cv/sections/CvSectionTitle.vue'
 
 const { t } = useI18n()
 
@@ -2886,7 +2886,7 @@ watch(
                     @click.stop="moveSection('asideOne', section, 'down')"
                   />
                 </div>
-                <CvSectionTitleToolbar
+                <CvSectionTitle
                   :section-key="toSectionKey(section)"
                   :title="sectionDisplayTitle(section)"
                   :icon="sectionIcon(toSectionKey(section))"
@@ -3020,7 +3020,7 @@ watch(
                     @click.stop="moveSection('asideTwo', section, 'down')"
                   />
                 </div>
-                <CvSectionTitleToolbar
+                <CvSectionTitle
                   :section-key="toSectionKey(section)"
                   :title="sectionDisplayTitle(section)"
                   :icon="sectionIcon(toSectionKey(section))"
@@ -3152,7 +3152,7 @@ watch(
                     @click.stop="moveSection('contentBase', section, 'down')"
                   />
                 </div>
-                <CvSectionTitleToolbar
+                <CvSectionTitle
                   :section-key="toSectionKey(section)"
                   :title="sectionDisplayTitle(section)"
                   :icon="sectionIcon(toSectionKey(section))"
@@ -3283,7 +3283,7 @@ watch(
                     "
                   />
                 </div>
-                <CvSectionTitleToolbar
+                <CvSectionTitle
                   :section-key="toSectionKey(section)"
                   :title="sectionDisplayTitle(section)"
                   :icon="sectionIcon(toSectionKey(section))"
@@ -3408,7 +3408,7 @@ watch(
                     @click.stop="moveSection('mainOne', section, 'down')"
                   />
                 </div>
-                <CvSectionTitleToolbar
+                <CvSectionTitle
                   :section-key="toSectionKey(section)"
                   :title="sectionDisplayTitle(section)"
                   :icon="sectionIcon(toSectionKey(section))"
@@ -3537,7 +3537,7 @@ watch(
                     @click.stop="moveSection('mainTwoTop', section, 'down')"
                   />
                 </div>
-                <CvSectionTitleToolbar
+                <CvSectionTitle
                   :section-key="toSectionKey(section)"
                   :title="sectionDisplayTitle(section)"
                   :icon="sectionIcon(toSectionKey(section))"
@@ -3665,7 +3665,7 @@ watch(
                         "
                       />
                     </div>
-                    <CvSectionTitleToolbar
+                    <CvSectionTitle
                       :section-key="toSectionKey(section)"
                       :title="sectionDisplayTitle(section)"
                       :icon="sectionIcon(toSectionKey(section))"
@@ -3795,7 +3795,7 @@ watch(
                         "
                       />
                     </div>
-                    <CvSectionTitleToolbar
+                    <CvSectionTitle
                       :section-key="toSectionKey(section)"
                       :title="sectionDisplayTitle(section)"
                       :icon="sectionIcon(toSectionKey(section))"
@@ -3919,7 +3919,7 @@ watch(
                     @click.stop="moveSection('mainOne', section, 'down')"
                   />
                 </div>
-                <CvSectionTitleToolbar
+                <CvSectionTitle
                   :section-key="toSectionKey(section)"
                   :title="sectionDisplayTitle(section)"
                   :icon="sectionIcon(toSectionKey(section))"
@@ -4336,20 +4336,17 @@ watch(
 </template>
 
 <style scoped>
-.cv-header-editor,
-.cv-section-title-editor {
+.cv-header-editor {
   position: relative;
   min-width: 0;
   color: inherit;
 }
 
-.cv-header-editor :deep(.hover-editor__content p),
-.cv-section-title-editor :deep(.hover-editor__content p) {
+.cv-header-editor :deep(.hover-editor__content p) {
   margin: 0;
 }
 
-.cv-header-editor :deep(.hover-editor__toolbar),
-.cv-section-title-editor :deep(.hover-editor__toolbar) {
+.cv-header-editor :deep(.hover-editor__toolbar) {
   position: absolute;
   top: auto;
   bottom: calc(100% - 1px);
@@ -4372,8 +4369,7 @@ watch(
   z-index: 2400 !important;
 }
 
-.cv-header-editor :deep(.toolbar-size),
-.cv-section-title-editor :deep(.toolbar-size) {
+.cv-header-editor :deep(.toolbar-size) {
   background: rgb(var(--v-theme-surface));
   color: rgb(var(--v-theme-on-surface));
   border-color: color-mix(
@@ -4383,8 +4379,7 @@ watch(
   );
 }
 
-.cv-header-editor :deep(.v-btn),
-.cv-section-title-editor :deep(.v-btn) {
+.cv-header-editor :deep(.v-btn) {
   color: rgb(var(--v-theme-on-surface));
 }
 
@@ -4412,18 +4407,6 @@ watch(
   max-width: 100%;
   overflow-wrap: anywhere;
   word-break: break-word;
-}
-
-.cv-section-title {
-  display: flex !important;
-  align-items: center;
-  gap: 4px;
-  min-width: 0;
-}
-
-.cv-section-title-editor {
-  display: inline-block;
-  max-width: 100%;
 }
 
 .cv-preview-shell {
