@@ -4781,7 +4781,7 @@
     "name": "Balanced Profile",
     "version": 1,
     "layout": "aside-full-left",
-    "structure": "structure-2",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -5837,7 +5837,7 @@
     "name": "Manager Portfolio",
     "version": 1,
     "layout": "aside-full-right",
-    "structure": "structure-2",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -6893,7 +6893,7 @@
     "name": "Polished Format",
     "version": 1,
     "layout": "aside-bar-right",
-    "structure": "structure-2",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -7951,7 +7951,7 @@
     "name": "Noir Portfolio",
     "version": 1,
     "layout": "aside-left",
-    "structure": "structure-2",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -8479,7 +8479,7 @@
     "name": "Charcoal Profile",
     "version": 1,
     "layout": "aside-right",
-    "structure": "structure-3",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -9009,7 +9009,7 @@
     "name": "Slate Resume",
     "version": 1,
     "layout": "aside-full-left",
-    "structure": "structure-4",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -9538,7 +9538,7 @@
     "name": "Obsidian Brief",
     "version": 1,
     "layout": "aside-full-right",
-    "structure": "structure-5",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -10067,7 +10067,7 @@
     "name": "Graphite Summary",
     "version": 1,
     "layout": "aside-bar-left",
-    "structure": "structure-6",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -10596,7 +10596,7 @@
     "name": "Onyx Career",
     "version": 1,
     "layout": "aside-bar-right",
-    "structure": "structure-7",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -11125,7 +11125,7 @@
     "name": "Carbon Format",
     "version": 1,
     "layout": "no-aside",
-    "structure": "structure-8",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -11660,7 +11660,7 @@
     "name": "Eclipse Profile",
     "version": 1,
     "layout": "no-aside-split",
-    "structure": "structure-9",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -12195,7 +12195,7 @@
     "name": "Shadow Portfolio",
     "version": 1,
     "layout": "no-aside",
-    "structure": "structure-10",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -13793,7 +13793,7 @@
     "name": "Modern Portfolio · Studio 02",
     "version": "1.1.0",
     "layout": "aside",
-    "structure": "structure-2",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -14329,7 +14329,7 @@
     "name": "Corporate Brief · Studio 03",
     "version": "1.1.0",
     "layout": "no-aside",
-    "structure": "structure-2",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -15961,7 +15961,7 @@
     "name": "Professional Slate · Studio 06",
     "version": "1.1.0",
     "layout": "aside-left",
-    "structure": "structure-2",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -17041,7 +17041,7 @@
     "name": "Talent Summary · Studio 08",
     "version": "1.1.0",
     "layout": "aside-right",
-    "structure": "structure-2",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -18121,7 +18121,7 @@
     "name": "Balanced Profile · Studio 10",
     "version": "1.1.0",
     "layout": "aside-full-left",
-    "structure": "structure-2",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -19197,7 +19197,7 @@
     "name": "Manager Portfolio · Studio 12",
     "version": "1.1.0",
     "layout": "aside-full-right",
-    "structure": "structure-2",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -20273,7 +20273,7 @@
     "name": "Polished Format · Studio 14",
     "version": "1.1.0",
     "layout": "aside-bar-right",
-    "structure": "structure-2",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -21350,7 +21350,7 @@
     "name": "Noir Portfolio · Studio 16",
     "version": "1.1.0",
     "layout": "aside-left",
-    "structure": "structure-2",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -21887,7 +21887,7 @@
     "name": "Charcoal Profile · Studio 17",
     "version": "1.1.0",
     "layout": "aside-right",
-    "structure": "structure-3",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -22426,7 +22426,7 @@
     "name": "Slate Resume · Studio 18",
     "version": "1.1.0",
     "layout": "aside-full-left",
-    "structure": "structure-4",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -22965,7 +22965,7 @@
     "name": "Obsidian Brief · Studio 19",
     "version": "1.1.0",
     "layout": "aside-full-right",
-    "structure": "structure-5",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -23504,7 +23504,7 @@
     "name": "Graphite Summary · Studio 20",
     "version": "1.1.0",
     "layout": "aside-bar-left",
-    "structure": "structure-6",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -24043,7 +24043,7 @@
     "name": "Azure Top Rail · Studio 21",
     "version": "1.1.0",
     "layout": "aside-top-full-left",
-    "structure": "structure-7",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -24476,7 +24476,7 @@
     "name": "Emerald Top Rail · Studio 22",
     "version": "1.1.0",
     "layout": "aside-top-full-right",
-    "structure": "structure-8",
+    "structure": "structure-1",
     "sections": {
       "profile": {
         "zone": "content",
@@ -24909,7 +24909,7 @@
     "name": "Indigo Identity · Studio 23",
     "version": "1.1.0",
     "layout": "identity-aside-left",
-    "structure": "structure-9",
+    "structure": "structure-1",
     "sections": {
       "contact": {
         "zone": "header",
@@ -25340,7 +25340,7 @@
     "name": "Copper Identity · Studio 24",
     "version": "1.1.0",
     "layout": "identity-aside-right",
-    "structure": "structure-10",
+    "structure": "structure-1",
     "sections": {
       "contact": {
         "zone": "header",
