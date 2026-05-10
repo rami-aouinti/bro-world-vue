@@ -7271,9 +7271,9 @@
         "text": "#111827"
       },
       "borderStyle": {
-        "id": "dual-corner-sweep",
-        "className": "cover-border--dual-corner-sweep",
-        "accentPlacement": "opposite-corners"
+        "id": "minimal-corner-tabs",
+        "className": "cover-border--minimal-corner-tabs",
+        "accentPlacement": "corner-tabs"
       },
       "decor": {
         "headerStyle": "split-band",
