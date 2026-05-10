@@ -18,6 +18,10 @@ import {
   resolveResumeTextFont,
   useResumeGoogleFonts,
 } from '~/composables/useResumeGoogleFonts'
+import {
+  getCoverBorderValues,
+  useCoverBorderStyle,
+} from '~/composables/useCoverBorderStyle'
 
 definePageMeta({
   title: 'resumePreview.coverLetter.metaTitle',
@@ -163,17 +167,15 @@ const activeTemplateDesign = computed(() =>
   getGeneratedTemplateDesign(activeTemplate.value),
 )
 
-const borderStyleClass = computed(() => {
-  const style = String(
-    activeTemplateDesign.value?.borderStyle?.id ||
-      activeTemplateDesign.value?.theme?.pageBorder?.style ||
-      '',
-  ).trim()
-
-  if (!style) return ''
-
-  return style.startsWith('cover-border--') ? style : `cover-border--${style}`
-})
+const { borderStyleClass, coverBorderCssVars } = useCoverBorderStyle(
+  activeTemplateDesign,
+  {
+    enabled: pageBorderEnabled,
+    width: pageBorderWidth,
+    color: pageBorderColor,
+    radius: pageBorderRadius,
+  },
+)
 function textFontFamily(
   key: string,
   fallback: 'sans' | 'serif' | 'mono' | 'display' = 'sans',
@@ -492,12 +494,11 @@ watch(
   activeTemplate,
   (template) => {
     const design = getGeneratedTemplateDesign(template)
-    pageBorderEnabled.value = Boolean(design?.theme?.pageBorder?.enabled)
-    pageBorderWidth.value = Number(design?.theme?.pageBorder?.width ?? 0)
-    pageBorderRadius.value = Number(design?.theme?.pageBorder?.radius ?? 0)
-    pageBorderColor.value = String(
-      design?.theme?.pageBorder?.color || '#0f172a',
-    )
+    const borderValues = getCoverBorderValues(design)
+    pageBorderEnabled.value = borderValues.enabled
+    pageBorderWidth.value = borderValues.width
+    pageBorderRadius.value = borderValues.radius
+    pageBorderColor.value = borderValues.color
   },
   { immediate: true },
 )
@@ -1139,11 +1140,7 @@ watch(aiModalOpen, (isOpen) => {
             '--cp-text': activeColors.text,
             '--cp-muted': activeColors.muted,
             '--cp-bg': activeColors.pageBackground,
-            '--cp-page-border-width': pageBorderEnabled
-              ? `${pageBorderWidth}px`
-              : '0px',
-            '--cp-page-border-color': pageBorderColor,
-            '--cp-page-border-radius': `${pageBorderRadius}px`,
+            ...coverBorderCssVars,
             '--section-divider-style': sectionDividerStyle,
             '--section-divider-color': sectionDividerColor,
             '--section-spacing': sectionSpacing,

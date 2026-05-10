@@ -17,6 +17,13 @@
   }
 }
 
+.capture-cover-page.cover-border--simple,
+.capture-cover-letter.cover-border--simple {
+  border: var(--cp-page-border-width, 0px) solid
+    var(--cp-page-border-color, #0f172a);
+  border-radius: var(--cp-page-border-radius, 0px);
+}
+
 .capture-cover-page.cover-border--swoosh-right::before,
 .capture-cover-letter.cover-border--swoosh-right::before {
   inset: -120px -190px auto auto;
