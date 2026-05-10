@@ -298,7 +298,6 @@ const isLayoutRight = computed(
 html,
 body,
 #__nuxt {
-  width: 794px;
   min-height: 1123px;
   margin: 0;
   background: #fff;
