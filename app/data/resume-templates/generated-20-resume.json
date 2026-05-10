@@ -22424,12 +22424,49 @@
       "form": "stars",
       "enabled": true
     },
+    "certifications": {
+      "zone": "aside-left",
+      "order": 40,
+      "icon": "mdi-certificate-outline",
+      "form": "list",
+      "enabled": true
+    },
+    "references": {
+      "zone": "aside-left",
+      "order": 50,
+      "icon": "mdi-account-group-outline",
+      "form": "list",
+      "enabled": true
+    },
+    "interests": {
+      "zone": "aside-left",
+      "order": 60,
+      "icon": "mdi-heart-outline",
+      "form": "list",
+      "enabled": true
+    },
     "experience": {
       "zone": "content",
       "order": 20,
       "column": "full",
       "icon": "mdi-briefcase-outline",
       "form": "timeline",
+      "enabled": true
+    },
+    "education": {
+      "zone": "content",
+      "order": 30,
+      "column": "full",
+      "icon": "mdi-school-outline",
+      "form": "timeline",
+      "enabled": true
+    },
+    "projects": {
+      "zone": "content",
+      "order": 40,
+      "column": "full",
+      "icon": "mdi-folder-star-outline",
+      "form": "cards",
       "enabled": true
     }
   },
@@ -22776,12 +22813,49 @@
       "form": "stars",
       "enabled": true
     },
+    "certifications": {
+      "zone": "aside-right",
+      "order": 40,
+      "icon": "mdi-certificate-outline",
+      "form": "list",
+      "enabled": true
+    },
+    "references": {
+      "zone": "aside-right",
+      "order": 50,
+      "icon": "mdi-account-group-outline",
+      "form": "list",
+      "enabled": true
+    },
+    "interests": {
+      "zone": "aside-right",
+      "order": 60,
+      "icon": "mdi-heart-outline",
+      "form": "list",
+      "enabled": true
+    },
     "experience": {
       "zone": "content",
       "order": 20,
       "column": "full",
       "icon": "mdi-briefcase-outline",
       "form": "timeline",
+      "enabled": true
+    },
+    "education": {
+      "zone": "content",
+      "order": 30,
+      "column": "full",
+      "icon": "mdi-school-outline",
+      "form": "timeline",
+      "enabled": true
+    },
+    "projects": {
+      "zone": "content",
+      "order": 40,
+      "column": "full",
+      "icon": "mdi-folder-star-outline",
+      "form": "cards",
       "enabled": true
     }
   },

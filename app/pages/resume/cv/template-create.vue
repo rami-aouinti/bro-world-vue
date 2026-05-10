@@ -398,6 +398,8 @@ const isSideContentLayout = computed(() =>
     'aside-full-right',
     'aside-bar-left',
     'aside-bar-right',
+    'identity-aside-left',
+    'identity-aside-right',
   ].includes(String(activeTemplate.value?.layout || '')),
 )
 
@@ -666,7 +668,7 @@ const CV_SECTION_LINE_OFFSET_PX = 18
 const CV_SECTION_MAX_LINE_OFFSET = 24
 
 function sectionOffsetKey(orderKey: SectionOrderKey, section: string) {
-  return `${orderKey}:${normalizeSectionKey(section)}`
+  return `${orderKey}:${toSectionKey(section)}`
 }
 
 function sectionOffsetStyle(orderKey: SectionOrderKey, section: string) {
@@ -717,7 +719,7 @@ const sectionModalSkillName = ref('')
 const sectionModalSkillStars = ref(5)
 
 function hideSection(section: string) {
-  hiddenSections[normalizeSectionKey(section)] = true
+  hiddenSections[toSectionKey(section)] = true
 }
 function addSectionItem(section: string) {
   sectionModalKey.value = section
@@ -874,7 +876,7 @@ function confirmAddSectionItem() {
   sectionModalOpen.value = false
 }
 function isSectionVisible(section: string) {
-  return !hiddenSections[normalizeSectionKey(section)]
+  return !hiddenSections[toSectionKey(section)]
 }
 
 const hiddenSectionsByZone = reactive<Record<string, Record<string, boolean>>>(
@@ -882,7 +884,7 @@ const hiddenSectionsByZone = reactive<Record<string, Record<string, boolean>>>(
 )
 
 function hideSectionInZone(orderKey: SectionOrderKey, section: string) {
-  const normalized = normalizeSectionKey(section)
+  const normalized = toSectionKey(section)
   hiddenSectionsByZone[orderKey] = hiddenSectionsByZone[orderKey] || {}
   hiddenSectionsByZone[orderKey][normalized] = true
 }
@@ -893,7 +895,7 @@ function hideSectionFromZone(orderKey: SectionOrderKey, section: string) {
 }
 
 function isSectionVisibleInZone(orderKey: SectionOrderKey, section: string) {
-  const normalized = normalizeSectionKey(section)
+  const normalized = toSectionKey(section)
   return !hiddenSectionsByZone[orderKey]?.[normalized]
 }
 
@@ -991,7 +993,7 @@ function contentColumnClass(sectionKey: string) {
 }
 
 function getSectionItems(rawSection: string): string[] {
-  const key = normalizeSectionKey(rawSection)
+  const key = toSectionKey(rawSection)
   const data: any = fakeData.value || {}
   const extra = sectionExtraItems[key] || []
   const toTitleDesc = (item: any, fallback: string) => {
@@ -1119,7 +1121,7 @@ const sectionTitleOverrides = reactive<Record<string, string>>({})
 const headerOverrides = reactive<Record<string, string>>({})
 
 function getEditableSectionItems(rawSection: string) {
-  const key = normalizeSectionKey(rawSection)
+  const key = toSectionKey(rawSection)
   if (!editableSectionItems[key])
     editableSectionItems[key] = getSectionItems(rawSection)
   return editableSectionItems[key]
@@ -4340,7 +4342,7 @@ watch(
   padding: 8px 10px;
   border-radius: 8px;
   background: transparent;
-  color: var(--cv-page-text, #1e293b);
+  color: inherit;
   border: 0;
   font-weight: 600;
   font-size: 13px;
@@ -4355,6 +4357,13 @@ watch(
   opacity: 1;
   pointer-events: auto;
 }
+.cv-aside-section-item :deep(.hover-editor__content),
+.cv-aside-section-item :deep(.hover-editor__content p),
+.cv-aside-section-item :deep(.cv-rich-item),
+.cv-aside-section-item :deep(.cv-rich-editor) {
+  color: inherit !important;
+}
+
 .cv-aside-section-item :deep(.cv-sec) {
   padding: 4px 0;
 }

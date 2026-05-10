@@ -397,6 +397,8 @@ const isSideContentLayout = computed(() =>
     'aside-full-right',
     'aside-bar-left',
     'aside-bar-right',
+    'identity-aside-left',
+    'identity-aside-right',
   ].includes(String(activeTemplate.value?.layout || '')),
 )
 
@@ -4222,7 +4224,7 @@ watch(
   padding: 8px 10px;
   border-radius: 8px;
   background: transparent;
-  color: var(--cv-page-text, #1e293b);
+  color: inherit;
   border: 0;
   font-weight: 600;
   font-size: 13px;
@@ -4237,6 +4239,13 @@ watch(
   opacity: 1;
   pointer-events: auto;
 }
+.cv-aside-section-item :deep(.hover-editor__content),
+.cv-aside-section-item :deep(.hover-editor__content p),
+.cv-aside-section-item :deep(.cv-rich-item),
+.cv-aside-section-item :deep(.cv-rich-editor) {
+  color: inherit !important;
+}
+
 .cv-aside-section-item :deep(.cv-sec) {
   padding: 4px 0;
 }
