@@ -15,7 +15,7 @@ const props = withDefaults(
     items: () => [],
     sectionKey: '',
     variant: 'classic',
-    contentStyle: 'classic',
+    contentStyle: '',
     dateStyle: 'plain',
     levelStyle: 'line',
     hobbyStyle: 'text',
@@ -118,13 +118,13 @@ function isLeveledSection() {
 function isTimelineComplexItem(raw: string) {
   return (
     isComplexItem(raw) &&
-    (props.variant === 'timeline' ||
+    (props.variant.includes('timeline') ||
       [
         'timeline-vertical',
         'timeline-date-badges',
         'timeline-badges',
         'timeline-line',
-      ].includes(props.contentStyle))
+      ].includes(props.contentStyle || ''))
   )
 }
 
@@ -185,12 +185,13 @@ function isHobbyIconsSection() {
         class="cv-rich-item"
         :class="[
           `cv-rich-item--${variant}`,
-          `cv-rich-item--content-${contentStyle}`,
-          `cv-rich-item--date-${dateStyle}`,
+          `cv-rich-item--content-${contentStyle || variant}`,
+          `cv-rich-item--date-${dateStyle || 'plain'}`,
           `cv-rich-item--level-${levelStyle}`,
           {
             'cv-rich-item--complex': isComplexItem(item),
-            'cv-rich-item--timeline-complex': isTimelineComplexItem(item),
+            'cv-rich-item--timeline-complex':
+              isComplexItem(item) && variant.includes('timeline'),
             'cv-rich-item--leveled': isLeveledSection(),
           },
         ]"
@@ -568,6 +569,72 @@ function isHobbyIconsSection() {
   color: var(--cv-secondary, #93c5fd);
   font-size: 11px;
   line-height: 1.15;
+}
+
+.cv-rich-section--timeline-dots,
+.cv-rich-section--timeline-badges,
+.cv-rich-section--timeline-stacked-dates {
+  position: relative;
+  padding-left: 26px;
+}
+
+.cv-rich-section--timeline-dots::before,
+.cv-rich-section--timeline-badges::before,
+.cv-rich-section--timeline-stacked-dates::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 8px;
+  bottom: 8px;
+  border-left: 1px dashed
+    color-mix(in srgb, var(--cv-secondary, #93c5fd) 58%, transparent);
+}
+
+.cv-rich-item--content-timeline-dots,
+.cv-rich-item--content-timeline-badges,
+.cv-rich-item--content-timeline-stacked-dates {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(70px, 96px) minmax(0, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.cv-rich-item--content-timeline-dots::before,
+.cv-rich-item--content-timeline-badges::before,
+.cv-rich-item--content-timeline-stacked-dates::before {
+  content: '';
+  position: absolute;
+  left: -22px;
+  top: 6px;
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  border: 2px solid var(--cv-secondary, #93c5fd);
+  background: var(--cv-page-background, #fff);
+}
+
+.cv-rich-item--content-timeline-badges .cv-rich-editor--period {
+  width: fit-content;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    var(--cv-primary, #0f172a),
+    var(--cv-secondary, #93c5fd)
+  );
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.cv-rich-item--content-timeline-stacked-dates .cv-rich-editor--period {
+  max-width: 42px;
+  white-space: normal;
+  line-height: 1.05;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 800;
 }
 
 .cv-rich-item--date-stacked .cv-rich-editor--period {
