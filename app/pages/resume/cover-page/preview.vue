@@ -14,6 +14,7 @@ import { listMyResumes } from '~/services/resumeApi'
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 import ResumePreviewToolbar from '~/components/ResumePreviewToolbar.vue'
 import ResumePreviewPageBreak from '~/components/ResumePreviewPageBreak.vue'
+import CoverBorderStylePicker from '~/components/Resume/CoverBorderStylePicker.vue'
 import {
   resolveResumeTextFont,
   useResumeGoogleFonts,
@@ -123,6 +124,7 @@ const pageBorderEnabled = ref(true)
 const pageBorderWidth = ref(0)
 const pageBorderRadius = ref(0)
 const pageBorderColor = ref('#0f172a')
+const selectedBorderStyle = ref('simple')
 const textFontSize = ref(24)
 const textColor = ref('#475569')
 const barRadius = ref(0)
@@ -174,6 +176,7 @@ const { borderStyleClass, coverBorderCssVars } = useCoverBorderStyle(
     width: pageBorderWidth,
     color: pageBorderColor,
     radius: pageBorderRadius,
+    style: selectedBorderStyle,
   },
 )
 function textFontFamily(
@@ -483,12 +486,21 @@ watch(
     pageBorderWidth.value = borderValues.width
     pageBorderRadius.value = borderValues.radius
     pageBorderColor.value = borderValues.color
+    selectedBorderStyle.value = String(
+      design?.borderStyle?.id || design?.theme?.pageBorder?.style || 'simple',
+    ).replace(/^cover-border--/, '')
   },
   { immediate: true },
 )
 
 watch(
-  [pageBorderEnabled, pageBorderWidth, pageBorderRadius, pageBorderColor],
+  [
+    pageBorderEnabled,
+    pageBorderWidth,
+    pageBorderRadius,
+    pageBorderColor,
+    selectedBorderStyle,
+  ],
   () => {
     if (!activeTemplateDesign.value.theme)
       activeTemplateDesign.value.theme = {} as any
@@ -504,6 +516,11 @@ watch(
     activeTemplateDesign.value.theme.pageBorder.width = pageBorderWidth.value
     activeTemplateDesign.value.theme.pageBorder.radius = pageBorderRadius.value
     activeTemplateDesign.value.theme.pageBorder.color = pageBorderColor.value
+    activeTemplateDesign.value.theme.pageBorder.style =
+      selectedBorderStyle.value
+    if (!activeTemplateDesign.value.borderStyle)
+      activeTemplateDesign.value.borderStyle = {} as any
+    activeTemplateDesign.value.borderStyle.id = selectedBorderStyle.value
   },
 )
 function addDecorObject() {
@@ -1054,7 +1071,8 @@ watch(aiModalOpen, (isOpen) => {
         </template>
         <template #border>
           <v-card-text>
-            <v-row dense>
+            <CoverBorderStylePicker v-model="selectedBorderStyle" />
+            <v-row dense class="mt-2">
               <v-col cols="6"
                 ><v-switch
                   v-model="pageBorderEnabled"

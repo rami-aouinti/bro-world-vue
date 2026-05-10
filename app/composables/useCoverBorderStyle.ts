@@ -44,6 +44,7 @@ interface CoverBorderControls {
   width?: CoverBorderControlValue
   color?: CoverBorderControlValue
   radius?: CoverBorderControlValue
+  style?: CoverBorderControlValue
 }
 
 interface CoverBorderValues {
@@ -110,9 +111,18 @@ export function useCoverBorderStyle(
   design: MaybeRefOrGetter<CoverTemplateDesign>,
   controls: CoverBorderControls = {},
 ) {
-  const resolvedBorderStyle = computed(() =>
-    resolveCoverBorderStyle(toValue(design)),
-  )
+  const resolvedBorderStyle = computed(() => {
+    if (controls.style !== undefined) {
+      const styleId = normalizeCoverBorderStyleId(toValue(controls.style))
+
+      return {
+        styleId,
+        className: COVER_BORDER_STYLE_CLASS_MAP[styleId],
+      }
+    }
+
+    return resolveCoverBorderStyle(toValue(design))
+  })
 
   const coverBorderValues = computed<CoverBorderValues>(() => {
     const defaults = getCoverBorderValues(toValue(design))
