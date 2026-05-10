@@ -418,6 +418,11 @@ const sectionOrders = reactive<Record<SectionOrderKey, string[]>>({
   mainTwoRight: [],
 })
 const orderMap = sectionOrders
+const activeSectionToolbarKey = ref<string | null>(null)
+
+function sectionToolbarKey(orderKey: SectionOrderKey, section: string) {
+  return `${orderKey}:${toSectionKey(section)}`
+}
 
 const templateSectionFallbacks = computed<Record<SectionOrderKey, string[]>>(
   () => ({
@@ -2844,9 +2849,30 @@ watch(
               <div
                 v-for="section in visibleAsideOneSections"
                 :key="`aside-s1-${section}`"
-                class="cv-aside-section-item"
+                :class="[
+                  'cv-aside-section-item',
+                  {
+                    'cv-aside-section-item--toolbar-visible':
+                      activeSectionToolbarKey ===
+                      sectionToolbarKey('asideOne', section),
+                  },
+                ]"
                 :style="sectionOffsetStyle('asideOne', section)"
                 draggable="true"
+                @mouseenter="
+                  activeSectionToolbarKey = sectionToolbarKey(
+                    'asideOne',
+                    section,
+                  )
+                "
+                @mouseleave="activeSectionToolbarKey = null"
+                @focusin="
+                  activeSectionToolbarKey = sectionToolbarKey(
+                    'asideOne',
+                    section,
+                  )
+                "
+                @focusout="activeSectionToolbarKey = null"
                 @dragstart="onSectionDragStart('asideOne', section)"
                 @dragover.prevent
                 @drop="onSectionDrop('asideOne', section)"
@@ -2873,16 +2899,10 @@ watch(
                   :title-style="
                     effectiveSectionTitleStyle(toSectionKey(section))
                   "
-                  :content-style="
-                    sectionContentStyle(toSectionKey(section))
-                  "
+                  :content-style="sectionContentStyle(toSectionKey(section))"
                   :date-style="sectionDateStyle(toSectionKey(section))"
-                  :level-style="
-                    sectionLevelStyle(toSectionKey(section))
-                  "
-                  :hobby-style="
-                    sectionHobbyStyle(toSectionKey(section))
-                  "
+                  :level-style="sectionLevelStyle(toSectionKey(section))"
+                  :hobby-style="sectionHobbyStyle(toSectionKey(section))"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -2923,9 +2943,30 @@ watch(
               <div
                 v-for="section in visibleAsideTwoSections"
                 :key="`aside-s2-${section}`"
-                class="cv-aside-section-item"
+                :class="[
+                  'cv-aside-section-item',
+                  {
+                    'cv-aside-section-item--toolbar-visible':
+                      activeSectionToolbarKey ===
+                      sectionToolbarKey('asideTwo', section),
+                  },
+                ]"
                 :style="sectionOffsetStyle('asideTwo', section)"
                 draggable="true"
+                @mouseenter="
+                  activeSectionToolbarKey = sectionToolbarKey(
+                    'asideTwo',
+                    section,
+                  )
+                "
+                @mouseleave="activeSectionToolbarKey = null"
+                @focusin="
+                  activeSectionToolbarKey = sectionToolbarKey(
+                    'asideTwo',
+                    section,
+                  )
+                "
+                @focusout="activeSectionToolbarKey = null"
                 @dragstart="onSectionDragStart('asideTwo', section)"
                 @dragover.prevent
                 @drop="onSectionDrop('asideTwo', section)"
@@ -2952,16 +2993,10 @@ watch(
                   :title-style="
                     effectiveSectionTitleStyle(toSectionKey(section))
                   "
-                  :content-style="
-                    sectionContentStyle(toSectionKey(section))
-                  "
+                  :content-style="sectionContentStyle(toSectionKey(section))"
                   :date-style="sectionDateStyle(toSectionKey(section))"
-                  :level-style="
-                    sectionLevelStyle(toSectionKey(section))
-                  "
-                  :hobby-style="
-                    sectionHobbyStyle(toSectionKey(section))
-                  "
+                  :level-style="sectionLevelStyle(toSectionKey(section))"
+                  :hobby-style="sectionHobbyStyle(toSectionKey(section))"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3000,9 +3035,28 @@ watch(
                 :class="[
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
+                  {
+                    'cv-section-row--toolbar-visible':
+                      activeSectionToolbarKey ===
+                      sectionToolbarKey('contentBase', section),
+                  },
                 ]"
                 :style="sectionOffsetStyle('contentBase', section)"
                 draggable="true"
+                @mouseenter="
+                  activeSectionToolbarKey = sectionToolbarKey(
+                    'contentBase',
+                    section,
+                  )
+                "
+                @mouseleave="activeSectionToolbarKey = null"
+                @focusin="
+                  activeSectionToolbarKey = sectionToolbarKey(
+                    'contentBase',
+                    section,
+                  )
+                "
+                @focusout="activeSectionToolbarKey = null"
                 @dragstart="onSectionDragStart('contentBase', section)"
                 @dragover.prevent
                 @drop="onSectionDrop('contentBase', section)"
@@ -3029,16 +3083,10 @@ watch(
                   :title-style="
                     effectiveSectionTitleStyle(toSectionKey(section))
                   "
-                  :content-style="
-                    sectionContentStyle(toSectionKey(section))
-                  "
+                  :content-style="sectionContentStyle(toSectionKey(section))"
                   :date-style="sectionDateStyle(toSectionKey(section))"
-                  :level-style="
-                    sectionLevelStyle(toSectionKey(section))
-                  "
-                  :hobby-style="
-                    sectionHobbyStyle(toSectionKey(section))
-                  "
+                  :level-style="sectionLevelStyle(toSectionKey(section))"
+                  :hobby-style="sectionHobbyStyle(toSectionKey(section))"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3076,9 +3124,28 @@ watch(
                 :class="[
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
+                  {
+                    'cv-section-row--toolbar-visible':
+                      activeSectionToolbarKey ===
+                      sectionToolbarKey('contentStructure2', section),
+                  },
                 ]"
                 :style="sectionOffsetStyle('contentStructure2', section)"
                 draggable="true"
+                @mouseenter="
+                  activeSectionToolbarKey = sectionToolbarKey(
+                    'contentStructure2',
+                    section,
+                  )
+                "
+                @mouseleave="activeSectionToolbarKey = null"
+                @focusin="
+                  activeSectionToolbarKey = sectionToolbarKey(
+                    'contentStructure2',
+                    section,
+                  )
+                "
+                @focusout="activeSectionToolbarKey = null"
                 @dragstart="onSectionDragStart('contentStructure2', section)"
                 @dragover.prevent
                 @drop="onSectionDrop('contentStructure2', section)"
@@ -3105,16 +3172,10 @@ watch(
                   :title-style="
                     effectiveSectionTitleStyle(toSectionKey(section))
                   "
-                  :content-style="
-                    sectionContentStyle(toSectionKey(section))
-                  "
+                  :content-style="sectionContentStyle(toSectionKey(section))"
                   :date-style="sectionDateStyle(toSectionKey(section))"
-                  :level-style="
-                    sectionLevelStyle(toSectionKey(section))
-                  "
-                  :hobby-style="
-                    sectionHobbyStyle(toSectionKey(section))
-                  "
+                  :level-style="sectionLevelStyle(toSectionKey(section))"
+                  :hobby-style="sectionHobbyStyle(toSectionKey(section))"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3154,9 +3215,28 @@ watch(
                 :class="[
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
+                  {
+                    'cv-section-row--toolbar-visible':
+                      activeSectionToolbarKey ===
+                      sectionToolbarKey('mainOne', section),
+                  },
                 ]"
                 :style="sectionOffsetStyle('mainOne', section)"
                 draggable="true"
+                @mouseenter="
+                  activeSectionToolbarKey = sectionToolbarKey(
+                    'mainOne',
+                    section,
+                  )
+                "
+                @mouseleave="activeSectionToolbarKey = null"
+                @focusin="
+                  activeSectionToolbarKey = sectionToolbarKey(
+                    'mainOne',
+                    section,
+                  )
+                "
+                @focusout="activeSectionToolbarKey = null"
                 @dragstart="onSectionDragStart('mainOne', section)"
                 @dragover.prevent
                 @drop="onSectionDrop('mainOne', section)"
@@ -3183,16 +3263,10 @@ watch(
                   :title-style="
                     effectiveSectionTitleStyle(toSectionKey(section))
                   "
-                  :content-style="
-                    sectionContentStyle(toSectionKey(section))
-                  "
+                  :content-style="sectionContentStyle(toSectionKey(section))"
                   :date-style="sectionDateStyle(toSectionKey(section))"
-                  :level-style="
-                    sectionLevelStyle(toSectionKey(section))
-                  "
-                  :hobby-style="
-                    sectionHobbyStyle(toSectionKey(section))
-                  "
+                  :level-style="sectionLevelStyle(toSectionKey(section))"
+                  :hobby-style="sectionHobbyStyle(toSectionKey(section))"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3228,9 +3302,28 @@ watch(
                 :class="[
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
+                  {
+                    'cv-section-row--toolbar-visible':
+                      activeSectionToolbarKey ===
+                      sectionToolbarKey('mainTwoTop', section),
+                  },
                 ]"
                 :style="sectionOffsetStyle('mainTwoTop', section)"
                 draggable="true"
+                @mouseenter="
+                  activeSectionToolbarKey = sectionToolbarKey(
+                    'mainTwoTop',
+                    section,
+                  )
+                "
+                @mouseleave="activeSectionToolbarKey = null"
+                @focusin="
+                  activeSectionToolbarKey = sectionToolbarKey(
+                    'mainTwoTop',
+                    section,
+                  )
+                "
+                @focusout="activeSectionToolbarKey = null"
                 @dragstart="onSectionDragStart('mainTwoTop', section)"
                 @dragover.prevent
                 @drop="onSectionDrop('mainTwoTop', section)"
@@ -3257,16 +3350,10 @@ watch(
                   :title-style="
                     effectiveSectionTitleStyle(toSectionKey(section))
                   "
-                  :content-style="
-                    sectionContentStyle(toSectionKey(section))
-                  "
+                  :content-style="sectionContentStyle(toSectionKey(section))"
                   :date-style="sectionDateStyle(toSectionKey(section))"
-                  :level-style="
-                    sectionLevelStyle(toSectionKey(section))
-                  "
-                  :hobby-style="
-                    sectionHobbyStyle(toSectionKey(section))
-                  "
+                  :level-style="sectionLevelStyle(toSectionKey(section))"
+                  :hobby-style="sectionHobbyStyle(toSectionKey(section))"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3297,9 +3384,28 @@ watch(
                     :class="[
                       'cv-section-row',
                       contentColumnClass(toSectionKey(section)),
+                      {
+                        'cv-section-row--toolbar-visible':
+                          activeSectionToolbarKey ===
+                          sectionToolbarKey('mainTwoLeft', section),
+                      },
                     ]"
                     :style="sectionOffsetStyle('mainTwoLeft', section)"
                     draggable="true"
+                    @mouseenter="
+                      activeSectionToolbarKey = sectionToolbarKey(
+                        'mainTwoLeft',
+                        section,
+                      )
+                    "
+                    @mouseleave="activeSectionToolbarKey = null"
+                    @focusin="
+                      activeSectionToolbarKey = sectionToolbarKey(
+                        'mainTwoLeft',
+                        section,
+                      )
+                    "
+                    @focusout="activeSectionToolbarKey = null"
                     @dragstart="onSectionDragStart('mainTwoLeft', section)"
                     @dragover.prevent
                     @drop="onSectionDrop('mainTwoLeft', section)"
@@ -3331,15 +3437,9 @@ watch(
                       :content-style="
                         sectionContentStyle(toSectionKey(section))
                       "
-                      :date-style="
-                        sectionDateStyle(toSectionKey(section))
-                      "
-                      :level-style="
-                        sectionLevelStyle(toSectionKey(section))
-                      "
-                      :hobby-style="
-                        sectionHobbyStyle(toSectionKey(section))
-                      "
+                      :date-style="sectionDateStyle(toSectionKey(section))"
+                      :level-style="sectionLevelStyle(toSectionKey(section))"
+                      :hobby-style="sectionHobbyStyle(toSectionKey(section))"
                       @update:title="updateSectionDisplayTitle(section, $event)"
                       @update:icon="setSectionIcon(section, $event)"
                       @update:variant="
@@ -3374,9 +3474,28 @@ watch(
                     :class="[
                       'cv-section-row',
                       contentColumnClass(toSectionKey(section)),
+                      {
+                        'cv-section-row--toolbar-visible':
+                          activeSectionToolbarKey ===
+                          sectionToolbarKey('mainTwoRight', section),
+                      },
                     ]"
                     :style="sectionOffsetStyle('mainTwoRight', section)"
                     draggable="true"
+                    @mouseenter="
+                      activeSectionToolbarKey = sectionToolbarKey(
+                        'mainTwoRight',
+                        section,
+                      )
+                    "
+                    @mouseleave="activeSectionToolbarKey = null"
+                    @focusin="
+                      activeSectionToolbarKey = sectionToolbarKey(
+                        'mainTwoRight',
+                        section,
+                      )
+                    "
+                    @focusout="activeSectionToolbarKey = null"
                     @dragstart="onSectionDragStart('mainTwoRight', section)"
                     @dragover.prevent
                     @drop="onSectionDrop('mainTwoRight', section)"
@@ -3408,15 +3527,9 @@ watch(
                       :content-style="
                         sectionContentStyle(toSectionKey(section))
                       "
-                      :date-style="
-                        sectionDateStyle(toSectionKey(section))
-                      "
-                      :level-style="
-                        sectionLevelStyle(toSectionKey(section))
-                      "
-                      :hobby-style="
-                        sectionHobbyStyle(toSectionKey(section))
-                      "
+                      :date-style="sectionDateStyle(toSectionKey(section))"
+                      :level-style="sectionLevelStyle(toSectionKey(section))"
+                      :hobby-style="sectionHobbyStyle(toSectionKey(section))"
                       @update:title="updateSectionDisplayTitle(section, $event)"
                       @update:icon="setSectionIcon(section, $event)"
                       @update:variant="
@@ -3453,9 +3566,28 @@ watch(
                 :class="[
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
+                  {
+                    'cv-section-row--toolbar-visible':
+                      activeSectionToolbarKey ===
+                      sectionToolbarKey('mainOne', section),
+                  },
                 ]"
                 :style="sectionOffsetStyle('mainOne', section)"
                 draggable="true"
+                @mouseenter="
+                  activeSectionToolbarKey = sectionToolbarKey(
+                    'mainOne',
+                    section,
+                  )
+                "
+                @mouseleave="activeSectionToolbarKey = null"
+                @focusin="
+                  activeSectionToolbarKey = sectionToolbarKey(
+                    'mainOne',
+                    section,
+                  )
+                "
+                @focusout="activeSectionToolbarKey = null"
                 @dragstart="onSectionDragStart('mainOne', section)"
                 @dragover.prevent
                 @drop="onSectionDrop('mainOne', section)"
@@ -3482,16 +3614,10 @@ watch(
                   :title-style="
                     effectiveSectionTitleStyle(toSectionKey(section))
                   "
-                  :content-style="
-                    sectionContentStyle(toSectionKey(section))
-                  "
+                  :content-style="sectionContentStyle(toSectionKey(section))"
                   :date-style="sectionDateStyle(toSectionKey(section))"
-                  :level-style="
-                    sectionLevelStyle(toSectionKey(section))
-                  "
-                  :hobby-style="
-                    sectionHobbyStyle(toSectionKey(section))
-                  "
+                  :level-style="sectionLevelStyle(toSectionKey(section))"
+                  :hobby-style="sectionHobbyStyle(toSectionKey(section))"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -4241,10 +4367,10 @@ watch(
     opacity 0.15s ease,
     transform 0.15s ease;
 }
+.cv-section-row--toolbar-visible > .cv-section-toolbar,
+.cv-aside-section-item--toolbar-visible > .cv-section-toolbar,
 .cv-section-row:hover > .cv-section-toolbar,
-.cv-section-row:focus-within > .cv-section-toolbar,
 .cv-aside-section-item:hover > .cv-section-toolbar,
-.cv-aside-section-item:focus-within > .cv-section-toolbar,
 .cv-section-toolbar:hover,
 .cv-section-toolbar:focus,
 .cv-section-toolbar:focus-within {
