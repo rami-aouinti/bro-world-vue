@@ -222,7 +222,7 @@ const iconAlternativeValues = computed(() =>
     :title="title"
     :icon="icon"
     :icon-alternatives="iconAlternativeValues"
-    :title-style="titleStyle"
+    :title-style="titleStyleModel"
     font-family="var(--cv-text-section-label, inherit)"
     @update:title="emit('update:title', $event)"
     @update:icon="emit('update:icon', $event)"
