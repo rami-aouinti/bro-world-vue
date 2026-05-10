@@ -38,7 +38,7 @@
   align-items: stretch;
   width: calc(var(--cv-aside-width, 160px) + 6px);
   max-width: 34%;
-  overflow: hidden;
+  overflow: visible;
   border-radius: var(--cv-aside-radius, 18px);
 }
 .cv-aside-panel {
@@ -55,6 +55,8 @@
   width: 6px;
   flex: 0 0 6px;
   background: var(--cv-primary, #1d4ed8);
+  border-radius: 0 var(--cv-aside-radius, 18px) var(--cv-aside-radius, 18px) 0;
+  overflow: hidden;
 }
 .cv-main {
   min-height: 100%;

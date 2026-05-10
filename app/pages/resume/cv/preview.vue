@@ -4346,7 +4346,7 @@ watch(
   position: absolute;
   top: 4px;
   right: 4px;
-  z-index: 60;
+  z-index: 120;
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
