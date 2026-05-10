@@ -2,19 +2,14 @@ import { mkdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-let chromium
-try {
-  ;({ chromium } = await import('playwright'))
-}
-catch {
-  throw new Error('Missing dependency "playwright". Run: pnpm add -D playwright && pnpm exec playwright install chromium')
-}
+import { chromium } from 'playwright'
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const root = path.resolve(__dirname, '..')
 const outDir = path.join(root, 'public/img/cv/generated')
 const templatesPath = path.join(root, 'app/data/resume-templates/generated-20-resume.json')
-const baseUrl =' https://bro-world-space.com'
+const baseUrl = process.env.RESUME_CAPTURE_BASE_URL || 'http://127.0.0.1:3000'
 const templatesRaw = await readFile(templatesPath, 'utf-8')
 const generatedCvTemplates = JSON.parse(templatesRaw)
 
@@ -61,7 +56,7 @@ for (const tpl of generatedCvTemplates) {
       x: Math.max(0, box.x),
       y: Math.max(0, box.y),
       width: Math.min(box.width, CAPTURE_MAX_WIDTH),
-      height: 1000,
+      height: Math.min(box.height, CAPTURE_MAX_HEIGHT),
     },
   })
 

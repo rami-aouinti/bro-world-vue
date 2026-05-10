@@ -666,7 +666,7 @@ const CV_SECTION_LINE_OFFSET_PX = 18
 const CV_SECTION_MAX_LINE_OFFSET = 24
 
 function sectionOffsetKey(orderKey: SectionOrderKey, section: string) {
-  return `${orderKey}:${normalizeSectionKey(section)}`
+  return `${orderKey}:${toSectionKey(section)}`
 }
 
 function sectionOffsetStyle(orderKey: SectionOrderKey, section: string) {
@@ -717,7 +717,7 @@ const sectionModalSkillName = ref('')
 const sectionModalSkillStars = ref(5)
 
 function hideSection(section: string) {
-  hiddenSections[normalizeSectionKey(section)] = true
+  hiddenSections[toSectionKey(section)] = true
 }
 function addSectionItem(section: string) {
   sectionModalKey.value = section
@@ -874,7 +874,7 @@ function confirmAddSectionItem() {
   sectionModalOpen.value = false
 }
 function isSectionVisible(section: string) {
-  return !hiddenSections[normalizeSectionKey(section)]
+  return !hiddenSections[toSectionKey(section)]
 }
 
 const hiddenSectionsByZone = reactive<Record<string, Record<string, boolean>>>(
@@ -882,7 +882,7 @@ const hiddenSectionsByZone = reactive<Record<string, Record<string, boolean>>>(
 )
 
 function hideSectionInZone(orderKey: SectionOrderKey, section: string) {
-  const normalized = normalizeSectionKey(section)
+  const normalized = toSectionKey(section)
   hiddenSectionsByZone[orderKey] = hiddenSectionsByZone[orderKey] || {}
   hiddenSectionsByZone[orderKey][normalized] = true
 }
@@ -893,7 +893,7 @@ function hideSectionFromZone(orderKey: SectionOrderKey, section: string) {
 }
 
 function isSectionVisibleInZone(orderKey: SectionOrderKey, section: string) {
-  const normalized = normalizeSectionKey(section)
+  const normalized = toSectionKey(section)
   return !hiddenSectionsByZone[orderKey]?.[normalized]
 }
 
@@ -991,7 +991,7 @@ function contentColumnClass(sectionKey: string) {
 }
 
 function getSectionItems(rawSection: string): string[] {
-  const key = normalizeSectionKey(rawSection)
+  const key = toSectionKey(rawSection)
   const data: any = fakeData.value || {}
   const extra = sectionExtraItems[key] || []
   const toTitleDesc = (item: any, fallback: string) => {
@@ -1119,7 +1119,7 @@ const sectionTitleOverrides = reactive<Record<string, string>>({})
 const headerOverrides = reactive<Record<string, string>>({})
 
 function getEditableSectionItems(rawSection: string) {
-  const key = normalizeSectionKey(rawSection)
+  const key = toSectionKey(rawSection)
   if (!editableSectionItems[key])
     editableSectionItems[key] = getSectionItems(rawSection)
   return editableSectionItems[key]
