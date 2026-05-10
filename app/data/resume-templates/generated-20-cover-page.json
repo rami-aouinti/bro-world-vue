@@ -2466,8 +2466,14 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "swoosh-right"
         }
+      },
+      "borderStyle": {
+        "id": "swoosh-right",
+        "className": "cover-border--swoosh-right",
+        "accentPlacement": "right-swoosh"
       },
       "decor": {
         "headerStyle": "band",
@@ -2688,8 +2694,14 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "diagonal-ribbon"
         }
+      },
+      "borderStyle": {
+        "id": "diagonal-ribbon",
+        "className": "cover-border--diagonal-ribbon",
+        "accentPlacement": "diagonal-hero"
       },
       "decor": {
         "headerStyle": "band",
@@ -2910,12 +2922,18 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "rounded-corners"
         },
         "primary": "#2563EB",
         "accent": "#38BDF8",
         "background": "#E2E8F0",
         "text": "#0F172A"
+      },
+      "borderStyle": {
+        "id": "rounded-corners",
+        "className": "cover-border--rounded-corners",
+        "accentPlacement": "all-corners"
       },
       "decor": {
         "headerStyle": "band",
@@ -3145,12 +3163,18 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "executive-green-frame"
         },
         "primary": "#7C3AED",
         "accent": "#C4B5FD",
         "background": "#EDE9FE",
         "text": "#111827"
+      },
+      "borderStyle": {
+        "id": "executive-green-frame",
+        "className": "cover-border--executive-green-frame",
+        "accentPlacement": "full-frame"
       },
       "decor": {
         "headerStyle": "split-band",
@@ -3405,12 +3429,18 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "cyan-side-curve"
         },
         "primary": "#16A34A",
         "accent": "#86EFAC",
         "background": "#DCFCE7",
         "text": "#052E16"
+      },
+      "borderStyle": {
+        "id": "cyan-side-curve",
+        "className": "cover-border--cyan-side-curve",
+        "accentPlacement": "left-curve"
       },
       "decor": {
         "headerStyle": "ribbon",
@@ -3661,12 +3691,18 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "purple-wave-frame"
         },
         "primary": "#DB2777",
         "accent": "#F9A8D4",
         "background": "#FCE7F3",
         "text": "#3F1D2E"
+      },
+      "borderStyle": {
+        "id": "purple-wave-frame",
+        "className": "cover-border--purple-wave-frame",
+        "accentPlacement": "wave-frame"
       },
       "decor": {
         "headerStyle": "plain",
@@ -3921,12 +3957,18 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "top-striped-band"
         },
         "primary": "#EA580C",
         "accent": "#FDBA74",
         "background": "#FFF7ED",
         "text": "#3B1D0A"
+      },
+      "borderStyle": {
+        "id": "top-striped-band",
+        "className": "cover-border--top-striped-band",
+        "accentPlacement": "top-band"
       },
       "decor": {
         "headerStyle": "band",
@@ -4177,12 +4219,18 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "bottom-contact-band"
         },
         "primary": "#0891B2",
         "accent": "#67E8F9",
         "background": "#ECFEFF",
         "text": "#082F49"
+      },
+      "borderStyle": {
+        "id": "bottom-contact-band",
+        "className": "cover-border--bottom-contact-band",
+        "accentPlacement": "bottom-band"
       },
       "decor": {
         "headerStyle": "split-band",
@@ -4437,12 +4485,18 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "dual-corner-sweep"
         },
         "primary": "#F59E0B",
         "accent": "#FDE68A",
         "background": "#FFFBEB",
         "text": "#1F2937"
+      },
+      "borderStyle": {
+        "id": "dual-corner-sweep",
+        "className": "cover-border--dual-corner-sweep",
+        "accentPlacement": "opposite-corners"
       },
       "decor": {
         "headerStyle": "ribbon",
@@ -4693,12 +4747,18 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "minimal-corner-tabs"
         },
         "primary": "#4F46E5",
         "accent": "#A5B4FC",
         "background": "#EEF2FF",
         "text": "#172554"
+      },
+      "borderStyle": {
+        "id": "minimal-corner-tabs",
+        "className": "cover-border--minimal-corner-tabs",
+        "accentPlacement": "corner-tabs"
       },
       "decor": {
         "headerStyle": "plain",
@@ -4953,12 +5013,18 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "gold-signature-line"
         },
         "primary": "#2563EB",
         "accent": "#38BDF8",
         "background": "#E2E8F0",
         "text": "#0F172A"
+      },
+      "borderStyle": {
+        "id": "gold-signature-line",
+        "className": "cover-border--gold-signature-line",
+        "accentPlacement": "signature-rule"
       },
       "decor": {
         "headerStyle": "band",
@@ -5209,12 +5275,18 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "navy-architect-grid"
         },
         "primary": "#7C3AED",
         "accent": "#C4B5FD",
         "background": "#EDE9FE",
         "text": "#111827"
+      },
+      "borderStyle": {
+        "id": "navy-architect-grid",
+        "className": "cover-border--navy-architect-grid",
+        "accentPlacement": "grid-frame"
       },
       "decor": {
         "headerStyle": "split-band",
@@ -5469,12 +5541,18 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "coral-profile-orbit"
         },
         "primary": "#16A34A",
         "accent": "#86EFAC",
         "background": "#DCFCE7",
         "text": "#052E16"
+      },
+      "borderStyle": {
+        "id": "coral-profile-orbit",
+        "className": "cover-border--coral-profile-orbit",
+        "accentPlacement": "profile-orbit"
       },
       "decor": {
         "headerStyle": "band",
@@ -5704,12 +5782,18 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "emerald-sidebar-notch"
         },
         "primary": "#DB2777",
         "accent": "#F9A8D4",
         "background": "#FCE7F3",
         "text": "#3F1D2E"
+      },
+      "borderStyle": {
+        "id": "emerald-sidebar-notch",
+        "className": "cover-border--emerald-sidebar-notch",
+        "accentPlacement": "sidebar-notch"
       },
       "decor": {
         "headerStyle": "band",
@@ -5939,12 +6023,18 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "graphite-double-rule"
         },
         "primary": "#EA580C",
         "accent": "#FDBA74",
         "background": "#FFF7ED",
         "text": "#3B1D0A"
+      },
+      "borderStyle": {
+        "id": "graphite-double-rule",
+        "className": "cover-border--graphite-double-rule",
+        "accentPlacement": "double-rule"
       },
       "decor": {
         "headerStyle": "band",
@@ -6174,12 +6264,18 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "amber-soft-arches"
         },
         "primary": "#0891B2",
         "accent": "#67E8F9",
         "background": "#ECFEFF",
         "text": "#082F49"
+      },
+      "borderStyle": {
+        "id": "amber-soft-arches",
+        "className": "cover-border--amber-soft-arches",
+        "accentPlacement": "soft-arches"
       },
       "decor": {
         "headerStyle": "split-band",
@@ -6434,12 +6530,18 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "royal-blue-cap"
         },
         "primary": "#F59E0B",
         "accent": "#FDE68A",
         "background": "#FFFBEB",
         "text": "#1F2937"
+      },
+      "borderStyle": {
+        "id": "royal-blue-cap",
+        "className": "cover-border--royal-blue-cap",
+        "accentPlacement": "header-cap"
       },
       "decor": {
         "headerStyle": "ribbon",
@@ -6690,12 +6792,18 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "rose-corner-bloom"
         },
         "primary": "#4F46E5",
         "accent": "#A5B4FC",
         "background": "#EEF2FF",
         "text": "#172554"
+      },
+      "borderStyle": {
+        "id": "rose-corner-bloom",
+        "className": "cover-border--rose-corner-bloom",
+        "accentPlacement": "corner-bloom"
       },
       "decor": {
         "headerStyle": "plain",
@@ -6950,12 +7058,18 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "slate-asymmetric-frame"
         },
         "primary": "#2563EB",
         "accent": "#38BDF8",
         "background": "#E2E8F0",
         "text": "#0F172A"
+      },
+      "borderStyle": {
+        "id": "slate-asymmetric-frame",
+        "className": "cover-border--slate-asymmetric-frame",
+        "accentPlacement": "asymmetric-frame"
       },
       "decor": {
         "headerStyle": "band",
@@ -7206,12 +7320,18 @@
           "enabled": false,
           "width": 2,
           "color": "#CBD5E1",
-          "radius": 16
+          "radius": 16,
+          "style": "ivory-editorial-mat"
         },
         "primary": "#7C3AED",
         "accent": "#C4B5FD",
         "background": "#EDE9FE",
         "text": "#111827"
+      },
+      "borderStyle": {
+        "id": "ivory-editorial-mat",
+        "className": "cover-border--ivory-editorial-mat",
+        "accentPlacement": "editorial-mat"
       },
       "decor": {
         "headerStyle": "split-band",
