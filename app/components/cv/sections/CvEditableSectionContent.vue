@@ -150,7 +150,10 @@ function isHobbyIconsSection() {
 <template>
   <div
     class="cv-rich-section"
-    :class="[`cv-rich-section--${variant}`, `cv-rich-section--${sectionKey}`]"
+    :class="[
+      `cv-rich-section--${variant}`,
+      `cv-rich-section--${sectionKey}`,
+    ]"
   >
     <div v-if="isHobbyIconsSection()" class="cv-hobby-icons">
       <div
@@ -594,11 +597,41 @@ function isHobbyIconsSection() {
   min-width: 0;
 }
 
+.cv-rich-section--cards {
+  display: grid;
+  gap: 10px;
+}
+
 .cv-rich-item--cards {
-  margin-bottom: 10px;
-  border: 1px solid color-mix(in srgb, var(--cv-secondary, #93c5fd) 40%, white);
-  border-radius: 8px;
-  padding: 6px 8px;
+  padding: 12px 14px;
+  border: 1px solid
+    color-mix(in srgb, var(--cv-secondary, #94a3b8) 22%, transparent);
+  border-radius: 14px;
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--cv-secondary, #94a3b8) 8%, transparent),
+      transparent 45%
+    ),
+    color-mix(in srgb, var(--cv-page-background, #fff) 94%, #fff);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+}
+
+.cv-rich-item--cards .cv-rich-editor--title {
+  color: var(--cv-primary, #0f172a);
+  font-weight: 800;
+}
+
+.cv-rich-item--cards .cv-rich-editor--period {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--cv-primary, #0f172a);
+  color: #fff;
+  font-size: 11px;
+}
+
+.cv-rich-item--cards-accent-left {
+  border-left: 4px solid var(--cv-secondary);
 }
 
 .cv-rich-item--list,
