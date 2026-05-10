@@ -1,4 +1,5 @@
 import { computed, toValue, type MaybeRefOrGetter } from 'vue'
+import { COVER_BORDER_STYLE_BY_ID } from '~/constants/coverBorderStyles'
 
 export const COVER_BORDER_SIMPLE_CLASS = 'cover-border--simple'
 
@@ -99,8 +100,15 @@ export function resolveCoverBorderStyle(design: CoverTemplateDesign) {
   }
 }
 
-export function getCoverBorderCssVars(values: CoverBorderValues) {
+export function getCoverBorderCssVars(
+  values: CoverBorderValues,
+  styleId: CoverBorderStyleId = 'simple',
+) {
+  const presetVars =
+    styleId === 'simple' ? {} : COVER_BORDER_STYLE_BY_ID[styleId]?.cssVars || {}
+
   return {
+    ...presetVars,
     '--cp-page-border-width': values.enabled ? `${values.width}px` : '0px',
     '--cp-page-border-color': values.color,
     '--cp-page-border-radius': `${values.radius}px`,
@@ -148,7 +156,10 @@ export function useCoverBorderStyle(
   })
 
   const coverBorderCssVars = computed(() =>
-    getCoverBorderCssVars(coverBorderValues.value),
+    getCoverBorderCssVars(
+      coverBorderValues.value,
+      resolvedBorderStyle.value.styleId,
+    ),
   )
 
   const borderStyleClass = computed(
