@@ -339,14 +339,26 @@ function isHobbyIconsSection() {
               ><i :style="{ width: `${splitLeveledItem(item).value}%` }"
             /></span>
           </template>
-          <HoverRichTextEditor
+          <template
             v-else-if="
-              ![
+              [
                 'progress-circle',
                 'progress-circle-grid',
                 'progress-circle-ring',
               ].includes(variant)
             "
+          >
+            <span
+              class="cv-rich-circle"
+              :style="{ '--level': splitLeveledItem(item).value }"
+            >
+              <span class="cv-rich-circle-value">
+                {{ splitLeveledItem(item).value }}%
+              </span>
+            </span>
+          </template>
+          <HoverRichTextEditor
+            v-else
             class="cv-rich-editor cv-rich-editor--value"
             :model-value="`${splitLeveledItem(item).value}%`"
             placeholder="Level"
@@ -356,21 +368,6 @@ function isHobbyIconsSection() {
             color="inherit"
             @update:model-value="updateLeveledValue(index, item, $event)"
           />
-          <span
-            v-if="
-              [
-                'progress-circle',
-                'progress-circle-grid',
-                'progress-circle-ring',
-              ].includes(variant)
-            "
-            class="cv-rich-circle"
-            :style="{ '--level': splitLeveledItem(item).value }"
-          >
-            <span class="cv-rich-circle-value">
-              {{ splitLeveledItem(item).value }}%
-            </span>
-          </span>
         </template>
 
         <template v-else>
@@ -408,6 +405,8 @@ function isHobbyIconsSection() {
 
 .cv-rich-section--progress-circle-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+  justify-items: center;
 }
 
 .cv-hobby-icons {
@@ -728,12 +727,12 @@ function isHobbyIconsSection() {
 
 .cv-rich-circle {
   position: relative;
-  width: 46px;
-  height: 46px;
+  width: 54px;
+  height: 54px;
   border-radius: 999px;
   background: conic-gradient(
     var(--cv-secondary) calc(var(--level) * 1%),
-    rgba(255, 255, 255, 0.18) 0
+    rgba(148, 163, 184, 0.25) 0
   );
   display: inline-flex;
   align-items: center;
@@ -745,12 +744,13 @@ function isHobbyIconsSection() {
   position: absolute;
   inset: 5px;
   border-radius: inherit;
-  background: var(--cv-page-background);
+  background: var(--cv-page-background, #fff);
 }
 
 .cv-rich-circle-value {
   position: relative;
   z-index: 1;
-  font-size: 9px;
+  font-size: 11px;
+  font-weight: 800;
 }
 </style>
