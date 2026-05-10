@@ -302,7 +302,13 @@ function periodModelValue(value: string) {
           /></span>
         </template>
         <HoverRichTextEditor
-          v-else-if="variant !== 'progress-circle'"
+          v-else-if="
+            ![
+              'progress-circle',
+              'progress-circle-grid',
+              'progress-circle-ring',
+            ].includes(variant)
+          "
           class="cv-rich-editor cv-rich-editor--value"
           :model-value="`${splitLeveledItem(item).value}%`"
           placeholder="Level"
@@ -312,9 +318,21 @@ function periodModelValue(value: string) {
           color="inherit"
           @update:model-value="updateLeveledValue(index, item, $event)"
         />
-        <span v-if="variant === 'progress-circle'" class="cv-rich-circle"
-          >{{ splitLeveledItem(item).value }}%</span
+        <span
+          v-if="
+            [
+              'progress-circle',
+              'progress-circle-grid',
+              'progress-circle-ring',
+            ].includes(variant)
+          "
+          class="cv-rich-circle"
+          :style="{ '--level': splitLeveledItem(item).value }"
         >
+          <span class="cv-rich-circle-value">
+            {{ splitLeveledItem(item).value }}%
+          </span>
+        </span>
       </template>
 
       <template v-else>
@@ -347,6 +365,10 @@ function periodModelValue(value: string) {
   font-size: 13px;
   line-height: 1.35;
   min-width: 0;
+}
+
+.cv-rich-section--progress-circle-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .cv-rich-section--timeline.cv-rich-section--experience,
@@ -646,13 +668,30 @@ function periodModelValue(value: string) {
 }
 
 .cv-rich-circle {
-  width: 39px;
-  height: 39px;
+  position: relative;
+  width: 46px;
+  height: 46px;
   border-radius: 999px;
-  border: 2px solid var(--cv-secondary, #93c5fd);
+  background: conic-gradient(
+    var(--cv-secondary) calc(var(--level) * 1%),
+    rgba(255, 255, 255, 0.18) 0
+  );
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.cv-rich-circle::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: inherit;
+  background: var(--cv-page-background);
+}
+
+.cv-rich-circle-value {
+  position: relative;
+  z-index: 1;
   font-size: 9px;
 }
 </style>
