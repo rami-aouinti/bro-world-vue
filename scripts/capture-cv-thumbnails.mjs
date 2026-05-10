@@ -38,12 +38,18 @@ async function launchBrowser() {
 
 const browser = await launchBrowser()
 const page = await browser.newPage({ viewport: { width: 1200, height: 1500 } })
+await page.route('https://fonts.googleapis.com/**', async (route) => {
+  await route.fulfill({ status: 204, contentType: 'text/css', body: '' })
+})
+await page.route('https://fonts.gstatic.com/**', async (route) => {
+  await route.abort()
+})
 const CAPTURE_MAX_HEIGHT = 1500
 const CAPTURE_MAX_WIDTH = 1200
 
 for (const tpl of generatedCvTemplates) {
   const url = `${baseUrl}/resume/cv/preview?template=${encodeURIComponent(tpl.id)}&capture=1`
-  await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 90_000 })
+  await page.goto(url, { waitUntil: 'commit', timeout: 90_000 })
   await page.keyboard.press('Escape').catch(() => {})
 
   const captureCanvas = page.locator('.cv-preview-page').first()

@@ -126,7 +126,11 @@ const activeTemplate = computed(
       (template) => template.id === selectedTemplate.value,
     ) || GENERATED_RESUME_TEMPLATES[0],
 )
-useResumeGoogleFonts(activeTemplate)
+const isCaptureMode = computed(() => String(route.query.capture || '') === '1')
+const fontTemplate = computed(() =>
+  isCaptureMode.value ? null : activeTemplate.value,
+)
+useResumeGoogleFonts(fontTemplate)
 const sectionIconOverrides = reactive<Record<string, string>>({})
 const {
   normalizedTemplate,
@@ -209,8 +213,6 @@ const sectionBarConfig = reactive({
   height: 3,
   radius: 999,
 })
-const isCaptureMode = computed(() => String(route.query.capture || '') === '1')
-
 if (
   queryTemplateId &&
   GENERATED_RESUME_TEMPLATES.some((template) => template.id === queryTemplateId)
