@@ -141,6 +141,8 @@ const {
   sectionTitleStyle,
   sectionContentStyle,
   sectionDateStyle,
+  sectionLevelStyle,
+  sectionHobbyStyle,
   sectionColumn,
   templateDesign: activeTemplateDesign,
 } = useGeneratedCvTemplateRuntime(activeTemplate, { sectionIconOverrides })
@@ -613,9 +615,35 @@ const sectionType = (key: string) => sectionForm(key)
 
 const sectionVariantOptionsMap: Record<string, string[]> = {
   profile: ['classic'],
-  experience: ['classic', 'list', 'dot', 'timeline', 'cards'],
-  education: ['classic', 'list', 'dot', 'timeline', 'cards'],
-  projects: ['classic', 'list', 'dot', 'cards'],
+  experience: [
+    'classic',
+    'list',
+    'dot',
+    'timeline',
+    'cards',
+    'cards-accent-left',
+    'cards-soft',
+    'cards-bordered',
+  ],
+  education: [
+    'classic',
+    'list',
+    'dot',
+    'timeline',
+    'cards',
+    'cards-accent-left',
+    'cards-soft',
+    'cards-bordered',
+  ],
+  projects: [
+    'classic',
+    'list',
+    'dot',
+    'cards',
+    'cards-accent-left',
+    'cards-soft',
+    'cards-bordered',
+  ],
   skills: [
     'classic',
     'stars',
@@ -634,13 +662,32 @@ const sectionVariantOptionsMap: Record<string, string[]> = {
     'progress-circle-grid',
     'progress-circle-ring',
   ],
-  certifications: ['classic', 'list', 'dot', 'cards'],
-  references: ['classic', 'list', 'dot', 'cards'],
+  certifications: [
+    'classic',
+    'list',
+    'dot',
+    'cards',
+    'cards-accent-left',
+    'cards-soft',
+    'cards-bordered',
+  ],
+  references: [
+    'classic',
+    'list',
+    'dot',
+    'cards',
+    'cards-accent-left',
+    'cards-soft',
+    'cards-bordered',
+  ],
   hobbies: [
     'classic',
     'list',
     'dot',
     'cards',
+    'cards-accent-left',
+    'cards-soft',
+    'cards-bordered',
     'hobby-icons',
     'hobby-icons-separated',
   ],
@@ -676,6 +723,9 @@ const addSectionVariantOptions = [
   'dot',
   'timeline',
   'cards',
+  'cards-accent-left',
+  'cards-soft',
+  'cards-bordered',
 ].map((value) => ({ title: value, value }))
 
 const hiddenSections = reactive<Record<string, boolean>>({})
@@ -980,12 +1030,26 @@ function effectiveSectionTitleStyle(sectionKey: string) {
   return sectionTitleStyleOverrides.value[key] || sectionTitleStyle(key)
 }
 
+function updateSectionTitleStyle(sectionKey: string, value: unknown) {
+  if (typeof value !== 'string') return
+  const key = toSectionKey(sectionKey)
+  sectionTitleStyleOverrides.value[key] = value
+}
+
 function effectiveSectionContentStyle(sectionKey: string) {
   return sectionContentStyle(toSectionKey(sectionKey))
 }
 
 function effectiveSectionDateStyle(sectionKey: string) {
   return sectionDateStyle(toSectionKey(sectionKey))
+}
+
+function effectiveSectionLevelStyle(sectionKey: string) {
+  return sectionLevelStyle(toSectionKey(sectionKey))
+}
+
+function effectiveSectionHobbyStyle(sectionKey: string) {
+  return sectionHobbyStyle(toSectionKey(sectionKey))
 }
 
 function isSectionColumnEditable(sectionKey: string) {
@@ -1548,6 +1612,9 @@ watch(sectionTypeOverrides, () => scheduleCvPreviewMeasure(true), {
   deep: true,
 })
 watch(sectionColumnOverrides, () => scheduleCvPreviewMeasure(true), {
+  deep: true,
+})
+watch(sectionTitleStyleOverrides, () => scheduleCvPreviewMeasure(true), {
   deep: true,
 })
 watch(sectionExtraItems, () => scheduleCvPreviewMeasure(true), { deep: true })
@@ -2819,6 +2886,12 @@ watch(
                     effectiveSectionContentStyle(toSectionKey(section))
                   "
                   :date-style="effectiveSectionDateStyle(toSectionKey(section))"
+                  :level-style="
+                    effectiveSectionLevelStyle(toSectionKey(section))
+                  "
+                  :hobby-style="
+                    effectiveSectionHobbyStyle(toSectionKey(section))
+                  "
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -2826,6 +2899,9 @@ watch(
                   "
                   @update:column="
                     updateSectionColumn(toSectionKey(section), $event)
+                  "
+                  @update:title-style="
+                    updateSectionTitleStyle(toSectionKey(section), $event)
                   "
                   @add-item="addSectionItem(toSectionKey(section))"
                   @hide="hideSectionFromZone('asideOne', toSectionKey(section))"
@@ -2889,6 +2965,12 @@ watch(
                     effectiveSectionContentStyle(toSectionKey(section))
                   "
                   :date-style="effectiveSectionDateStyle(toSectionKey(section))"
+                  :level-style="
+                    effectiveSectionLevelStyle(toSectionKey(section))
+                  "
+                  :hobby-style="
+                    effectiveSectionHobbyStyle(toSectionKey(section))
+                  "
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -2896,6 +2978,9 @@ watch(
                   "
                   @update:column="
                     updateSectionColumn(toSectionKey(section), $event)
+                  "
+                  @update:title-style="
+                    updateSectionTitleStyle(toSectionKey(section), $event)
                   "
                   @add-item="addSectionItem(toSectionKey(section))"
                   @hide="hideSectionFromZone('asideTwo', toSectionKey(section))"
@@ -2957,6 +3042,12 @@ watch(
                     effectiveSectionContentStyle(toSectionKey(section))
                   "
                   :date-style="effectiveSectionDateStyle(toSectionKey(section))"
+                  :level-style="
+                    effectiveSectionLevelStyle(toSectionKey(section))
+                  "
+                  :hobby-style="
+                    effectiveSectionHobbyStyle(toSectionKey(section))
+                  "
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -2964,6 +3055,9 @@ watch(
                   "
                   @update:column="
                     updateSectionColumn(toSectionKey(section), $event)
+                  "
+                  @update:title-style="
+                    updateSectionTitleStyle(toSectionKey(section), $event)
                   "
                   @add-item="addSectionItem(toSectionKey(section))"
                   @hide="hideSection(toSectionKey(section))"
@@ -3024,6 +3118,12 @@ watch(
                     effectiveSectionContentStyle(toSectionKey(section))
                   "
                   :date-style="effectiveSectionDateStyle(toSectionKey(section))"
+                  :level-style="
+                    effectiveSectionLevelStyle(toSectionKey(section))
+                  "
+                  :hobby-style="
+                    effectiveSectionHobbyStyle(toSectionKey(section))
+                  "
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3031,6 +3131,9 @@ watch(
                   "
                   @update:column="
                     updateSectionColumn(toSectionKey(section), $event)
+                  "
+                  @update:title-style="
+                    updateSectionTitleStyle(toSectionKey(section), $event)
                   "
                   @add-item="addSectionItem(toSectionKey(section))"
                   @hide="hideSection(toSectionKey(section))"
@@ -3093,6 +3196,12 @@ watch(
                     effectiveSectionContentStyle(toSectionKey(section))
                   "
                   :date-style="effectiveSectionDateStyle(toSectionKey(section))"
+                  :level-style="
+                    effectiveSectionLevelStyle(toSectionKey(section))
+                  "
+                  :hobby-style="
+                    effectiveSectionHobbyStyle(toSectionKey(section))
+                  "
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3100,6 +3209,9 @@ watch(
                   "
                   @update:column="
                     updateSectionColumn(toSectionKey(section), $event)
+                  "
+                  @update:title-style="
+                    updateSectionTitleStyle(toSectionKey(section), $event)
                   "
                   @add-item="addSectionItem(toSectionKey(section))"
                   @hide="hideSection(toSectionKey(section))"
@@ -3158,6 +3270,12 @@ watch(
                     effectiveSectionContentStyle(toSectionKey(section))
                   "
                   :date-style="effectiveSectionDateStyle(toSectionKey(section))"
+                  :level-style="
+                    effectiveSectionLevelStyle(toSectionKey(section))
+                  "
+                  :hobby-style="
+                    effectiveSectionHobbyStyle(toSectionKey(section))
+                  "
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3165,6 +3283,9 @@ watch(
                   "
                   @update:column="
                     updateSectionColumn(toSectionKey(section), $event)
+                  "
+                  @update:title-style="
+                    updateSectionTitleStyle(toSectionKey(section), $event)
                   "
                   @add-item="addSectionItem(toSectionKey(section))"
                   @hide="hideSection(toSectionKey(section))"
@@ -3222,6 +3343,12 @@ watch(
                       :date-style="
                         effectiveSectionDateStyle(toSectionKey(section))
                       "
+                      :level-style="
+                        effectiveSectionLevelStyle(toSectionKey(section))
+                      "
+                      :hobby-style="
+                        effectiveSectionHobbyStyle(toSectionKey(section))
+                      "
                       @update:title="updateSectionDisplayTitle(section, $event)"
                       @update:icon="setSectionIcon(section, $event)"
                       @update:variant="
@@ -3229,6 +3356,9 @@ watch(
                       "
                       @update:column="
                         updateSectionColumn(toSectionKey(section), $event)
+                      "
+                      @update:title-style="
+                        updateSectionTitleStyle(toSectionKey(section), $event)
                       "
                       @add-item="addSectionItem(toSectionKey(section))"
                       @hide="hideSection(toSectionKey(section))"
@@ -3290,6 +3420,12 @@ watch(
                       :date-style="
                         effectiveSectionDateStyle(toSectionKey(section))
                       "
+                      :level-style="
+                        effectiveSectionLevelStyle(toSectionKey(section))
+                      "
+                      :hobby-style="
+                        effectiveSectionHobbyStyle(toSectionKey(section))
+                      "
                       @update:title="updateSectionDisplayTitle(section, $event)"
                       @update:icon="setSectionIcon(section, $event)"
                       @update:variant="
@@ -3297,6 +3433,9 @@ watch(
                       "
                       @update:column="
                         updateSectionColumn(toSectionKey(section), $event)
+                      "
+                      @update:title-style="
+                        updateSectionTitleStyle(toSectionKey(section), $event)
                       "
                       @add-item="addSectionItem(toSectionKey(section))"
                       @hide="hideSection(toSectionKey(section))"
@@ -3356,6 +3495,12 @@ watch(
                     effectiveSectionContentStyle(toSectionKey(section))
                   "
                   :date-style="effectiveSectionDateStyle(toSectionKey(section))"
+                  :level-style="
+                    effectiveSectionLevelStyle(toSectionKey(section))
+                  "
+                  :hobby-style="
+                    effectiveSectionHobbyStyle(toSectionKey(section))
+                  "
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3363,6 +3508,9 @@ watch(
                   "
                   @update:column="
                     updateSectionColumn(toSectionKey(section), $event)
+                  "
+                  @update:title-style="
+                    updateSectionTitleStyle(toSectionKey(section), $event)
                   "
                   @add-item="addSectionItem(toSectionKey(section))"
                   @hide="hideSection(toSectionKey(section))"
@@ -3996,7 +4144,7 @@ watch(
   font-size: 13px;
 }
 
-.cv-aside-section-item > strong {
+.cv-aside-section-item > .cv-section-title-shell {
   display: block;
   margin-bottom: 6px;
   padding-right: 0;
@@ -4075,7 +4223,7 @@ watch(
   color: var(--cv-page-muted, #334155);
   background: transparent;
 }
-.cv-section-row > strong {
+.cv-section-row > .cv-section-title-shell {
   display: block;
   margin-bottom: 6px;
   padding-right: 0;
@@ -4185,8 +4333,8 @@ watch(
 .cv-header-identity strong {
   font-family: var(--cv-text-fullname);
 }
-.cv-section-row > strong,
-.cv-aside-section-item > strong {
+.cv-section-row > .cv-section-title-shell,
+.cv-aside-section-item > .cv-section-title-shell {
   font-family: var(--cv-text-section-label);
 }
 .cv-section-row :deep(.cv-entry strong),
@@ -4226,18 +4374,18 @@ watch(
   border: 1px solid #cbd5e1;
   cursor: pointer;
 }
-.cv-section-row > strong {
+.cv-section-row > .cv-section-title-shell--classic {
   color: color-mix(
     in srgb,
     var(--cv-primary, #1d4ed8) 72%,
     var(--cv-page-text, #0f172a)
   );
 }
-.cv-aside-section-item > strong {
+.cv-aside-section-item > .cv-section-title-shell--classic {
   color: color-mix(in srgb, var(--cv-primary, #1d4ed8) 55%, white);
 }
-.cv-section-row > strong,
-.cv-aside-section-item > strong {
+.cv-section-row > .cv-section-title-shell,
+.cv-aside-section-item > .cv-section-title-shell {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -4246,8 +4394,8 @@ watch(
   width: var(--cv-section-title-width, fit-content);
   margin-bottom: calc(var(--cv-section-bar-height, 3px) + 8px);
 }
-.cv-section-row > strong::after,
-.cv-aside-section-item > strong::after {
+.cv-section-row > .cv-section-title-shell--classic::after,
+.cv-aside-section-item > .cv-section-title-shell--classic::after {
   content: '';
   display: var(--cv-section-bar-display, block);
   width: var(--cv-section-bar-width, 44px);

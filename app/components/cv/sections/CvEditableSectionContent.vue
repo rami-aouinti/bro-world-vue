@@ -8,6 +8,8 @@ const props = withDefaults(
     variant?: string
     contentStyle?: string
     dateStyle?: string
+    levelStyle?: string
+    hobbyStyle?: string
   }>(),
   {
     items: () => [],
@@ -15,6 +17,8 @@ const props = withDefaults(
     variant: 'classic',
     contentStyle: 'classic',
     dateStyle: 'plain',
+    levelStyle: 'line',
+    hobbyStyle: 'text',
   },
 )
 
@@ -115,9 +119,12 @@ function isTimelineComplexItem(raw: string) {
   return (
     isComplexItem(raw) &&
     (props.variant === 'timeline' ||
-      ['timeline-vertical', 'timeline-date-badges'].includes(
-        props.contentStyle,
-      ))
+      [
+        'timeline-vertical',
+        'timeline-date-badges',
+        'timeline-badges',
+        'timeline-line',
+      ].includes(props.contentStyle))
   )
 }
 
@@ -133,6 +140,7 @@ function hobbyIcon(label: string) {
   if (normalized.includes('design')) return 'mdi-palette-outline'
   if (normalized.includes('travel')) return 'mdi-airplane'
   if (normalized.includes('sport')) return 'mdi-run'
+  if (normalized.includes('music')) return 'mdi-music'
   return 'mdi-star-outline'
 }
 
@@ -149,12 +157,24 @@ function isHobbyIconsSection() {
 <template>
   <div
     class="cv-rich-section"
-    :class="[`cv-rich-section--${variant}`, `cv-rich-section--${sectionKey}`]"
+    :class="[
+      `cv-rich-section--${variant}`,
+      `cv-rich-section--${sectionKey}`,
+      `cv-rich-section--hobby-${hobbyStyle}`,
+    ]"
   >
     <div v-if="isHobbyIconsSection()" class="cv-hobby-icons">
-      <div v-for="item in items" :key="item" class="cv-hobby-icon-item">
+      <div
+        v-for="(item, index) in items"
+        :key="index"
+        class="cv-hobby-icon-item"
+      >
         <v-icon :icon="hobbyIcon(item)" />
-        <span>{{ item }}</span>
+        <HoverRichTextEditor
+          class="cv-rich-editor cv-rich-editor--hobby"
+          :model-value="item"
+          @update:model-value="updateSimpleItem(index, $event)"
+        />
       </div>
     </div>
 
@@ -167,6 +187,7 @@ function isHobbyIconsSection() {
           `cv-rich-item--${variant}`,
           `cv-rich-item--content-${contentStyle}`,
           `cv-rich-item--date-${dateStyle}`,
+          `cv-rich-item--level-${levelStyle}`,
           {
             'cv-rich-item--complex': isComplexItem(item),
             'cv-rich-item--timeline-complex': isTimelineComplexItem(item),
@@ -330,14 +351,26 @@ function isHobbyIconsSection() {
               ><i :style="{ width: `${splitLeveledItem(item).value}%` }"
             /></span>
           </template>
-          <HoverRichTextEditor
+          <template
             v-else-if="
-              ![
+              [
                 'progress-circle',
                 'progress-circle-grid',
                 'progress-circle-ring',
               ].includes(variant)
             "
+          >
+            <span
+              class="cv-rich-circle"
+              :style="{ '--level': splitLeveledItem(item).value }"
+            >
+              <span class="cv-rich-circle-value">
+                {{ splitLeveledItem(item).value }}%
+              </span>
+            </span>
+          </template>
+          <HoverRichTextEditor
+            v-else
             class="cv-rich-editor cv-rich-editor--value"
             :model-value="`${splitLeveledItem(item).value}%`"
             placeholder="Level"
@@ -347,21 +380,6 @@ function isHobbyIconsSection() {
             color="inherit"
             @update:model-value="updateLeveledValue(index, item, $event)"
           />
-          <span
-            v-if="
-              [
-                'progress-circle',
-                'progress-circle-grid',
-                'progress-circle-ring',
-              ].includes(variant)
-            "
-            class="cv-rich-circle"
-            :style="{ '--level': splitLeveledItem(item).value }"
-          >
-            <span class="cv-rich-circle-value">
-              {{ splitLeveledItem(item).value }}%
-            </span>
-          </span>
         </template>
 
         <template v-else>
@@ -397,24 +415,41 @@ function isHobbyIconsSection() {
   min-width: 0;
 }
 
+.cv-rich-item--level-line-gradient .cv-rich-progress i {
+  background: linear-gradient(
+    90deg,
+    var(--cv-secondary, #93c5fd),
+    color-mix(in srgb, var(--cv-primary, #111827) 72%, #fff)
+  );
+}
+
 .cv-rich-section--progress-circle-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+  justify-items: center;
 }
 
 .cv-hobby-icons {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+  gap: 12px;
+}
+
+.cv-rich-section--hobby-icons-separated .cv-hobby-icon-item {
+  border-inline-end: 1px dashed rgba(148, 163, 184, 0.45);
 }
 
 .cv-hobby-icon-item {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
   text-align: center;
-  border-inline-end: 1px dashed rgba(148, 163, 184, 0.55);
+  padding-inline: 10px;
 }
 
 .cv-hobby-icon-item .v-icon {
-  color: var(--cv-secondary);
   font-size: 30px;
+  color: var(--cv-secondary);
 }
 
 .cv-rich-section--timeline.cv-rich-section--experience,
@@ -465,7 +500,9 @@ function isHobbyIconsSection() {
 }
 
 .cv-rich-item--content-timeline-vertical,
-.cv-rich-item--content-timeline-date-badges {
+.cv-rich-item--content-timeline-date-badges,
+.cv-rich-item--content-timeline-badges,
+.cv-rich-item--content-timeline-line {
   position: relative;
   display: grid;
   grid-template-columns: minmax(56px, 86px) minmax(0, 1fr);
@@ -475,7 +512,9 @@ function isHobbyIconsSection() {
 }
 
 .cv-rich-item--content-timeline-vertical::before,
-.cv-rich-item--content-timeline-date-badges::before {
+.cv-rich-item--content-timeline-date-badges::before,
+.cv-rich-item--content-timeline-badges::before,
+.cv-rich-item--content-timeline-line::before {
   content: '';
   position: absolute;
   left: 5px;
@@ -486,12 +525,16 @@ function isHobbyIconsSection() {
 }
 
 .cv-rich-item--content-timeline-vertical:last-child::before,
-.cv-rich-item--content-timeline-date-badges:last-child::before {
+.cv-rich-item--content-timeline-date-badges:last-child::before,
+.cv-rich-item--content-timeline-badges:last-child::before,
+.cv-rich-item--content-timeline-line:last-child::before {
   bottom: 8px;
 }
 
 .cv-rich-item--content-timeline-vertical .cv-rich-timeline-dot,
-.cv-rich-item--content-timeline-date-badges .cv-rich-timeline-dot {
+.cv-rich-item--content-timeline-date-badges .cv-rich-timeline-dot,
+.cv-rich-item--content-timeline-badges .cv-rich-timeline-dot,
+.cv-rich-item--content-timeline-line .cv-rich-timeline-dot {
   left: 0;
   top: 4px;
   width: 11px;
@@ -499,11 +542,18 @@ function isHobbyIconsSection() {
   box-shadow: 0 0 0 3px var(--cv-page-background, #fff);
 }
 
-.cv-rich-item--content-timeline-date-badges {
+.cv-rich-item--content-timeline-date-badges,
+.cv-rich-item--content-timeline-badges {
   grid-template-columns: minmax(64px, 92px) minmax(0, 1fr);
 }
 
-.cv-rich-item--content-timeline-date-badges .cv-rich-editor--period {
+.cv-rich-item--content-timeline-line {
+  grid-template-columns: minmax(52px, 76px) minmax(0, 1fr);
+  column-gap: 12px;
+}
+
+.cv-rich-item--content-timeline-date-badges .cv-rich-editor--period,
+.cv-rich-item--content-timeline-badges .cv-rich-editor--period {
   align-self: start;
   justify-self: end;
   border: 1px solid
@@ -582,11 +632,41 @@ function isHobbyIconsSection() {
   min-width: 0;
 }
 
+.cv-rich-section--cards {
+  display: grid;
+  gap: 10px;
+}
+
 .cv-rich-item--cards {
-  margin-bottom: 10px;
-  border: 1px solid color-mix(in srgb, var(--cv-secondary, #93c5fd) 40%, white);
-  border-radius: 8px;
-  padding: 6px 8px;
+  padding: 12px 14px;
+  border: 1px solid
+    color-mix(in srgb, var(--cv-secondary, #94a3b8) 22%, transparent);
+  border-radius: 14px;
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--cv-secondary, #94a3b8) 8%, transparent),
+      transparent 45%
+    ),
+    color-mix(in srgb, var(--cv-page-background, #fff) 94%, #fff);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+}
+
+.cv-rich-item--cards .cv-rich-editor--title {
+  color: var(--cv-primary, #0f172a);
+  font-weight: 800;
+}
+
+.cv-rich-item--cards .cv-rich-editor--period {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--cv-primary, #0f172a);
+  color: #fff;
+  font-size: 11px;
+}
+
+.cv-rich-item--cards-accent-left {
+  border-left: 4px solid var(--cv-secondary);
 }
 
 .cv-rich-item--list,
@@ -715,12 +795,12 @@ function isHobbyIconsSection() {
 
 .cv-rich-circle {
   position: relative;
-  width: 46px;
-  height: 46px;
+  width: 54px;
+  height: 54px;
   border-radius: 999px;
   background: conic-gradient(
     var(--cv-secondary) calc(var(--level) * 1%),
-    rgba(255, 255, 255, 0.18) 0
+    rgba(148, 163, 184, 0.25) 0
   );
   display: inline-flex;
   align-items: center;
@@ -732,12 +812,13 @@ function isHobbyIconsSection() {
   position: absolute;
   inset: 5px;
   border-radius: inherit;
-  background: var(--cv-page-background);
+  background: var(--cv-page-background, #fff);
 }
 
 .cv-rich-circle-value {
   position: relative;
   z-index: 1;
-  font-size: 9px;
+  font-size: 11px;
+  font-weight: 800;
 }
 </style>

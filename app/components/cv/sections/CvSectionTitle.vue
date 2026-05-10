@@ -1,36 +1,32 @@
 <script setup lang="ts">
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 
-withDefaults(
-  defineProps<{
-    sectionKey: string
-    title: string
-    icon: string
-    iconAlternatives?: string[]
-    titleStyle?: string
-    fontFamily?: string
-  }>(),
-  {
-    iconAlternatives: () => [],
-    titleStyle: 'classic',
-    fontFamily: undefined,
-  },
-)
-
-defineEmits<{
-  (event: 'update:title' | 'update:icon', value: string): void
+defineProps<{
+  sectionKey: string
+  title: string
+  icon: string
+  iconAlternatives: string[]
+  titleStyle: string
+  fontFamily?: string
 }>()
+
+// Keep these event overloads in the exact shape expected by section-title consumers.
+/* eslint-disable @typescript-eslint/unified-signatures */
+defineEmits<{
+  (event: 'update:title', value: string): void
+  (event: 'update:icon', value: string): void
+}>()
+/* eslint-enable @typescript-eslint/unified-signatures */
 </script>
 
 <template>
   <div
-    class="cv-section-title cv-section-title-shell"
+    class="cv-section-title-shell"
     :class="`cv-section-title-shell--${titleStyle}`"
-    :data-section-key="sectionKey"
   >
-    <v-menu v-if="iconAlternatives.length">
+    <v-menu>
       <template #activator="{ props }">
-        <button v-bind="props" class="cv-section-title-icon-btn" type="button">
+        <button v-bind="props" class="cv-section-title-icon-btn">
           <v-icon :icon="icon" size="16" />
         </button>
       </template>
@@ -48,9 +44,6 @@ defineEmits<{
         </v-list-item>
       </v-list>
     </v-menu>
-    <button v-else class="cv-section-title-icon-btn" type="button">
-      <v-icon :icon="icon" size="16" />
-    </button>
 
     <HoverRichTextEditor
       class="cv-section-title-editor"
@@ -68,6 +61,7 @@ defineEmits<{
 .cv-section-title-shell {
   --section-accent: var(--cv-secondary, #c8a24a);
   --section-primary: var(--cv-primary, #12324a);
+  position: relative;
   display: inline-flex !important;
   align-items: center;
   gap: 8px;
@@ -75,6 +69,20 @@ defineEmits<{
   min-height: 28px;
   margin-bottom: 8px;
   color: var(--cv-page-text, #0f172a);
+}
+
+.cv-section-title-shell::after {
+  content: '';
+  display: var(--cv-section-bar-display, block);
+  width: var(--cv-section-bar-width, 44px);
+  height: var(--cv-section-bar-height, 3px);
+  border-radius: var(--cv-section-bar-radius, 999px);
+  overflow: hidden;
+  clip-path: inset(0 round var(--cv-section-bar-radius, 999px));
+  position: absolute;
+  left: 0;
+  top: calc(100% + 6px);
+  background: var(--section-primary);
 }
 
 .cv-section-title-icon-btn {
@@ -99,6 +107,11 @@ defineEmits<{
 }
 
 .cv-section-title-shell--classic {
+  color: color-mix(
+    in srgb,
+    var(--section-primary) 72%,
+    var(--cv-page-text, #0f172a)
+  );
   font-weight: 700;
 }
 
@@ -111,6 +124,16 @@ defineEmits<{
   color: #fff;
   letter-spacing: 0.18em;
   text-transform: uppercase;
+}
+
+.cv-section-title-shell--pill-filled::after,
+.cv-section-title-shell--pill-outline::after,
+.cv-section-title-shell--icon-bar::after,
+.cv-section-title-shell--ribbon::after,
+.cv-section-title-shell--hexagon::after,
+.cv-section-title-shell--tab::after,
+.cv-section-title-shell--underline-accent::after {
+  display: none;
 }
 
 .cv-section-title-shell--pill-outline {
@@ -157,15 +180,7 @@ defineEmits<{
   position: relative;
 }
 
-.cv-section-title-shell--tab {
-  padding: 4px 14px;
-  background: var(--section-primary);
-  color: #fff;
-  border-radius: 2px;
-  text-transform: uppercase;
-}
-
-.cv-section-title-shell--hexagon-icon {
+.cv-section-title-shell--hexagon {
   padding: 4px 16px 4px 8px;
   background: var(--section-primary);
   color: #fff;
@@ -173,7 +188,7 @@ defineEmits<{
   text-transform: uppercase;
 }
 
-.cv-section-title-shell--hexagon-icon .cv-section-title-icon-btn {
+.cv-section-title-shell--hexagon .cv-section-title-icon-btn {
   width: 42px;
   height: 42px;
   min-width: 42px;
@@ -182,6 +197,29 @@ defineEmits<{
   background: #fff;
   color: var(--section-primary);
   border: 3px solid var(--section-accent);
+}
+
+.cv-section-title-shell--tab {
+  padding: 4px 14px;
+  background: var(--section-primary);
+  color: #fff;
+  border-radius: 2px 2px 0 0;
+  text-transform: uppercase;
+}
+
+.cv-section-title-shell--underline-accent {
+  width: 100%;
+  padding-bottom: 5px;
+  border-bottom: 2px solid
+    color-mix(in srgb, var(--section-accent) 78%, transparent);
+  color: var(--section-primary);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cv-section-title-shell--underline-accent .cv-section-title-icon-btn {
+  color: var(--section-accent);
 }
 
 .cv-section-title-editor {
