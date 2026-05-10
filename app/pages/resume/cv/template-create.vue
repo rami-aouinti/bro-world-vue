@@ -398,6 +398,8 @@ const isSideContentLayout = computed(() =>
     'aside-full-right',
     'aside-bar-left',
     'aside-bar-right',
+    'identity-aside-left',
+    'identity-aside-right',
   ].includes(String(activeTemplate.value?.layout || '')),
 )
 
