@@ -464,6 +464,33 @@ function isHobbyIconsSection() {
   min-width: 0;
 }
 
+.cv-rich-item--content-timeline-line {
+  position: relative;
+  padding-left: 24px;
+}
+
+.cv-rich-item--content-timeline-line::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 0;
+  bottom: -12px;
+  border-left: 1px dashed
+    color-mix(in srgb, var(--cv-secondary) 55%, transparent);
+}
+
+.cv-rich-item--content-timeline-line::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 8px;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: 2px solid var(--cv-secondary);
+  background: var(--cv-page-background);
+}
+
 .cv-rich-item--content-timeline-vertical,
 .cv-rich-item--content-timeline-date-badges {
   position: relative;
@@ -526,9 +553,18 @@ function isHobbyIconsSection() {
   align-items: center;
   justify-content: center;
   min-width: 42px;
-  white-space: pre-line;
+  max-width: 44px;
+  writing-mode: horizontal-tb;
+  white-space: normal;
   text-align: center;
-  line-height: 1.05;
+  line-height: 1.1;
+}
+
+.cv-rich-item--date-badge .cv-rich-editor--period {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--cv-primary);
+  color: #fff;
 }
 
 .cv-rich-item--date-badge-right .cv-rich-editor--period,

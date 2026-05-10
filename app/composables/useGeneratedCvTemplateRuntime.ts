@@ -22,6 +22,7 @@ export type CvSectionContentStyle =
   | 'timeline-vertical'
   | 'timeline-dots'
   | 'timeline-date-badges'
+  | 'timeline-line'
   | 'progress-line'
   | 'progress-circle'
   | 'hobby-icons'
@@ -33,6 +34,7 @@ export type CvSectionDateStyle =
   | 'vertical-year'
   | 'badge-left'
   | 'badge-right'
+  | 'badge'
   | 'pill'
 
 export type CvSectionLevelStyle =
@@ -174,6 +176,7 @@ function normalizeContentStyle(value: unknown): CvSectionContentStyle {
     'timeline-vertical',
     'timeline-dots',
     'timeline-date-badges',
+    'timeline-line',
     'progress-line',
     'progress-circle',
     'hobby-icons',
@@ -192,6 +195,7 @@ function normalizeDateStyle(value: unknown): CvSectionDateStyle {
     'vertical-year',
     'badge-left',
     'badge-right',
+    'badge',
     'pill',
   ])
   return typeof value === 'string' && allowed.has(value as CvSectionDateStyle)

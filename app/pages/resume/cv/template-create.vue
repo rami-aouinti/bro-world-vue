@@ -613,8 +613,28 @@ const sectionType = (key: string) => sectionForm(key)
 
 const sectionVariantOptionsMap: Record<string, string[]> = {
   profile: ['classic'],
-  experience: ['classic', 'list', 'dot', 'timeline', 'cards'],
-  education: ['classic', 'list', 'dot', 'timeline', 'cards'],
+  experience: [
+    'classic',
+    'list',
+    'dot',
+    'timeline',
+    'timeline-line',
+    'timeline-badges',
+    'timeline-stacked-dates',
+    'cards',
+    'cards-accent-left',
+  ],
+  education: [
+    'classic',
+    'list',
+    'dot',
+    'timeline',
+    'timeline-line',
+    'timeline-badges',
+    'timeline-stacked-dates',
+    'cards',
+    'cards-accent-left',
+  ],
   projects: ['classic', 'list', 'dot', 'cards'],
   skills: [
     'classic',
