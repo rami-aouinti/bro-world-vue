@@ -133,6 +133,7 @@ function hobbyIcon(label: string) {
   if (normalized.includes('design')) return 'mdi-palette-outline'
   if (normalized.includes('travel')) return 'mdi-airplane'
   if (normalized.includes('sport')) return 'mdi-run'
+  if (normalized.includes('music')) return 'mdi-music'
   return 'mdi-star-outline'
 }
 
@@ -152,9 +153,17 @@ function isHobbyIconsSection() {
     :class="[`cv-rich-section--${variant}`, `cv-rich-section--${sectionKey}`]"
   >
     <div v-if="isHobbyIconsSection()" class="cv-hobby-icons">
-      <div v-for="item in items" :key="item" class="cv-hobby-icon-item">
+      <div
+        v-for="(item, index) in items"
+        :key="index"
+        class="cv-hobby-icon-item"
+      >
         <v-icon :icon="hobbyIcon(item)" />
-        <span>{{ item }}</span>
+        <HoverRichTextEditor
+          class="cv-rich-editor cv-rich-editor--hobby"
+          :model-value="item"
+          @update:model-value="updateSimpleItem(index, $event)"
+        />
       </div>
     </div>
 
@@ -403,18 +412,22 @@ function isHobbyIconsSection() {
 
 .cv-hobby-icons {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+  gap: 12px;
 }
 
 .cv-hobby-icon-item {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
   text-align: center;
-  border-inline-end: 1px dashed rgba(148, 163, 184, 0.55);
+  padding-inline: 10px;
+  border-inline-end: 1px dashed rgba(148, 163, 184, 0.45);
 }
 
 .cv-hobby-icon-item .v-icon {
-  color: var(--cv-secondary);
   font-size: 30px;
+  color: var(--cv-secondary);
 }
 
 .cv-rich-section--timeline.cv-rich-section--experience,
