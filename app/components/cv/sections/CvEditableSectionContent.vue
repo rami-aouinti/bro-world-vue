@@ -121,6 +121,15 @@ function isLeveledSection() {
   return ['skills', 'languages'].includes(props.sectionKey)
 }
 
+function isCardVariant() {
+  return [
+    'cards',
+    'cards-soft',
+    'cards-bordered',
+    'cards-accent-left',
+  ].includes(props.variant)
+}
+
 function isTimelineComplexItem(raw: string) {
   return (
     isComplexItem(raw) &&
@@ -191,6 +200,7 @@ function isHobbyIconsSection() {
         class="cv-rich-item"
         :class="[
           `cv-rich-item--${variant}`,
+          { 'cv-rich-item--cards': isCardVariant() },
           `cv-rich-item--content-${contentStyle || variant}`,
           `cv-rich-item--date-${dateStyle || 'plain'}`,
           `cv-rich-item--level-${levelStyle}`,
@@ -709,23 +719,26 @@ function isHobbyIconsSection() {
   min-width: 0;
 }
 
-.cv-rich-section--cards {
-  display: grid;
+.cv-rich-section--cards,
+.cv-rich-section--cards-soft,
+.cv-rich-section--cards-bordered,
+.cv-rich-section--cards-accent-left {
   gap: 10px;
 }
 
 .cv-rich-item--cards {
+  position: relative;
   padding: 12px 14px;
-  border: 1px solid
-    color-mix(in srgb, var(--cv-secondary, #94a3b8) 22%, transparent);
   border-radius: 14px;
+  border: 1px solid
+    color-mix(in srgb, var(--cv-secondary, #93c5fd) 22%, transparent);
   background:
     linear-gradient(
       135deg,
-      color-mix(in srgb, var(--cv-secondary, #94a3b8) 8%, transparent),
-      transparent 45%
+      color-mix(in srgb, var(--cv-secondary, #93c5fd) 10%, transparent),
+      transparent 46%
     ),
-    color-mix(in srgb, var(--cv-page-background, #fff) 94%, #fff);
+    color-mix(in srgb, var(--cv-page-background, #fff) 96%, #fff);
   box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
 }
 
@@ -734,16 +747,32 @@ function isHobbyIconsSection() {
   font-weight: 800;
 }
 
+.cv-rich-item--cards-accent-left {
+  border-left: 4px solid var(--cv-secondary, #93c5fd);
+}
+
+.cv-rich-item--cards-bordered {
+  border: 2px solid
+    color-mix(in srgb, var(--cv-primary, #0f172a) 28%, transparent);
+  box-shadow: none;
+}
+
+.cv-rich-item--cards-soft {
+  background: color-mix(
+    in srgb,
+    var(--cv-secondary, #93c5fd) 8%,
+    var(--cv-page-background, #fff)
+  );
+  box-shadow: none;
+}
+
 .cv-rich-item--cards .cv-rich-editor--period {
   padding: 2px 8px;
   border-radius: 999px;
   background: var(--cv-primary, #0f172a);
   color: #fff;
-  font-size: 11px;
-}
-
-.cv-rich-item--cards-accent-left {
-  border-left: 4px solid var(--cv-secondary);
+  font-size: 10px;
+  font-weight: 800;
 }
 
 .cv-rich-item--list,
