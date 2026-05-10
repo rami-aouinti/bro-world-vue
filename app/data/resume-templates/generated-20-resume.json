@@ -16,6 +16,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "contact": {
@@ -24,6 +25,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "classic",
         "enabled": true
       },
       "experience": {
@@ -33,6 +35,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "timeline",
+        "titleStyle": "classic",
         "enabled": true
       },
       "education": {
@@ -42,6 +45,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "timeline",
+        "titleStyle": "classic",
         "enabled": true
       },
       "skills": {
@@ -50,6 +54,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "progress-line",
+        "titleStyle": "classic",
         "enabled": true
       },
       "languages": {
@@ -58,6 +63,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "stars",
+        "titleStyle": "classic",
         "enabled": true
       },
       "certifications": {
@@ -67,6 +73,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "dot",
+        "titleStyle": "classic",
         "enabled": true
       },
       "projects": {
@@ -76,6 +83,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "dot",
+        "titleStyle": "classic",
         "enabled": true
       },
       "references": {
@@ -87,6 +95,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "dot",
+        "titleStyle": "classic",
         "enabled": true
       },
       "interests": {
@@ -95,6 +104,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "dot",
+        "titleStyle": "classic",
         "enabled": true,
         "label": "hobbies"
       },
@@ -104,6 +114,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "cards",
+        "titleStyle": "classic",
         "enabled": true,
         "label": "language-display"
       }
@@ -488,6 +499,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "contact": {
@@ -496,6 +508,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "experience": {
@@ -505,6 +518,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "list",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "education": {
@@ -514,6 +528,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "dot",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "skills": {
@@ -522,6 +537,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "stars",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "languages": {
@@ -530,6 +546,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "progress-line",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "certifications": {
@@ -539,6 +556,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "list",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "projects": {
@@ -548,6 +566,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "timeline",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "references": {
@@ -559,6 +578,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "dot",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "interests": {
@@ -567,6 +587,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "cards",
+        "titleStyle": "pill-filled",
         "enabled": true,
         "label": "hobbies"
       },
@@ -576,6 +597,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "cards",
+        "titleStyle": "pill-filled",
         "enabled": true,
         "label": "language-display"
       }
@@ -960,6 +982,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "contact": {
@@ -969,6 +992,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "experience": {
@@ -978,6 +1002,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "dot",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "education": {
@@ -987,6 +1012,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "timeline",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "skills": {
@@ -996,6 +1022,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "dots",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "languages": {
@@ -1005,6 +1032,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "progress-circle",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "certifications": {
@@ -1014,6 +1042,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "dot",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "projects": {
@@ -1023,6 +1052,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "cards",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "references": {
@@ -1035,6 +1065,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "cards",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "interests": {
@@ -1044,6 +1075,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true,
         "label": "hobbies"
       },
@@ -1054,6 +1086,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true,
         "label": "language-display"
       }
@@ -1442,6 +1475,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "contact": {
@@ -1451,6 +1485,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "experience": {
@@ -1460,6 +1495,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "timeline",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "education": {
@@ -1469,6 +1505,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "cards",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "skills": {
@@ -1478,6 +1515,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "progress-line",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "languages": {
@@ -1487,6 +1525,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "certifications": {
@@ -1496,6 +1535,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "cards",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "projects": {
@@ -1505,6 +1545,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "references": {
@@ -1517,6 +1558,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "interests": {
@@ -1526,6 +1568,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "list",
+        "titleStyle": "icon-bar",
         "enabled": true,
         "label": "hobbies"
       },
@@ -1536,6 +1579,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true,
         "label": "language-display"
       }
@@ -1923,6 +1967,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "contact": {
@@ -1931,6 +1976,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "experience": {
@@ -1940,6 +1986,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "cards",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "education": {
@@ -1949,6 +1996,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "skills": {
@@ -1957,6 +2005,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "progress-circle",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "languages": {
@@ -1965,6 +2014,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "stars",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "certifications": {
@@ -1974,6 +2024,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "projects": {
@@ -1983,6 +2034,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "list",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "references": {
@@ -1994,6 +2046,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "list",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "interests": {
@@ -2002,6 +2055,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "dot",
+        "titleStyle": "ribbon",
         "enabled": true,
         "label": "hobbies"
       },
@@ -2011,6 +2065,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true,
         "label": "language-display"
       }
@@ -2398,6 +2453,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "contact": {
@@ -2406,6 +2462,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "experience": {
@@ -2415,6 +2472,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "classic",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "education": {
@@ -2424,6 +2482,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "list",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "skills": {
@@ -2432,6 +2491,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "classic",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "languages": {
@@ -2440,6 +2500,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "dots",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "certifications": {
@@ -2449,6 +2510,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "list",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "projects": {
@@ -2458,6 +2520,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "dot",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "references": {
@@ -2469,6 +2532,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "dot",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "interests": {
@@ -2477,6 +2541,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "cards",
+        "titleStyle": "hexagon-icon",
         "enabled": true,
         "label": "hobbies"
       },
@@ -2486,6 +2551,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "hexagon-icon",
         "enabled": true,
         "label": "language-display"
       }
@@ -2873,6 +2939,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "tab",
         "enabled": true
       },
       "contact": {
@@ -2881,6 +2948,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "labels",
+        "titleStyle": "tab",
         "enabled": true
       },
       "experience": {
@@ -2890,6 +2958,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "list",
+        "titleStyle": "tab",
         "enabled": true
       },
       "education": {
@@ -2899,6 +2968,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "dot",
+        "titleStyle": "tab",
         "enabled": true
       },
       "skills": {
@@ -2907,6 +2977,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "stars",
+        "titleStyle": "tab",
         "enabled": true
       },
       "languages": {
@@ -2915,6 +2986,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "progress-line",
+        "titleStyle": "tab",
         "enabled": true
       },
       "certifications": {
@@ -2924,6 +2996,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "dot",
+        "titleStyle": "tab",
         "enabled": true
       },
       "projects": {
@@ -2933,6 +3006,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "timeline",
+        "titleStyle": "tab",
         "enabled": true
       },
       "references": {
@@ -2944,6 +3018,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "cards",
+        "titleStyle": "tab",
         "enabled": true
       },
       "interests": {
@@ -2952,6 +3027,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "classic",
+        "titleStyle": "tab",
         "enabled": true,
         "label": "hobbies"
       },
@@ -2961,6 +3037,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "tab",
         "enabled": true,
         "label": "language-display"
       }
@@ -3348,6 +3425,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "contact": {
@@ -3356,6 +3434,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "labels",
+        "titleStyle": "classic",
         "enabled": true
       },
       "experience": {
@@ -3365,6 +3444,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "dot",
+        "titleStyle": "classic",
         "enabled": true
       },
       "education": {
@@ -3374,6 +3454,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "timeline",
+        "titleStyle": "classic",
         "enabled": true
       },
       "skills": {
@@ -3382,6 +3463,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "dots",
+        "titleStyle": "classic",
         "enabled": true
       },
       "languages": {
@@ -3390,6 +3472,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "progress-circle",
+        "titleStyle": "classic",
         "enabled": true
       },
       "certifications": {
@@ -3399,6 +3482,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "cards",
+        "titleStyle": "classic",
         "enabled": true
       },
       "projects": {
@@ -3408,6 +3492,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "cards",
+        "titleStyle": "classic",
         "enabled": true
       },
       "references": {
@@ -3419,6 +3504,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "interests": {
@@ -3427,6 +3513,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "list",
+        "titleStyle": "classic",
         "enabled": true,
         "label": "hobbies"
       },
@@ -3436,6 +3523,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true,
         "label": "language-display"
       }
@@ -3823,6 +3911,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "contact": {
@@ -3831,6 +3920,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "labels",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "experience": {
@@ -3840,6 +3930,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "timeline",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "education": {
@@ -3849,6 +3940,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "cards",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "skills": {
@@ -3857,6 +3949,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "progress-line",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "languages": {
@@ -3865,6 +3958,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "certifications": {
@@ -3874,6 +3968,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "projects": {
@@ -3883,6 +3978,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "references": {
@@ -3894,6 +3990,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "list",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "interests": {
@@ -3902,6 +3999,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "dot",
+        "titleStyle": "pill-filled",
         "enabled": true,
         "label": "hobbies"
       },
@@ -3911,6 +4009,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true,
         "label": "language-display"
       }
@@ -4298,6 +4397,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "contact": {
@@ -4306,6 +4406,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "labels",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "experience": {
@@ -4315,6 +4416,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "cards",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "education": {
@@ -4324,6 +4426,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "skills": {
@@ -4332,6 +4435,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "progress-circle",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "languages": {
@@ -4340,6 +4444,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "stars",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "certifications": {
@@ -4349,6 +4454,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "list",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "projects": {
@@ -4358,6 +4464,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "list",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "references": {
@@ -4369,6 +4476,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "dot",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "interests": {
@@ -4377,6 +4485,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "cards",
+        "titleStyle": "pill-outline",
         "enabled": true,
         "label": "hobbies"
       },
@@ -4386,6 +4495,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true,
         "label": "language-display"
       }
@@ -4773,6 +4883,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "contact": {
@@ -4781,6 +4892,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "experience": {
@@ -4790,6 +4902,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "education": {
@@ -4799,6 +4912,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "list",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "skills": {
@@ -4807,6 +4921,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "languages": {
@@ -4815,6 +4930,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "dots",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "certifications": {
@@ -4824,6 +4940,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "dot",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "projects": {
@@ -4833,6 +4950,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "dot",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "references": {
@@ -4844,6 +4962,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "cards",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "interests": {
@@ -4852,6 +4971,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true,
         "label": "hobbies"
       },
@@ -4861,6 +4981,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true,
         "label": "language-display"
       }
@@ -5244,6 +5365,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "contact": {
@@ -5252,6 +5374,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "experience": {
@@ -5261,6 +5384,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "list",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "education": {
@@ -5270,6 +5394,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "dot",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "skills": {
@@ -5278,6 +5403,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "stars",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "languages": {
@@ -5286,6 +5412,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "progress-line",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "certifications": {
@@ -5295,6 +5422,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "cards",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "projects": {
@@ -5304,6 +5432,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "timeline",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "references": {
@@ -5315,6 +5444,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "interests": {
@@ -5323,6 +5453,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "list",
+        "titleStyle": "ribbon",
         "enabled": true,
         "label": "hobbies"
       },
@@ -5332,6 +5463,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true,
         "label": "language-display"
       }
@@ -5715,6 +5847,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "contact": {
@@ -5723,6 +5856,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "labels",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "experience": {
@@ -5732,6 +5866,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "list",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "education": {
@@ -5741,6 +5876,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "dot",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "skills": {
@@ -5749,6 +5885,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "dots",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "languages": {
@@ -5757,6 +5894,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "stars",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "certifications": {
@@ -5766,6 +5904,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "dot",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "projects": {
@@ -5775,6 +5914,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "timeline",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "references": {
@@ -5786,6 +5926,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "cards",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "interests": {
@@ -5794,6 +5935,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "classic",
+        "titleStyle": "hexagon-icon",
         "enabled": true,
         "label": "hobbies"
       },
@@ -5803,6 +5945,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "hexagon-icon",
         "enabled": true,
         "label": "language-display"
       }
@@ -6190,6 +6333,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "tab",
         "enabled": true
       },
       "contact": {
@@ -6198,6 +6342,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "labels",
+        "titleStyle": "tab",
         "enabled": true
       },
       "experience": {
@@ -6207,6 +6352,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "timeline",
+        "titleStyle": "tab",
         "enabled": true
       },
       "education": {
@@ -6216,6 +6362,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "cards",
+        "titleStyle": "tab",
         "enabled": true
       },
       "skills": {
@@ -6224,6 +6371,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "dots",
+        "titleStyle": "tab",
         "enabled": true
       },
       "languages": {
@@ -6232,6 +6380,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "progress-circle",
+        "titleStyle": "tab",
         "enabled": true
       },
       "certifications": {
@@ -6241,6 +6390,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "cards",
+        "titleStyle": "tab",
         "enabled": true
       },
       "projects": {
@@ -6250,6 +6400,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "dot",
+        "titleStyle": "tab",
         "enabled": true
       },
       "references": {
@@ -6261,6 +6412,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "classic",
+        "titleStyle": "tab",
         "enabled": true
       },
       "interests": {
@@ -6269,6 +6421,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "list",
+        "titleStyle": "tab",
         "enabled": true,
         "label": "hobbies"
       },
@@ -6278,6 +6431,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "tab",
         "enabled": true,
         "label": "language-display"
       }
@@ -6665,6 +6819,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "contact": {
@@ -6673,6 +6828,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "classic",
         "enabled": true
       },
       "experience": {
@@ -6682,6 +6838,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "education": {
@@ -6691,6 +6848,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "list",
+        "titleStyle": "classic",
         "enabled": true
       },
       "skills": {
@@ -6699,6 +6857,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "languages": {
@@ -6707,6 +6866,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "dots",
+        "titleStyle": "classic",
         "enabled": true
       },
       "certifications": {
@@ -6716,6 +6876,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "projects": {
@@ -6725,6 +6886,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "dot",
+        "titleStyle": "classic",
         "enabled": true
       },
       "references": {
@@ -6736,6 +6898,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "list",
+        "titleStyle": "classic",
         "enabled": true
       },
       "interests": {
@@ -6744,6 +6907,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "dot",
+        "titleStyle": "classic",
         "enabled": true,
         "label": "hobbies"
       },
@@ -6753,6 +6917,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "cards",
+        "titleStyle": "classic",
         "enabled": true,
         "label": "language-display"
       }
@@ -7138,6 +7303,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "contact": {
@@ -7146,6 +7312,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "experience": {
@@ -7155,6 +7322,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "list",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "education": {
@@ -7164,6 +7332,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "dot",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "skills": {
@@ -7172,6 +7341,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "stars",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "languages": {
@@ -7180,6 +7350,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "progress-line",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "certifications": {
@@ -7189,6 +7360,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "list",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "projects": {
@@ -7198,6 +7370,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "timeline",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "references": {
@@ -7209,6 +7382,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "dot",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "interests": {
@@ -7217,6 +7391,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "cards",
+        "titleStyle": "pill-filled",
         "enabled": true,
         "label": "hobbies"
       },
@@ -7226,6 +7401,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "cards",
+        "titleStyle": "pill-filled",
         "enabled": true,
         "label": "language-display"
       }
@@ -7611,6 +7787,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "contact": {
@@ -7619,6 +7796,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "experience": {
@@ -7628,6 +7806,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "dot",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "education": {
@@ -7637,6 +7816,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "timeline",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "skills": {
@@ -7645,6 +7825,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "dots",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "languages": {
@@ -7653,6 +7834,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "progress-circle",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "certifications": {
@@ -7662,6 +7844,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "dot",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "projects": {
@@ -7671,6 +7854,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "cards",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "references": {
@@ -7682,6 +7866,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "cards",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "interests": {
@@ -7690,6 +7875,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true,
         "label": "hobbies"
       },
@@ -7699,6 +7885,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true,
         "label": "language-display"
       }
@@ -8086,6 +8273,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "contact": {
@@ -8094,6 +8282,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "experience": {
@@ -8103,6 +8292,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "timeline",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "education": {
@@ -8112,6 +8302,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "cards",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "skills": {
@@ -8120,6 +8311,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "progress-line",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "languages": {
@@ -8128,6 +8320,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "certifications": {
@@ -8137,6 +8330,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "cards",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "projects": {
@@ -8146,6 +8340,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "references": {
@@ -8157,6 +8352,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "interests": {
@@ -8165,6 +8361,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "list",
+        "titleStyle": "icon-bar",
         "enabled": true,
         "label": "hobbies"
       },
@@ -8174,6 +8371,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true,
         "label": "language-display"
       }
@@ -8560,6 +8758,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "contact": {
@@ -8568,6 +8767,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "experience": {
@@ -8577,6 +8777,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "cards",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "education": {
@@ -8586,6 +8787,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "skills": {
@@ -8594,6 +8796,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "progress-circle",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "languages": {
@@ -8602,6 +8805,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "stars",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "certifications": {
@@ -8611,6 +8815,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "projects": {
@@ -8620,6 +8825,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "list",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "references": {
@@ -8631,6 +8837,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "list",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "interests": {
@@ -8639,6 +8846,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "dot",
+        "titleStyle": "ribbon",
         "enabled": true,
         "label": "hobbies"
       },
@@ -8648,6 +8856,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true,
         "label": "language-display"
       }
@@ -9034,6 +9243,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "contact": {
@@ -9042,6 +9252,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "experience": {
@@ -9051,6 +9262,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "classic",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "education": {
@@ -9060,6 +9272,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "list",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "skills": {
@@ -9068,6 +9281,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "classic",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "languages": {
@@ -9076,6 +9290,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "dots",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "certifications": {
@@ -9085,6 +9300,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "list",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "projects": {
@@ -9094,6 +9310,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "dot",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "references": {
@@ -9105,6 +9322,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "dot",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "interests": {
@@ -9113,6 +9331,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "cards",
+        "titleStyle": "hexagon-icon",
         "enabled": true,
         "label": "hobbies"
       },
@@ -9122,6 +9341,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "hexagon-icon",
         "enabled": true,
         "label": "language-display"
       }
@@ -9508,6 +9728,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "tab",
         "enabled": true
       },
       "contact": {
@@ -9516,6 +9737,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "labels",
+        "titleStyle": "tab",
         "enabled": true
       },
       "experience": {
@@ -9525,6 +9747,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "list",
+        "titleStyle": "tab",
         "enabled": true
       },
       "education": {
@@ -9534,6 +9757,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "dot",
+        "titleStyle": "tab",
         "enabled": true
       },
       "skills": {
@@ -9542,6 +9766,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "stars",
+        "titleStyle": "tab",
         "enabled": true
       },
       "languages": {
@@ -9550,6 +9775,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "progress-line",
+        "titleStyle": "tab",
         "enabled": true
       },
       "certifications": {
@@ -9559,6 +9785,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "dot",
+        "titleStyle": "tab",
         "enabled": true
       },
       "projects": {
@@ -9568,6 +9795,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "timeline",
+        "titleStyle": "tab",
         "enabled": true
       },
       "references": {
@@ -9579,6 +9807,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "cards",
+        "titleStyle": "tab",
         "enabled": true
       },
       "interests": {
@@ -9587,6 +9816,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "classic",
+        "titleStyle": "tab",
         "enabled": true,
         "label": "hobbies"
       },
@@ -9596,6 +9826,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "tab",
         "enabled": true,
         "label": "language-display"
       }
@@ -9982,6 +10213,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "contact": {
@@ -9991,6 +10223,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "labels",
+        "titleStyle": "classic",
         "enabled": true
       },
       "experience": {
@@ -10000,6 +10233,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "dot",
+        "titleStyle": "classic",
         "enabled": true
       },
       "education": {
@@ -10009,6 +10243,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "timeline",
+        "titleStyle": "classic",
         "enabled": true
       },
       "skills": {
@@ -10018,6 +10253,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "dots",
+        "titleStyle": "classic",
         "enabled": true
       },
       "languages": {
@@ -10027,6 +10263,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "progress-circle",
+        "titleStyle": "classic",
         "enabled": true
       },
       "certifications": {
@@ -10036,6 +10273,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "cards",
+        "titleStyle": "classic",
         "enabled": true
       },
       "projects": {
@@ -10045,6 +10283,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "cards",
+        "titleStyle": "classic",
         "enabled": true
       },
       "references": {
@@ -10057,6 +10296,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "interests": {
@@ -10066,6 +10306,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "list",
+        "titleStyle": "classic",
         "enabled": true,
         "label": "hobbies"
       },
@@ -10076,6 +10317,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true,
         "label": "language-display"
       }
@@ -10462,6 +10704,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "contact": {
@@ -10471,6 +10714,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "labels",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "experience": {
@@ -10480,6 +10724,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "timeline",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "education": {
@@ -10489,6 +10734,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "cards",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "skills": {
@@ -10498,6 +10744,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "progress-line",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "languages": {
@@ -10507,6 +10754,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "certifications": {
@@ -10516,6 +10764,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "projects": {
@@ -10525,6 +10774,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "references": {
@@ -10537,6 +10787,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "list",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "interests": {
@@ -10546,6 +10797,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "dot",
+        "titleStyle": "pill-filled",
         "enabled": true,
         "label": "hobbies"
       },
@@ -10556,6 +10808,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true,
         "label": "language-display"
       }
@@ -10942,6 +11195,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "contact": {
@@ -10951,6 +11205,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "labels",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "experience": {
@@ -10960,6 +11215,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "cards",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "education": {
@@ -10969,6 +11225,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "skills": {
@@ -10978,6 +11235,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "progress-circle",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "languages": {
@@ -10987,6 +11245,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "stars",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "certifications": {
@@ -10996,6 +11255,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "list",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "projects": {
@@ -11005,6 +11265,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "list",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "references": {
@@ -11017,6 +11278,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "dot",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "interests": {
@@ -11026,6 +11288,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "cards",
+        "titleStyle": "pill-outline",
         "enabled": true,
         "label": "hobbies"
       },
@@ -11036,6 +11299,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true,
         "label": "language-display"
       }
@@ -11422,6 +11686,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "contact": {
@@ -11430,6 +11695,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "experience": {
@@ -11439,6 +11705,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "timeline",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "education": {
@@ -11448,6 +11715,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "timeline",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "skills": {
@@ -11456,6 +11724,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "progress-line",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "languages": {
@@ -11464,6 +11733,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "stars",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "certifications": {
@@ -11473,6 +11743,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "dot",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "projects": {
@@ -11482,6 +11753,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "dot",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "references": {
@@ -11493,6 +11765,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "dot",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "interests": {
@@ -11501,6 +11774,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "dot",
+        "titleStyle": "icon-bar",
         "enabled": true,
         "label": "hobbies"
       },
@@ -11510,6 +11784,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "cards",
+        "titleStyle": "icon-bar",
         "enabled": true,
         "label": "language-display"
       }
@@ -11894,6 +12169,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "contact": {
@@ -11902,6 +12178,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "experience": {
@@ -11911,6 +12188,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "timeline",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "education": {
@@ -11920,6 +12198,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "timeline",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "skills": {
@@ -11928,6 +12207,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "progress-line",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "languages": {
@@ -11936,6 +12216,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "stars",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "certifications": {
@@ -11945,6 +12226,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "dot",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "projects": {
@@ -11954,6 +12236,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "dot",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "references": {
@@ -11965,6 +12248,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "dot",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "interests": {
@@ -11973,6 +12257,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "dot",
+        "titleStyle": "ribbon",
         "enabled": true,
         "label": "hobbies"
       },
@@ -11982,6 +12267,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "cards",
+        "titleStyle": "ribbon",
         "enabled": true,
         "label": "language-display"
       }
@@ -12375,6 +12661,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "contact": {
@@ -12383,6 +12670,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "experience": {
@@ -12392,6 +12680,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "list",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "education": {
@@ -12401,6 +12690,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "dot",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "skills": {
@@ -12409,6 +12699,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "stars",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "languages": {
@@ -12417,6 +12708,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "progress-line",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "certifications": {
@@ -12426,6 +12718,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "list",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "projects": {
@@ -12435,6 +12728,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "timeline",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "references": {
@@ -12446,6 +12740,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "dot",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "interests": {
@@ -12454,6 +12749,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "cards",
+        "titleStyle": "hexagon-icon",
         "enabled": true,
         "label": "hobbies"
       },
@@ -12463,6 +12759,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "cards",
+        "titleStyle": "hexagon-icon",
         "enabled": true,
         "label": "language-display"
       }
@@ -12856,6 +13153,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "tab",
         "enabled": true
       },
       "contact": {
@@ -12865,6 +13163,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "tab",
         "enabled": true
       },
       "experience": {
@@ -12874,6 +13173,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "dot",
+        "titleStyle": "tab",
         "enabled": true
       },
       "education": {
@@ -12883,6 +13183,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "timeline",
+        "titleStyle": "tab",
         "enabled": true
       },
       "skills": {
@@ -12892,6 +13193,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "dots",
+        "titleStyle": "tab",
         "enabled": true
       },
       "languages": {
@@ -12901,6 +13203,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "progress-circle",
+        "titleStyle": "tab",
         "enabled": true
       },
       "certifications": {
@@ -12910,6 +13213,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "dot",
+        "titleStyle": "tab",
         "enabled": true
       },
       "projects": {
@@ -12919,6 +13223,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "cards",
+        "titleStyle": "tab",
         "enabled": true
       },
       "references": {
@@ -12931,6 +13236,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "cards",
+        "titleStyle": "tab",
         "enabled": true
       },
       "interests": {
@@ -12940,6 +13246,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "classic",
+        "titleStyle": "tab",
         "enabled": true,
         "label": "hobbies"
       },
@@ -12950,6 +13257,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "tab",
         "enabled": true,
         "label": "language-display"
       }
@@ -13347,6 +13655,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "contact": {
@@ -13356,6 +13665,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "classic",
         "enabled": true
       },
       "experience": {
@@ -13365,6 +13675,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "timeline",
+        "titleStyle": "classic",
         "enabled": true
       },
       "education": {
@@ -13374,6 +13685,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "cards",
+        "titleStyle": "classic",
         "enabled": true
       },
       "skills": {
@@ -13383,6 +13695,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "progress-line",
+        "titleStyle": "classic",
         "enabled": true
       },
       "languages": {
@@ -13392,6 +13705,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "certifications": {
@@ -13401,6 +13715,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "cards",
+        "titleStyle": "classic",
         "enabled": true
       },
       "projects": {
@@ -13410,6 +13725,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "references": {
@@ -13422,6 +13738,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "interests": {
@@ -13431,6 +13748,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "list",
+        "titleStyle": "classic",
         "enabled": true,
         "label": "hobbies"
       },
@@ -13441,6 +13759,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true,
         "label": "language-display"
       }
@@ -13838,6 +14157,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "contact": {
@@ -13846,6 +14166,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "experience": {
@@ -13855,6 +14176,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "cards",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "education": {
@@ -13864,6 +14186,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "skills": {
@@ -13872,6 +14195,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "progress-circle",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "languages": {
@@ -13880,6 +14204,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "stars",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "certifications": {
@@ -13889,6 +14214,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "projects": {
@@ -13898,6 +14224,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "list",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "references": {
@@ -13909,6 +14236,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "list",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "interests": {
@@ -13917,6 +14245,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "dot",
+        "titleStyle": "pill-filled",
         "enabled": true,
         "label": "hobbies"
       },
@@ -13926,6 +14255,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true,
         "label": "language-display"
       }
@@ -14323,6 +14653,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "contact": {
@@ -14331,6 +14662,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "experience": {
@@ -14340,6 +14672,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "education": {
@@ -14349,6 +14682,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "list",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "skills": {
@@ -14357,6 +14691,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "languages": {
@@ -14365,6 +14700,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "dots",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "certifications": {
@@ -14374,6 +14710,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "list",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "projects": {
@@ -14383,6 +14720,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "dot",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "references": {
@@ -14394,6 +14732,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "dot",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "interests": {
@@ -14402,6 +14741,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "cards",
+        "titleStyle": "pill-outline",
         "enabled": true,
         "label": "hobbies"
       },
@@ -14411,6 +14751,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true,
         "label": "language-display"
       }
@@ -14808,6 +15149,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "contact": {
@@ -14816,6 +15158,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "labels",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "experience": {
@@ -14825,6 +15168,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "list",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "education": {
@@ -14834,6 +15178,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "dot",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "skills": {
@@ -14842,6 +15187,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "stars",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "languages": {
@@ -14850,6 +15196,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "progress-line",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "certifications": {
@@ -14859,6 +15206,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "dot",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "projects": {
@@ -14868,6 +15216,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "timeline",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "references": {
@@ -14879,6 +15228,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "cards",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "interests": {
@@ -14887,6 +15237,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true,
         "label": "hobbies"
       },
@@ -14896,6 +15247,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true,
         "label": "language-display"
       }
@@ -15293,6 +15645,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "contact": {
@@ -15301,6 +15654,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "labels",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "experience": {
@@ -15310,6 +15664,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "dot",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "education": {
@@ -15319,6 +15674,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "timeline",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "skills": {
@@ -15327,6 +15683,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "dots",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "languages": {
@@ -15335,6 +15692,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "progress-circle",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "certifications": {
@@ -15344,6 +15702,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "cards",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "projects": {
@@ -15353,6 +15712,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "cards",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "references": {
@@ -15364,6 +15724,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "interests": {
@@ -15372,6 +15733,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "list",
+        "titleStyle": "ribbon",
         "enabled": true,
         "label": "hobbies"
       },
@@ -15381,6 +15743,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true,
         "label": "language-display"
       }
@@ -15778,6 +16141,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "contact": {
@@ -15786,6 +16150,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "labels",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "experience": {
@@ -15795,6 +16160,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "timeline",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "education": {
@@ -15804,6 +16170,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "cards",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "skills": {
@@ -15812,6 +16179,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "progress-line",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "languages": {
@@ -15820,6 +16188,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "classic",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "certifications": {
@@ -15829,6 +16198,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "classic",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "projects": {
@@ -15838,6 +16208,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "classic",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "references": {
@@ -15849,6 +16220,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "list",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "interests": {
@@ -15857,6 +16229,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "dot",
+        "titleStyle": "hexagon-icon",
         "enabled": true,
         "label": "hobbies"
       },
@@ -15866,6 +16239,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "hexagon-icon",
         "enabled": true,
         "label": "language-display"
       }
@@ -16263,6 +16637,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "tab",
         "enabled": true
       },
       "contact": {
@@ -16271,6 +16646,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "labels",
+        "titleStyle": "tab",
         "enabled": true
       },
       "experience": {
@@ -16280,6 +16656,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "cards",
+        "titleStyle": "tab",
         "enabled": true
       },
       "education": {
@@ -16289,6 +16666,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "classic",
+        "titleStyle": "tab",
         "enabled": true
       },
       "skills": {
@@ -16297,6 +16675,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "progress-circle",
+        "titleStyle": "tab",
         "enabled": true
       },
       "languages": {
@@ -16305,6 +16684,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "stars",
+        "titleStyle": "tab",
         "enabled": true
       },
       "certifications": {
@@ -16314,6 +16694,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "list",
+        "titleStyle": "tab",
         "enabled": true
       },
       "projects": {
@@ -16323,6 +16704,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "list",
+        "titleStyle": "tab",
         "enabled": true
       },
       "references": {
@@ -16334,6 +16716,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "dot",
+        "titleStyle": "tab",
         "enabled": true
       },
       "interests": {
@@ -16342,6 +16725,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "cards",
+        "titleStyle": "tab",
         "enabled": true,
         "label": "hobbies"
       },
@@ -16351,6 +16735,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "tab",
         "enabled": true,
         "label": "language-display"
       }
@@ -16748,6 +17133,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "contact": {
@@ -16756,6 +17142,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "classic",
         "enabled": true
       },
       "experience": {
@@ -16765,6 +17152,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "education": {
@@ -16774,6 +17162,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "list",
+        "titleStyle": "classic",
         "enabled": true
       },
       "skills": {
@@ -16782,6 +17171,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "languages": {
@@ -16790,6 +17180,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "dots",
+        "titleStyle": "classic",
         "enabled": true
       },
       "certifications": {
@@ -16799,6 +17190,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "dot",
+        "titleStyle": "classic",
         "enabled": true
       },
       "projects": {
@@ -16808,6 +17200,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "dot",
+        "titleStyle": "classic",
         "enabled": true
       },
       "references": {
@@ -16819,6 +17212,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "cards",
+        "titleStyle": "classic",
         "enabled": true
       },
       "interests": {
@@ -16827,6 +17221,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true,
         "label": "hobbies"
       },
@@ -16836,6 +17231,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true,
         "label": "language-display"
       }
@@ -17229,6 +17625,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "contact": {
@@ -17237,6 +17634,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "experience": {
@@ -17246,6 +17644,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "list",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "education": {
@@ -17255,6 +17654,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "dot",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "skills": {
@@ -17263,6 +17663,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "stars",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "languages": {
@@ -17271,6 +17672,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "progress-line",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "certifications": {
@@ -17280,6 +17682,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "cards",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "projects": {
@@ -17289,6 +17692,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "timeline",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "references": {
@@ -17300,6 +17704,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "interests": {
@@ -17308,6 +17713,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "list",
+        "titleStyle": "pill-filled",
         "enabled": true,
         "label": "hobbies"
       },
@@ -17317,6 +17723,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true,
         "label": "language-display"
       }
@@ -17710,6 +18117,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "contact": {
@@ -17718,6 +18126,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "labels",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "experience": {
@@ -17727,6 +18136,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "list",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "education": {
@@ -17736,6 +18146,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "dot",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "skills": {
@@ -17744,6 +18155,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "dots",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "languages": {
@@ -17752,6 +18164,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "stars",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "certifications": {
@@ -17761,6 +18174,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "dot",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "projects": {
@@ -17770,6 +18184,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "timeline",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "references": {
@@ -17781,6 +18196,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "cards",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "interests": {
@@ -17789,6 +18205,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true,
         "label": "hobbies"
       },
@@ -17798,6 +18215,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true,
         "label": "language-display"
       }
@@ -18195,6 +18613,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "contact": {
@@ -18203,6 +18622,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "labels",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "experience": {
@@ -18212,6 +18632,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "timeline",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "education": {
@@ -18221,6 +18642,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "cards",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "skills": {
@@ -18229,6 +18651,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "dots",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "languages": {
@@ -18237,6 +18660,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "progress-circle",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "certifications": {
@@ -18246,6 +18670,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "cards",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "projects": {
@@ -18255,6 +18680,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "dot",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "references": {
@@ -18266,6 +18692,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true
       },
       "interests": {
@@ -18274,6 +18701,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "list",
+        "titleStyle": "icon-bar",
         "enabled": true,
         "label": "hobbies"
       },
@@ -18283,6 +18711,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "icon-bar",
         "enabled": true,
         "label": "language-display"
       }
@@ -18680,6 +19109,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "contact": {
@@ -18688,6 +19118,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "experience": {
@@ -18697,6 +19128,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "education": {
@@ -18706,6 +19138,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "list",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "skills": {
@@ -18714,6 +19147,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "languages": {
@@ -18722,6 +19156,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "dots",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "certifications": {
@@ -18731,6 +19166,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "classic",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "projects": {
@@ -18740,6 +19176,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "dot",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "references": {
@@ -18751,6 +19188,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "list",
+        "titleStyle": "ribbon",
         "enabled": true
       },
       "interests": {
@@ -18759,6 +19197,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "dot",
+        "titleStyle": "ribbon",
         "enabled": true,
         "label": "hobbies"
       },
@@ -18768,6 +19207,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "cards",
+        "titleStyle": "ribbon",
         "enabled": true,
         "label": "language-display"
       }
@@ -19162,6 +19602,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "contact": {
@@ -19170,6 +19611,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "experience": {
@@ -19179,6 +19621,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "list",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "education": {
@@ -19188,6 +19631,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "dot",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "skills": {
@@ -19196,6 +19640,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "stars",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "languages": {
@@ -19204,6 +19649,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "progress-line",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "certifications": {
@@ -19213,6 +19659,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "list",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "projects": {
@@ -19222,6 +19669,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "timeline",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "references": {
@@ -19233,6 +19681,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "dot",
+        "titleStyle": "hexagon-icon",
         "enabled": true
       },
       "interests": {
@@ -19241,6 +19690,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "cards",
+        "titleStyle": "hexagon-icon",
         "enabled": true,
         "label": "hobbies"
       },
@@ -19250,6 +19700,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "cards",
+        "titleStyle": "hexagon-icon",
         "enabled": true,
         "label": "language-display"
       }
@@ -19644,6 +20095,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "tab",
         "enabled": true
       },
       "contact": {
@@ -19652,6 +20104,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "tab",
         "enabled": true
       },
       "experience": {
@@ -19661,6 +20114,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "dot",
+        "titleStyle": "tab",
         "enabled": true
       },
       "education": {
@@ -19670,6 +20124,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "timeline",
+        "titleStyle": "tab",
         "enabled": true
       },
       "skills": {
@@ -19678,6 +20133,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "dots",
+        "titleStyle": "tab",
         "enabled": true
       },
       "languages": {
@@ -19686,6 +20142,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "progress-circle",
+        "titleStyle": "tab",
         "enabled": true
       },
       "certifications": {
@@ -19695,6 +20152,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "dot",
+        "titleStyle": "tab",
         "enabled": true
       },
       "projects": {
@@ -19704,6 +20162,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "cards",
+        "titleStyle": "tab",
         "enabled": true
       },
       "references": {
@@ -19715,6 +20174,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "cards",
+        "titleStyle": "tab",
         "enabled": true
       },
       "interests": {
@@ -19723,6 +20183,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "classic",
+        "titleStyle": "tab",
         "enabled": true,
         "label": "hobbies"
       },
@@ -19732,6 +20193,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "tab",
         "enabled": true,
         "label": "language-display"
       }
@@ -20128,6 +20590,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "contact": {
@@ -20136,6 +20599,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "classic",
         "enabled": true
       },
       "experience": {
@@ -20145,6 +20609,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "timeline",
+        "titleStyle": "classic",
         "enabled": true
       },
       "education": {
@@ -20154,6 +20619,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "cards",
+        "titleStyle": "classic",
         "enabled": true
       },
       "skills": {
@@ -20162,6 +20628,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "progress-line",
+        "titleStyle": "classic",
         "enabled": true
       },
       "languages": {
@@ -20170,6 +20637,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "certifications": {
@@ -20179,6 +20647,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "cards",
+        "titleStyle": "classic",
         "enabled": true
       },
       "projects": {
@@ -20188,6 +20657,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "references": {
@@ -20199,6 +20669,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true
       },
       "interests": {
@@ -20207,6 +20678,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "list",
+        "titleStyle": "classic",
         "enabled": true,
         "label": "hobbies"
       },
@@ -20216,6 +20688,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "classic",
         "enabled": true,
         "label": "language-display"
       }
@@ -20612,6 +21085,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "contact": {
@@ -20620,6 +21094,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "experience": {
@@ -20629,6 +21104,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "cards",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "education": {
@@ -20638,6 +21114,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "skills": {
@@ -20646,6 +21123,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "progress-circle",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "languages": {
@@ -20654,6 +21132,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "stars",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "certifications": {
@@ -20663,6 +21142,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "projects": {
@@ -20672,6 +21152,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "list",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "references": {
@@ -20683,6 +21164,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "list",
+        "titleStyle": "pill-filled",
         "enabled": true
       },
       "interests": {
@@ -20691,6 +21173,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "dot",
+        "titleStyle": "pill-filled",
         "enabled": true,
         "label": "hobbies"
       },
@@ -20700,6 +21183,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "pill-filled",
         "enabled": true,
         "label": "language-display"
       }
@@ -21096,6 +21580,7 @@
           "mdi-account-circle-outline"
         ],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "contact": {
@@ -21104,6 +21589,7 @@
         "icon": "mdi-card-account-phone-outline",
         "iconAlternatives": ["mdi-email-outline", "mdi-phone-outline"],
         "form": "icons",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "experience": {
@@ -21113,6 +21599,7 @@
         "icon": "mdi-briefcase-outline",
         "iconAlternatives": ["mdi-timeline-clock-outline"],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "education": {
@@ -21122,6 +21609,7 @@
         "icon": "mdi-school-outline",
         "iconAlternatives": ["mdi-book-open-variant-outline"],
         "form": "list",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "skills": {
@@ -21130,6 +21618,7 @@
         "icon": "mdi-tools",
         "iconAlternatives": ["mdi-lightning-bolt-outline"],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "languages": {
@@ -21138,6 +21627,7 @@
         "icon": "mdi-translate",
         "iconAlternatives": ["mdi-earth"],
         "form": "dots",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "certifications": {
@@ -21147,6 +21637,7 @@
         "icon": "mdi-certificate-outline",
         "iconAlternatives": ["mdi-seal-variant"],
         "form": "list",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "projects": {
@@ -21156,6 +21647,7 @@
         "icon": "mdi-folder-star-outline",
         "iconAlternatives": ["mdi-rocket-launch-outline"],
         "form": "dot",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "references": {
@@ -21167,6 +21659,7 @@
           "mdi-comment-account-outline"
         ],
         "form": "dot",
+        "titleStyle": "pill-outline",
         "enabled": true
       },
       "interests": {
@@ -21175,6 +21668,7 @@
         "icon": "mdi-heart-outline",
         "iconAlternatives": ["mdi-star-outline"],
         "form": "cards",
+        "titleStyle": "pill-outline",
         "enabled": true,
         "label": "hobbies"
       },
@@ -21184,6 +21678,7 @@
         "icon": "mdi-format-letter-case",
         "iconAlternatives": ["mdi-label-outline"],
         "form": "classic",
+        "titleStyle": "pill-outline",
         "enabled": true,
         "label": "language-display"
       }
@@ -21580,6 +22075,7 @@
         "mdi-account-circle-outline"
       ],
       "form": "classic",
+      "titleStyle": "icon-bar",
       "enabled": true
     },
     "contact": {
@@ -21591,6 +22087,7 @@
         "mdi-phone-outline"
       ],
       "form": "icons",
+      "titleStyle": "icon-bar",
       "enabled": true
     },
     "experience": {
@@ -21602,6 +22099,7 @@
         "mdi-timeline-clock-outline"
       ],
       "form": "timeline",
+      "titleStyle": "icon-bar",
       "enabled": true
     },
     "education": {
@@ -21613,6 +22111,7 @@
         "mdi-book-open-variant-outline"
       ],
       "form": "timeline",
+      "titleStyle": "icon-bar",
       "enabled": true
     },
     "skills": {
@@ -21623,6 +22122,7 @@
         "mdi-lightning-bolt-outline"
       ],
       "form": "progress-line",
+      "titleStyle": "icon-bar",
       "enabled": true
     },
     "languages": {
@@ -21633,6 +22133,7 @@
         "mdi-earth"
       ],
       "form": "stars",
+      "titleStyle": "icon-bar",
       "enabled": true
     },
     "certifications": {
@@ -21643,6 +22144,7 @@
         "mdi-seal-variant"
       ],
       "form": "dot",
+      "titleStyle": "icon-bar",
       "enabled": true
     },
     "projects": {
@@ -21654,6 +22156,7 @@
         "mdi-rocket-launch-outline"
       ],
       "form": "cards",
+      "titleStyle": "icon-bar",
       "enabled": true
     },
     "interests": {
@@ -21664,6 +22167,7 @@
         "mdi-star-outline"
       ],
       "form": "dot",
+      "titleStyle": "icon-bar",
       "enabled": true,
       "label": "hobbies"
     }
@@ -21993,6 +22497,7 @@
         "mdi-account-circle-outline"
       ],
       "form": "classic",
+      "titleStyle": "ribbon",
       "enabled": true
     },
     "contact": {
@@ -22004,6 +22509,7 @@
         "mdi-phone-outline"
       ],
       "form": "icons",
+      "titleStyle": "ribbon",
       "enabled": true
     },
     "experience": {
@@ -22015,6 +22521,7 @@
         "mdi-timeline-clock-outline"
       ],
       "form": "timeline",
+      "titleStyle": "ribbon",
       "enabled": true
     },
     "education": {
@@ -22026,6 +22533,7 @@
         "mdi-book-open-variant-outline"
       ],
       "form": "timeline",
+      "titleStyle": "ribbon",
       "enabled": true
     },
     "skills": {
@@ -22036,6 +22544,7 @@
         "mdi-lightning-bolt-outline"
       ],
       "form": "progress-line",
+      "titleStyle": "ribbon",
       "enabled": true
     },
     "languages": {
@@ -22046,6 +22555,7 @@
         "mdi-earth"
       ],
       "form": "stars",
+      "titleStyle": "ribbon",
       "enabled": true
     },
     "certifications": {
@@ -22056,6 +22566,7 @@
         "mdi-seal-variant"
       ],
       "form": "dot",
+      "titleStyle": "ribbon",
       "enabled": true
     },
     "projects": {
@@ -22067,6 +22578,7 @@
         "mdi-rocket-launch-outline"
       ],
       "form": "cards",
+      "titleStyle": "ribbon",
       "enabled": true
     },
     "interests": {
@@ -22077,6 +22589,7 @@
         "mdi-star-outline"
       ],
       "form": "dot",
+      "titleStyle": "ribbon",
       "enabled": true,
       "label": "hobbies"
     }
@@ -22401,6 +22914,7 @@
       "order": 10,
       "icon": "mdi-card-account-phone-outline",
       "form": "icons",
+      "titleStyle": "hexagon-icon",
       "enabled": true
     },
     "profile": {
@@ -22408,6 +22922,7 @@
       "order": 10,
       "icon": "mdi-account-outline",
       "form": "classic",
+      "titleStyle": "hexagon-icon",
       "enabled": true
     },
     "skills": {
@@ -22415,6 +22930,7 @@
       "order": 20,
       "icon": "mdi-tools",
       "form": "progress-line",
+      "titleStyle": "hexagon-icon",
       "enabled": true
     },
     "languages": {
@@ -22422,6 +22938,7 @@
       "order": 30,
       "icon": "mdi-translate",
       "form": "stars",
+      "titleStyle": "hexagon-icon",
       "enabled": true
     },
     "experience": {
@@ -22430,6 +22947,7 @@
       "column": "full",
       "icon": "mdi-briefcase-outline",
       "form": "timeline",
+      "titleStyle": "hexagon-icon",
       "enabled": true
     }
   },
@@ -22753,6 +23271,7 @@
       "order": 10,
       "icon": "mdi-card-account-phone-outline",
       "form": "icons",
+      "titleStyle": "tab",
       "enabled": true
     },
     "profile": {
@@ -22760,6 +23279,7 @@
       "order": 10,
       "icon": "mdi-account-outline",
       "form": "classic",
+      "titleStyle": "tab",
       "enabled": true
     },
     "skills": {
@@ -22767,6 +23287,7 @@
       "order": 20,
       "icon": "mdi-tools",
       "form": "progress-line",
+      "titleStyle": "tab",
       "enabled": true
     },
     "languages": {
@@ -22774,6 +23295,7 @@
       "order": 30,
       "icon": "mdi-translate",
       "form": "stars",
+      "titleStyle": "tab",
       "enabled": true
     },
     "experience": {
@@ -22782,6 +23304,7 @@
       "column": "full",
       "icon": "mdi-briefcase-outline",
       "form": "timeline",
+      "titleStyle": "tab",
       "enabled": true
     }
   },
