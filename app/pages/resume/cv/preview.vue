@@ -33,6 +33,7 @@ import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.
 import ResumePreviewToolbar from '~/components/ResumePreviewToolbar.vue'
 import ResumePreviewPageBreak from '~/components/ResumePreviewPageBreak.vue'
 import CvEditableSectionContent from '~/components/cv/sections/CvEditableSectionContent.vue'
+import CvSectionTitleToolbar from '~/components/cv/sections/CvSectionTitleToolbar.vue'
 
 const { t } = useI18n()
 
@@ -123,7 +124,9 @@ const activeTemplate = computed(
     ) || GENERATED_RESUME_TEMPLATES[0],
 )
 useResumeGoogleFonts(activeTemplate)
+const sectionIconOverrides = reactive<Record<string, string>>({})
 const {
+  normalizedTemplate,
   allSections,
   contentSections,
   asideSections,
@@ -133,9 +136,10 @@ const {
   rightAsideSections,
   sectionIcon: runtimeSectionIcon,
   sectionForm,
+  sectionTitleStyle,
   sectionColumn,
   templateDesign: activeTemplateDesign,
-} = useGeneratedCvTemplateRuntime(activeTemplate)
+} = useGeneratedCvTemplateRuntime(activeTemplate, { sectionIconOverrides })
 
 const cvLayoutComponentMap = {
   aside: CvLayoutAside,
@@ -930,6 +934,21 @@ function sectionIcon(sectionKey: string) {
     fallbackSectionIconMap[toSectionKey(sectionKey)] ||
     runtimeSectionIcon(sectionKey)
   )
+}
+
+function getSectionIconAlternatives(sectionKey: string) {
+  const key = toSectionKey(sectionKey)
+  const alternatives =
+    normalizedTemplate.value.sections.find((section) => section.key === key)
+      ?.iconAlternatives || []
+  return Array.from(
+    new Set([sectionIcon(key), ...alternatives, fallbackSectionIconMap[key]]),
+  ).filter((icon): icon is string => typeof icon === 'string' && !!icon)
+}
+
+function setSectionIcon(sectionKey: string, icon: unknown) {
+  if (typeof icon !== 'string' || !icon) return
+  sectionIconOverrides[toSectionKey(sectionKey)] = icon
 }
 
 function toSectionKey(section?: string) {
@@ -2791,21 +2810,16 @@ watch(
                     @click.stop="moveSection('asideOne', section, 'down')"
                   />
                 </div>
-                <strong class="cv-section-title"
-                  ><v-icon
-                    :icon="sectionIcon(toSectionKey(section))"
-                    size="16"
-                    class="mr-1" /><HoverRichTextEditor
-                    class="cv-section-title-editor"
-                    :model-value="sectionDisplayTitle(section)"
-                    font-size="13px"
-                    font-weight="700"
-                    :font-family="textFontPreset('sectionLabel')"
-                    color="inherit"
-                    @update:model-value="
-                      updateSectionDisplayTitle(section, $event)
-                    "
-                /></strong>
+                <CvSectionTitleToolbar
+                  :section-key="toSectionKey(section)"
+                  :title="sectionDisplayTitle(section)"
+                  :icon="sectionIcon(toSectionKey(section))"
+                  :icon-alternatives="getSectionIconAlternatives(section)"
+                  :title-style="sectionTitleStyle(toSectionKey(section))"
+                  :font-family="textFontPreset('sectionLabel')"
+                  @update:title="updateSectionDisplayTitle(section, $event)"
+                  @update:icon="setSectionIcon(section, $event)"
+                />
                 <CvEditableSectionContent
                   :section-key="toSectionKey(section)"
                   :variant="
@@ -2905,21 +2919,16 @@ watch(
                     @click.stop="moveSection('asideTwo', section, 'down')"
                   />
                 </div>
-                <strong class="cv-section-title"
-                  ><v-icon
-                    :icon="sectionIcon(toSectionKey(section))"
-                    size="16"
-                    class="mr-1" /><HoverRichTextEditor
-                    class="cv-section-title-editor"
-                    :model-value="sectionDisplayTitle(section)"
-                    font-size="13px"
-                    font-weight="700"
-                    :font-family="textFontPreset('sectionLabel')"
-                    color="inherit"
-                    @update:model-value="
-                      updateSectionDisplayTitle(section, $event)
-                    "
-                /></strong>
+                <CvSectionTitleToolbar
+                  :section-key="toSectionKey(section)"
+                  :title="sectionDisplayTitle(section)"
+                  :icon="sectionIcon(toSectionKey(section))"
+                  :icon-alternatives="getSectionIconAlternatives(section)"
+                  :title-style="sectionTitleStyle(toSectionKey(section))"
+                  :font-family="textFontPreset('sectionLabel')"
+                  @update:title="updateSectionDisplayTitle(section, $event)"
+                  @update:icon="setSectionIcon(section, $event)"
+                />
                 <CvEditableSectionContent
                   :section-key="toSectionKey(section)"
                   :variant="
@@ -3017,21 +3026,17 @@ watch(
                     @click.stop="moveSection('contentBase', section, 'down')"
                   />
                 </div>
-                <strong class="cv-section-title"
-                  ><v-icon
-                    :icon="sectionIcon(toSectionKey(section))"
-                    size="16"
-                    class="mr-1" /><HoverRichTextEditor
-                    class="cv-section-title-editor"
-                    :model-value="sectionDisplayTitle(section)"
-                    font-size="13px"
-                    font-weight="700"
-                    :font-family="textFontPreset('sectionLabel')"
-                    color="inherit"
-                    @update:model-value="
-                      updateSectionDisplayTitle(section, $event)
-                    " /></strong
-                ><CvEditableSectionContent
+                <CvSectionTitleToolbar
+                  :section-key="toSectionKey(section)"
+                  :title="sectionDisplayTitle(section)"
+                  :icon="sectionIcon(toSectionKey(section))"
+                  :icon-alternatives="getSectionIconAlternatives(section)"
+                  :title-style="sectionTitleStyle(toSectionKey(section))"
+                  :font-family="textFontPreset('sectionLabel')"
+                  @update:title="updateSectionDisplayTitle(section, $event)"
+                  @update:icon="setSectionIcon(section, $event)"
+                />
+                <CvEditableSectionContent
                   :section-key="toSectionKey(section)"
                   :variant="
                     effectiveSectionType(
@@ -3127,21 +3132,17 @@ watch(
                     "
                   />
                 </div>
-                <strong class="cv-section-title"
-                  ><v-icon
-                    :icon="sectionIcon(toSectionKey(section))"
-                    size="16"
-                    class="mr-1" /><HoverRichTextEditor
-                    class="cv-section-title-editor"
-                    :model-value="sectionDisplayTitle(section)"
-                    font-size="13px"
-                    font-weight="700"
-                    :font-family="textFontPreset('sectionLabel')"
-                    color="inherit"
-                    @update:model-value="
-                      updateSectionDisplayTitle(section, $event)
-                    " /></strong
-                ><CvEditableSectionContent
+                <CvSectionTitleToolbar
+                  :section-key="toSectionKey(section)"
+                  :title="sectionDisplayTitle(section)"
+                  :icon="sectionIcon(toSectionKey(section))"
+                  :icon-alternatives="getSectionIconAlternatives(section)"
+                  :title-style="sectionTitleStyle(toSectionKey(section))"
+                  :font-family="textFontPreset('sectionLabel')"
+                  @update:title="updateSectionDisplayTitle(section, $event)"
+                  @update:icon="setSectionIcon(section, $event)"
+                />
+                <CvEditableSectionContent
                   :section-key="toSectionKey(section)"
                   :variant="
                     effectiveSectionType(
@@ -3231,21 +3232,17 @@ watch(
                     @click.stop="moveSection('mainOne', section, 'down')"
                   />
                 </div>
-                <strong class="cv-section-title"
-                  ><v-icon
-                    :icon="sectionIcon(toSectionKey(section))"
-                    size="16"
-                    class="mr-1" /><HoverRichTextEditor
-                    class="cv-section-title-editor"
-                    :model-value="sectionDisplayTitle(section)"
-                    font-size="13px"
-                    font-weight="700"
-                    :font-family="textFontPreset('sectionLabel')"
-                    color="inherit"
-                    @update:model-value="
-                      updateSectionDisplayTitle(section, $event)
-                    " /></strong
-                ><CvEditableSectionContent
+                <CvSectionTitleToolbar
+                  :section-key="toSectionKey(section)"
+                  :title="sectionDisplayTitle(section)"
+                  :icon="sectionIcon(toSectionKey(section))"
+                  :icon-alternatives="getSectionIconAlternatives(section)"
+                  :title-style="sectionTitleStyle(toSectionKey(section))"
+                  :font-family="textFontPreset('sectionLabel')"
+                  @update:title="updateSectionDisplayTitle(section, $event)"
+                  @update:icon="setSectionIcon(section, $event)"
+                />
+                <CvEditableSectionContent
                   :section-key="toSectionKey(section)"
                   :variant="
                     effectiveSectionType(
@@ -3339,21 +3336,17 @@ watch(
                     @click.stop="moveSection('mainTwoTop', section, 'down')"
                   />
                 </div>
-                <strong class="cv-section-title"
-                  ><v-icon
-                    :icon="sectionIcon(toSectionKey(section))"
-                    size="16"
-                    class="mr-1" /><HoverRichTextEditor
-                    class="cv-section-title-editor"
-                    :model-value="sectionDisplayTitle(section)"
-                    font-size="13px"
-                    font-weight="700"
-                    :font-family="textFontPreset('sectionLabel')"
-                    color="inherit"
-                    @update:model-value="
-                      updateSectionDisplayTitle(section, $event)
-                    " /></strong
-                ><CvEditableSectionContent
+                <CvSectionTitleToolbar
+                  :section-key="toSectionKey(section)"
+                  :title="sectionDisplayTitle(section)"
+                  :icon="sectionIcon(toSectionKey(section))"
+                  :icon-alternatives="getSectionIconAlternatives(section)"
+                  :title-style="sectionTitleStyle(toSectionKey(section))"
+                  :font-family="textFontPreset('sectionLabel')"
+                  @update:title="updateSectionDisplayTitle(section, $event)"
+                  @update:icon="setSectionIcon(section, $event)"
+                />
+                <CvEditableSectionContent
                   :section-key="toSectionKey(section)"
                   :variant="
                     effectiveSectionType(
@@ -3446,21 +3439,17 @@ watch(
                         "
                       />
                     </div>
-                    <strong class="cv-section-title"
-                      ><v-icon
-                        :icon="sectionIcon(toSectionKey(section))"
-                        size="16"
-                        class="mr-1" /><HoverRichTextEditor
-                        class="cv-section-title-editor"
-                        :model-value="sectionDisplayTitle(section)"
-                        font-size="13px"
-                        font-weight="700"
-                        :font-family="textFontPreset('sectionLabel')"
-                        color="inherit"
-                        @update:model-value="
-                          updateSectionDisplayTitle(section, $event)
-                        " /></strong
-                    ><CvEditableSectionContent
+                    <CvSectionTitleToolbar
+                      :section-key="toSectionKey(section)"
+                      :title="sectionDisplayTitle(section)"
+                      :icon="sectionIcon(toSectionKey(section))"
+                      :icon-alternatives="getSectionIconAlternatives(section)"
+                      :title-style="sectionTitleStyle(toSectionKey(section))"
+                      :font-family="textFontPreset('sectionLabel')"
+                      @update:title="updateSectionDisplayTitle(section, $event)"
+                      @update:icon="setSectionIcon(section, $event)"
+                    />
+                    <CvEditableSectionContent
                       :section-key="toSectionKey(section)"
                       :variant="
                         effectiveSectionType(
@@ -3553,21 +3542,17 @@ watch(
                         "
                       />
                     </div>
-                    <strong class="cv-section-title"
-                      ><v-icon
-                        :icon="sectionIcon(toSectionKey(section))"
-                        size="16"
-                        class="mr-1" /><HoverRichTextEditor
-                        class="cv-section-title-editor"
-                        :model-value="sectionDisplayTitle(section)"
-                        font-size="13px"
-                        font-weight="700"
-                        :font-family="textFontPreset('sectionLabel')"
-                        color="inherit"
-                        @update:model-value="
-                          updateSectionDisplayTitle(section, $event)
-                        " /></strong
-                    ><CvEditableSectionContent
+                    <CvSectionTitleToolbar
+                      :section-key="toSectionKey(section)"
+                      :title="sectionDisplayTitle(section)"
+                      :icon="sectionIcon(toSectionKey(section))"
+                      :icon-alternatives="getSectionIconAlternatives(section)"
+                      :title-style="sectionTitleStyle(toSectionKey(section))"
+                      :font-family="textFontPreset('sectionLabel')"
+                      @update:title="updateSectionDisplayTitle(section, $event)"
+                      @update:icon="setSectionIcon(section, $event)"
+                    />
+                    <CvEditableSectionContent
                       :section-key="toSectionKey(section)"
                       :variant="
                         effectiveSectionType(
