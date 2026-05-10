@@ -1378,6 +1378,10 @@ function defaultAsideDimensions(layout: string) {
     return { width: CV_PREVIEW_PAGE_WIDTH, height: 220, radius: 0 }
   if (layout === 'aside-full-left' || layout === 'aside-full-right')
     return { width: 260, height: 0, radius: 32 }
+  if (layout === 'aside-top-full-left' || layout === 'aside-top-full-right')
+    return { width: 260, height: 220, radius: 32 }
+  if (layout === 'identity-aside-left' || layout === 'identity-aside-right')
+    return { width: 260, height: 0, radius: 0 }
   if (layout === 'aside-bar-left' || layout === 'aside-bar-right')
     return { width: 160, height: 0, radius: 18 }
   if (layout === 'aside-left' || layout === 'aside-right')
@@ -1393,7 +1397,14 @@ function normalizeAsideWidth(value: unknown, layout: string) {
   const defaults = defaultAsideDimensions(layout)
   const raw = parsePx(value, defaults.width)
   if (layout === 'aside') return clampNumber(raw, 320, CV_PREVIEW_PAGE_WIDTH)
-  if (layout === 'aside-full-left' || layout === 'aside-full-right')
+  if (
+    layout === 'aside-full-left' ||
+    layout === 'aside-full-right' ||
+    layout === 'aside-top-full-left' ||
+    layout === 'aside-top-full-right' ||
+    layout === 'identity-aside-left' ||
+    layout === 'identity-aside-right'
+  )
     return clampNumber(raw, 220, 340)
   if (layout === 'aside-bar-left' || layout === 'aside-bar-right')
     return clampNumber(raw, 120, 240)
@@ -1406,6 +1417,10 @@ function normalizeAsideHeight(value: unknown, layout: string) {
   const defaults = defaultAsideDimensions(layout)
   const raw = parsePx(value, defaults.height)
   if (layout === 'aside') return clampNumber(raw, 120, 320)
+  if (layout === 'aside-top-full-left' || layout === 'aside-top-full-right')
+    return clampNumber(raw, 180, 280)
+  if (layout === 'identity-aside-left' || layout === 'identity-aside-right')
+    return 0
   return raw > 0 ? clampNumber(raw, 120, CV_PREVIEW_PDF_PAGE_HEIGHT) : 0
 }
 
@@ -1424,6 +1439,20 @@ const asideDimensionBounds = computed(() => {
       widthMax: 340,
       heightMin: 0,
       heightMax: CV_PREVIEW_PDF_PAGE_HEIGHT,
+    }
+  if (layout === 'aside-top-full-left' || layout === 'aside-top-full-right')
+    return {
+      widthMin: 220,
+      widthMax: 340,
+      heightMin: 180,
+      heightMax: 280,
+    }
+  if (layout === 'identity-aside-left' || layout === 'identity-aside-right')
+    return {
+      widthMin: 220,
+      widthMax: 340,
+      heightMin: 0,
+      heightMax: 0,
     }
   if (layout === 'aside-bar-left' || layout === 'aside-bar-right')
     return {
