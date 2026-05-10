@@ -749,6 +749,13 @@ const hiddenSections = reactive<Record<string, boolean>>({})
 const sectionExtraItems = reactive<Record<string, any[]>>({})
 const sectionLineOffsets = reactive<Record<string, number>>({})
 const sectionPageOffsets = ref<Record<string, number>>({})
+const oversizedSectionPageBreakKeys = ref<Set<string>>(new Set())
+const pageSplittableSectionKeys = new Set([
+  'experience',
+  'projects',
+  'education',
+  'certifications',
+])
 const CV_SECTION_LINE_OFFSET_PX = 18
 const CV_SECTION_MAX_LINE_OFFSET = 24
 
@@ -758,6 +765,16 @@ function sectionOffsetKey(orderKey: SectionOrderKey, section: string) {
 
 function sectionPageBreakKey(orderKey: SectionOrderKey, section: string) {
   return sectionOffsetKey(orderKey, section)
+}
+
+function sectionPageSplitClass(orderKey: SectionOrderKey, section: string) {
+  const normalizedSectionKey = toSectionKey(section)
+  const pageBreakKey = sectionPageBreakKey(orderKey, section)
+
+  return pageSplittableSectionKeys.has(normalizedSectionKey) ||
+    oversizedSectionPageBreakKeys.value.has(pageBreakKey)
+    ? 'cv-section-row--allow-page-split'
+    : undefined
 }
 
 function sectionOffsetStyle(orderKey: SectionOrderKey, section: string) {
@@ -775,8 +792,10 @@ function sectionPageBreakStyle(sectionKey: string) {
 }
 
 function resetSectionPageBreakOffsets() {
-  if (Object.keys(sectionPageOffsets.value).length === 0) return
-  sectionPageOffsets.value = {}
+  if (Object.keys(sectionPageOffsets.value).length > 0)
+    sectionPageOffsets.value = {}
+  if (oversizedSectionPageBreakKeys.value.size > 0)
+    oversizedSectionPageBreakKeys.value = new Set()
 }
 
 function measureSectionPageBreakOffsets() {
@@ -786,14 +805,26 @@ function measureSectionPageBreakOffsets() {
   if (!preview) return
 
   const nextOffsets: Record<string, number> = {}
+  const nextOversizedKeys = new Set<string>()
   let currentOffset = 0
+
   preview
     .querySelectorAll<HTMLElement>('.cv-section-row[data-cv-section-key]')
     .forEach((el) => {
       const sectionKey = el.dataset.cvSectionKey
       if (!sectionKey) return
+
+      const sectionHeight = el.offsetHeight
+      const isSectionTooTallForSinglePage =
+        sectionHeight >= CV_PREVIEW_PDF_PAGE_HEIGHT
+
+      if (isSectionTooTallForSinglePage) {
+        nextOversizedKeys.add(sectionKey)
+        return
+      }
+
       const sectionTop = el.offsetTop + currentOffset
-      const sectionBottom = sectionTop + el.offsetHeight
+      const sectionBottom = sectionTop + sectionHeight
       const pageIndex = Math.floor(sectionTop / CV_PREVIEW_PDF_PAGE_HEIGHT)
       const pageEnd = (pageIndex + 1) * CV_PREVIEW_PDF_PAGE_HEIGHT
 
@@ -805,6 +836,7 @@ function measureSectionPageBreakOffsets() {
     })
 
   sectionPageOffsets.value = nextOffsets
+  oversizedSectionPageBreakKeys.value = nextOversizedKeys
 }
 
 function shiftSectionByLine(
@@ -3114,6 +3146,7 @@ watch(
                 :class="[
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
+                  sectionPageSplitClass('contentBase', section),
                 ]"
                 :data-cv-section-key="
                   sectionPageBreakKey('contentBase', section)
@@ -3217,6 +3250,7 @@ watch(
                 :class="[
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
+                  sectionPageSplitClass('contentStructure2', section),
                 ]"
                 :data-cv-section-key="
                   sectionPageBreakKey('contentStructure2', section)
@@ -3322,6 +3356,7 @@ watch(
                 :class="[
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
+                  sectionPageSplitClass('mainOne', section),
                 ]"
                 :data-cv-section-key="sectionPageBreakKey('mainOne', section)"
                 :style="[
@@ -3421,6 +3456,7 @@ watch(
                 :class="[
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
+                  sectionPageSplitClass('mainTwoTop', section),
                 ]"
                 :data-cv-section-key="
                   sectionPageBreakKey('mainTwoTop', section)
@@ -3517,6 +3553,7 @@ watch(
                     :class="[
                       'cv-section-row',
                       contentColumnClass(toSectionKey(section)),
+                      sectionPageSplitClass('mainTwoLeft', section),
                     ]"
                     :data-cv-section-key="
                       sectionPageBreakKey('mainTwoLeft', section)
@@ -3621,6 +3658,7 @@ watch(
                     :class="[
                       'cv-section-row',
                       contentColumnClass(toSectionKey(section)),
+                      sectionPageSplitClass('mainTwoRight', section),
                     ]"
                     :data-cv-section-key="
                       sectionPageBreakKey('mainTwoRight', section)
@@ -3727,6 +3765,7 @@ watch(
                 :class="[
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
+                  sectionPageSplitClass('mainOne', section),
                 ]"
                 :data-cv-section-key="sectionPageBreakKey('mainOne', section)"
                 :style="[
@@ -4405,6 +4444,11 @@ watch(
 
 .cv-section-row--half {
   grid-column: span 1;
+}
+
+.cv-section-row--allow-page-split {
+  break-inside: auto;
+  page-break-inside: auto;
 }
 .cv-page--capture .cv-section-row--half,
 .cv-page--capture .cv-section-row--full {
