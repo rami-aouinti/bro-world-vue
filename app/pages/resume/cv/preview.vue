@@ -938,14 +938,13 @@ function sectionIcon(sectionKey: string) {
   )
 }
 
-function getSectionIconAlternatives(sectionKey: string) {
-  const key = toSectionKey(sectionKey)
-  const alternatives =
-    normalizedTemplate.value.sections.find((section) => section.key === key)
-      ?.iconAlternatives || []
-  return Array.from(
-    new Set([sectionIcon(key), ...alternatives, fallbackSectionIconMap[key]]),
-  ).filter((icon): icon is string => typeof icon === 'string' && !!icon)
+function getSectionIconOptions(sectionKey: string) {
+  const section = normalizedTemplate.value.sections.find(
+    (item) => item.key === toSectionKey(sectionKey),
+  )
+  return [sectionIcon(sectionKey), ...(section?.iconAlternatives || [])]
+    .filter((icon, index, icons) => icon && icons.indexOf(icon) === index)
+    .map((icon) => ({ title: icon, value: icon }))
 }
 
 function setSectionIcon(sectionKey: string, icon: unknown) {
@@ -2816,7 +2815,11 @@ watch(
                   :section-key="toSectionKey(section)"
                   :title="sectionDisplayTitle(section)"
                   :icon="sectionIcon(toSectionKey(section))"
-                  :icon-alternatives="getSectionIconAlternatives(section)"
+                  :icon-alternatives="
+                    getSectionIconOptions(toSectionKey(section)).map(
+                      (item) => item.value,
+                    )
+                  "
                   :title-style="sectionTitleStyle(toSectionKey(section))"
                   :font-family="textFontPreset('sectionLabel')"
                   @update:title="updateSectionDisplayTitle(section, $event)"
@@ -2925,7 +2928,11 @@ watch(
                   :section-key="toSectionKey(section)"
                   :title="sectionDisplayTitle(section)"
                   :icon="sectionIcon(toSectionKey(section))"
-                  :icon-alternatives="getSectionIconAlternatives(section)"
+                  :icon-alternatives="
+                    getSectionIconOptions(toSectionKey(section)).map(
+                      (item) => item.value,
+                    )
+                  "
                   :title-style="sectionTitleStyle(toSectionKey(section))"
                   :font-family="textFontPreset('sectionLabel')"
                   @update:title="updateSectionDisplayTitle(section, $event)"
@@ -3032,7 +3039,11 @@ watch(
                   :section-key="toSectionKey(section)"
                   :title="sectionDisplayTitle(section)"
                   :icon="sectionIcon(toSectionKey(section))"
-                  :icon-alternatives="getSectionIconAlternatives(section)"
+                  :icon-alternatives="
+                    getSectionIconOptions(toSectionKey(section)).map(
+                      (item) => item.value,
+                    )
+                  "
                   :title-style="sectionTitleStyle(toSectionKey(section))"
                   :font-family="textFontPreset('sectionLabel')"
                   @update:title="updateSectionDisplayTitle(section, $event)"
@@ -3138,7 +3149,11 @@ watch(
                   :section-key="toSectionKey(section)"
                   :title="sectionDisplayTitle(section)"
                   :icon="sectionIcon(toSectionKey(section))"
-                  :icon-alternatives="getSectionIconAlternatives(section)"
+                  :icon-alternatives="
+                    getSectionIconOptions(toSectionKey(section)).map(
+                      (item) => item.value,
+                    )
+                  "
                   :title-style="sectionTitleStyle(toSectionKey(section))"
                   :font-family="textFontPreset('sectionLabel')"
                   @update:title="updateSectionDisplayTitle(section, $event)"
@@ -3238,7 +3253,11 @@ watch(
                   :section-key="toSectionKey(section)"
                   :title="sectionDisplayTitle(section)"
                   :icon="sectionIcon(toSectionKey(section))"
-                  :icon-alternatives="getSectionIconAlternatives(section)"
+                  :icon-alternatives="
+                    getSectionIconOptions(toSectionKey(section)).map(
+                      (item) => item.value,
+                    )
+                  "
                   :title-style="sectionTitleStyle(toSectionKey(section))"
                   :font-family="textFontPreset('sectionLabel')"
                   @update:title="updateSectionDisplayTitle(section, $event)"
@@ -3342,7 +3361,11 @@ watch(
                   :section-key="toSectionKey(section)"
                   :title="sectionDisplayTitle(section)"
                   :icon="sectionIcon(toSectionKey(section))"
-                  :icon-alternatives="getSectionIconAlternatives(section)"
+                  :icon-alternatives="
+                    getSectionIconOptions(toSectionKey(section)).map(
+                      (item) => item.value,
+                    )
+                  "
                   :title-style="sectionTitleStyle(toSectionKey(section))"
                   :font-family="textFontPreset('sectionLabel')"
                   @update:title="updateSectionDisplayTitle(section, $event)"
@@ -3445,7 +3468,11 @@ watch(
                       :section-key="toSectionKey(section)"
                       :title="sectionDisplayTitle(section)"
                       :icon="sectionIcon(toSectionKey(section))"
-                      :icon-alternatives="getSectionIconAlternatives(section)"
+                      :icon-alternatives="
+                        getSectionIconOptions(toSectionKey(section)).map(
+                          (item) => item.value,
+                        )
+                      "
                       :title-style="sectionTitleStyle(toSectionKey(section))"
                       :font-family="textFontPreset('sectionLabel')"
                       @update:title="updateSectionDisplayTitle(section, $event)"
@@ -3548,7 +3575,11 @@ watch(
                       :section-key="toSectionKey(section)"
                       :title="sectionDisplayTitle(section)"
                       :icon="sectionIcon(toSectionKey(section))"
-                      :icon-alternatives="getSectionIconAlternatives(section)"
+                      :icon-alternatives="
+                        getSectionIconOptions(toSectionKey(section)).map(
+                          (item) => item.value,
+                        )
+                      "
                       :title-style="sectionTitleStyle(toSectionKey(section))"
                       :font-family="textFontPreset('sectionLabel')"
                       @update:title="updateSectionDisplayTitle(section, $event)"
