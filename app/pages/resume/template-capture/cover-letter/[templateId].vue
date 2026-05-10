@@ -310,7 +310,6 @@ body,
 #__nuxt {
   min-height: 1123px;
   margin: 0;
-  background: #fff;
 }
 </style>
 
