@@ -19,6 +19,16 @@ export type CoverBorderStyleId =
   | 'rose-corner-bloom'
   | 'slate-asymmetric-frame'
   | 'ivory-editorial-mat'
+  | 'monogram-watermark-frame'
+  | 'executive-foil-corners'
+  | 'glassmorphism-orbital'
+  | 'luxury-vertical-ribbon'
+  | 'midnight-neon-trace'
+  | 'botanical-corner-vine'
+  | 'atlas-coordinate-grid'
+  | 'platinum-inset-frame'
+  | 'gradient-silk-sash'
+  | 'architect-blueprint-lines'
 
 export type CoverBorderAccentPlacement =
   | 'right-swoosh'
@@ -41,6 +51,16 @@ export type CoverBorderAccentPlacement =
   | 'corner-bloom'
   | 'asymmetric-frame'
   | 'editorial-mat'
+  | 'monogram-frame'
+  | 'foil-corners'
+  | 'halo-orbit'
+  | 'vertical-ribbon'
+  | 'neon-trace'
+  | 'corner-vine'
+  | 'coordinate-grid'
+  | 'inset-frame'
+  | 'silk-sash'
+  | 'blueprint-lines'
 
 export type CoverBorderStyle = {
   id: CoverBorderStyleId
@@ -259,6 +279,117 @@ export const COVER_BORDER_STYLES: CoverBorderStyle[] = [
     cssVars: {
       '--cover-border-left-width': '18px',
       '--cover-border-top-width': '7px',
+    },
+  },
+
+  {
+    id: 'monogram-watermark-frame',
+    name: 'Monogram watermark frame',
+    className: 'cover-border--monogram-watermark-frame',
+    accentPlacement: 'monogram-frame',
+    recommendedPalettes: ['executive', 'ivory-light', 'classic'],
+    cssVars: {
+      '--cover-border-monogram-size': '210px',
+      '--cover-border-frame-inset': '34px',
+    },
+  },
+  {
+    id: 'executive-foil-corners',
+    name: 'Executive foil corners',
+    className: 'cover-border--executive-foil-corners',
+    accentPlacement: 'foil-corners',
+    recommendedPalettes: ['charcoal', 'executive', 'amber'],
+    cssVars: {
+      '--cover-border-foil-size': '132px',
+      '--cover-border-foil-weight': '9px',
+    },
+  },
+  {
+    id: 'glassmorphism-orbital',
+    name: 'Glassmorphism orbital',
+    className: 'cover-border--glassmorphism-orbital',
+    accentPlacement: 'halo-orbit',
+    recommendedPalettes: ['aurora', 'sky-light', 'plum'],
+    cssVars: {
+      '--cover-border-orbital-size': '340px',
+      '--cover-border-glass-opacity': '0.32',
+    },
+  },
+  {
+    id: 'luxury-vertical-ribbon',
+    name: 'Luxury vertical ribbon',
+    className: 'cover-border--luxury-vertical-ribbon',
+    accentPlacement: 'vertical-ribbon',
+    recommendedPalettes: ['ruby', 'charcoal', 'elegant'],
+    cssVars: {
+      '--cover-border-ribbon-width': '74px',
+      '--cover-border-ribbon-offset': '34px',
+    },
+  },
+  {
+    id: 'midnight-neon-trace',
+    name: 'Midnight neon trace',
+    className: 'cover-border--midnight-neon-trace',
+    accentPlacement: 'neon-trace',
+    recommendedPalettes: ['midnight', 'ocean', 'violet'],
+    cssVars: {
+      '--cover-border-neon-blur': '18px',
+      '--cover-border-trace-width': '3px',
+    },
+  },
+  {
+    id: 'botanical-corner-vine',
+    name: 'Botanical corner vine',
+    className: 'cover-border--botanical-corner-vine',
+    accentPlacement: 'corner-vine',
+    recommendedPalettes: ['forest', 'emerald', 'ivory-light'],
+    cssVars: {
+      '--cover-border-vine-size': '210px',
+      '--cover-border-leaf-size': '28px',
+    },
+  },
+  {
+    id: 'atlas-coordinate-grid',
+    name: 'Atlas coordinate grid',
+    className: 'cover-border--atlas-coordinate-grid',
+    accentPlacement: 'coordinate-grid',
+    recommendedPalettes: ['grid-slate', 'corporate-blue', 'graphite'],
+    cssVars: {
+      '--cover-border-coordinate-size': '34px',
+      '--cover-border-coordinate-opacity': '0.24',
+    },
+  },
+  {
+    id: 'platinum-inset-frame',
+    name: 'Platinum inset frame',
+    className: 'cover-border--platinum-inset-frame',
+    accentPlacement: 'inset-frame',
+    recommendedPalettes: ['minimal', 'slate', 'classic'],
+    cssVars: {
+      '--cover-border-platinum-inset': '42px',
+      '--cover-border-platinum-glow': '0.22',
+    },
+  },
+  {
+    id: 'gradient-silk-sash',
+    name: 'Gradient silk sash',
+    className: 'cover-border--gradient-silk-sash',
+    accentPlacement: 'silk-sash',
+    recommendedPalettes: ['aurora', 'rose', 'sunset'],
+    cssVars: {
+      '--cover-border-sash-width': '190px',
+      '--cover-border-sash-opacity': '0.68',
+    },
+  },
+  {
+    id: 'architect-blueprint-lines',
+    name: 'Architect blueprint lines',
+    className: 'cover-border--architect-blueprint-lines',
+    accentPlacement: 'blueprint-lines',
+    recommendedPalettes: ['corporate-blue', 'ocean', 'grid-slate'],
+    cssVars: {
+      '--cover-border-blueprint-step': '28px',
+      '--cover-border-blueprint-opacity': '0.18',
     },
   },
   {
