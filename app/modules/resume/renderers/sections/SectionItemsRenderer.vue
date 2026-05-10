@@ -616,6 +616,8 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
   margin: 0;
   padding: 0;
   list-style: none;
+  break-inside: auto;
+  page-break-inside: auto;
 }
 .renderer-list--two-columns {
   display: grid;
@@ -624,6 +626,8 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 }
 
 .renderer-list-item {
+  break-inside: avoid;
+  page-break-inside: avoid;
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--section-space-sm);
@@ -743,11 +747,15 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 
 /* CARDS */
 .renderer-cards {
+  break-inside: auto;
+  page-break-inside: auto;
   display: grid;
   gap: var(--section-space-md);
 }
 
 .renderer-card {
+  break-inside: avoid;
+  page-break-inside: avoid;
   padding: var(--section-space-md) var(--section-space-lg);
   border-radius: var(--section-radius-md);
   border: 1px solid var(--section-border-soft);
@@ -757,12 +765,16 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 
 /* TIMELINE */
 .renderer-timeline {
+  break-inside: auto;
+  page-break-inside: auto;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .renderer-timeline-item {
+  break-inside: avoid;
+  page-break-inside: avoid;
   position: relative;
   display: grid;
   grid-template-columns: minmax(2rem, 5rem) 1fr;
@@ -806,6 +818,8 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 
 /* CLASSIC */
 .renderer-classic {
+  break-inside: auto;
+  page-break-inside: auto;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -814,6 +828,8 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 }
 
 .renderer-classic-item {
+  break-inside: avoid;
+  page-break-inside: avoid;
   padding-bottom: var(--section-space-sm);
 }
 
