@@ -21562,5 +21562,1535 @@
         }
       ]
     }
+  },
+{
+  "id": "tpl-052",
+  "name": "Azure Top Rail · Studio 21",
+  "version": "1.1.0",
+  "layout": "aside-top-full-left",
+  "structure": "structure-7",
+  "sections": {
+    "profile": {
+      "zone": "content",
+      "order": 10,
+      "column": "full",
+      "icon": "mdi-account-outline",
+      "iconAlternatives": [
+        "mdi-card-account-details-outline",
+        "mdi-account-circle-outline"
+      ],
+      "form": "classic",
+      "enabled": true
+    },
+    "contact": {
+      "zone": "header",
+      "order": 10,
+      "icon": "mdi-card-account-phone-outline",
+      "iconAlternatives": [
+        "mdi-email-outline",
+        "mdi-phone-outline"
+      ],
+      "form": "icons",
+      "enabled": true
+    },
+    "experience": {
+      "zone": "content",
+      "order": 20,
+      "column": "full",
+      "icon": "mdi-briefcase-outline",
+      "iconAlternatives": [
+        "mdi-timeline-clock-outline"
+      ],
+      "form": "timeline",
+      "enabled": true
+    },
+    "education": {
+      "zone": "content",
+      "order": 30,
+      "column": "full",
+      "icon": "mdi-school-outline",
+      "iconAlternatives": [
+        "mdi-book-open-variant-outline"
+      ],
+      "form": "timeline",
+      "enabled": true
+    },
+    "skills": {
+      "zone": "aside-left",
+      "order": 20,
+      "icon": "mdi-tools",
+      "iconAlternatives": [
+        "mdi-lightning-bolt-outline"
+      ],
+      "form": "progress-line",
+      "enabled": true
+    },
+    "languages": {
+      "zone": "aside-left",
+      "order": 30,
+      "icon": "mdi-translate",
+      "iconAlternatives": [
+        "mdi-earth"
+      ],
+      "form": "stars",
+      "enabled": true
+    },
+    "certifications": {
+      "zone": "aside-left",
+      "order": 40,
+      "icon": "mdi-certificate-outline",
+      "iconAlternatives": [
+        "mdi-seal-variant"
+      ],
+      "form": "dot",
+      "enabled": true
+    },
+    "projects": {
+      "zone": "content",
+      "order": 40,
+      "column": "half",
+      "icon": "mdi-folder-star-outline",
+      "iconAlternatives": [
+        "mdi-rocket-launch-outline"
+      ],
+      "form": "cards",
+      "enabled": true
+    },
+    "interests": {
+      "zone": "aside-left",
+      "order": 50,
+      "icon": "mdi-heart-outline",
+      "iconAlternatives": [
+        "mdi-star-outline"
+      ],
+      "form": "dot",
+      "enabled": true,
+      "label": "hobbies"
+    }
+  },
+  "design": {
+    "theme": {
+      "palette": {
+        "primary": "#1E3A8A",
+        "secondary": "#38BDF8",
+        "text": "#0F172A",
+        "muted": "#475569",
+        "pageBackground": "#EFF6FF"
+      },
+      "line": "soft",
+      "density": "comfortable",
+      "textStyle": "roman",
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 0,
+        "color": "#1E3A8A",
+        "radius": 0
+      },
+      "primary": "#1E3A8A",
+      "accent": "#38BDF8",
+      "text": "#0F172A",
+      "background": "#EFF6FF"
+    },
+    "aside": {
+      "width": "272px",
+      "height": "224px",
+      "radius": 28
+    },
+    "decor": {
+      "corners": [
+        {
+          "shape": "circle",
+          "size": "220px",
+          "color": "#38BDF8",
+          "x": "top-right",
+          "y": "0"
+        },
+        {
+          "shape": "square",
+          "size": "180px",
+          "color": "#1E3A8A",
+          "x": "bottom-left",
+          "y": "0"
+        }
+      ],
+      "cornerRadius": 28,
+      "borderStyle": "solid"
+    },
+    "photo": {
+      "position": "left",
+      "size": "96px",
+      "shape": "rounded",
+      "border": "2px solid #38BDF8",
+      "photoType": "rounded",
+      "photoSize": "96px",
+      "photoBorderRadius": "18px",
+      "photoBorderColor": "#38BDF8"
+    },
+    "layoutOptions": {
+      "columnsGap": "wide",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal",
+      "asideStartsAtTop": true,
+      "borderRadius": 28,
+      "gutter": 24
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "soft",
+      "frame": "line"
+    },
+    "levelStyle": {
+      "skills": "bars",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "geo-duo"
+    },
+    "sectionTitleStyle": {
+      "underline": "thin"
+    },
+    "headerType": "header-left",
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Playfair Display",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Fira Code",
+        "Inter",
+        "Playfair Display"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Playfair Display",
+        "body": "Inter",
+        "mono": "Fira Code"
+      }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "radius": 999,
+      "widthType": "complete"
+    }
+  },
+  "fakeData": {
+    "id": "900a6adf-0645-4f66-bdd4-9d21902094c9",
+    "documentUrl": null,
+    "resumeInformation": {
+      "fullName": "Mia Bernard",
+      "email": "mia.bernard@example.com",
+      "phone": "+33 6 12 34 55 80",
+      "homepage": "https://portfolio-6.example.com",
+      "repo_profile": "https://github.com/profile-6",
+      "adresse": "Lyon, France",
+      "birthDate": "1995-06-15",
+      "birthPlace": "Tunisia",
+      "profileText": "Mia Bernard is a results-driven devops engineer focused on product quality, scalability, and collaboration.",
+      "title": "DevOps Engineer",
+      "photo": "/img/team-9.jpeg"
+    },
+    "experiences": [
+      {
+        "id": "c29ef0a1-9be6-4071-97de-69ca9354c9a1",
+        "title": "DevOps Engineer",
+        "description": "Led product delivery and built maintainable architecture.",
+        "company": "Bro Labs",
+        "startDate": "2021-01-01",
+        "endDate": null
+      },
+      {
+        "id": "615e2aac-035f-4e8f-aa36-94e1bafb56ae",
+        "title": "Engineer",
+        "description": "Implemented features with strong UX focus.",
+        "company": "Nova Digital",
+        "startDate": "2018-06-01",
+        "endDate": "2020-12-31"
+      }
+    ],
+    "educations": [
+      {
+        "id": "55ee1efa-e238-481c-bc5a-a344be2f25de",
+        "title": "Master in Computer Science",
+        "description": "",
+        "school": "University of Lyon",
+        "startDate": "2016-09-01",
+        "endDate": "2018-06-30",
+        "location": "Lyon, France"
+      },
+      {
+        "id": "be796531-1073-4479-bcc6-c7fb1a5903d5",
+        "title": "Bachelor in Software Engineering",
+        "description": "",
+        "school": "Université Grenoble Alpes",
+        "startDate": "2013-09-01",
+        "endDate": "2016-06-30",
+        "location": "Lyon, France"
+      }
+    ],
+    "skills": [
+      {
+        "name": "Vue.js",
+        "level": 80
+      },
+      {
+        "name": "TypeScript",
+        "level": 80
+      },
+      {
+        "name": "Node.js",
+        "level": 80
+      },
+      {
+        "name": "Nuxt",
+        "level": 80
+      },
+      {
+        "name": "PostgreSQL",
+        "level": 80
+      },
+      {
+        "name": "Docker",
+        "level": 80
+      }
+    ],
+    "languages": [
+      {
+        "name": "French",
+        "level": 80,
+        "countryCode": "US",
+        "flag": "🇺🇸",
+        "languageType": "label"
+      },
+      {
+        "name": "English",
+        "level": 80,
+        "countryCode": "US",
+        "flag": "🇺🇸",
+        "languageType": "label"
+      },
+      {
+        "name": "Spanish",
+        "level": 80,
+        "countryCode": "US",
+        "flag": "🇺🇸",
+        "languageType": "label"
+      }
+    ],
+    "certifications": [
+      {
+        "id": "898c81d2-43ab-4e70-a2ef-8aa11defc1db",
+        "title": "AWS Certified Developer",
+        "description": "",
+        "attachments": []
+      },
+      {
+        "id": "de9c99b4-39f8-427b-a913-1a890a1129a1",
+        "title": "Scrum Master",
+        "description": "",
+        "attachments": []
+      }
+    ],
+    "projects": [
+      {
+        "id": "211e6acf-b8ab-4d51-b78c-ed407d221591",
+        "title": "Recruitment Analytics",
+        "description": "Dashboard and reporting platform.",
+        "attachments": [],
+        "home_page": "https://portfolio-6.example.com"
+      }
+    ],
+    "references": [
+      {
+        "id": "8c5cfb54-75e9-4bd2-a175-640b1d33e82e",
+        "title": "Sophie Bernard · Engineering Manager",
+        "description": ""
+      },
+      {
+        "id": "47a73364-aa08-4fb8-baaf-cfab796e80a8",
+        "title": "Julien Roche · Product Director",
+        "description": ""
+      }
+    ],
+    "hobbies": [
+      {
+        "id": "d0e16263-c6b3-4b7f-a41e-2de7fe000f9f",
+        "title": "Open-source",
+        "description": ""
+      },
+      {
+        "id": "66d260be-ed4f-4fc5-a116-f88455261a7f",
+        "title": "Running",
+        "description": ""
+      },
+      {
+        "id": "cfe42c98-bf8c-404b-a437-57fca3cdce17",
+        "title": "Photography",
+        "description": ""
+      }
+    ]
   }
+},
+{
+  "id": "tpl-053",
+  "name": "Emerald Top Rail · Studio 22",
+  "version": "1.1.0",
+  "layout": "aside-top-full-right",
+  "structure": "structure-8",
+  "sections": {
+    "profile": {
+      "zone": "content",
+      "order": 10,
+      "column": "full",
+      "icon": "mdi-account-outline",
+      "iconAlternatives": [
+        "mdi-card-account-details-outline",
+        "mdi-account-circle-outline"
+      ],
+      "form": "classic",
+      "enabled": true
+    },
+    "contact": {
+      "zone": "header",
+      "order": 10,
+      "icon": "mdi-card-account-phone-outline",
+      "iconAlternatives": [
+        "mdi-email-outline",
+        "mdi-phone-outline"
+      ],
+      "form": "icons",
+      "enabled": true
+    },
+    "experience": {
+      "zone": "content",
+      "order": 20,
+      "column": "full",
+      "icon": "mdi-briefcase-outline",
+      "iconAlternatives": [
+        "mdi-timeline-clock-outline"
+      ],
+      "form": "timeline",
+      "enabled": true
+    },
+    "education": {
+      "zone": "content",
+      "order": 30,
+      "column": "full",
+      "icon": "mdi-school-outline",
+      "iconAlternatives": [
+        "mdi-book-open-variant-outline"
+      ],
+      "form": "timeline",
+      "enabled": true
+    },
+    "skills": {
+      "zone": "aside-right",
+      "order": 20,
+      "icon": "mdi-tools",
+      "iconAlternatives": [
+        "mdi-lightning-bolt-outline"
+      ],
+      "form": "progress-line",
+      "enabled": true
+    },
+    "languages": {
+      "zone": "aside-right",
+      "order": 30,
+      "icon": "mdi-translate",
+      "iconAlternatives": [
+        "mdi-earth"
+      ],
+      "form": "stars",
+      "enabled": true
+    },
+    "certifications": {
+      "zone": "aside-right",
+      "order": 40,
+      "icon": "mdi-certificate-outline",
+      "iconAlternatives": [
+        "mdi-seal-variant"
+      ],
+      "form": "dot",
+      "enabled": true
+    },
+    "projects": {
+      "zone": "content",
+      "order": 40,
+      "column": "half",
+      "icon": "mdi-folder-star-outline",
+      "iconAlternatives": [
+        "mdi-rocket-launch-outline"
+      ],
+      "form": "cards",
+      "enabled": true
+    },
+    "interests": {
+      "zone": "aside-right",
+      "order": 50,
+      "icon": "mdi-heart-outline",
+      "iconAlternatives": [
+        "mdi-star-outline"
+      ],
+      "form": "dot",
+      "enabled": true,
+      "label": "hobbies"
+    }
+  },
+  "design": {
+    "theme": {
+      "palette": {
+        "primary": "#065F46",
+        "secondary": "#A7F3D0",
+        "text": "#10251F",
+        "muted": "#557064",
+        "pageBackground": "#F0FDF4"
+      },
+      "line": "block",
+      "density": "comfortable",
+      "textStyle": "roman",
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": false,
+        "width": 0,
+        "color": "#065F46",
+        "radius": 0
+      },
+      "primary": "#065F46",
+      "accent": "#A7F3D0",
+      "text": "#10251F",
+      "background": "#F0FDF4"
+    },
+    "aside": {
+      "width": "264px",
+      "height": "216px",
+      "radius": 24
+    },
+    "decor": {
+      "corners": [
+        {
+          "shape": "circle",
+          "size": "220px",
+          "color": "#A7F3D0",
+          "x": "top-right",
+          "y": "0"
+        },
+        {
+          "shape": "square",
+          "size": "180px",
+          "color": "#065F46",
+          "x": "bottom-left",
+          "y": "0"
+        }
+      ],
+      "cornerRadius": 24,
+      "borderStyle": "solid"
+    },
+    "photo": {
+      "position": "right",
+      "size": "92px",
+      "shape": "circle",
+      "border": "2px solid #A7F3D0",
+      "photoType": "circle",
+      "photoSize": "92px",
+      "photoBorderRadius": "999px",
+      "photoBorderColor": "#A7F3D0"
+    },
+    "layoutOptions": {
+      "columnsGap": "wide",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal",
+      "asideStartsAtTop": true,
+      "borderRadius": 24,
+      "gutter": 24
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "soft",
+      "frame": "line"
+    },
+    "levelStyle": {
+      "skills": "bars",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "geo-duo"
+    },
+    "sectionTitleStyle": {
+      "underline": "thin"
+    },
+    "headerType": "header-right",
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Prata",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Fira Code",
+        "Manrope",
+        "Prata"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Prata",
+        "body": "Manrope",
+        "mono": "Fira Code"
+      }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "radius": 999,
+      "widthType": "complete"
+    }
+  },
+  "fakeData": {
+    "id": "900a6adf-0645-4f66-bdd4-9d21902094c9",
+    "documentUrl": null,
+    "resumeInformation": {
+      "fullName": "Mia Bernard",
+      "email": "mia.bernard@example.com",
+      "phone": "+33 6 12 34 55 80",
+      "homepage": "https://portfolio-6.example.com",
+      "repo_profile": "https://github.com/profile-6",
+      "adresse": "Lyon, France",
+      "birthDate": "1995-06-15",
+      "birthPlace": "Tunisia",
+      "profileText": "Mia Bernard is a results-driven devops engineer focused on product quality, scalability, and collaboration.",
+      "title": "DevOps Engineer",
+      "photo": "/img/team-9.jpeg"
+    },
+    "experiences": [
+      {
+        "id": "c29ef0a1-9be6-4071-97de-69ca9354c9a1",
+        "title": "DevOps Engineer",
+        "description": "Led product delivery and built maintainable architecture.",
+        "company": "Bro Labs",
+        "startDate": "2021-01-01",
+        "endDate": null
+      },
+      {
+        "id": "615e2aac-035f-4e8f-aa36-94e1bafb56ae",
+        "title": "Engineer",
+        "description": "Implemented features with strong UX focus.",
+        "company": "Nova Digital",
+        "startDate": "2018-06-01",
+        "endDate": "2020-12-31"
+      }
+    ],
+    "educations": [
+      {
+        "id": "55ee1efa-e238-481c-bc5a-a344be2f25de",
+        "title": "Master in Computer Science",
+        "description": "",
+        "school": "University of Lyon",
+        "startDate": "2016-09-01",
+        "endDate": "2018-06-30",
+        "location": "Lyon, France"
+      },
+      {
+        "id": "be796531-1073-4479-bcc6-c7fb1a5903d5",
+        "title": "Bachelor in Software Engineering",
+        "description": "",
+        "school": "Université Grenoble Alpes",
+        "startDate": "2013-09-01",
+        "endDate": "2016-06-30",
+        "location": "Lyon, France"
+      }
+    ],
+    "skills": [
+      {
+        "name": "Vue.js",
+        "level": 80
+      },
+      {
+        "name": "TypeScript",
+        "level": 80
+      },
+      {
+        "name": "Node.js",
+        "level": 80
+      },
+      {
+        "name": "Nuxt",
+        "level": 80
+      },
+      {
+        "name": "PostgreSQL",
+        "level": 80
+      },
+      {
+        "name": "Docker",
+        "level": 80
+      }
+    ],
+    "languages": [
+      {
+        "name": "French",
+        "level": 80,
+        "countryCode": "US",
+        "flag": "🇺🇸",
+        "languageType": "label"
+      },
+      {
+        "name": "English",
+        "level": 80,
+        "countryCode": "US",
+        "flag": "🇺🇸",
+        "languageType": "label"
+      },
+      {
+        "name": "Spanish",
+        "level": 80,
+        "countryCode": "US",
+        "flag": "🇺🇸",
+        "languageType": "label"
+      }
+    ],
+    "certifications": [
+      {
+        "id": "898c81d2-43ab-4e70-a2ef-8aa11defc1db",
+        "title": "AWS Certified Developer",
+        "description": "",
+        "attachments": []
+      },
+      {
+        "id": "de9c99b4-39f8-427b-a913-1a890a1129a1",
+        "title": "Scrum Master",
+        "description": "",
+        "attachments": []
+      }
+    ],
+    "projects": [
+      {
+        "id": "211e6acf-b8ab-4d51-b78c-ed407d221591",
+        "title": "Recruitment Analytics",
+        "description": "Dashboard and reporting platform.",
+        "attachments": [],
+        "home_page": "https://portfolio-6.example.com"
+      }
+    ],
+    "references": [
+      {
+        "id": "8c5cfb54-75e9-4bd2-a175-640b1d33e82e",
+        "title": "Sophie Bernard · Engineering Manager",
+        "description": ""
+      },
+      {
+        "id": "47a73364-aa08-4fb8-baaf-cfab796e80a8",
+        "title": "Julien Roche · Product Director",
+        "description": ""
+      }
+    ],
+    "hobbies": [
+      {
+        "id": "d0e16263-c6b3-4b7f-a41e-2de7fe000f9f",
+        "title": "Open-source",
+        "description": ""
+      },
+      {
+        "id": "66d260be-ed4f-4fc5-a116-f88455261a7f",
+        "title": "Running",
+        "description": ""
+      },
+      {
+        "id": "cfe42c98-bf8c-404b-a437-57fca3cdce17",
+        "title": "Photography",
+        "description": ""
+      }
+    ]
+  }
+},
+{
+  "id": "tpl-054",
+  "name": "Indigo Identity · Studio 23",
+  "version": "1.1.0",
+  "layout": "identity-aside-left",
+  "structure": "structure-9",
+  "sections": {
+    "contact": {
+      "zone": "header",
+      "order": 10,
+      "icon": "mdi-card-account-phone-outline",
+      "form": "icons",
+      "enabled": true
+    },
+    "profile": {
+      "zone": "identity",
+      "order": 10,
+      "icon": "mdi-account-outline",
+      "form": "classic",
+      "enabled": true
+    },
+    "skills": {
+      "zone": "aside-left",
+      "order": 20,
+      "icon": "mdi-tools",
+      "form": "progress-line",
+      "enabled": true
+    },
+    "languages": {
+      "zone": "aside-left",
+      "order": 30,
+      "icon": "mdi-translate",
+      "form": "stars",
+      "enabled": true
+    },
+    "experience": {
+      "zone": "content",
+      "order": 20,
+      "column": "full",
+      "icon": "mdi-briefcase-outline",
+      "form": "timeline",
+      "enabled": true
+    }
+  },
+  "design": {
+    "theme": {
+      "palette": {
+        "primary": "#312E81",
+        "secondary": "#C4B5FD",
+        "text": "#111827",
+        "muted": "#6B7280",
+        "pageBackground": "#F8FAFC"
+      },
+      "line": "soft",
+      "density": "comfortable",
+      "textStyle": "roman",
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": true,
+        "width": 2,
+        "color": "#312E81",
+        "radius": 18
+      },
+      "primary": "#312E81",
+      "accent": "#C4B5FD",
+      "text": "#111827",
+      "background": "#F8FAFC"
+    },
+    "aside": {
+      "width": "280px",
+      "height": "0px",
+      "radius": 0
+    },
+    "decor": {
+      "corners": [
+        {
+          "shape": "circle",
+          "size": "220px",
+          "color": "#C4B5FD",
+          "x": "top-right",
+          "y": "0"
+        },
+        {
+          "shape": "square",
+          "size": "180px",
+          "color": "#312E81",
+          "x": "bottom-left",
+          "y": "0"
+        }
+      ],
+      "cornerRadius": 0,
+      "borderStyle": "solid"
+    },
+    "photo": {
+      "position": "left",
+      "size": "104px",
+      "shape": "circle",
+      "border": "2px solid #C4B5FD",
+      "photoType": "circle",
+      "photoSize": "104px",
+      "photoBorderRadius": "999px",
+      "photoBorderColor": "#C4B5FD"
+    },
+    "layoutOptions": {
+      "columnsGap": "wide",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal",
+      "asideStartsAtTop": true,
+      "borderRadius": 0,
+      "gutter": 24
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "soft",
+      "frame": "line"
+    },
+    "levelStyle": {
+      "skills": "bars",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "geo-duo"
+    },
+    "sectionTitleStyle": {
+      "underline": "thin"
+    },
+    "headerType": "header-left",
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Playfair Display",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Inter",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Fira Code",
+        "Inter",
+        "Playfair Display"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Playfair Display",
+        "body": "Inter",
+        "mono": "Fira Code"
+      }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "radius": 999,
+      "widthType": "complete"
+    }
+  },
+  "fakeData": {
+    "id": "900a6adf-0645-4f66-bdd4-9d21902094c9",
+    "documentUrl": null,
+    "resumeInformation": {
+      "fullName": "Mia Bernard",
+      "email": "mia.bernard@example.com",
+      "phone": "+33 6 12 34 55 80",
+      "homepage": "https://portfolio-6.example.com",
+      "repo_profile": "https://github.com/profile-6",
+      "adresse": "Lyon, France",
+      "birthDate": "1995-06-15",
+      "birthPlace": "Tunisia",
+      "profileText": "Mia Bernard is a results-driven devops engineer focused on product quality, scalability, and collaboration.",
+      "title": "DevOps Engineer",
+      "photo": "/img/team-9.jpeg"
+    },
+    "experiences": [
+      {
+        "id": "c29ef0a1-9be6-4071-97de-69ca9354c9a1",
+        "title": "DevOps Engineer",
+        "description": "Led product delivery and built maintainable architecture.",
+        "company": "Bro Labs",
+        "startDate": "2021-01-01",
+        "endDate": null
+      },
+      {
+        "id": "615e2aac-035f-4e8f-aa36-94e1bafb56ae",
+        "title": "Engineer",
+        "description": "Implemented features with strong UX focus.",
+        "company": "Nova Digital",
+        "startDate": "2018-06-01",
+        "endDate": "2020-12-31"
+      }
+    ],
+    "educations": [
+      {
+        "id": "55ee1efa-e238-481c-bc5a-a344be2f25de",
+        "title": "Master in Computer Science",
+        "description": "",
+        "school": "University of Lyon",
+        "startDate": "2016-09-01",
+        "endDate": "2018-06-30",
+        "location": "Lyon, France"
+      },
+      {
+        "id": "be796531-1073-4479-bcc6-c7fb1a5903d5",
+        "title": "Bachelor in Software Engineering",
+        "description": "",
+        "school": "Université Grenoble Alpes",
+        "startDate": "2013-09-01",
+        "endDate": "2016-06-30",
+        "location": "Lyon, France"
+      }
+    ],
+    "skills": [
+      {
+        "name": "Vue.js",
+        "level": 80
+      },
+      {
+        "name": "TypeScript",
+        "level": 80
+      },
+      {
+        "name": "Node.js",
+        "level": 80
+      },
+      {
+        "name": "Nuxt",
+        "level": 80
+      },
+      {
+        "name": "PostgreSQL",
+        "level": 80
+      },
+      {
+        "name": "Docker",
+        "level": 80
+      }
+    ],
+    "languages": [
+      {
+        "name": "French",
+        "level": 80,
+        "countryCode": "US",
+        "flag": "🇺🇸",
+        "languageType": "label"
+      },
+      {
+        "name": "English",
+        "level": 80,
+        "countryCode": "US",
+        "flag": "🇺🇸",
+        "languageType": "label"
+      },
+      {
+        "name": "Spanish",
+        "level": 80,
+        "countryCode": "US",
+        "flag": "🇺🇸",
+        "languageType": "label"
+      }
+    ],
+    "certifications": [
+      {
+        "id": "898c81d2-43ab-4e70-a2ef-8aa11defc1db",
+        "title": "AWS Certified Developer",
+        "description": "",
+        "attachments": []
+      },
+      {
+        "id": "de9c99b4-39f8-427b-a913-1a890a1129a1",
+        "title": "Scrum Master",
+        "description": "",
+        "attachments": []
+      }
+    ],
+    "projects": [
+      {
+        "id": "211e6acf-b8ab-4d51-b78c-ed407d221591",
+        "title": "Recruitment Analytics",
+        "description": "Dashboard and reporting platform.",
+        "attachments": [],
+        "home_page": "https://portfolio-6.example.com"
+      }
+    ],
+    "references": [
+      {
+        "id": "8c5cfb54-75e9-4bd2-a175-640b1d33e82e",
+        "title": "Sophie Bernard · Engineering Manager",
+        "description": ""
+      },
+      {
+        "id": "47a73364-aa08-4fb8-baaf-cfab796e80a8",
+        "title": "Julien Roche · Product Director",
+        "description": ""
+      }
+    ],
+    "hobbies": [
+      {
+        "id": "d0e16263-c6b3-4b7f-a41e-2de7fe000f9f",
+        "title": "Open-source",
+        "description": ""
+      },
+      {
+        "id": "66d260be-ed4f-4fc5-a116-f88455261a7f",
+        "title": "Running",
+        "description": ""
+      },
+      {
+        "id": "cfe42c98-bf8c-404b-a437-57fca3cdce17",
+        "title": "Photography",
+        "description": ""
+      }
+    ]
+  }
+},
+{
+  "id": "tpl-055",
+  "name": "Copper Identity · Studio 24",
+  "version": "1.1.0",
+  "layout": "identity-aside-right",
+  "structure": "structure-10",
+  "sections": {
+    "contact": {
+      "zone": "header",
+      "order": 10,
+      "icon": "mdi-card-account-phone-outline",
+      "form": "icons",
+      "enabled": true
+    },
+    "profile": {
+      "zone": "identity",
+      "order": 10,
+      "icon": "mdi-account-outline",
+      "form": "classic",
+      "enabled": true
+    },
+    "skills": {
+      "zone": "aside-right",
+      "order": 20,
+      "icon": "mdi-tools",
+      "form": "progress-line",
+      "enabled": true
+    },
+    "languages": {
+      "zone": "aside-right",
+      "order": 30,
+      "icon": "mdi-translate",
+      "form": "stars",
+      "enabled": true
+    },
+    "experience": {
+      "zone": "content",
+      "order": 20,
+      "column": "full",
+      "icon": "mdi-briefcase-outline",
+      "form": "timeline",
+      "enabled": true
+    }
+  },
+  "design": {
+    "theme": {
+      "palette": {
+        "primary": "#7C2D12",
+        "secondary": "#FDBA74",
+        "text": "#1F2937",
+        "muted": "#6B7280",
+        "pageBackground": "#FFF7ED"
+      },
+      "line": "none",
+      "density": "compact",
+      "textStyle": "roman",
+      "showIcon": true,
+      "pageBorder": {
+        "enabled": true,
+        "width": 2,
+        "color": "#7C2D12",
+        "radius": 18
+      },
+      "primary": "#7C2D12",
+      "accent": "#FDBA74",
+      "text": "#1F2937",
+      "background": "#FFF7ED"
+    },
+    "aside": {
+      "width": "276px",
+      "height": "0px",
+      "radius": 0
+    },
+    "decor": {
+      "corners": [
+        {
+          "shape": "circle",
+          "size": "220px",
+          "color": "#FDBA74",
+          "x": "top-right",
+          "y": "0"
+        },
+        {
+          "shape": "square",
+          "size": "180px",
+          "color": "#7C2D12",
+          "x": "bottom-left",
+          "y": "0"
+        }
+      ],
+      "cornerRadius": 0,
+      "borderStyle": "solid"
+    },
+    "photo": {
+      "position": "right",
+      "size": "100px",
+      "shape": "rounded",
+      "border": "2px solid #FDBA74",
+      "photoType": "rounded",
+      "photoSize": "100px",
+      "photoBorderRadius": "18px",
+      "photoBorderColor": "#FDBA74"
+    },
+    "layoutOptions": {
+      "columnsGap": "wide",
+      "asideWidthMode": "standard",
+      "sectionSpacing": "normal",
+      "asideStartsAtTop": true,
+      "borderRadius": 0,
+      "gutter": 24
+    },
+    "photoOptions": {
+      "shapeList": [
+        "circle",
+        "rounded",
+        "square"
+      ],
+      "shadow": "soft",
+      "frame": "line"
+    },
+    "levelStyle": {
+      "skills": "bars",
+      "languages": "dots"
+    },
+    "decorOptions": {
+      "enabled": true,
+      "preset": "geo-duo"
+    },
+    "sectionTitleStyle": {
+      "underline": "thin"
+    },
+    "headerType": "header-right",
+    "textStyles": {
+      "fullName": {
+        "kind": "display",
+        "fontFamily": "Prata",
+        "fallback": "serif",
+        "fontWeight": 700,
+        "letterSpacing": "-0.035em",
+        "lineHeight": 1.02
+      },
+      "sectionLabel": {
+        "kind": "section-label",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 800,
+        "letterSpacing": "0.095em",
+        "lineHeight": 1.12
+      },
+      "entryTitle": {
+        "kind": "entry-title",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 700,
+        "letterSpacing": "-0.01em",
+        "lineHeight": 1.22
+      },
+      "body": {
+        "kind": "body",
+        "fontFamily": "Manrope",
+        "fallback": "sans",
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "lineHeight": 1.48
+      },
+      "accent": {
+        "kind": "accent",
+        "fontFamily": "Fira Code",
+        "fallback": "mono",
+        "fontWeight": 600,
+        "letterSpacing": "0.02em",
+        "lineHeight": 1.25
+      }
+    },
+    "typography": {
+      "provider": "google-fonts",
+      "googleFonts": [
+        "Fira Code",
+        "Manrope",
+        "Prata"
+      ],
+      "scale": "balanced",
+      "fonts": {
+        "display": "Prata",
+        "body": "Manrope",
+        "mono": "Fira Code"
+      }
+    },
+    "sectionBar": {
+      "show": true,
+      "height": 3,
+      "radius": 999,
+      "widthType": "complete"
+    }
+  },
+  "fakeData": {
+    "id": "900a6adf-0645-4f66-bdd4-9d21902094c9",
+    "documentUrl": null,
+    "resumeInformation": {
+      "fullName": "Mia Bernard",
+      "email": "mia.bernard@example.com",
+      "phone": "+33 6 12 34 55 80",
+      "homepage": "https://portfolio-6.example.com",
+      "repo_profile": "https://github.com/profile-6",
+      "adresse": "Lyon, France",
+      "birthDate": "1995-06-15",
+      "birthPlace": "Tunisia",
+      "profileText": "Mia Bernard is a results-driven devops engineer focused on product quality, scalability, and collaboration.",
+      "title": "DevOps Engineer",
+      "photo": "/img/team-9.jpeg"
+    },
+    "experiences": [
+      {
+        "id": "c29ef0a1-9be6-4071-97de-69ca9354c9a1",
+        "title": "DevOps Engineer",
+        "description": "Led product delivery and built maintainable architecture.",
+        "company": "Bro Labs",
+        "startDate": "2021-01-01",
+        "endDate": null
+      },
+      {
+        "id": "615e2aac-035f-4e8f-aa36-94e1bafb56ae",
+        "title": "Engineer",
+        "description": "Implemented features with strong UX focus.",
+        "company": "Nova Digital",
+        "startDate": "2018-06-01",
+        "endDate": "2020-12-31"
+      }
+    ],
+    "educations": [
+      {
+        "id": "55ee1efa-e238-481c-bc5a-a344be2f25de",
+        "title": "Master in Computer Science",
+        "description": "",
+        "school": "University of Lyon",
+        "startDate": "2016-09-01",
+        "endDate": "2018-06-30",
+        "location": "Lyon, France"
+      },
+      {
+        "id": "be796531-1073-4479-bcc6-c7fb1a5903d5",
+        "title": "Bachelor in Software Engineering",
+        "description": "",
+        "school": "Université Grenoble Alpes",
+        "startDate": "2013-09-01",
+        "endDate": "2016-06-30",
+        "location": "Lyon, France"
+      }
+    ],
+    "skills": [
+      {
+        "name": "Vue.js",
+        "level": 80
+      },
+      {
+        "name": "TypeScript",
+        "level": 80
+      },
+      {
+        "name": "Node.js",
+        "level": 80
+      },
+      {
+        "name": "Nuxt",
+        "level": 80
+      },
+      {
+        "name": "PostgreSQL",
+        "level": 80
+      },
+      {
+        "name": "Docker",
+        "level": 80
+      }
+    ],
+    "languages": [
+      {
+        "name": "French",
+        "level": 80,
+        "countryCode": "US",
+        "flag": "🇺🇸",
+        "languageType": "label"
+      },
+      {
+        "name": "English",
+        "level": 80,
+        "countryCode": "US",
+        "flag": "🇺🇸",
+        "languageType": "label"
+      },
+      {
+        "name": "Spanish",
+        "level": 80,
+        "countryCode": "US",
+        "flag": "🇺🇸",
+        "languageType": "label"
+      }
+    ],
+    "certifications": [
+      {
+        "id": "898c81d2-43ab-4e70-a2ef-8aa11defc1db",
+        "title": "AWS Certified Developer",
+        "description": "",
+        "attachments": []
+      },
+      {
+        "id": "de9c99b4-39f8-427b-a913-1a890a1129a1",
+        "title": "Scrum Master",
+        "description": "",
+        "attachments": []
+      }
+    ],
+    "projects": [
+      {
+        "id": "211e6acf-b8ab-4d51-b78c-ed407d221591",
+        "title": "Recruitment Analytics",
+        "description": "Dashboard and reporting platform.",
+        "attachments": [],
+        "home_page": "https://portfolio-6.example.com"
+      }
+    ],
+    "references": [
+      {
+        "id": "8c5cfb54-75e9-4bd2-a175-640b1d33e82e",
+        "title": "Sophie Bernard · Engineering Manager",
+        "description": ""
+      },
+      {
+        "id": "47a73364-aa08-4fb8-baaf-cfab796e80a8",
+        "title": "Julien Roche · Product Director",
+        "description": ""
+      }
+    ],
+    "hobbies": [
+      {
+        "id": "d0e16263-c6b3-4b7f-a41e-2de7fe000f9f",
+        "title": "Open-source",
+        "description": ""
+      },
+      {
+        "id": "66d260be-ed4f-4fc5-a116-f88455261a7f",
+        "title": "Running",
+        "description": ""
+      },
+      {
+        "id": "cfe42c98-bf8c-404b-a437-57fca3cdce17",
+        "title": "Photography",
+        "description": ""
+      }
+    ]
+  }
+}
 ]
