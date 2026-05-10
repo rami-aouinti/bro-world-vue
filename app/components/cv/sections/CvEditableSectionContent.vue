@@ -6,11 +6,19 @@ const props = withDefaults(
     items?: string[]
     sectionKey?: string
     variant?: string
+    contentStyle?: string
+    dateStyle?: string
+    levelStyle?: string
+    hobbyStyle?: string
   }>(),
   {
     items: () => [],
     sectionKey: '',
     variant: 'classic',
+    contentStyle: 'classic',
+    dateStyle: 'plain',
+    levelStyle: 'line',
+    hobbyStyle: 'text',
   },
 )
 
@@ -19,16 +27,28 @@ const emit = defineEmits<{
 }>()
 
 function splitComplexItem(raw: string) {
-  const [title = '', subtitle = '', period = '', description = ''] = String(raw || '').split('§')
+  const [title = '', subtitle = '', period = '', description = ''] = String(
+    raw || '',
+  ).split('§')
   return { title, subtitle, period, description }
 }
 
-function joinComplexItem(parts: { title: string; subtitle: string; period: string; description: string }) {
-  return [parts.title, parts.subtitle, parts.period, parts.description].join('§')
+function joinComplexItem(parts: {
+  title: string
+  subtitle: string
+  period: string
+  description: string
+}) {
+  return [parts.title, parts.subtitle, parts.period, parts.description].join(
+    '§',
+  )
 }
 
 function isComplexItem(raw: string) {
-  return ['experience', 'education'].includes(props.sectionKey) && String(raw || '').includes('§')
+  return (
+    ['experience', 'education'].includes(props.sectionKey) &&
+    String(raw || '').includes('§')
+  )
 }
 
 function splitLeveledItem(raw: string) {
@@ -61,7 +81,12 @@ function updateSimpleItem(index: number, value: string) {
   emit('update-item', index, value)
 }
 
-function updateComplexPart(index: number, raw: string, key: 'title' | 'subtitle' | 'period' | 'description', value: string) {
+function updateComplexPart(
+  index: number,
+  raw: string,
+  key: 'title' | 'subtitle' | 'period' | 'description',
+  value: string,
+) {
   const parts = splitComplexItem(raw)
   parts[key] = value
   emit('update-item', index, joinComplexItem(parts))
@@ -89,41 +114,173 @@ function filledStars(raw: string) {
 function isLeveledSection() {
   return ['skills', 'languages'].includes(props.sectionKey)
 }
+
+function isTimelineComplexItem(raw: string) {
+  return (
+    isComplexItem(raw) &&
+    (props.variant === 'timeline' ||
+      [
+        'timeline-vertical',
+        'timeline-date-badges',
+        'timeline-badges',
+        'timeline-line',
+      ].includes(props.contentStyle))
+  )
+}
+
+function periodModelValue(value: string) {
+  if (props.dateStyle !== 'stacked') return value
+  return String(value || '').replace(/\s+(?:-|–|—|\/)\s+/, '\n')
+}
+
+function hobbyIcon(label: string) {
+  const normalized = label.toLowerCase()
+  if (normalized.includes('computer')) return 'mdi-laptop'
+  if (normalized.includes('read')) return 'mdi-book-open-page-variant'
+  if (normalized.includes('design')) return 'mdi-palette-outline'
+  if (normalized.includes('travel')) return 'mdi-airplane'
+  if (normalized.includes('sport')) return 'mdi-run'
+  if (normalized.includes('music')) return 'mdi-music'
+  return 'mdi-star-outline'
+}
+
+function isHobbyIconsSection() {
+  return (
+    props.sectionKey === 'hobbies' &&
+    [props.variant, props.contentStyle].some((style) =>
+      ['hobby-icons', 'hobby-icons-separated'].includes(style),
+    )
+  )
+}
 </script>
 
 <template>
-  <div class="cv-rich-section" :class="[`cv-rich-section--${variant}`, `cv-rich-section--${sectionKey}`]">
-    <div
-      v-for="(item, index) in items"
-      :key="index"
-      class="cv-rich-item"
-      :class="[`cv-rich-item--${variant}`, { 'cv-rich-item--complex': isComplexItem(item), 'cv-rich-item--timeline-complex': isComplexItem(item) && variant === 'timeline', 'cv-rich-item--leveled': isLeveledSection() }]"
-    >
-      <template v-if="isComplexItem(item)">
-        <template v-if="variant === 'timeline'">
-          <div class="cv-rich-timeline-dot" aria-hidden="true" />
-          <HoverRichTextEditor
-            v-if="splitComplexItem(item).period"
-            class="cv-rich-editor cv-rich-editor--period cv-rich-editor--timeline-period"
-            :model-value="splitComplexItem(item).period"
-            placeholder="Period"
-            font-size="12px"
-            font-weight="500"
-            font-family="var(--cv-text-body, inherit)"
-            color="inherit"
-            @update:model-value="updateComplexPart(index, item, 'period', $event)"
-          />
-          <div class="cv-rich-timeline-body">
+  <div
+    class="cv-rich-section"
+    :class="[
+      `cv-rich-section--${variant}`,
+      `cv-rich-section--${sectionKey}`,
+      `cv-rich-section--hobby-${hobbyStyle}`,
+    ]"
+  >
+    <div v-if="isHobbyIconsSection()" class="cv-hobby-icons">
+      <div
+        v-for="(item, index) in items"
+        :key="index"
+        class="cv-hobby-icon-item"
+      >
+        <v-icon :icon="hobbyIcon(item)" />
+        <HoverRichTextEditor
+          class="cv-rich-editor cv-rich-editor--hobby"
+          :model-value="item"
+          @update:model-value="updateSimpleItem(index, $event)"
+        />
+      </div>
+    </div>
+
+    <template v-else>
+      <div
+        v-for="(item, index) in items"
+        :key="index"
+        class="cv-rich-item"
+        :class="[
+          `cv-rich-item--${variant}`,
+          `cv-rich-item--content-${contentStyle}`,
+          `cv-rich-item--date-${dateStyle}`,
+          `cv-rich-item--level-${levelStyle}`,
+          {
+            'cv-rich-item--complex': isComplexItem(item),
+            'cv-rich-item--timeline-complex': isTimelineComplexItem(item),
+            'cv-rich-item--leveled': isLeveledSection(),
+          },
+        ]"
+      >
+        <template v-if="isComplexItem(item)">
+          <template v-if="isTimelineComplexItem(item)">
+            <div class="cv-rich-timeline-dot" aria-hidden="true" />
             <HoverRichTextEditor
-              class="cv-rich-editor cv-rich-editor--title"
-              :model-value="splitComplexItem(item).title"
-              placeholder="Title"
-              font-size="13px"
-              font-weight="700"
-              font-family="var(--cv-text-entry-title, inherit)"
+              v-if="splitComplexItem(item).period"
+              class="cv-rich-editor cv-rich-editor--period cv-rich-editor--timeline-period"
+              :model-value="periodModelValue(splitComplexItem(item).period)"
+              placeholder="Period"
+              font-size="12px"
+              font-weight="500"
+              font-family="var(--cv-text-body, inherit)"
               color="inherit"
-              @update:model-value="updateComplexPart(index, item, 'title', $event)"
+              @update:model-value="
+                updateComplexPart(index, item, 'period', $event)
+              "
             />
+            <div class="cv-rich-timeline-body">
+              <HoverRichTextEditor
+                class="cv-rich-editor cv-rich-editor--title"
+                :model-value="splitComplexItem(item).title"
+                placeholder="Title"
+                font-size="13px"
+                font-weight="700"
+                font-family="var(--cv-text-entry-title, inherit)"
+                color="inherit"
+                @update:model-value="
+                  updateComplexPart(index, item, 'title', $event)
+                "
+              />
+              <HoverRichTextEditor
+                v-if="splitComplexItem(item).subtitle"
+                class="cv-rich-editor cv-rich-editor--subtitle"
+                :model-value="splitComplexItem(item).subtitle"
+                placeholder="Subtitle"
+                font-size="12px"
+                font-weight="600"
+                font-family="var(--cv-text-body, inherit)"
+                color="inherit"
+                @update:model-value="
+                  updateComplexPart(index, item, 'subtitle', $event)
+                "
+              />
+              <HoverRichTextEditor
+                v-if="splitComplexItem(item).description"
+                class="cv-rich-editor cv-rich-editor--description"
+                :model-value="splitComplexItem(item).description"
+                placeholder="Description"
+                font-size="11px"
+                font-weight="400"
+                font-family="var(--cv-text-body, inherit)"
+                color="inherit"
+                @update:model-value="
+                  updateComplexPart(index, item, 'description', $event)
+                "
+              />
+            </div>
+          </template>
+
+          <template v-else>
+            <div class="cv-rich-entry-head">
+              <HoverRichTextEditor
+                class="cv-rich-editor cv-rich-editor--title"
+                :model-value="splitComplexItem(item).title"
+                placeholder="Title"
+                font-size="13px"
+                font-weight="700"
+                font-family="var(--cv-text-entry-title, inherit)"
+                color="inherit"
+                @update:model-value="
+                  updateComplexPart(index, item, 'title', $event)
+                "
+              />
+              <HoverRichTextEditor
+                v-if="splitComplexItem(item).period"
+                class="cv-rich-editor cv-rich-editor--period"
+                :model-value="periodModelValue(splitComplexItem(item).period)"
+                placeholder="Period"
+                font-size="12px"
+                font-weight="500"
+                font-family="var(--cv-text-body, inherit)"
+                color="inherit"
+                @update:model-value="
+                  updateComplexPart(index, item, 'period', $event)
+                "
+              />
+            </div>
             <HoverRichTextEditor
               v-if="splitComplexItem(item).subtitle"
               class="cv-rich-editor cv-rich-editor--subtitle"
@@ -133,125 +290,114 @@ function isLeveledSection() {
               font-weight="600"
               font-family="var(--cv-text-body, inherit)"
               color="inherit"
-              @update:model-value="updateComplexPart(index, item, 'subtitle', $event)"
+              @update:model-value="
+                updateComplexPart(index, item, 'subtitle', $event)
+              "
             />
-            <HoverRichTextEditor
+            <div
               v-if="splitComplexItem(item).description"
-              class="cv-rich-editor cv-rich-editor--description"
-              :model-value="splitComplexItem(item).description"
-              placeholder="Description"
-              font-size="11px"
-              font-weight="400"
-              font-family="var(--cv-text-body, inherit)"
-              color="inherit"
-              @update:model-value="updateComplexPart(index, item, 'description', $event)"
-            />
-          </div>
+              class="cv-rich-description-row"
+              :class="`cv-rich-description-row--${variant}`"
+            >
+              <span v-if="variant === 'list'" class="cv-rich-prefix">-</span>
+              <span v-else-if="variant === 'dot'" class="cv-rich-prefix"
+                >•</span
+              >
+              <HoverRichTextEditor
+                class="cv-rich-editor cv-rich-editor--description"
+                :model-value="splitComplexItem(item).description"
+                placeholder="Description"
+                font-size="12px"
+                font-weight="400"
+                font-family="var(--cv-text-body, inherit)"
+                color="inherit"
+                @update:model-value="
+                  updateComplexPart(index, item, 'description', $event)
+                "
+              />
+            </div>
+          </template>
+        </template>
+
+        <template v-else-if="isLeveledSection()">
+          <HoverRichTextEditor
+            class="cv-rich-editor cv-rich-editor--label"
+            :model-value="splitLeveledItem(item).label"
+            placeholder="Label"
+            font-size="13px"
+            font-weight="500"
+            font-family="var(--cv-text-body, inherit)"
+            color="inherit"
+            @update:model-value="updateLeveledLabel(index, item, $event)"
+          />
+          <template v-if="variant === 'stars'">
+            <span class="cv-rich-stars" aria-hidden="true"
+              >{{ '★'.repeat(filledStars(item))
+              }}{{ '☆'.repeat(5 - filledStars(item)) }}</span
+            >
+          </template>
+          <template v-else-if="variant === 'dots'">
+            <span class="cv-rich-dots" aria-hidden="true">
+              <span
+                v-for="dot in 5"
+                :key="dot"
+                class="cv-rich-dot"
+                :class="{ 'cv-rich-dot--filled': dot <= filledDots(item) }"
+              />
+            </span>
+          </template>
+          <template v-else-if="variant === 'progress-line'">
+            <span class="cv-rich-progress"
+              ><i :style="{ width: `${splitLeveledItem(item).value}%` }"
+            /></span>
+          </template>
+          <template
+            v-else-if="
+              [
+                'progress-circle',
+                'progress-circle-grid',
+                'progress-circle-ring',
+              ].includes(variant)
+            "
+          >
+            <span
+              class="cv-rich-circle"
+              :style="{ '--level': splitLeveledItem(item).value }"
+            >
+              <span class="cv-rich-circle-value">
+                {{ splitLeveledItem(item).value }}%
+              </span>
+            </span>
+          </template>
+          <HoverRichTextEditor
+            v-else
+            class="cv-rich-editor cv-rich-editor--value"
+            :model-value="`${splitLeveledItem(item).value}%`"
+            placeholder="Level"
+            font-size="12px"
+            font-weight="500"
+            font-family="var(--cv-text-body, inherit)"
+            color="inherit"
+            @update:model-value="updateLeveledValue(index, item, $event)"
+          />
         </template>
 
         <template v-else>
-          <div class="cv-rich-entry-head">
-            <HoverRichTextEditor
-              class="cv-rich-editor cv-rich-editor--title"
-              :model-value="splitComplexItem(item).title"
-              placeholder="Title"
-              font-size="13px"
-              font-weight="700"
-              font-family="var(--cv-text-entry-title, inherit)"
-              color="inherit"
-              @update:model-value="updateComplexPart(index, item, 'title', $event)"
-            />
-            <HoverRichTextEditor
-              v-if="splitComplexItem(item).period"
-              class="cv-rich-editor cv-rich-editor--period"
-              :model-value="splitComplexItem(item).period"
-              placeholder="Period"
-              font-size="12px"
-              font-weight="500"
-              font-family="var(--cv-text-body, inherit)"
-              color="inherit"
-              @update:model-value="updateComplexPart(index, item, 'period', $event)"
-            />
-          </div>
+          <span v-if="variant === 'list'" class="cv-rich-prefix">-</span>
+          <span v-else-if="variant === 'dot'" class="cv-rich-prefix">•</span>
           <HoverRichTextEditor
-            v-if="splitComplexItem(item).subtitle"
-            class="cv-rich-editor cv-rich-editor--subtitle"
-            :model-value="splitComplexItem(item).subtitle"
-            placeholder="Subtitle"
-            font-size="12px"
-            font-weight="600"
+            class="cv-rich-editor cv-rich-editor--simple"
+            :model-value="item"
+            placeholder="Text"
+            font-size="13px"
+            font-weight="500"
             font-family="var(--cv-text-body, inherit)"
             color="inherit"
-            @update:model-value="updateComplexPart(index, item, 'subtitle', $event)"
+            @update:model-value="updateSimpleItem(index, $event)"
           />
-          <div v-if="splitComplexItem(item).description" class="cv-rich-description-row" :class="`cv-rich-description-row--${variant}`">
-            <span v-if="variant === 'list'" class="cv-rich-prefix">-</span>
-            <span v-else-if="variant === 'dot'" class="cv-rich-prefix">•</span>
-            <HoverRichTextEditor
-              class="cv-rich-editor cv-rich-editor--description"
-              :model-value="splitComplexItem(item).description"
-              placeholder="Description"
-              font-size="12px"
-              font-weight="400"
-              font-family="var(--cv-text-body, inherit)"
-              color="inherit"
-              @update:model-value="updateComplexPart(index, item, 'description', $event)"
-            />
-          </div>
         </template>
-      </template>
-
-      <template v-else-if="isLeveledSection()">
-        <HoverRichTextEditor
-          class="cv-rich-editor cv-rich-editor--label"
-          :model-value="splitLeveledItem(item).label"
-          placeholder="Label"
-          font-size="13px"
-          font-weight="500"
-          font-family="var(--cv-text-body, inherit)"
-          color="inherit"
-          @update:model-value="updateLeveledLabel(index, item, $event)"
-        />
-        <template v-if="variant === 'stars'">
-          <span class="cv-rich-stars" aria-hidden="true">{{ '★'.repeat(filledStars(item)) }}{{ '☆'.repeat(5 - filledStars(item)) }}</span>
-        </template>
-        <template v-else-if="variant === 'dots'">
-          <span class="cv-rich-dots" aria-hidden="true">
-            <span v-for="dot in 5" :key="dot" class="cv-rich-dot" :class="{ 'cv-rich-dot--filled': dot <= filledDots(item) }" />
-          </span>
-        </template>
-        <template v-else-if="variant === 'progress-line'">
-          <span class="cv-rich-progress"><i :style="{ width: `${splitLeveledItem(item).value}%` }" /></span>
-        </template>
-        <HoverRichTextEditor
-          v-else-if="variant !== 'progress-circle'"
-          class="cv-rich-editor cv-rich-editor--value"
-          :model-value="`${splitLeveledItem(item).value}%`"
-          placeholder="Level"
-          font-size="12px"
-          font-weight="500"
-          font-family="var(--cv-text-body, inherit)"
-          color="inherit"
-          @update:model-value="updateLeveledValue(index, item, $event)"
-        />
-        <span v-if="variant === 'progress-circle'" class="cv-rich-circle">{{ splitLeveledItem(item).value }}%</span>
-      </template>
-
-      <template v-else>
-        <span v-if="variant === 'list'" class="cv-rich-prefix">-</span>
-        <span v-else-if="variant === 'dot'" class="cv-rich-prefix">•</span>
-        <HoverRichTextEditor
-          class="cv-rich-editor cv-rich-editor--simple"
-          :model-value="item"
-          placeholder="Text"
-          font-size="13px"
-          font-weight="500"
-          font-family="var(--cv-text-body, inherit)"
-          color="inherit"
-          @update:model-value="updateSimpleItem(index, $event)"
-        />
-      </template>
-    </div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -269,6 +415,42 @@ function isLeveledSection() {
   min-width: 0;
 }
 
+.cv-rich-item--level-line-gradient .cv-rich-progress i {
+  background: linear-gradient(
+    90deg,
+    var(--cv-secondary, #93c5fd),
+    color-mix(in srgb, var(--cv-primary, #111827) 72%, #fff)
+  );
+}
+
+.cv-rich-section--progress-circle-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+  justify-items: center;
+}
+
+.cv-hobby-icons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+  gap: 12px;
+}
+
+.cv-rich-section--hobby-icons-separated .cv-hobby-icon-item {
+  border-inline-end: 1px dashed rgba(148, 163, 184, 0.45);
+}
+
+.cv-hobby-icon-item {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  text-align: center;
+  padding-inline: 10px;
+}
+
+.cv-hobby-icon-item .v-icon {
+  font-size: 30px;
+  color: var(--cv-secondary);
+}
 
 .cv-rich-section--timeline.cv-rich-section--experience,
 .cv-rich-section--timeline.cv-rich-section--education {
@@ -317,6 +499,127 @@ function isLeveledSection() {
   min-width: 0;
 }
 
+.cv-rich-item--content-timeline-vertical,
+.cv-rich-item--content-timeline-date-badges,
+.cv-rich-item--content-timeline-badges,
+.cv-rich-item--content-timeline-line {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(56px, 86px) minmax(0, 1fr);
+  column-gap: 14px;
+  padding-left: 20px;
+  margin-bottom: 14px;
+}
+
+.cv-rich-item--content-timeline-vertical::before,
+.cv-rich-item--content-timeline-date-badges::before,
+.cv-rich-item--content-timeline-badges::before,
+.cv-rich-item--content-timeline-line::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 0;
+  bottom: -14px;
+  width: 1px;
+  background: color-mix(in srgb, var(--cv-secondary, #93c5fd) 52%, transparent);
+}
+
+.cv-rich-item--content-timeline-vertical:last-child::before,
+.cv-rich-item--content-timeline-date-badges:last-child::before,
+.cv-rich-item--content-timeline-badges:last-child::before,
+.cv-rich-item--content-timeline-line:last-child::before {
+  bottom: 8px;
+}
+
+.cv-rich-item--content-timeline-vertical .cv-rich-timeline-dot,
+.cv-rich-item--content-timeline-date-badges .cv-rich-timeline-dot,
+.cv-rich-item--content-timeline-badges .cv-rich-timeline-dot,
+.cv-rich-item--content-timeline-line .cv-rich-timeline-dot {
+  left: 0;
+  top: 4px;
+  width: 11px;
+  height: 11px;
+  box-shadow: 0 0 0 3px var(--cv-page-background, #fff);
+}
+
+.cv-rich-item--content-timeline-date-badges,
+.cv-rich-item--content-timeline-badges {
+  grid-template-columns: minmax(64px, 92px) minmax(0, 1fr);
+}
+
+.cv-rich-item--content-timeline-line {
+  grid-template-columns: minmax(52px, 76px) minmax(0, 1fr);
+  column-gap: 12px;
+}
+
+.cv-rich-item--content-timeline-date-badges .cv-rich-editor--period,
+.cv-rich-item--content-timeline-badges .cv-rich-editor--period {
+  align-self: start;
+  justify-self: end;
+  border: 1px solid
+    color-mix(in srgb, var(--cv-secondary, #93c5fd) 45%, transparent);
+  border-radius: 999px;
+  padding: 2px 8px;
+  background: color-mix(
+    in srgb,
+    var(--cv-secondary, #93c5fd) 12%,
+    var(--cv-page-background, #fff)
+  );
+  color: var(--cv-secondary, #93c5fd);
+  font-size: 11px;
+  line-height: 1.15;
+}
+
+.cv-rich-item--date-stacked .cv-rich-editor--period {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+  white-space: pre-line;
+  text-align: center;
+  line-height: 1.05;
+}
+
+.cv-rich-item--date-badge-right .cv-rich-editor--period,
+.cv-rich-item--date-badge-left .cv-rich-editor--period {
+  border-radius: 999px;
+  padding: 3px 8px;
+  background: color-mix(in srgb, var(--cv-secondary, #ef4444) 78%, #111827);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.cv-rich-item--date-badge-right.cv-rich-item--timeline-complex {
+  grid-template-columns: minmax(0, 1fr) minmax(58px, max-content);
+}
+
+.cv-rich-item--date-badge-right.cv-rich-item--timeline-complex
+  .cv-rich-editor--period {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: start;
+}
+
+.cv-rich-item--date-badge-right.cv-rich-item--timeline-complex
+  .cv-rich-timeline-body {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.cv-rich-item--date-badge-left .cv-rich-editor--period {
+  justify-self: end;
+}
+
+.cv-rich-item--date-pill .cv-rich-editor--period {
+  border-radius: 999px;
+  padding: 2px 8px;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
 .cv-rich-item--complex.cv-rich-item--list,
 .cv-rich-item--complex.cv-rich-item--dot {
   display: block;
@@ -329,11 +632,41 @@ function isLeveledSection() {
   min-width: 0;
 }
 
+.cv-rich-section--cards {
+  display: grid;
+  gap: 10px;
+}
+
 .cv-rich-item--cards {
-  margin-bottom: 10px;
-  border: 1px solid color-mix(in srgb, var(--cv-secondary, #93c5fd) 40%, white);
-  border-radius: 8px;
-  padding: 6px 8px;
+  padding: 12px 14px;
+  border: 1px solid
+    color-mix(in srgb, var(--cv-secondary, #94a3b8) 22%, transparent);
+  border-radius: 14px;
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--cv-secondary, #94a3b8) 8%, transparent),
+      transparent 45%
+    ),
+    color-mix(in srgb, var(--cv-page-background, #fff) 94%, #fff);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+}
+
+.cv-rich-item--cards .cv-rich-editor--title {
+  color: var(--cv-primary, #0f172a);
+  font-weight: 800;
+}
+
+.cv-rich-item--cards .cv-rich-editor--period {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--cv-primary, #0f172a);
+  color: #fff;
+  font-size: 11px;
+}
+
+.cv-rich-item--cards-accent-left {
+  border-left: 4px solid var(--cv-secondary);
 }
 
 .cv-rich-item--list,
@@ -379,7 +712,8 @@ function isLeveledSection() {
   margin-bottom: 0;
   background: rgb(var(--v-theme-surface));
   color: rgb(var(--v-theme-on-surface));
-  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-on-surface)) 14%, transparent);
+  border: 1px solid
+    color-mix(in srgb, rgb(var(--v-theme-on-surface)) 14%, transparent);
   border-radius: 8px;
   padding: 4px;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
@@ -388,7 +722,11 @@ function isLeveledSection() {
 .cv-rich-editor :deep(.toolbar-size) {
   background: rgb(var(--v-theme-surface));
   color: rgb(var(--v-theme-on-surface));
-  border-color: color-mix(in srgb, rgb(var(--v-theme-on-surface)) 22%, transparent);
+  border-color: color-mix(
+    in srgb,
+    rgb(var(--v-theme-on-surface)) 22%,
+    transparent
+  );
 }
 
 .cv-rich-editor :deep(.v-btn) {
@@ -456,13 +794,31 @@ function isLeveledSection() {
 }
 
 .cv-rich-circle {
-  width: 39px;
-  height: 39px;
+  position: relative;
+  width: 54px;
+  height: 54px;
   border-radius: 999px;
-  border: 2px solid var(--cv-secondary, #93c5fd);
+  background: conic-gradient(
+    var(--cv-secondary) calc(var(--level) * 1%),
+    rgba(148, 163, 184, 0.25) 0
+  );
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 9px;
+}
+
+.cv-rich-circle::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: inherit;
+  background: var(--cv-page-background, #fff);
+}
+
+.cv-rich-circle-value {
+  position: relative;
+  z-index: 1;
+  font-size: 11px;
+  font-weight: 800;
 }
 </style>

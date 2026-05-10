@@ -6,14 +6,46 @@ import {
   type NormalizedGeneratedTemplateSection,
 } from '~/utils/resumeGeneratedTemplate'
 
-export type GeneratedCvSectionTitleStyle =
+export type CvSectionTitleStyle =
   | 'classic'
   | 'pill-filled'
   | 'pill-outline'
   | 'icon-bar'
   | 'ribbon'
-  | 'hexagon-icon'
+  | 'hexagon'
   | 'tab'
+  | 'underline-accent'
+
+export type CvSectionContentStyle =
+  | 'classic'
+  | 'cards'
+  | 'timeline-vertical'
+  | 'timeline-dots'
+  | 'timeline-date-badges'
+  | 'timeline-badges'
+  | 'timeline-line'
+  | 'progress-line'
+  | 'progress-circle'
+  | 'hobby-icons'
+  | 'hobby-icons-separated'
+
+export type CvSectionDateStyle =
+  | 'plain'
+  | 'stacked'
+  | 'vertical-year'
+  | 'badge-left'
+  | 'badge-right'
+  | 'pill'
+
+export type CvSectionLevelStyle =
+  | 'line'
+  | 'circle'
+  | 'circle-grid'
+  | 'dots'
+  | 'stars'
+  | 'line-gradient'
+
+export type CvHobbyStyle = 'text' | 'icons' | 'icons-separated' | 'cards'
 
 export type GeneratedCvTemplateRuntimeSection =
   NormalizedGeneratedTemplateSection & {
@@ -21,7 +53,11 @@ export type GeneratedCvTemplateRuntimeSection =
     iconAlternatives: string[]
     form: string
     column: GeneratedResumeTemplateColumn
-    titleStyle: GeneratedCvSectionTitleStyle
+    titleStyle: CvSectionTitleStyle
+    contentStyle: CvSectionContentStyle
+    dateStyle: CvSectionDateStyle
+    levelStyle: CvSectionLevelStyle
+    hobbyStyle: CvHobbyStyle
   }
 
 export type GeneratedCvTemplateRuntimeOptions = {
@@ -117,19 +153,81 @@ function normalizeColumn(value: unknown): GeneratedResumeTemplateColumn {
   return value === 'half' ? 'half' : 'full'
 }
 
-function normalizeTitleStyle(value: unknown): GeneratedCvSectionTitleStyle {
+function normalizeTitleStyle(value: unknown): CvSectionTitleStyle {
   const allowed = new Set([
     'classic',
     'pill-filled',
     'pill-outline',
     'icon-bar',
     'ribbon',
-    'hexagon-icon',
+    'hexagon',
     'tab',
+    'underline-accent',
   ])
-  return typeof value === 'string' && allowed.has(value)
-    ? (value as GeneratedCvSectionTitleStyle)
+  const normalizedValue = value === 'hexagon-icon' ? 'hexagon' : value
+  return typeof normalizedValue === 'string' && allowed.has(normalizedValue)
+    ? (normalizedValue as CvSectionTitleStyle)
     : 'classic'
+}
+
+function normalizeContentStyle(value: unknown): CvSectionContentStyle {
+  const allowed = new Set<CvSectionContentStyle>([
+    'classic',
+    'cards',
+    'timeline-vertical',
+    'timeline-dots',
+    'timeline-date-badges',
+    'timeline-badges',
+    'timeline-line',
+    'progress-line',
+    'progress-circle',
+    'hobby-icons',
+    'hobby-icons-separated',
+  ])
+  return typeof value === 'string' &&
+    allowed.has(value as CvSectionContentStyle)
+    ? (value as CvSectionContentStyle)
+    : 'classic'
+}
+
+function normalizeDateStyle(value: unknown): CvSectionDateStyle {
+  const allowed = new Set<CvSectionDateStyle>([
+    'plain',
+    'stacked',
+    'vertical-year',
+    'badge-left',
+    'badge-right',
+    'pill',
+  ])
+  return typeof value === 'string' && allowed.has(value as CvSectionDateStyle)
+    ? (value as CvSectionDateStyle)
+    : 'plain'
+}
+
+function normalizeLevelStyle(value: unknown): CvSectionLevelStyle {
+  const allowed = new Set<CvSectionLevelStyle>([
+    'line',
+    'circle',
+    'circle-grid',
+    'dots',
+    'stars',
+    'line-gradient',
+  ])
+  return typeof value === 'string' && allowed.has(value as CvSectionLevelStyle)
+    ? (value as CvSectionLevelStyle)
+    : 'line'
+}
+
+function normalizeHobbyStyle(value: unknown): CvHobbyStyle {
+  const allowed = new Set<CvHobbyStyle>([
+    'text',
+    'icons',
+    'icons-separated',
+    'cards',
+  ])
+  return typeof value === 'string' && allowed.has(value as CvHobbyStyle)
+    ? (value as CvHobbyStyle)
+    : 'text'
 }
 
 function isAsideZone(zone: NormalizedGeneratedTemplateSection['zone']) {
@@ -173,6 +271,10 @@ export function useGeneratedCvTemplateRuntime(
           ),
           column: normalizeColumn(section.column ?? config.column),
           titleStyle: normalizeTitleStyle(config.titleStyle),
+          contentStyle: normalizeContentStyle(config.contentStyle),
+          dateStyle: normalizeDateStyle(config.dateStyle),
+          levelStyle: normalizeLevelStyle(config.levelStyle),
+          hobbyStyle: normalizeHobbyStyle(config.hobbyStyle),
         }
       },
     )
@@ -274,6 +376,26 @@ export function useGeneratedCvTemplateRuntime(
     return sectionByKey.value[key]?.titleStyle || 'classic'
   }
 
+  function sectionContentStyle(sectionKey: string) {
+    const key = normalizeSectionKey(sectionKey)
+    return sectionByKey.value[key]?.contentStyle || 'classic'
+  }
+
+  function sectionDateStyle(sectionKey: string) {
+    const key = normalizeSectionKey(sectionKey)
+    return sectionByKey.value[key]?.dateStyle || 'plain'
+  }
+
+  function sectionLevelStyle(sectionKey: string) {
+    const key = normalizeSectionKey(sectionKey)
+    return sectionByKey.value[key]?.levelStyle || 'line'
+  }
+
+  function sectionHobbyStyle(sectionKey: string) {
+    const key = normalizeSectionKey(sectionKey)
+    return sectionByKey.value[key]?.hobbyStyle || 'text'
+  }
+
   function sectionOrder(sectionKey: string) {
     const key = normalizeSectionKey(sectionKey)
     return sectionByKey.value[key]?.order ?? Number.MAX_SAFE_INTEGER
@@ -292,6 +414,10 @@ export function useGeneratedCvTemplateRuntime(
     sectionForm,
     sectionColumn,
     sectionTitleStyle,
+    sectionContentStyle,
+    sectionDateStyle,
+    sectionLevelStyle,
+    sectionHobbyStyle,
     sectionOrder,
     templateDesign,
   }
