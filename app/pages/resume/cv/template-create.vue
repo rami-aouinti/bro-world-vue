@@ -496,9 +496,6 @@ const visibleContentStructure2Sections = computed(() =>
   visibleOrderedSections('contentStructure2'),
 )
 const visibleMainOneSections = computed(() => visibleOrderedSections('mainOne'))
-const visibleFallbackSections = computed(() =>
-  visibleOrderedSections('mainOne'),
-)
 const visibleMainTwoTopSections = computed(() =>
   visibleOrderedSections('mainTwoTop'),
 )
@@ -3457,7 +3454,7 @@ watch(
             </div>
             <div v-else class="cv-sections-list cv-sections-list--fallback">
               <div
-                v-for="section in visibleFallbackSections"
+                v-for="section in visibleMainOneSections"
                 :key="`fallback-${section}`"
                 :class="[
                   'cv-section-row',
