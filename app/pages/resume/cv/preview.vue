@@ -2851,11 +2851,6 @@ watch(
                 :key="`aside-s1-${section}`"
                 :class="[
                   'cv-aside-section-item',
-                  {
-                    'cv-aside-section-item--toolbar-visible':
-                      activeSectionToolbarKey ===
-                      sectionToolbarKey('asideOne', section),
-                  },
                 ]"
                 :style="sectionOffsetStyle('asideOne', section)"
                 draggable="true"
@@ -2903,6 +2898,17 @@ watch(
                   :date-style="sectionDateStyle(toSectionKey(section))"
                   :level-style="sectionLevelStyle(toSectionKey(section))"
                   :hobby-style="sectionHobbyStyle(toSectionKey(section))"
+                  :toolbar-active="
+                    activeSectionToolbarKey ===
+                    sectionToolbarKey('asideOne', section)
+                  "
+                  @activate-toolbar="
+                    activeSectionToolbarKey = sectionToolbarKey(
+                      'asideOne',
+                      section,
+                    )
+                  "
+                  @deactivate-toolbar="activeSectionToolbarKey = null"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -2945,11 +2951,6 @@ watch(
                 :key="`aside-s2-${section}`"
                 :class="[
                   'cv-aside-section-item',
-                  {
-                    'cv-aside-section-item--toolbar-visible':
-                      activeSectionToolbarKey ===
-                      sectionToolbarKey('asideTwo', section),
-                  },
                 ]"
                 :style="sectionOffsetStyle('asideTwo', section)"
                 draggable="true"
@@ -2997,6 +2998,17 @@ watch(
                   :date-style="sectionDateStyle(toSectionKey(section))"
                   :level-style="sectionLevelStyle(toSectionKey(section))"
                   :hobby-style="sectionHobbyStyle(toSectionKey(section))"
+                  :toolbar-active="
+                    activeSectionToolbarKey ===
+                    sectionToolbarKey('asideTwo', section)
+                  "
+                  @activate-toolbar="
+                    activeSectionToolbarKey = sectionToolbarKey(
+                      'asideTwo',
+                      section,
+                    )
+                  "
+                  @deactivate-toolbar="activeSectionToolbarKey = null"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3035,11 +3047,6 @@ watch(
                 :class="[
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
-                  {
-                    'cv-section-row--toolbar-visible':
-                      activeSectionToolbarKey ===
-                      sectionToolbarKey('contentBase', section),
-                  },
                 ]"
                 :style="sectionOffsetStyle('contentBase', section)"
                 draggable="true"
@@ -3087,6 +3094,17 @@ watch(
                   :date-style="sectionDateStyle(toSectionKey(section))"
                   :level-style="sectionLevelStyle(toSectionKey(section))"
                   :hobby-style="sectionHobbyStyle(toSectionKey(section))"
+                  :toolbar-active="
+                    activeSectionToolbarKey ===
+                    sectionToolbarKey('contentBase', section)
+                  "
+                  @activate-toolbar="
+                    activeSectionToolbarKey = sectionToolbarKey(
+                      'contentBase',
+                      section,
+                    )
+                  "
+                  @deactivate-toolbar="activeSectionToolbarKey = null"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3124,11 +3142,6 @@ watch(
                 :class="[
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
-                  {
-                    'cv-section-row--toolbar-visible':
-                      activeSectionToolbarKey ===
-                      sectionToolbarKey('contentStructure2', section),
-                  },
                 ]"
                 :style="sectionOffsetStyle('contentStructure2', section)"
                 draggable="true"
@@ -3176,6 +3189,17 @@ watch(
                   :date-style="sectionDateStyle(toSectionKey(section))"
                   :level-style="sectionLevelStyle(toSectionKey(section))"
                   :hobby-style="sectionHobbyStyle(toSectionKey(section))"
+                  :toolbar-active="
+                    activeSectionToolbarKey ===
+                    sectionToolbarKey('contentStructure2', section)
+                  "
+                  @activate-toolbar="
+                    activeSectionToolbarKey = sectionToolbarKey(
+                      'contentStructure2',
+                      section,
+                    )
+                  "
+                  @deactivate-toolbar="activeSectionToolbarKey = null"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3215,11 +3239,6 @@ watch(
                 :class="[
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
-                  {
-                    'cv-section-row--toolbar-visible':
-                      activeSectionToolbarKey ===
-                      sectionToolbarKey('mainOne', section),
-                  },
                 ]"
                 :style="sectionOffsetStyle('mainOne', section)"
                 draggable="true"
@@ -3267,6 +3286,17 @@ watch(
                   :date-style="sectionDateStyle(toSectionKey(section))"
                   :level-style="sectionLevelStyle(toSectionKey(section))"
                   :hobby-style="sectionHobbyStyle(toSectionKey(section))"
+                  :toolbar-active="
+                    activeSectionToolbarKey ===
+                    sectionToolbarKey('mainOne', section)
+                  "
+                  @activate-toolbar="
+                    activeSectionToolbarKey = sectionToolbarKey(
+                      'mainOne',
+                      section,
+                    )
+                  "
+                  @deactivate-toolbar="activeSectionToolbarKey = null"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3302,11 +3332,6 @@ watch(
                 :class="[
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
-                  {
-                    'cv-section-row--toolbar-visible':
-                      activeSectionToolbarKey ===
-                      sectionToolbarKey('mainTwoTop', section),
-                  },
                 ]"
                 :style="sectionOffsetStyle('mainTwoTop', section)"
                 draggable="true"
@@ -3354,6 +3379,17 @@ watch(
                   :date-style="sectionDateStyle(toSectionKey(section))"
                   :level-style="sectionLevelStyle(toSectionKey(section))"
                   :hobby-style="sectionHobbyStyle(toSectionKey(section))"
+                  :toolbar-active="
+                    activeSectionToolbarKey ===
+                    sectionToolbarKey('mainTwoTop', section)
+                  "
+                  @activate-toolbar="
+                    activeSectionToolbarKey = sectionToolbarKey(
+                      'mainTwoTop',
+                      section,
+                    )
+                  "
+                  @deactivate-toolbar="activeSectionToolbarKey = null"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -3384,11 +3420,6 @@ watch(
                     :class="[
                       'cv-section-row',
                       contentColumnClass(toSectionKey(section)),
-                      {
-                        'cv-section-row--toolbar-visible':
-                          activeSectionToolbarKey ===
-                          sectionToolbarKey('mainTwoLeft', section),
-                      },
                     ]"
                     :style="sectionOffsetStyle('mainTwoLeft', section)"
                     draggable="true"
@@ -3440,6 +3471,17 @@ watch(
                       :date-style="sectionDateStyle(toSectionKey(section))"
                       :level-style="sectionLevelStyle(toSectionKey(section))"
                       :hobby-style="sectionHobbyStyle(toSectionKey(section))"
+                      :toolbar-active="
+                        activeSectionToolbarKey ===
+                        sectionToolbarKey('mainTwoLeft', section)
+                      "
+                      @activate-toolbar="
+                        activeSectionToolbarKey = sectionToolbarKey(
+                          'mainTwoLeft',
+                          section,
+                        )
+                      "
+                      @deactivate-toolbar="activeSectionToolbarKey = null"
                       @update:title="updateSectionDisplayTitle(section, $event)"
                       @update:icon="setSectionIcon(section, $event)"
                       @update:variant="
@@ -3474,11 +3516,6 @@ watch(
                     :class="[
                       'cv-section-row',
                       contentColumnClass(toSectionKey(section)),
-                      {
-                        'cv-section-row--toolbar-visible':
-                          activeSectionToolbarKey ===
-                          sectionToolbarKey('mainTwoRight', section),
-                      },
                     ]"
                     :style="sectionOffsetStyle('mainTwoRight', section)"
                     draggable="true"
@@ -3530,6 +3567,17 @@ watch(
                       :date-style="sectionDateStyle(toSectionKey(section))"
                       :level-style="sectionLevelStyle(toSectionKey(section))"
                       :hobby-style="sectionHobbyStyle(toSectionKey(section))"
+                      :toolbar-active="
+                        activeSectionToolbarKey ===
+                        sectionToolbarKey('mainTwoRight', section)
+                      "
+                      @activate-toolbar="
+                        activeSectionToolbarKey = sectionToolbarKey(
+                          'mainTwoRight',
+                          section,
+                        )
+                      "
+                      @deactivate-toolbar="activeSectionToolbarKey = null"
                       @update:title="updateSectionDisplayTitle(section, $event)"
                       @update:icon="setSectionIcon(section, $event)"
                       @update:variant="
@@ -3566,11 +3614,6 @@ watch(
                 :class="[
                   'cv-section-row',
                   contentColumnClass(toSectionKey(section)),
-                  {
-                    'cv-section-row--toolbar-visible':
-                      activeSectionToolbarKey ===
-                      sectionToolbarKey('mainOne', section),
-                  },
                 ]"
                 :style="sectionOffsetStyle('mainOne', section)"
                 draggable="true"
@@ -3618,6 +3661,17 @@ watch(
                   :date-style="sectionDateStyle(toSectionKey(section))"
                   :level-style="sectionLevelStyle(toSectionKey(section))"
                   :hobby-style="sectionHobbyStyle(toSectionKey(section))"
+                  :toolbar-active="
+                    activeSectionToolbarKey ===
+                    sectionToolbarKey('mainOne', section)
+                  "
+                  @activate-toolbar="
+                    activeSectionToolbarKey = sectionToolbarKey(
+                      'mainOne',
+                      section,
+                    )
+                  "
+                  @deactivate-toolbar="activeSectionToolbarKey = null"
                   @update:title="updateSectionDisplayTitle(section, $event)"
                   @update:icon="setSectionIcon(section, $event)"
                   @update:variant="
@@ -4342,62 +4396,6 @@ watch(
   margin-bottom: 6px;
   padding-right: 0;
 }
-.cv-section-toolbar {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  z-index: 120;
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 4px;
-  width: max-content;
-  max-width: calc(100% - 8px);
-  padding: 4px;
-  opacity: 0;
-  pointer-events: none;
-  background: rgb(var(--v-theme-surface));
-  color: rgb(var(--v-theme-on-surface));
-  border: 1px solid
-    color-mix(in srgb, rgb(var(--v-theme-on-surface)) 14%, transparent);
-  border-radius: 10px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
-  transform: translateY(-2px);
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease;
-}
-.cv-section-row--toolbar-visible > .cv-section-toolbar,
-.cv-aside-section-item--toolbar-visible > .cv-section-toolbar,
-.cv-section-row:hover > .cv-section-toolbar,
-.cv-aside-section-item:hover > .cv-section-toolbar,
-.cv-section-toolbar:hover,
-.cv-section-toolbar:focus,
-.cv-section-toolbar:focus-within {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
-@media (hover: none) {
-  .cv-section-toolbar {
-    opacity: 1;
-    pointer-events: auto;
-    transform: none;
-  }
-}
-.cv-section-toolbar :deep(.v-field) {
-  min-height: 26px;
-  height: 26px;
-  background: rgb(var(--v-theme-surface));
-  color: rgb(var(--v-theme-on-surface));
-  border-radius: 8px;
-}
-.cv-section-toolbar :deep(.v-field__outline),
-.cv-section-toolbar :deep(.v-field__overlay) {
-  color: color-mix(in srgb, rgb(var(--v-theme-on-surface)) 22%, transparent);
-}
-
 .signature-footer {
   margin-top: 32px;
   display: flex;
@@ -4541,39 +4539,6 @@ watch(
   border: 1px solid rgb(var(--v-theme-on-surface), 0.2);
 }
 
-.cv-section-toolbar :deep(.v-btn) {
-  min-width: 26px !important;
-  width: 26px;
-  height: 26px;
-  padding: 0;
-  color: rgb(var(--v-theme-on-surface));
-  border-radius: 8px;
-}
-.cv-section-toolbar :deep(.v-btn:hover) {
-  background: color-mix(
-    in srgb,
-    rgb(var(--v-theme-on-surface)) 10%,
-    transparent
-  );
-}
-.cv-variant-select {
-  width: 76px;
-  min-width: 76px;
-  max-width: 76px;
-}
-.cv-variant-select :deep(.v-field__input) {
-  min-height: 26px;
-  padding: 0 4px;
-  font-size: 11px;
-  color: rgb(var(--v-theme-on-surface));
-}
-.cv-variant-select :deep(.v-field__prepend-inner) {
-  display: none;
-}
-.cv-variant-select :deep(.v-field__append-inner) {
-  padding-inline-start: 0;
-  color: rgb(var(--v-theme-on-surface));
-}
 .cv-header-identity span {
   font-size: 12px;
   opacity: 0.95;
