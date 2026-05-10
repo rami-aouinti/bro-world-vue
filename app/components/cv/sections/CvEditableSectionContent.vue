@@ -299,69 +299,84 @@ function isHobbyIconsSection() {
         </template>
 
         <template v-else-if="isLeveledSection()">
-          <HoverRichTextEditor
-            class="cv-rich-editor cv-rich-editor--label"
-            :model-value="splitLeveledItem(item).label"
-            placeholder="Label"
-            font-size="13px"
-            font-weight="500"
-            font-family="var(--cv-text-body, inherit)"
-            color="inherit"
-            @update:model-value="updateLeveledLabel(index, item, $event)"
-          />
-          <template v-if="variant === 'stars'">
-            <span class="cv-rich-stars" aria-hidden="true"
-              >{{ '★'.repeat(filledStars(item))
-              }}{{ '☆'.repeat(5 - filledStars(item)) }}</span
-            >
-          </template>
-          <template v-else-if="variant === 'dots'">
-            <span class="cv-rich-dots" aria-hidden="true">
-              <span
-                v-for="dot in 5"
-                :key="dot"
-                class="cv-rich-dot"
-                :class="{ 'cv-rich-dot--filled': dot <= filledDots(item) }"
-              />
+          <div v-if="variant === 'progress-line'" class="cv-progress-line-row">
+            <HoverRichTextEditor
+              class="cv-rich-editor cv-rich-editor--label"
+              :model-value="splitLeveledItem(item).label"
+              placeholder="Label"
+              font-size="13px"
+              font-weight="500"
+              font-family="var(--cv-text-body, inherit)"
+              color="inherit"
+              @update:model-value="updateLeveledLabel(index, item, $event)"
+            />
+            <span class="cv-rich-progress">
+              <i :style="{ width: `${splitLeveledItem(item).value}%` }" />
             </span>
-          </template>
-          <template v-else-if="variant === 'progress-line'">
-            <span class="cv-rich-progress"
-              ><i :style="{ width: `${splitLeveledItem(item).value}%` }"
-            /></span>
-          </template>
-          <HoverRichTextEditor
-            v-else-if="
-              ![
-                'progress-circle',
-                'progress-circle-grid',
-                'progress-circle-ring',
-              ].includes(variant)
-            "
-            class="cv-rich-editor cv-rich-editor--value"
-            :model-value="`${splitLeveledItem(item).value}%`"
-            placeholder="Level"
-            font-size="12px"
-            font-weight="500"
-            font-family="var(--cv-text-body, inherit)"
-            color="inherit"
-            @update:model-value="updateLeveledValue(index, item, $event)"
-          />
-          <span
-            v-if="
-              [
-                'progress-circle',
-                'progress-circle-grid',
-                'progress-circle-ring',
-              ].includes(variant)
-            "
-            class="cv-rich-circle"
-            :style="{ '--level': splitLeveledItem(item).value }"
-          >
-            <span class="cv-rich-circle-value">
+            <span class="cv-progress-line-value">
               {{ splitLeveledItem(item).value }}%
             </span>
-          </span>
+          </div>
+          <template v-else>
+            <HoverRichTextEditor
+              class="cv-rich-editor cv-rich-editor--label"
+              :model-value="splitLeveledItem(item).label"
+              placeholder="Label"
+              font-size="13px"
+              font-weight="500"
+              font-family="var(--cv-text-body, inherit)"
+              color="inherit"
+              @update:model-value="updateLeveledLabel(index, item, $event)"
+            />
+            <template v-if="variant === 'stars'">
+              <span class="cv-rich-stars" aria-hidden="true"
+                >{{ '★'.repeat(filledStars(item))
+                }}{{ '☆'.repeat(5 - filledStars(item)) }}</span
+              >
+            </template>
+            <template v-else-if="variant === 'dots'">
+              <span class="cv-rich-dots" aria-hidden="true">
+                <span
+                  v-for="dot in 5"
+                  :key="dot"
+                  class="cv-rich-dot"
+                  :class="{ 'cv-rich-dot--filled': dot <= filledDots(item) }"
+                />
+              </span>
+            </template>
+            <HoverRichTextEditor
+              v-else-if="
+                ![
+                  'progress-circle',
+                  'progress-circle-grid',
+                  'progress-circle-ring',
+                ].includes(variant)
+              "
+              class="cv-rich-editor cv-rich-editor--value"
+              :model-value="`${splitLeveledItem(item).value}%`"
+              placeholder="Level"
+              font-size="12px"
+              font-weight="500"
+              font-family="var(--cv-text-body, inherit)"
+              color="inherit"
+              @update:model-value="updateLeveledValue(index, item, $event)"
+            />
+            <span
+              v-if="
+                [
+                  'progress-circle',
+                  'progress-circle-grid',
+                  'progress-circle-ring',
+                ].includes(variant)
+              "
+              class="cv-rich-circle"
+              :style="{ '--level': splitLeveledItem(item).value }"
+            >
+              <span class="cv-rich-circle-value">
+                {{ splitLeveledItem(item).value }}%
+              </span>
+            </span>
+          </template>
         </template>
 
         <template v-else>
@@ -699,18 +714,36 @@ function isHobbyIconsSection() {
   background: var(--cv-secondary, #93c5fd);
 }
 
+.cv-progress-line-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 90px 34px;
+  align-items: center;
+  gap: 8px;
+}
+
 .cv-rich-progress {
-  width: 90px;
-  height: 8px;
-  background: rgba(148, 163, 184, 0.35);
+  height: 7px;
   border-radius: 999px;
+  background: color-mix(in srgb, var(--cv-secondary) 18%, transparent);
   overflow: hidden;
 }
 
 .cv-rich-progress i {
   display: block;
   height: 100%;
-  background: var(--cv-secondary, #93c5fd);
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--cv-primary), var(--cv-secondary));
+}
+
+.cv-progress-line-value {
+  color: color-mix(in srgb, currentColor 72%, transparent);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+:global(.cv-aside-section-item) .cv-progress-line-row {
+  grid-template-columns: 1fr;
 }
 
 .cv-rich-circle {
