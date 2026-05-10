@@ -1797,6 +1797,240 @@ watch(
     />
     <AppPageDrawers v-if="!isCaptureMode">
       <template #right>
+        <ResumePreviewDesignControls
+          v-model:palette-menu-open="paletteMenuOpen"
+          v-model:aside-menu-open="asideMenuOpen"
+          v-model:bar-menu-open="barMenuOpen"
+          v-model:border-menu-open="borderMenuOpen"
+          v-model:decor-menu-open="decorMenuOpen"
+          :active-colors="activeColors"
+          show-decor
+          @update-palette-color="updatePaletteColor"
+          @reset-palette="resetPaletteColors"
+        >
+          <template #decor>
+            <v-btn
+              size="small"
+              variant="outlined"
+              prepend-icon="mdi-shape-plus"
+              block
+              @click.stop="addDecorObject"
+            >
+              Add decor
+            </v-btn>
+            <div class="mt-3 d-flex flex-column ga-2">
+              <v-menu
+                v-for="(obj, i) in editableDecorObjects"
+                :key="`obj-${i}`"
+                :model-value="decorMenuOpenIndex === i"
+                :close-on-content-click="false"
+                location="left start"
+                @update:model-value="
+                  (isOpen) => {
+                    decorMenuOpenIndex = isOpen
+                      ? i
+                      : decorMenuOpenIndex === i
+                        ? null
+                        : decorMenuOpenIndex
+                  }
+                "
+              >
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    size="small"
+                    variant="tonal"
+                    class="justify-space-between"
+                    block
+                  >
+                    Decor {{ i + 1 }} · {{ obj.type }}
+                  </v-btn>
+                </template>
+                <v-card class="pa-3" min-width="260" @click.stop>
+                  <AppSelect
+                    v-model="obj.type"
+                    :items="
+                      decorShapeOptions.map((s) => ({ title: s, value: s }))
+                    "
+                    label="Type"
+                    hide-details
+                  />
+                  <p class="text-caption mt-3 mb-1">Color</p>
+                  <div class="d-flex flex-wrap ga-2">
+                    <v-btn
+                      v-for="color in decorColorOptions"
+                      :key="`decor-color-${i}-${color}`"
+                      icon
+                      size="x-small"
+                      :style="{
+                        backgroundColor: color,
+                        border:
+                          obj.color === color
+                            ? '2px solid #111827'
+                            : '1px solid #cbd5e1',
+                      }"
+                      @click.stop="obj.color = color"
+                    />
+                  </div>
+                  <v-slider
+                    v-model="obj.size"
+                    label="Size"
+                    :min="20"
+                    :max="420"
+                    :step="2"
+                    hide-details
+                    class="mt-3"
+                  />
+                  <v-slider
+                    v-model="obj.opacity"
+                    label="Opacity"
+                    :min="0.02"
+                    :max="0.35"
+                    :step="0.01"
+                    hide-details
+                    class="mt-3"
+                  />
+                  <v-slider
+                    v-model="obj.x"
+                    label="X slider"
+                    :min="0"
+                    :max="100"
+                    :step="1"
+                    hide-details
+                    class="mt-3"
+                  />
+                  <v-slider
+                    v-model="obj.y"
+                    label="Y slider"
+                    :min="0"
+                    :max="100"
+                    :step="1"
+                    hide-details
+                    class="mt-3"
+                  />
+                  <v-btn
+                    size="x-small"
+                    color="error"
+                    variant="text"
+                    class="mt-2"
+                    @click.stop="removeDecorObject(i)"
+                    >remove</v-btn
+                  >
+                </v-card>
+              </v-menu>
+            </div>
+          </template>
+          <template #aside>
+            <v-row dense>
+              <v-col cols="6"
+                ><p class="text-body-2">Aside width</p>
+                <v-slider
+                  v-model="asideWidth"
+                  :min="asideDimensionBounds.widthMin"
+                  :max="asideDimensionBounds.widthMax"
+                  :step="2"
+                  hide-details
+              /></v-col>
+              <v-col cols="6"
+                ><p class="text-body-2">Aside height</p>
+                <v-slider
+                  v-model="asideHeight"
+                  :min="asideDimensionBounds.heightMin"
+                  :max="asideDimensionBounds.heightMax"
+                  :step="2"
+                  hide-details
+              /></v-col>
+              <v-col cols="6"
+                ><p class="text-body-2">Aside radius</p>
+                <v-slider
+                  v-model="asideRadius"
+                  :min="0"
+                  :max="90"
+                  :step="1"
+                  hide-details
+              /></v-col>
+            </v-row>
+          </template>
+          <template #bar>
+            <v-row dense>
+              <v-col cols="6"
+                ><v-switch
+                  v-model="sectionBarConfig.show"
+                  label="Section bar"
+                  hide-details
+                  inset
+                  class="mt-2"
+              /></v-col>
+              <v-col cols="6"
+                ><AppSelect
+                  v-model="sectionBarConfig.widthType"
+                  :items="[
+                    { title: 'Flex', value: 'flex' },
+                    { title: 'Complet', value: 'complete' },
+                  ]"
+                  label="Bar width mode"
+                  hide-details
+                  class="mt-2"
+              /></v-col>
+              <v-col cols="6"
+                ><p class="text-body-2">Bar height</p>
+                <v-slider
+                  v-model="sectionBarConfig.height"
+                  :min="1"
+                  :max="18"
+                  :step="1"
+                  hide-details
+              /></v-col>
+              <v-col cols="6"
+                ><p class="text-body-2">Bar radius</p>
+                <v-slider
+                  v-model="sectionBarConfig.radius"
+                  :min="0"
+                  :max="999"
+                  :step="1"
+                  hide-details
+              /></v-col>
+            </v-row>
+          </template>
+          <template #border>
+            <v-row dense>
+              <v-col cols="6"
+                ><v-switch
+                  v-model="pageBorderEnabled"
+                  label="Page border"
+                  hide-details
+                  inset
+                  class="mt-2"
+              /></v-col>
+              <v-col cols="6"
+                ><p class="text-body-2">Border width</p>
+                <v-slider
+                  v-model="pageBorderWidth"
+                  :min="0"
+                  :max="24"
+                  :step="1"
+                  hide-details
+              /></v-col>
+              <v-col cols="6"
+                ><p class="text-body-2">Border radius</p>
+                <v-slider
+                  v-model="pageBorderRadius"
+                  :min="0"
+                  :max="60"
+                  :step="1"
+                  hide-details
+              /></v-col>
+              <v-col cols="6"
+                ><p class="text-body-2">Border color</p>
+                <v-text-field
+                  v-model="pageBorderColor"
+                  type="color"
+                  hide-details
+                  density="compact"
+              /></v-col>
+            </v-row>
+          </template>
+        </ResumePreviewDesignControls>
         <v-btn
           class="mt-1"
           variant="tonal"
@@ -1876,235 +2110,13 @@ watch(
           (template) => `/img/cv/generated/${template.id}.png`
         "
         template-key-prefix="cv-preview"
+        :show-design-controls="false"
         @select-template="applyPreviewTemplate"
         @select-palette="selectedPalette = $event"
         @update-palette-color="updatePaletteColor"
         @reset-palette="resetPaletteColors"
         @section="openAddSectionModal"
-      >
-        <template #decor>
-          <v-btn
-            size="small"
-            variant="outlined"
-            prepend-icon="mdi-shape-plus"
-            block
-            @click.stop="addDecorObject"
-          >
-            Add decor
-          </v-btn>
-          <div class="mt-3 d-flex flex-column ga-2">
-            <v-menu
-              v-for="(obj, i) in editableDecorObjects"
-              :key="`obj-${i}`"
-              :model-value="decorMenuOpenIndex === i"
-              :close-on-content-click="false"
-              location="left start"
-              @update:model-value="
-                (isOpen) => {
-                  decorMenuOpenIndex = isOpen
-                    ? i
-                    : decorMenuOpenIndex === i
-                      ? null
-                      : decorMenuOpenIndex
-                }
-              "
-            >
-              <template #activator="{ props }">
-                <v-btn
-                  v-bind="props"
-                  size="small"
-                  variant="tonal"
-                  class="justify-space-between"
-                  block
-                >
-                  Decor {{ i + 1 }} · {{ obj.type }}
-                </v-btn>
-              </template>
-              <v-card class="pa-3" min-width="260" @click.stop>
-                <AppSelect
-                  v-model="obj.type"
-                  :items="
-                    decorShapeOptions.map((s) => ({ title: s, value: s }))
-                  "
-                  label="Type"
-                  hide-details
-                />
-                <p class="text-caption mt-3 mb-1">Color</p>
-                <div class="d-flex flex-wrap ga-2">
-                  <v-btn
-                    v-for="color in decorColorOptions"
-                    :key="`decor-color-${i}-${color}`"
-                    icon
-                    size="x-small"
-                    :style="{
-                      backgroundColor: color,
-                      border:
-                        obj.color === color
-                          ? '2px solid #111827'
-                          : '1px solid #cbd5e1',
-                    }"
-                    @click.stop="obj.color = color"
-                  />
-                </div>
-                <v-slider
-                  v-model="obj.size"
-                  label="Size"
-                  :min="20"
-                  :max="420"
-                  :step="2"
-                  hide-details
-                  class="mt-3"
-                />
-                <v-slider
-                  v-model="obj.opacity"
-                  label="Opacity"
-                  :min="0.02"
-                  :max="0.35"
-                  :step="0.01"
-                  hide-details
-                  class="mt-3"
-                />
-                <v-slider
-                  v-model="obj.x"
-                  label="X slider"
-                  :min="0"
-                  :max="100"
-                  :step="1"
-                  hide-details
-                  class="mt-3"
-                />
-                <v-slider
-                  v-model="obj.y"
-                  label="Y slider"
-                  :min="0"
-                  :max="100"
-                  :step="1"
-                  hide-details
-                  class="mt-3"
-                />
-                <v-btn
-                  size="x-small"
-                  color="error"
-                  variant="text"
-                  class="mt-2"
-                  @click.stop="removeDecorObject(i)"
-                  >remove</v-btn
-                >
-              </v-card>
-            </v-menu>
-          </div>
-        </template>
-        <template #aside>
-          <v-row dense>
-            <v-col cols="6"
-              ><p class="text-body-2">Aside width</p>
-              <v-slider
-                v-model="asideWidth"
-                :min="asideDimensionBounds.widthMin"
-                :max="asideDimensionBounds.widthMax"
-                :step="2"
-                hide-details
-            /></v-col>
-            <v-col cols="6"
-              ><p class="text-body-2">Aside height</p>
-              <v-slider
-                v-model="asideHeight"
-                :min="asideDimensionBounds.heightMin"
-                :max="asideDimensionBounds.heightMax"
-                :step="2"
-                hide-details
-            /></v-col>
-            <v-col cols="6"
-              ><p class="text-body-2">Aside radius</p>
-              <v-slider
-                v-model="asideRadius"
-                :min="0"
-                :max="90"
-                :step="1"
-                hide-details
-            /></v-col>
-          </v-row>
-        </template>
-        <template #bar>
-          <v-row dense>
-            <v-col cols="6"
-              ><v-switch
-                v-model="sectionBarConfig.show"
-                label="Section bar"
-                hide-details
-                inset
-                class="mt-2"
-            /></v-col>
-            <v-col cols="6"
-              ><AppSelect
-                v-model="sectionBarConfig.widthType"
-                :items="[
-                  { title: 'Flex', value: 'flex' },
-                  { title: 'Complet', value: 'complete' },
-                ]"
-                label="Bar width mode"
-                hide-details
-                class="mt-2"
-            /></v-col>
-            <v-col cols="6"
-              ><p class="text-body-2">Bar height</p>
-              <v-slider
-                v-model="sectionBarConfig.height"
-                :min="1"
-                :max="18"
-                :step="1"
-                hide-details
-            /></v-col>
-            <v-col cols="6"
-              ><p class="text-body-2">Bar radius</p>
-              <v-slider
-                v-model="sectionBarConfig.radius"
-                :min="0"
-                :max="999"
-                :step="1"
-                hide-details
-            /></v-col>
-          </v-row>
-        </template>
-        <template #border>
-          <v-row dense>
-            <v-col cols="6"
-              ><v-switch
-                v-model="pageBorderEnabled"
-                label="Page border"
-                hide-details
-                inset
-                class="mt-2"
-            /></v-col>
-            <v-col cols="6"
-              ><p class="text-body-2">Border width</p>
-              <v-slider
-                v-model="pageBorderWidth"
-                :min="0"
-                :max="24"
-                :step="1"
-                hide-details
-            /></v-col>
-            <v-col cols="6"
-              ><p class="text-body-2">Border radius</p>
-              <v-slider
-                v-model="pageBorderRadius"
-                :min="0"
-                :max="60"
-                :step="1"
-                hide-details
-            /></v-col>
-            <v-col cols="6"
-              ><p class="text-body-2">Border color</p>
-              <v-text-field
-                v-model="pageBorderColor"
-                type="color"
-                hide-details
-                density="compact"
-            /></v-col>
-          </v-row>
-        </template>
-      </ResumePreviewToolbar>
+      />
 
       <div
         ref="cvPreviewRef"
