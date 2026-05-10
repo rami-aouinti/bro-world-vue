@@ -66,11 +66,15 @@ defineEmits<{
 
 <style scoped>
 .cv-section-title-shell {
-  display: flex !important;
+  --section-accent: var(--cv-secondary, #c8a24a);
+  --section-primary: var(--cv-primary, #12324a);
+  display: inline-flex !important;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   min-width: 0;
-  font-weight: 700;
+  min-height: 28px;
+  margin-bottom: 8px;
+  color: var(--cv-page-text, #0f172a);
 }
 
 .cv-section-title-icon-btn {
@@ -92,6 +96,92 @@ defineEmits<{
 .cv-section-title-icon-btn:focus-visible {
   background: color-mix(in srgb, currentColor 10%, transparent);
   outline: none;
+}
+
+.cv-section-title-shell--classic {
+  font-weight: 700;
+}
+
+.cv-section-title-shell--pill-filled {
+  width: min(280px, 100%);
+  justify-content: center;
+  padding: 5px 18px;
+  border-radius: 999px;
+  background: var(--section-accent);
+  color: #fff;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.cv-section-title-shell--pill-outline {
+  width: min(280px, 100%);
+  justify-content: center;
+  padding: 5px 18px;
+  border: 2px solid var(--section-accent);
+  border-radius: 999px;
+  color: var(--section-accent);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.cv-section-title-shell--icon-bar {
+  width: 100%;
+  gap: 0;
+  background: var(--section-accent);
+  color: #fff;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.cv-section-title-shell--icon-bar .cv-section-title-icon-btn {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  margin-right: 8px;
+  border-radius: 999px;
+  background: var(--section-accent);
+  transform: translateX(-8px);
+  color: #fff;
+}
+
+.cv-section-title-shell--ribbon {
+  padding: 5px 16px;
+  background: color-mix(
+    in srgb,
+    var(--section-primary) 72%,
+    var(--section-accent)
+  );
+  color: #fff;
+  font-size: 11px;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.cv-section-title-shell--tab {
+  padding: 4px 14px;
+  background: var(--section-primary);
+  color: #fff;
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+
+.cv-section-title-shell--hexagon-icon {
+  padding: 4px 16px 4px 8px;
+  background: var(--section-primary);
+  color: #fff;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.cv-section-title-shell--hexagon-icon .cv-section-title-icon-btn {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  margin-left: -12px;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  background: #fff;
+  color: var(--section-primary);
+  border: 3px solid var(--section-accent);
 }
 
 .cv-section-title-editor {
