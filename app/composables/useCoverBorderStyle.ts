@@ -32,6 +32,16 @@ const COVER_BORDER_STYLE_CLASS_MAP = {
   'rose-corner-bloom': 'cover-border--rose-corner-bloom',
   'slate-asymmetric-frame': 'cover-border--slate-asymmetric-frame',
   'ivory-editorial-mat': 'cover-border--ivory-editorial-mat',
+  'monogram-watermark-frame': 'cover-border--monogram-watermark-frame',
+  'executive-foil-corners': 'cover-border--executive-foil-corners',
+  'glassmorphism-orbital': 'cover-border--glassmorphism-orbital',
+  'luxury-vertical-ribbon': 'cover-border--luxury-vertical-ribbon',
+  'midnight-neon-trace': 'cover-border--midnight-neon-trace',
+  'botanical-corner-vine': 'cover-border--botanical-corner-vine',
+  'atlas-coordinate-grid': 'cover-border--atlas-coordinate-grid',
+  'platinum-inset-frame': 'cover-border--platinum-inset-frame',
+  'gradient-silk-sash': 'cover-border--gradient-silk-sash',
+  'architect-blueprint-lines': 'cover-border--architect-blueprint-lines',
 } as const
 
 type CoverBorderStyleId = keyof typeof COVER_BORDER_STYLE_CLASS_MAP

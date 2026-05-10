@@ -24,7 +24,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
+  <div class="home-page-surface">
     <AppPageDrawers>
       <template #left>
         <template v-if="isPageSkeletonVisible">
@@ -58,7 +58,16 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.home-page-surface {
+  min-height: calc(100vh - 60px);
+  background:
+    radial-gradient(circle at 18% 10%, rgba(var(--v-theme-primary), 0.12), transparent 28%),
+    #111;
+  color: rgb(var(--v-theme-on-background));
+}
+
 .home-feed-shell {
+  background: transparent;
   max-width: 920px;
   margin: 0 auto;
   padding-bottom: 24px;

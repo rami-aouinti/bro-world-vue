@@ -12,13 +12,16 @@ const borderStyleOptions = computed(() => [
   },
   ...COVER_BORDER_STYLES,
 ])
+const premiumBorderStyleCount = computed(() => COVER_BORDER_STYLES.length)
 </script>
 
 <template>
   <div class="cover-border-style-picker">
     <div class="cover-border-style-picker__header">
       <p class="text-body-2 font-weight-bold mb-0">Premium border style</p>
-      <span class="cover-border-style-picker__count">20 pro looks</span>
+      <span class="cover-border-style-picker__count"
+        >{{ premiumBorderStyleCount }} pro looks</span
+      >
     </div>
 
     <v-chip-group

@@ -8,6 +8,19 @@ const allGeneratedCoverTemplates = [
   ...GENERATED_COVER_LETTER_TEMPLATES,
 ]
 
+const newPremiumBorderStyleIds = [
+  'monogram-watermark-frame',
+  'executive-foil-corners',
+  'glassmorphism-orbital',
+  'luxury-vertical-ribbon',
+  'midnight-neon-trace',
+  'botanical-corner-vine',
+  'atlas-coordinate-grid',
+  'platinum-inset-frame',
+  'gradient-silk-sash',
+  'architect-blueprint-lines',
+]
+
 describe('generated cover border style assignments', () => {
   it('assigns a known premium border style to every generated cover template', () => {
     const knownStyleIds = new Set(Object.keys(COVER_BORDER_STYLE_BY_ID))
@@ -30,7 +43,7 @@ describe('generated cover border style assignments', () => {
     }
   })
 
-  it('uses the full 20-style border collection across cover page and cover letter templates', () => {
+  it('uses the full premium border collection across cover page and cover letter templates', () => {
     const usedStyleIds = new Set(
       allGeneratedCoverTemplates.map(
         (template) => template.design?.borderStyle?.id,
@@ -38,5 +51,29 @@ describe('generated cover border style assignments', () => {
     )
 
     expect(usedStyleIds).toEqual(new Set(Object.keys(COVER_BORDER_STYLE_BY_ID)))
+  })
+
+  it('adds 10 new premium cover page and cover letter templates', () => {
+    const coverPageAdditions = GENERATED_COVER_PAGE_TEMPLATES.slice(-10)
+    const coverLetterAdditions = GENERATED_COVER_LETTER_TEMPLATES.slice(-10)
+
+    expect(coverPageAdditions.map((template) => template.id)).toEqual(
+      Array.from(
+        { length: 10 },
+        (_, index) => `cpage-${String(index + 43).padStart(3, '0')}`,
+      ),
+    )
+    expect(coverLetterAdditions.map((template) => template.id)).toEqual(
+      Array.from(
+        { length: 10 },
+        (_, index) => `cletter-${String(index + 43).padStart(3, '0')}`,
+      ),
+    )
+    expect(
+      coverPageAdditions.map((template) => template.design?.borderStyle?.id),
+    ).toEqual(newPremiumBorderStyleIds)
+    expect(
+      coverLetterAdditions.map((template) => template.design?.borderStyle?.id),
+    ).toEqual(newPremiumBorderStyleIds)
   })
 })

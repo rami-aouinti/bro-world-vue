@@ -497,9 +497,6 @@ const visibleContentStructure2Sections = computed(() =>
   visibleOrderedSections('contentStructure2'),
 )
 const visibleMainOneSections = computed(() => visibleOrderedSections('mainOne'))
-const visibleFallbackSections = computed(() =>
-  visibleOrderedSections('mainOne'),
-)
 const visibleMainTwoTopSections = computed(() =>
   visibleOrderedSections('mainTwoTop'),
 )
@@ -3457,7 +3454,7 @@ watch(
             </div>
             <div v-else class="cv-sections-list cv-sections-list--fallback">
               <div
-                v-for="section in visibleFallbackSections"
+                v-for="section in visibleMainOneSections"
                 :key="`fallback-${section}`"
                 :class="[
                   'cv-section-row',
@@ -4150,10 +4147,6 @@ watch(
   margin-bottom: 6px;
   padding-right: 0;
 }
-.cv-aside-section-item:hover .cv-section-toolbar {
-  opacity: 1;
-  pointer-events: auto;
-}
 .cv-aside-section-item :deep(.hover-editor__content),
 .cv-aside-section-item :deep(.hover-editor__content p),
 .cv-aside-section-item :deep(.cv-rich-item),
@@ -4233,7 +4226,7 @@ watch(
   position: absolute;
   top: 4px;
   right: 4px;
-  z-index: 20;
+  z-index: 60;
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
@@ -4254,12 +4247,24 @@ watch(
     opacity 0.15s ease,
     transform 0.15s ease;
 }
-.cv-section-row:hover .cv-section-toolbar,
-.cv-aside-section-item:hover .cv-section-toolbar,
+.cv-section-row:hover > .cv-section-toolbar,
+.cv-section-row:focus-within > .cv-section-toolbar,
+.cv-aside-section-item:hover > .cv-section-toolbar,
+.cv-aside-section-item:focus-within > .cv-section-toolbar,
+.cv-section-toolbar:hover,
+.cv-section-toolbar:focus,
 .cv-section-toolbar:focus-within {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
+}
+
+@media (hover: none) {
+  .cv-section-toolbar {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
 }
 .cv-section-toolbar :deep(.v-field) {
   min-height: 26px;
