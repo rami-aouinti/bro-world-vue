@@ -107,7 +107,7 @@ onUnmounted(() => {
       <ClientOnly>
         <AppRightDrawerLazy v-if="shouldRenderRightDrawer" />
       </ClientOnly>
-      <v-main :class="{ 'v-main--home': route.path === '/' }">
+      <v-main>
         <AppNotification />
         <v-container fluid class="px-2 pt-0 pb-0">
           <v-breadcrumbs v-if="shouldShowBreadcrumbs" :items="breadcrumbs" />
@@ -165,17 +165,6 @@ onUnmounted(() => {
   padding-top: 60px;
   overflow-y: visible;
   transition-property: padding;
-  background:
-    radial-gradient(
-      circle at 18% 10%,
-      rgba(var(--v-theme-primary), 0.08),
-      transparent 28%
-    ),
-    rgb(var(--v-theme-background));
-}
-
-.v-main--home {
-  background: #111;
 }
 
 .breadcrumbs-wrapper {
