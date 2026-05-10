@@ -397,8 +397,7 @@ const templateMainTwoRightSections = computed(() =>
 )
 const normalizedStructure = computed(() => {
   const structure = String(activeTemplate.value?.structure || '')
-  if (structure === 'structure-1' || structure === 'structure-2')
-    return structure
+  if (structure.startsWith('structure-')) return structure
   const layout = String(activeTemplate.value?.layout || '')
   return layout === 'no-aside-split' ? 'structure-2' : 'structure-1'
 })
@@ -511,6 +510,9 @@ const visibleContentStructure2Sections = computed(() =>
   visibleOrderedSections('contentStructure2'),
 )
 const visibleMainOneSections = computed(() => visibleOrderedSections('mainOne'))
+const visibleFallbackSections = computed(() =>
+  visibleOrderedSections('mainOne'),
+)
 const visibleMainTwoTopSections = computed(() =>
   visibleOrderedSections('mainTwoTop'),
 )
@@ -3935,9 +3937,9 @@ watch(
                 </v-col>
               </v-row>
             </div>
-            <div v-else class="cv-sections-list">
+            <div v-else class="cv-sections-list cv-sections-list--fallback">
               <div
-                v-for="section in visibleMainOneSections"
+                v-for="section in visibleFallbackSections"
                 :key="`fallback-${section}`"
                 :class="[
                   'cv-section-row',
