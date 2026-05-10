@@ -8,6 +8,8 @@ const props = withDefaults(
     variant?: string
     contentStyle?: string
     dateStyle?: string
+    levelStyle?: string
+    hobbyStyle?: string
   }>(),
   {
     items: () => [],
@@ -15,6 +17,8 @@ const props = withDefaults(
     variant: 'classic',
     contentStyle: 'classic',
     dateStyle: 'plain',
+    levelStyle: 'line',
+    hobbyStyle: 'text',
   },
 )
 
@@ -115,9 +119,12 @@ function isTimelineComplexItem(raw: string) {
   return (
     isComplexItem(raw) &&
     (props.variant === 'timeline' ||
-      ['timeline-vertical', 'timeline-date-badges'].includes(
-        props.contentStyle,
-      ))
+      [
+        'timeline-vertical',
+        'timeline-date-badges',
+        'timeline-badges',
+        'timeline-line',
+      ].includes(props.contentStyle))
   )
 }
 
@@ -153,6 +160,7 @@ function isHobbyIconsSection() {
     :class="[
       `cv-rich-section--${variant}`,
       `cv-rich-section--${sectionKey}`,
+      `cv-rich-section--hobby-${hobbyStyle}`,
     ]"
   >
     <div v-if="isHobbyIconsSection()" class="cv-hobby-icons">
@@ -179,6 +187,7 @@ function isHobbyIconsSection() {
           `cv-rich-item--${variant}`,
           `cv-rich-item--content-${contentStyle}`,
           `cv-rich-item--date-${dateStyle}`,
+          `cv-rich-item--level-${levelStyle}`,
           {
             'cv-rich-item--complex': isComplexItem(item),
             'cv-rich-item--timeline-complex': isTimelineComplexItem(item),
@@ -406,6 +415,14 @@ function isHobbyIconsSection() {
   min-width: 0;
 }
 
+.cv-rich-item--level-line-gradient .cv-rich-progress i {
+  background: linear-gradient(
+    90deg,
+    var(--cv-secondary, #93c5fd),
+    color-mix(in srgb, var(--cv-primary, #111827) 72%, #fff)
+  );
+}
+
 .cv-rich-section--progress-circle-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px 18px;
@@ -418,13 +435,16 @@ function isHobbyIconsSection() {
   gap: 12px;
 }
 
+.cv-rich-section--hobby-icons-separated .cv-hobby-icon-item {
+  border-inline-end: 1px dashed rgba(148, 163, 184, 0.45);
+}
+
 .cv-hobby-icon-item {
   display: grid;
   justify-items: center;
   gap: 6px;
   text-align: center;
   padding-inline: 10px;
-  border-inline-end: 1px dashed rgba(148, 163, 184, 0.45);
 }
 
 .cv-hobby-icon-item .v-icon {
@@ -480,7 +500,9 @@ function isHobbyIconsSection() {
 }
 
 .cv-rich-item--content-timeline-vertical,
-.cv-rich-item--content-timeline-date-badges {
+.cv-rich-item--content-timeline-date-badges,
+.cv-rich-item--content-timeline-badges,
+.cv-rich-item--content-timeline-line {
   position: relative;
   display: grid;
   grid-template-columns: minmax(56px, 86px) minmax(0, 1fr);
@@ -490,7 +512,9 @@ function isHobbyIconsSection() {
 }
 
 .cv-rich-item--content-timeline-vertical::before,
-.cv-rich-item--content-timeline-date-badges::before {
+.cv-rich-item--content-timeline-date-badges::before,
+.cv-rich-item--content-timeline-badges::before,
+.cv-rich-item--content-timeline-line::before {
   content: '';
   position: absolute;
   left: 5px;
@@ -501,12 +525,16 @@ function isHobbyIconsSection() {
 }
 
 .cv-rich-item--content-timeline-vertical:last-child::before,
-.cv-rich-item--content-timeline-date-badges:last-child::before {
+.cv-rich-item--content-timeline-date-badges:last-child::before,
+.cv-rich-item--content-timeline-badges:last-child::before,
+.cv-rich-item--content-timeline-line:last-child::before {
   bottom: 8px;
 }
 
 .cv-rich-item--content-timeline-vertical .cv-rich-timeline-dot,
-.cv-rich-item--content-timeline-date-badges .cv-rich-timeline-dot {
+.cv-rich-item--content-timeline-date-badges .cv-rich-timeline-dot,
+.cv-rich-item--content-timeline-badges .cv-rich-timeline-dot,
+.cv-rich-item--content-timeline-line .cv-rich-timeline-dot {
   left: 0;
   top: 4px;
   width: 11px;
@@ -514,11 +542,18 @@ function isHobbyIconsSection() {
   box-shadow: 0 0 0 3px var(--cv-page-background, #fff);
 }
 
-.cv-rich-item--content-timeline-date-badges {
+.cv-rich-item--content-timeline-date-badges,
+.cv-rich-item--content-timeline-badges {
   grid-template-columns: minmax(64px, 92px) minmax(0, 1fr);
 }
 
-.cv-rich-item--content-timeline-date-badges .cv-rich-editor--period {
+.cv-rich-item--content-timeline-line {
+  grid-template-columns: minmax(52px, 76px) minmax(0, 1fr);
+  column-gap: 12px;
+}
+
+.cv-rich-item--content-timeline-date-badges .cv-rich-editor--period,
+.cv-rich-item--content-timeline-badges .cv-rich-editor--period {
   align-self: start;
   justify-self: end;
   border: 1px solid
