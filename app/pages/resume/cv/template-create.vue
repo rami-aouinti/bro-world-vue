@@ -3861,10 +3861,133 @@ watch(
                 </v-col>
               </v-row>
             </div>
-            <div v-else class="empty-state">
-              <p class="text-medium-emphasis">
-                {{ t('resumePreview.cv.noSections') }}
-              </p>
+            <div v-else class="cv-sections-list">
+              <div
+                v-for="section in visibleMainOneSections"
+                :key="`fallback-${section}`"
+                :class="[
+                  'cv-section-row',
+                  contentColumnClass(toSectionKey(section)),
+                ]"
+                :style="sectionOffsetStyle('mainOne', section)"
+                draggable="true"
+                @dragstart="onSectionDragStart('mainOne', section)"
+                @dragover.prevent
+                @drop="onSectionDrop('mainOne', section)"
+                @dragend="onSectionDragEnd"
+              >
+                <div class="cv-section-toolbar">
+                  <AppSelect
+                    v-model="sectionTypeOverrides[toSectionKey(section)]"
+                    :items="getSectionVariantOptions(toSectionKey(section))"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-shape-outline"
+                    class="cv-variant-select"
+                  /><AppSelect
+                    :model-value="
+                      effectiveSectionTitleStyle(toSectionKey(section))
+                    "
+                    :items="sectionTitleStyleOptions"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    prepend-inner-icon="mdi-format-title"
+                    class="cv-title-style-select"
+                    @update:model-value="
+                      updateSectionTitleStyle(toSectionKey(section), $event)
+                    "
+                  /><AppSelect
+                    v-if="isSectionColumnEditable(toSectionKey(section))"
+                    :model-value="effectiveSectionColumn(toSectionKey(section))"
+                    :items="sectionColumnOptions"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    :prepend-inner-icon="
+                      sectionColumnIcon(toSectionKey(section))
+                    "
+                    class="cv-column-select"
+                    @update:model-value="
+                      updateSectionColumn(toSectionKey(section), $event)
+                    "
+                  /><AppSelect
+                    v-if="hasSectionIconOptions(toSectionKey(section))"
+                    :model-value="sectionIcon(toSectionKey(section))"
+                    :items="getSectionIconOptions(toSectionKey(section))"
+                    item-title="title"
+                    item-value="value"
+                    density="compact"
+                    variant="outlined"
+                    hide-details
+                    :prepend-inner-icon="sectionIcon(toSectionKey(section))"
+                    class="cv-icon-select"
+                    @update:model-value="setSectionIcon(section, $event)"
+                  /><v-btn
+                    icon="mdi-plus"
+                    size="x-small"
+                    variant="text"
+                    @click.stop="addSectionItem(toSectionKey(section))"
+                  /><v-btn
+                    icon="mdi-minus"
+                    size="x-small"
+                    variant="text"
+                    @click.stop="hideSection(toSectionKey(section))"
+                  /><v-btn
+                    icon="mdi-arrow-up"
+                    size="x-small"
+                    variant="text"
+                    @click.stop="shiftSectionByLine('mainOne', section, 'up')"
+                  /><v-btn
+                    icon="mdi-arrow-down"
+                    size="x-small"
+                    variant="text"
+                    @click.stop="shiftSectionByLine('mainOne', section, 'down')"
+                  /><v-btn
+                    icon="mdi-drag"
+                    size="x-small"
+                    variant="text"
+                    @click.stop="moveSection('mainOne', section, 'down')"
+                  />
+                </div>
+                <CvSectionTitleToolbar
+                  :section-key="toSectionKey(section)"
+                  :title="sectionDisplayTitle(section)"
+                  :icon="sectionIcon(toSectionKey(section))"
+                  :icon-alternatives="
+                    getSectionIconOptions(toSectionKey(section)).map(
+                      (item) => item.value,
+                    )
+                  "
+                  :title-style="
+                    effectiveSectionTitleStyle(toSectionKey(section))
+                  "
+                  :font-family="textFontPreset('sectionLabel')"
+                  @update:title="updateSectionDisplayTitle(section, $event)"
+                  @update:icon="setSectionIcon(section, $event)"
+                />
+                <CvEditableSectionContent
+                  :section-key="toSectionKey(section)"
+                  :variant="
+                    effectiveSectionType(
+                      toSectionKey(section),
+                      sectionType(toSectionKey(section) as any),
+                    )
+                  "
+                  :items="getEditableSectionItems(section)"
+                  @update-item="
+                    (index, value) =>
+                      updateEditableSectionItem(section, index, value)
+                  "
+                />
+              </div>
             </div>
             <footer v-if="signatureDataUrl" class="signature-footer">
               <div class="signature-box">
