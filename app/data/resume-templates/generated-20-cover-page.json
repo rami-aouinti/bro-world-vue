@@ -2454,19 +2454,19 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#A855F7",
-          "secondary": "#22C55E",
-          "text": "#F3F4F6",
-          "muted": "#9CA3AF",
-          "pageBackground": "#111827"
+          "primary": "#C026D3",
+          "secondary": "#F0ABFC",
+          "text": "#111827",
+          "muted": "#64748B",
+          "pageBackground": "#FFF7FE"
         },
         "density": "airy",
         "textStyle": "sans",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
+          "color": "#C026D3",
+          "radius": 12,
           "style": "swoosh-right"
         }
       },
@@ -2478,15 +2478,24 @@
       "decor": {
         "headerStyle": "band",
         "footerStyle": "line",
-        "divider": "none",
+        "divider": "gradient",
         "iconStyle": "rounded",
         "objects": [
           {
             "type": "circle",
-            "x": "12%",
-            "y": "0%",
-            "size": "230",
-            "opacity": 0.18
+            "x": "88%",
+            "y": "-5%",
+            "size": "210",
+            "opacity": 0.12,
+            "color": "#C026D3"
+          },
+          {
+            "type": "bar",
+            "x": "72%",
+            "y": "94%",
+            "size": "92",
+            "opacity": 0.14,
+            "color": "#F0ABFC"
           }
         ]
       },
@@ -2494,7 +2503,10 @@
         "sectionSpacing": "normal",
         "titleCase": "upper",
         "contentWidth": "normal",
-        "photoShape": "rounded"
+        "photoShape": "rounded",
+        "borderRadius": 12,
+        "asideWidth": 28,
+        "gutter": 16
       },
       "textStyles": {
         "fullName": {
@@ -2633,7 +2645,7 @@
           "min": 4,
           "max": 18
         },
-        "barLayout": [],
+        "barLayout": ["single"],
         "barWidth": {
           "min": 6,
           "max": 18
@@ -2647,7 +2659,9 @@
         "accent": "bar",
         "accentIntensity": "medium",
         "photoPosition": "left"
-      }
+      },
+      "sectionDividerStyle": "gradient",
+      "barLayout": ["single"]
     },
     "fakeData": {
       "fullName": "Emma Wilson",
@@ -2682,19 +2696,19 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#7C3AED",
-          "secondary": "#06B6D4",
-          "text": "#1F1147",
-          "muted": "#6D5A99",
-          "pageBackground": "#F5F3FF"
+          "primary": "#6D28D9",
+          "secondary": "#C4B5FD",
+          "text": "#1E1B4B",
+          "muted": "#6B7280",
+          "pageBackground": "#F7F4FF"
         },
         "density": "airy",
         "textStyle": "sans",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
+          "color": "#6D28D9",
+          "radius": 8,
           "style": "diagonal-ribbon"
         }
       },
@@ -2706,23 +2720,35 @@
       "decor": {
         "headerStyle": "band",
         "footerStyle": "line",
-        "divider": "none",
+        "divider": "line",
         "iconStyle": "rounded",
         "objects": [
           {
-            "type": "circle",
-            "x": "12%",
-            "y": "0%",
-            "size": "230",
-            "opacity": 0.18
+            "type": "diamond",
+            "x": "-2%",
+            "y": "8%",
+            "size": "95",
+            "opacity": 0.1,
+            "color": "#7C3AED"
+          },
+          {
+            "type": "bar",
+            "x": "78%",
+            "y": "6%",
+            "size": "78",
+            "opacity": 0.12,
+            "color": "#C4B5FD"
           }
         ]
       },
       "layoutOptions": {
-        "sectionSpacing": "normal",
-        "titleCase": "upper",
-        "contentWidth": "normal",
-        "photoShape": "rounded"
+        "sectionSpacing": "relaxed",
+        "titleCase": "normal",
+        "contentWidth": "wide",
+        "photoShape": "square",
+        "borderRadius": 8,
+        "asideWidth": 30,
+        "gutter": 20
       },
       "textStyles": {
         "fullName": {
@@ -2861,7 +2887,7 @@
           "min": 4,
           "max": 18
         },
-        "barLayout": [],
+        "barLayout": ["double"],
         "barWidth": {
           "min": 6,
           "max": 18
@@ -2875,7 +2901,9 @@
         "accent": "bar",
         "accentIntensity": "medium",
         "photoPosition": "left"
-      }
+      },
+      "sectionDividerStyle": "line",
+      "barLayout": ["double"]
     },
     "fakeData": {
       "fullName": "Noah Turner",
@@ -2910,20 +2938,20 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#2563EB",
-          "secondary": "#93C5FD",
-          "text": "#F8FAFC",
-          "muted": "#CBD5E1",
-          "pageBackground": "#1F2937"
+          "primary": "#166534",
+          "secondary": "#86EFAC",
+          "text": "#052E16",
+          "muted": "#4B5563",
+          "pageBackground": "#F6FFF8"
         },
         "density": "airy",
         "textStyle": "sans",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
-          "style": "rounded-corners"
+          "color": "#166534",
+          "radius": 18,
+          "style": "executive-green-frame"
         },
         "primary": "#2563EB",
         "accent": "#38BDF8",
@@ -2931,35 +2959,44 @@
         "text": "#0F172A"
       },
       "borderStyle": {
-        "id": "rounded-corners",
-        "className": "cover-border--rounded-corners",
-        "accentPlacement": "all-corners"
+        "id": "executive-green-frame",
+        "className": "cover-border--executive-green-frame",
+        "accentPlacement": "full-frame"
       },
       "decor": {
         "headerStyle": "band",
         "footerStyle": "line",
-        "divider": "none",
+        "divider": "dashed",
         "iconStyle": "rounded",
         "objects": [
           {
-            "type": "circle",
-            "x": "12%",
-            "y": "0%",
-            "size": "230",
-            "opacity": 0.18
+            "type": "ring",
+            "x": "90%",
+            "y": "88%",
+            "size": "128",
+            "opacity": 0.13,
+            "color": "#16A34A"
+          },
+          {
+            "type": "square",
+            "x": "3%",
+            "y": "3%",
+            "size": "56",
+            "opacity": 0.08,
+            "color": "#BBF7D0"
           }
         ],
         "borderStyle": "solid",
         "cornerRadius": 0
       },
       "layoutOptions": {
-        "sectionSpacing": "normal",
+        "sectionSpacing": "tight",
         "titleCase": "upper",
-        "contentWidth": "normal",
-        "photoShape": "rounded",
-        "borderRadius": 0,
-        "asideWidth": 28,
-        "gutter": 16
+        "contentWidth": "narrow",
+        "photoShape": "circle",
+        "borderRadius": 18,
+        "asideWidth": 32,
+        "gutter": 18
       },
       "textStyles": {
         "fullName": {
@@ -3102,7 +3139,7 @@
           "min": 4,
           "max": 18
         },
-        "barLayout": ["single"],
+        "barLayout": ["single", "double"],
         "barWidth": {
           "min": 6,
           "max": 18
@@ -3116,7 +3153,9 @@
         "accent": "bar",
         "accentIntensity": "medium",
         "photoPosition": "left"
-      }
+      },
+      "sectionDividerStyle": "dashed",
+      "barLayout": ["single", "double"]
     },
     "fakeData": {
       "fullName": "Alex Martin",
@@ -3151,20 +3190,20 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#1E40AF",
-          "secondary": "#22C55E",
-          "text": "#0F172A",
-          "muted": "#64748B",
-          "pageBackground": "#F8FAFC"
+          "primary": "#0891B2",
+          "secondary": "#67E8F9",
+          "text": "#083344",
+          "muted": "#475569",
+          "pageBackground": "#F0FDFF"
         },
         "density": "comfortable",
         "textStyle": "roman",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
-          "style": "executive-green-frame"
+          "color": "#0891B2",
+          "radius": 22,
+          "style": "cyan-side-curve"
         },
         "primary": "#7C3AED",
         "accent": "#C4B5FD",
@@ -3172,56 +3211,44 @@
         "text": "#111827"
       },
       "borderStyle": {
-        "id": "executive-green-frame",
-        "className": "cover-border--executive-green-frame",
-        "accentPlacement": "full-frame"
+        "id": "cyan-side-curve",
+        "className": "cover-border--cyan-side-curve",
+        "accentPlacement": "left-curve"
       },
       "decor": {
         "headerStyle": "split-band",
         "footerStyle": "block",
-        "divider": "line",
+        "divider": "gradient",
         "iconStyle": "outline",
         "objects": [
           {
-            "type": "circle",
-            "x": "15%",
-            "y": "17%",
-            "size": "100",
-            "opacity": 0.11
-          },
-          {
-            "type": "square",
-            "x": "65%",
+            "type": "blob",
+            "x": "-7%",
             "y": "72%",
-            "size": "138",
-            "opacity": 0.11
+            "size": "170",
+            "opacity": 0.11,
+            "color": "#06B6D4"
           },
           {
-            "type": "star",
-            "x": "86%",
-            "y": "14%",
-            "size": "28",
-            "opacity": 0.1
-          },
-          {
-            "type": "square",
-            "x": "18%",
-            "y": "90%",
-            "size": "24",
-            "opacity": 0.08
+            "type": "ring",
+            "x": "91%",
+            "y": "6%",
+            "size": "72",
+            "opacity": 0.1,
+            "color": "#67E8F9"
           }
         ],
         "borderStyle": "double",
         "cornerRadius": 6
       },
       "layoutOptions": {
-        "sectionSpacing": "relaxed",
+        "sectionSpacing": "normal",
         "titleCase": "normal",
         "contentWidth": "wide",
-        "photoShape": "square",
-        "borderRadius": 4,
-        "asideWidth": 30,
-        "gutter": 18
+        "photoShape": "rounded",
+        "borderRadius": 22,
+        "asideWidth": 34,
+        "gutter": 22
       },
       "textStyles": {
         "fullName": {
@@ -3364,7 +3391,7 @@
           "min": 12,
           "max": 28
         },
-        "barLayout": ["single", "double"],
+        "barLayout": ["single"],
         "barWidth": {
           "min": 8,
           "max": 24
@@ -3382,7 +3409,9 @@
         "accent": "shape",
         "accentIntensity": "bold",
         "photoPosition": "right"
-      }
+      },
+      "sectionDividerStyle": "gradient",
+      "barLayout": ["single"]
     },
     "fakeData": {
       "fullName": "Jordan Lee",
@@ -3417,20 +3446,20 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#0EA5E9",
-          "secondary": "#F97316",
-          "text": "#E2E8F0",
-          "muted": "#94A3B8",
-          "pageBackground": "#0F172A"
+          "primary": "#4D7C0F",
+          "secondary": "#BEF264",
+          "text": "#1A2E05",
+          "muted": "#52623A",
+          "pageBackground": "#FBFFF0"
         },
         "density": "compact",
         "textStyle": "serif",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
-          "style": "cyan-side-curve"
+          "color": "#4D7C0F",
+          "radius": 26,
+          "style": "emerald-sidebar-notch"
         },
         "primary": "#16A34A",
         "accent": "#86EFAC",
@@ -3438,56 +3467,44 @@
         "text": "#052E16"
       },
       "borderStyle": {
-        "id": "cyan-side-curve",
-        "className": "cover-border--cyan-side-curve",
-        "accentPlacement": "left-curve"
+        "id": "emerald-sidebar-notch",
+        "className": "cover-border--emerald-sidebar-notch",
+        "accentPlacement": "sidebar-notch"
       },
       "decor": {
         "headerStyle": "ribbon",
         "footerStyle": "signature-bar",
-        "divider": "dashed",
+        "divider": "line",
         "iconStyle": "minimal",
         "objects": [
           {
-            "type": "circle",
-            "x": "22%",
-            "y": "28%",
-            "size": "120",
-            "opacity": 0.14
-          },
-          {
-            "type": "diamond",
-            "x": "60%",
-            "y": "69%",
-            "size": "156",
-            "opacity": 0.14
-          },
-          {
-            "type": "star",
-            "x": "14%",
+            "type": "pill",
+            "x": "-4%",
             "y": "14%",
-            "size": "28",
-            "opacity": 0.1
+            "size": "120",
+            "opacity": 0.1,
+            "color": "#84CC16"
           },
           {
-            "type": "square",
-            "x": "82%",
-            "y": "10%",
-            "size": "24",
-            "opacity": 0.08
+            "type": "circle",
+            "x": "92%",
+            "y": "90%",
+            "size": "76",
+            "opacity": 0.12,
+            "color": "#BEF264"
           }
         ],
         "borderStyle": "dashed",
         "cornerRadius": 12
       },
       "layoutOptions": {
-        "sectionSpacing": "tight",
+        "sectionSpacing": "relaxed",
         "titleCase": "upper",
-        "contentWidth": "narrow",
-        "photoShape": "circle",
-        "borderRadius": 8,
-        "asideWidth": 32,
-        "gutter": 20
+        "contentWidth": "normal",
+        "photoShape": "square",
+        "borderRadius": 26,
+        "asideWidth": 36,
+        "gutter": 24
       },
       "textStyles": {
         "fullName": {
@@ -3630,7 +3647,7 @@
           "min": 0,
           "max": 12
         },
-        "barLayout": ["single"],
+        "barLayout": ["double"],
         "barWidth": {
           "min": 4,
           "max": 12
@@ -3644,7 +3661,9 @@
         "accent": "line",
         "accentIntensity": "subtle",
         "photoPosition": "left"
-      }
+      },
+      "sectionDividerStyle": "line",
+      "barLayout": ["double"]
     },
     "fakeData": {
       "fullName": "Alex Martin",
@@ -3679,19 +3698,19 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#0F766E",
-          "secondary": "#EA580C",
-          "text": "#111827",
-          "muted": "#6B7280",
-          "pageBackground": "#F5F5F4"
+          "primary": "#8B5CF6",
+          "secondary": "#A78BFA",
+          "text": "#F8FAFC",
+          "muted": "#CBD5E1",
+          "pageBackground": "#0B0B12"
         },
         "density": "airy",
         "textStyle": "sans",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
+          "color": "#8B5CF6",
+          "radius": 12,
           "style": "purple-wave-frame"
         },
         "primary": "#DB2777",
@@ -3711,32 +3730,20 @@
         "iconStyle": "rounded",
         "objects": [
           {
-            "type": "circle",
-            "x": "29%",
-            "y": "39%",
-            "size": "140",
-            "opacity": 0.17
-          },
-          {
-            "type": "square",
-            "x": "55%",
-            "y": "66%",
-            "size": "174",
-            "opacity": 0.16
-          },
-          {
-            "type": "star",
-            "x": "86%",
+            "type": "blob",
+            "x": "82%",
             "y": "84%",
-            "size": "28",
-            "opacity": 0.1
+            "size": "160",
+            "opacity": 0.18,
+            "color": "#7C3AED"
           },
           {
-            "type": "square",
-            "x": "18%",
-            "y": "90%",
-            "size": "24",
-            "opacity": 0.08
+            "type": "ring",
+            "x": "4%",
+            "y": "3%",
+            "size": "88",
+            "opacity": 0.16,
+            "color": "#A78BFA"
           }
         ],
         "borderStyle": "solid",
@@ -3744,12 +3751,12 @@
       },
       "layoutOptions": {
         "sectionSpacing": "normal",
-        "titleCase": "normal",
+        "titleCase": "upper",
         "contentWidth": "normal",
         "photoShape": "rounded",
         "borderRadius": 12,
-        "asideWidth": 34,
-        "gutter": 22
+        "asideWidth": 28,
+        "gutter": 16
       },
       "textStyles": {
         "fullName": {
@@ -3910,7 +3917,9 @@
         "accent": "badge",
         "accentIntensity": "medium",
         "photoPosition": "right"
-      }
+      },
+      "sectionDividerStyle": "gradient",
+      "barLayout": ["single", "double"]
     },
     "fakeData": {
       "fullName": "Jordan Lee",
@@ -3945,19 +3954,19 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#A855F7",
-          "secondary": "#22C55E",
-          "text": "#F3F4F6",
-          "muted": "#9CA3AF",
-          "pageBackground": "#111827"
+          "primary": "#DB2777",
+          "secondary": "#F9A8D4",
+          "text": "#3B0A24",
+          "muted": "#7C5065",
+          "pageBackground": "#FFF5FA"
         },
         "density": "comfortable",
         "textStyle": "roman",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
+          "color": "#DB2777",
+          "radius": 8,
           "style": "top-striped-band"
         },
         "primary": "#EA580C",
@@ -3973,36 +3982,24 @@
       "decor": {
         "headerStyle": "band",
         "footerStyle": "line",
-        "divider": "double-line",
+        "divider": "dashed",
         "iconStyle": "outline",
         "objects": [
           {
+            "type": "bar",
+            "x": "6%",
+            "y": "2%",
+            "size": "96",
+            "opacity": 0.12,
+            "color": "#DB2777"
+          },
+          {
             "type": "circle",
-            "x": "36%",
-            "y": "50%",
-            "size": "160",
-            "opacity": 0.08
-          },
-          {
-            "type": "diamond",
-            "x": "50%",
-            "y": "63%",
-            "size": "192",
-            "opacity": 0.06
-          },
-          {
-            "type": "star",
-            "x": "14%",
-            "y": "14%",
-            "size": "28",
-            "opacity": 0.1
-          },
-          {
-            "type": "square",
-            "x": "82%",
-            "y": "10%",
-            "size": "24",
-            "opacity": 0.08
+            "x": "90%",
+            "y": "4%",
+            "size": "86",
+            "opacity": 0.1,
+            "color": "#F9A8D4"
           }
         ],
         "borderStyle": "double",
@@ -4010,12 +4007,12 @@
       },
       "layoutOptions": {
         "sectionSpacing": "relaxed",
-        "titleCase": "upper",
+        "titleCase": "normal",
         "contentWidth": "wide",
         "photoShape": "square",
-        "borderRadius": 16,
-        "asideWidth": 36,
-        "gutter": 24
+        "borderRadius": 8,
+        "asideWidth": 30,
+        "gutter": 20
       },
       "textStyles": {
         "fullName": {
@@ -4172,7 +4169,9 @@
         "accent": "bar",
         "accentIntensity": "bold",
         "photoPosition": "left"
-      }
+      },
+      "sectionDividerStyle": "dashed",
+      "barLayout": ["single"]
     },
     "fakeData": {
       "fullName": "Alex Martin",
@@ -4207,20 +4206,20 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#7C3AED",
-          "secondary": "#06B6D4",
-          "text": "#1F1147",
-          "muted": "#6D5A99",
-          "pageBackground": "#F5F3FF"
+          "primary": "#4B5563",
+          "secondary": "#D1D5DB",
+          "text": "#111827",
+          "muted": "#6B7280",
+          "pageBackground": "#FAFAFA"
         },
         "density": "compact",
         "textStyle": "serif",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
-          "style": "bottom-contact-band"
+          "color": "#4B5563",
+          "radius": 18,
+          "style": "rounded-corners"
         },
         "primary": "#0891B2",
         "accent": "#67E8F9",
@@ -4228,43 +4227,31 @@
         "text": "#082F49"
       },
       "borderStyle": {
-        "id": "bottom-contact-band",
-        "className": "cover-border--bottom-contact-band",
-        "accentPlacement": "bottom-band"
+        "id": "rounded-corners",
+        "className": "cover-border--rounded-corners",
+        "accentPlacement": "all-corners"
       },
       "decor": {
         "headerStyle": "split-band",
         "footerStyle": "block",
-        "divider": "dots",
+        "divider": "none",
         "iconStyle": "minimal",
         "objects": [
           {
-            "type": "circle",
-            "x": "43%",
-            "y": "61%",
-            "size": "80",
-            "opacity": 0.11
+            "type": "ring",
+            "x": "4%",
+            "y": "4%",
+            "size": "68",
+            "opacity": 0.08,
+            "color": "#9CA3AF"
           },
           {
-            "type": "square",
-            "x": "45%",
-            "y": "60%",
-            "size": "210",
-            "opacity": 0.08
-          },
-          {
-            "type": "star",
-            "x": "86%",
-            "y": "14%",
-            "size": "28",
-            "opacity": 0.1
-          },
-          {
-            "type": "square",
-            "x": "18%",
-            "y": "90%",
-            "size": "24",
-            "opacity": 0.08
+            "type": "ring",
+            "x": "91%",
+            "y": "91%",
+            "size": "68",
+            "opacity": 0.08,
+            "color": "#D1D5DB"
           }
         ],
         "borderStyle": "dashed",
@@ -4272,12 +4259,12 @@
       },
       "layoutOptions": {
         "sectionSpacing": "tight",
-        "titleCase": "normal",
+        "titleCase": "upper",
         "contentWidth": "narrow",
         "photoShape": "circle",
-        "borderRadius": 20,
-        "asideWidth": 28,
-        "gutter": 16
+        "borderRadius": 18,
+        "asideWidth": 32,
+        "gutter": 18
       },
       "textStyles": {
         "fullName": {
@@ -4420,7 +4407,7 @@
           "min": 2,
           "max": 16
         },
-        "barLayout": ["single", "double"],
+        "barLayout": [],
         "barWidth": {
           "min": 6,
           "max": 16
@@ -4438,7 +4425,9 @@
         "accent": "shape",
         "accentIntensity": "subtle",
         "photoPosition": "right"
-      }
+      },
+      "sectionDividerStyle": "none",
+      "barLayout": []
     },
     "fakeData": {
       "fullName": "Jordan Lee",
@@ -4475,18 +4464,18 @@
         "palette": {
           "primary": "#2563EB",
           "secondary": "#93C5FD",
-          "text": "#F8FAFC",
-          "muted": "#CBD5E1",
-          "pageBackground": "#1F2937"
+          "text": "#0F172A",
+          "muted": "#475569",
+          "pageBackground": "#F5F9FF"
         },
         "density": "airy",
         "textStyle": "sans",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
-          "style": "dual-corner-sweep"
+          "color": "#2563EB",
+          "radius": 22,
+          "style": "navy-architect-grid"
         },
         "primary": "#F59E0B",
         "accent": "#FDE68A",
@@ -4494,43 +4483,31 @@
         "text": "#1F2937"
       },
       "borderStyle": {
-        "id": "dual-corner-sweep",
-        "className": "cover-border--dual-corner-sweep",
-        "accentPlacement": "opposite-corners"
+        "id": "navy-architect-grid",
+        "className": "cover-border--navy-architect-grid",
+        "accentPlacement": "grid-frame"
       },
       "decor": {
         "headerStyle": "ribbon",
         "footerStyle": "signature-bar",
-        "divider": "zigzag",
+        "divider": "line",
         "iconStyle": "rounded",
         "objects": [
           {
-            "type": "circle",
-            "x": "50%",
-            "y": "72%",
+            "type": "bar",
+            "x": "2%",
+            "y": "92%",
             "size": "100",
-            "opacity": 0.14
-          },
-          {
-            "type": "diamond",
-            "x": "40%",
-            "y": "57%",
-            "size": "120",
-            "opacity": 0.11
-          },
-          {
-            "type": "star",
-            "x": "14%",
-            "y": "84%",
-            "size": "28",
-            "opacity": 0.1
+            "opacity": 0.14,
+            "color": "#2563EB"
           },
           {
             "type": "square",
-            "x": "82%",
-            "y": "10%",
-            "size": "24",
-            "opacity": 0.08
+            "x": "91%",
+            "y": "8%",
+            "size": "54",
+            "opacity": 0.1,
+            "color": "#93C5FD"
           }
         ],
         "borderStyle": "solid",
@@ -4538,12 +4515,12 @@
       },
       "layoutOptions": {
         "sectionSpacing": "normal",
-        "titleCase": "upper",
-        "contentWidth": "normal",
+        "titleCase": "normal",
+        "contentWidth": "wide",
         "photoShape": "rounded",
-        "borderRadius": 0,
-        "asideWidth": 30,
-        "gutter": 18
+        "borderRadius": 22,
+        "asideWidth": 34,
+        "gutter": 22
       },
       "textStyles": {
         "fullName": {
@@ -4686,7 +4663,7 @@
           "min": 18,
           "max": 30
         },
-        "barLayout": ["single"],
+        "barLayout": ["double"],
         "barWidth": {
           "min": 14,
           "max": 24
@@ -4700,7 +4677,9 @@
         "accent": "line",
         "accentIntensity": "medium",
         "photoPosition": "left"
-      }
+      },
+      "sectionDividerStyle": "line",
+      "barLayout": ["double"]
     },
     "fakeData": {
       "fullName": "Emma Wilson",
@@ -4735,20 +4714,20 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#1E40AF",
-          "secondary": "#22C55E",
-          "text": "#0F172A",
-          "muted": "#64748B",
-          "pageBackground": "#F8FAFC"
+          "primary": "#EA580C",
+          "secondary": "#FDBA74",
+          "text": "#431407",
+          "muted": "#7C4A2D",
+          "pageBackground": "#FFF7ED"
         },
         "density": "comfortable",
         "textStyle": "roman",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
-          "style": "minimal-corner-tabs"
+          "color": "#EA580C",
+          "radius": 26,
+          "style": "dual-corner-sweep"
         },
         "primary": "#4F46E5",
         "accent": "#A5B4FC",
@@ -4756,43 +4735,31 @@
         "text": "#172554"
       },
       "borderStyle": {
-        "id": "minimal-corner-tabs",
-        "className": "cover-border--minimal-corner-tabs",
-        "accentPlacement": "corner-tabs"
+        "id": "dual-corner-sweep",
+        "className": "cover-border--dual-corner-sweep",
+        "accentPlacement": "opposite-corners"
       },
       "decor": {
         "headerStyle": "plain",
         "footerStyle": "none",
-        "divider": "wave",
+        "divider": "gradient",
         "iconStyle": "outline",
         "objects": [
           {
-            "type": "circle",
-            "x": "57%",
-            "y": "13%",
-            "size": "120",
-            "opacity": 0.17
+            "type": "blob",
+            "x": "-5%",
+            "y": "88%",
+            "size": "150",
+            "opacity": 0.12,
+            "color": "#F97316"
           },
           {
-            "type": "square",
-            "x": "35%",
-            "y": "54%",
-            "size": "138",
-            "opacity": 0.14
-          },
-          {
-            "type": "star",
-            "x": "86%",
-            "y": "14%",
-            "size": "28",
-            "opacity": 0.1
-          },
-          {
-            "type": "square",
-            "x": "18%",
-            "y": "90%",
-            "size": "24",
-            "opacity": 0.08
+            "type": "diamond",
+            "x": "91%",
+            "y": "5%",
+            "size": "62",
+            "opacity": 0.1,
+            "color": "#FDBA74"
           }
         ],
         "borderStyle": "double",
@@ -4800,12 +4767,12 @@
       },
       "layoutOptions": {
         "sectionSpacing": "relaxed",
-        "titleCase": "normal",
-        "contentWidth": "wide",
+        "titleCase": "upper",
+        "contentWidth": "normal",
         "photoShape": "square",
-        "borderRadius": 4,
-        "asideWidth": 32,
-        "gutter": 20
+        "borderRadius": 26,
+        "asideWidth": 36,
+        "gutter": 24
       },
       "textStyles": {
         "fullName": {
@@ -4966,7 +4933,9 @@
         "accent": "badge",
         "accentIntensity": "bold",
         "photoPosition": "right"
-      }
+      },
+      "sectionDividerStyle": "gradient",
+      "barLayout": ["single", "double"]
     },
     "fakeData": {
       "fullName": "Noah Turner",
@@ -5001,19 +4970,19 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#0EA5E9",
-          "secondary": "#F97316",
-          "text": "#E2E8F0",
-          "muted": "#94A3B8",
-          "pageBackground": "#0F172A"
+          "primary": "#B45309",
+          "secondary": "#FDE68A",
+          "text": "#1C1917",
+          "muted": "#78716C",
+          "pageBackground": "#FFFCF3"
         },
         "density": "compact",
         "textStyle": "serif",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
+          "color": "#B45309",
+          "radius": 12,
           "style": "gold-signature-line"
         },
         "primary": "#2563EB",
@@ -5029,49 +4998,37 @@
       "decor": {
         "headerStyle": "band",
         "footerStyle": "line",
-        "divider": "solid",
+        "divider": "line",
         "iconStyle": "minimal",
         "objects": [
           {
-            "type": "circle",
-            "x": "64%",
-            "y": "24%",
-            "size": "140",
-            "opacity": 0.08
+            "type": "bar",
+            "x": "70%",
+            "y": "91%",
+            "size": "112",
+            "opacity": 0.13,
+            "color": "#D97706"
           },
           {
-            "type": "diamond",
-            "x": "30%",
-            "y": "51%",
-            "size": "156",
-            "opacity": 0.16
-          },
-          {
-            "type": "star",
-            "x": "14%",
-            "y": "14%",
-            "size": "28",
-            "opacity": 0.1
-          },
-          {
-            "type": "square",
-            "x": "82%",
-            "y": "10%",
-            "size": "24",
-            "opacity": 0.08
+            "type": "ring",
+            "x": "3%",
+            "y": "6%",
+            "size": "70",
+            "opacity": 0.07,
+            "color": "#FDE68A"
           }
         ],
         "borderStyle": "dashed",
         "cornerRadius": 0
       },
       "layoutOptions": {
-        "sectionSpacing": "tight",
+        "sectionSpacing": "normal",
         "titleCase": "upper",
-        "contentWidth": "narrow",
-        "photoShape": "circle",
-        "borderRadius": 8,
-        "asideWidth": 34,
-        "gutter": 22
+        "contentWidth": "normal",
+        "photoShape": "rounded",
+        "borderRadius": 12,
+        "asideWidth": 28,
+        "gutter": 16
       },
       "textStyles": {
         "fullName": {
@@ -5228,7 +5185,9 @@
         "accent": "bar",
         "accentIntensity": "subtle",
         "photoPosition": "left"
-      }
+      },
+      "sectionDividerStyle": "line",
+      "barLayout": ["single"]
     },
     "fakeData": {
       "fullName": "Emma Wilson",
@@ -5263,20 +5222,20 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#0F766E",
-          "secondary": "#EA580C",
-          "text": "#111827",
-          "muted": "#6B7280",
-          "pageBackground": "#F5F5F4"
+          "primary": "#E11D48",
+          "secondary": "#FDA4AF",
+          "text": "#3F0D19",
+          "muted": "#7F5360",
+          "pageBackground": "#FFF6F7"
         },
         "density": "airy",
         "textStyle": "sans",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
-          "style": "navy-architect-grid"
+          "color": "#E11D48",
+          "radius": 8,
+          "style": "coral-profile-orbit"
         },
         "primary": "#7C3AED",
         "accent": "#C4B5FD",
@@ -5284,56 +5243,44 @@
         "text": "#111827"
       },
       "borderStyle": {
-        "id": "navy-architect-grid",
-        "className": "cover-border--navy-architect-grid",
-        "accentPlacement": "grid-frame"
+        "id": "coral-profile-orbit",
+        "className": "cover-border--coral-profile-orbit",
+        "accentPlacement": "profile-orbit"
       },
       "decor": {
         "headerStyle": "split-band",
         "footerStyle": "block",
-        "divider": "soft",
+        "divider": "dashed",
         "iconStyle": "rounded",
         "objects": [
           {
+            "type": "ring",
+            "x": "84%",
+            "y": "10%",
+            "size": "118",
+            "opacity": 0.13,
+            "color": "#FB7185"
+          },
+          {
             "type": "circle",
-            "x": "71%",
-            "y": "35%",
-            "size": "160",
-            "opacity": 0.11
-          },
-          {
-            "type": "square",
-            "x": "25%",
-            "y": "48%",
-            "size": "174",
-            "opacity": 0.06
-          },
-          {
-            "type": "star",
-            "x": "86%",
-            "y": "84%",
-            "size": "28",
-            "opacity": 0.1
-          },
-          {
-            "type": "square",
-            "x": "18%",
-            "y": "90%",
-            "size": "24",
-            "opacity": 0.08
+            "x": "4%",
+            "y": "91%",
+            "size": "58",
+            "opacity": 0.08,
+            "color": "#FDA4AF"
           }
         ],
         "borderStyle": "solid",
         "cornerRadius": 6
       },
       "layoutOptions": {
-        "sectionSpacing": "normal",
+        "sectionSpacing": "relaxed",
         "titleCase": "normal",
-        "contentWidth": "normal",
-        "photoShape": "rounded",
-        "borderRadius": 12,
-        "asideWidth": 36,
-        "gutter": 24
+        "contentWidth": "wide",
+        "photoShape": "square",
+        "borderRadius": 8,
+        "asideWidth": 30,
+        "gutter": 20
       },
       "textStyles": {
         "fullName": {
@@ -5476,7 +5423,7 @@
           "min": 0,
           "max": 30
         },
-        "barLayout": ["single", "double"],
+        "barLayout": ["double"],
         "barWidth": {
           "min": 4,
           "max": 24
@@ -5494,7 +5441,9 @@
         "accent": "shape",
         "accentIntensity": "medium",
         "photoPosition": "right"
-      }
+      },
+      "sectionDividerStyle": "dashed",
+      "barLayout": ["double"]
     },
     "fakeData": {
       "fullName": "Noah Turner",
@@ -5529,20 +5478,20 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#A855F7",
-          "secondary": "#22C55E",
-          "text": "#F3F4F6",
-          "muted": "#9CA3AF",
-          "pageBackground": "#111827"
+          "primary": "#27272A",
+          "secondary": "#A1A1AA",
+          "text": "#18181B",
+          "muted": "#71717A",
+          "pageBackground": "#F7F7F8"
         },
         "density": "airy",
         "textStyle": "sans",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
-          "style": "coral-profile-orbit"
+          "color": "#27272A",
+          "radius": 18,
+          "style": "graphite-double-rule"
         },
         "primary": "#16A34A",
         "accent": "#86EFAC",
@@ -5550,35 +5499,44 @@
         "text": "#052E16"
       },
       "borderStyle": {
-        "id": "coral-profile-orbit",
-        "className": "cover-border--coral-profile-orbit",
-        "accentPlacement": "profile-orbit"
+        "id": "graphite-double-rule",
+        "className": "cover-border--graphite-double-rule",
+        "accentPlacement": "double-rule"
       },
       "decor": {
         "headerStyle": "band",
         "footerStyle": "line",
-        "divider": "none",
+        "divider": "line",
         "iconStyle": "rounded",
         "objects": [
           {
-            "type": "circle",
-            "x": "12%",
-            "y": "0%",
-            "size": "230",
-            "opacity": 0.18
+            "type": "square",
+            "x": "3%",
+            "y": "3%",
+            "size": "60",
+            "opacity": 0.08,
+            "color": "#52525B"
+          },
+          {
+            "type": "bar",
+            "x": "78%",
+            "y": "93%",
+            "size": "90",
+            "opacity": 0.1,
+            "color": "#A1A1AA"
           }
         ],
         "borderStyle": "double",
         "cornerRadius": 12
       },
       "layoutOptions": {
-        "sectionSpacing": "normal",
+        "sectionSpacing": "tight",
         "titleCase": "upper",
-        "contentWidth": "normal",
-        "photoShape": "rounded",
-        "borderRadius": 16,
-        "asideWidth": 28,
-        "gutter": 16
+        "contentWidth": "narrow",
+        "photoShape": "circle",
+        "borderRadius": 18,
+        "asideWidth": 32,
+        "gutter": 18
       },
       "textStyles": {
         "fullName": {
@@ -5721,7 +5679,7 @@
           "min": 4,
           "max": 18
         },
-        "barLayout": [],
+        "barLayout": ["single"],
         "barWidth": {
           "min": 6,
           "max": 18
@@ -5735,7 +5693,9 @@
         "accent": "bar",
         "accentIntensity": "medium",
         "photoPosition": "left"
-      }
+      },
+      "sectionDividerStyle": "line",
+      "barLayout": ["single"]
     },
     "fakeData": {
       "fullName": "Emma Wilson",
@@ -5770,20 +5730,20 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#7C3AED",
-          "secondary": "#06B6D4",
-          "text": "#1F1147",
-          "muted": "#6D5A99",
-          "pageBackground": "#F5F3FF"
+          "primary": "#D97706",
+          "secondary": "#FCD34D",
+          "text": "#451A03",
+          "muted": "#7C5A28",
+          "pageBackground": "#FFFBEB"
         },
         "density": "airy",
         "textStyle": "sans",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
-          "style": "emerald-sidebar-notch"
+          "color": "#D97706",
+          "radius": 22,
+          "style": "amber-soft-arches"
         },
         "primary": "#DB2777",
         "accent": "#F9A8D4",
@@ -5791,22 +5751,31 @@
         "text": "#3F1D2E"
       },
       "borderStyle": {
-        "id": "emerald-sidebar-notch",
-        "className": "cover-border--emerald-sidebar-notch",
-        "accentPlacement": "sidebar-notch"
+        "id": "amber-soft-arches",
+        "className": "cover-border--amber-soft-arches",
+        "accentPlacement": "soft-arches"
       },
       "decor": {
         "headerStyle": "band",
         "footerStyle": "line",
-        "divider": "none",
+        "divider": "gradient",
         "iconStyle": "rounded",
         "objects": [
           {
-            "type": "circle",
-            "x": "12%",
-            "y": "0%",
-            "size": "230",
-            "opacity": 0.18
+            "type": "ring",
+            "x": "-3%",
+            "y": "82%",
+            "size": "132",
+            "opacity": 0.12,
+            "color": "#F59E0B"
+          },
+          {
+            "type": "ring",
+            "x": "90%",
+            "y": "-3%",
+            "size": "132",
+            "opacity": 0.1,
+            "color": "#FCD34D"
           }
         ],
         "borderStyle": "dashed",
@@ -5814,12 +5783,12 @@
       },
       "layoutOptions": {
         "sectionSpacing": "normal",
-        "titleCase": "upper",
-        "contentWidth": "normal",
+        "titleCase": "normal",
+        "contentWidth": "wide",
         "photoShape": "rounded",
-        "borderRadius": 20,
-        "asideWidth": 30,
-        "gutter": 18
+        "borderRadius": 22,
+        "asideWidth": 34,
+        "gutter": 22
       },
       "textStyles": {
         "fullName": {
@@ -5962,7 +5931,7 @@
           "min": 4,
           "max": 18
         },
-        "barLayout": [],
+        "barLayout": ["single", "double"],
         "barWidth": {
           "min": 6,
           "max": 18
@@ -5976,7 +5945,9 @@
         "accent": "bar",
         "accentIntensity": "medium",
         "photoPosition": "left"
-      }
+      },
+      "sectionDividerStyle": "gradient",
+      "barLayout": ["single", "double"]
     },
     "fakeData": {
       "fullName": "Noah Turner",
@@ -6011,20 +5982,20 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#2563EB",
-          "secondary": "#93C5FD",
-          "text": "#F8FAFC",
-          "muted": "#CBD5E1",
-          "pageBackground": "#1F2937"
+          "primary": "#1D4ED8",
+          "secondary": "#BFDBFE",
+          "text": "#0B1B3F",
+          "muted": "#475569",
+          "pageBackground": "#F7FBFF"
         },
         "density": "airy",
         "textStyle": "sans",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
-          "style": "graphite-double-rule"
+          "color": "#1D4ED8",
+          "radius": 26,
+          "style": "royal-blue-cap"
         },
         "primary": "#EA580C",
         "accent": "#FDBA74",
@@ -6032,35 +6003,44 @@
         "text": "#3B1D0A"
       },
       "borderStyle": {
-        "id": "graphite-double-rule",
-        "className": "cover-border--graphite-double-rule",
-        "accentPlacement": "double-rule"
+        "id": "royal-blue-cap",
+        "className": "cover-border--royal-blue-cap",
+        "accentPlacement": "header-cap"
       },
       "decor": {
         "headerStyle": "band",
         "footerStyle": "line",
-        "divider": "none",
+        "divider": "dashed",
         "iconStyle": "rounded",
         "objects": [
           {
+            "type": "bar",
+            "x": "8%",
+            "y": "4%",
+            "size": "106",
+            "opacity": 0.12,
+            "color": "#1D4ED8"
+          },
+          {
             "type": "circle",
-            "x": "12%",
-            "y": "0%",
-            "size": "230",
-            "opacity": 0.18
+            "x": "91%",
+            "y": "88%",
+            "size": "74",
+            "opacity": 0.09,
+            "color": "#BFDBFE"
           }
         ],
         "borderStyle": "solid",
         "cornerRadius": 0
       },
       "layoutOptions": {
-        "sectionSpacing": "normal",
+        "sectionSpacing": "relaxed",
         "titleCase": "upper",
         "contentWidth": "normal",
-        "photoShape": "rounded",
-        "borderRadius": 0,
-        "asideWidth": 32,
-        "gutter": 20
+        "photoShape": "square",
+        "borderRadius": 26,
+        "asideWidth": 36,
+        "gutter": 24
       },
       "textStyles": {
         "fullName": {
@@ -6203,7 +6183,7 @@
           "min": 4,
           "max": 18
         },
-        "barLayout": ["single"],
+        "barLayout": ["double"],
         "barWidth": {
           "min": 6,
           "max": 18
@@ -6217,7 +6197,9 @@
         "accent": "bar",
         "accentIntensity": "medium",
         "photoPosition": "left"
-      }
+      },
+      "sectionDividerStyle": "dashed",
+      "barLayout": ["double"]
     },
     "fakeData": {
       "fullName": "Alex Martin",
@@ -6252,20 +6234,20 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#1E40AF",
-          "secondary": "#22C55E",
-          "text": "#0F172A",
-          "muted": "#64748B",
-          "pageBackground": "#F8FAFC"
+          "primary": "#BE185D",
+          "secondary": "#FBCFE8",
+          "text": "#3B1026",
+          "muted": "#7C5368",
+          "pageBackground": "#FFF8FC"
         },
         "density": "comfortable",
         "textStyle": "roman",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
-          "style": "amber-soft-arches"
+          "color": "#BE185D",
+          "radius": 12,
+          "style": "rose-corner-bloom"
         },
         "primary": "#0891B2",
         "accent": "#67E8F9",
@@ -6273,56 +6255,44 @@
         "text": "#082F49"
       },
       "borderStyle": {
-        "id": "amber-soft-arches",
-        "className": "cover-border--amber-soft-arches",
-        "accentPlacement": "soft-arches"
+        "id": "rose-corner-bloom",
+        "className": "cover-border--rose-corner-bloom",
+        "accentPlacement": "corner-bloom"
       },
       "decor": {
         "headerStyle": "split-band",
         "footerStyle": "block",
-        "divider": "line",
+        "divider": "gradient",
         "iconStyle": "outline",
         "objects": [
           {
-            "type": "circle",
-            "x": "15%",
-            "y": "17%",
-            "size": "100",
-            "opacity": 0.11
-          },
-          {
-            "type": "square",
-            "x": "65%",
-            "y": "72%",
-            "size": "138",
-            "opacity": 0.11
+            "type": "blob",
+            "x": "89%",
+            "y": "-5%",
+            "size": "150",
+            "opacity": 0.11,
+            "color": "#EC4899"
           },
           {
             "type": "star",
-            "x": "86%",
-            "y": "14%",
-            "size": "28",
-            "opacity": 0.1
-          },
-          {
-            "type": "square",
-            "x": "18%",
+            "x": "3%",
             "y": "90%",
-            "size": "24",
-            "opacity": 0.08
+            "size": "54",
+            "opacity": 0.09,
+            "color": "#FBCFE8"
           }
         ],
         "borderStyle": "double",
         "cornerRadius": 6
       },
       "layoutOptions": {
-        "sectionSpacing": "relaxed",
-        "titleCase": "normal",
-        "contentWidth": "wide",
-        "photoShape": "square",
-        "borderRadius": 4,
-        "asideWidth": 34,
-        "gutter": 22
+        "sectionSpacing": "normal",
+        "titleCase": "upper",
+        "contentWidth": "normal",
+        "photoShape": "rounded",
+        "borderRadius": 12,
+        "asideWidth": 28,
+        "gutter": 16
       },
       "textStyles": {
         "fullName": {
@@ -6465,7 +6435,7 @@
           "min": 12,
           "max": 28
         },
-        "barLayout": ["single", "double"],
+        "barLayout": ["single"],
         "barWidth": {
           "min": 8,
           "max": 24
@@ -6483,7 +6453,9 @@
         "accent": "shape",
         "accentIntensity": "bold",
         "photoPosition": "right"
-      }
+      },
+      "sectionDividerStyle": "gradient",
+      "barLayout": ["single"]
     },
     "fakeData": {
       "fullName": "Jordan Lee",
@@ -6518,20 +6490,20 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#0EA5E9",
-          "secondary": "#F97316",
-          "text": "#E2E8F0",
-          "muted": "#94A3B8",
-          "pageBackground": "#0F172A"
+          "primary": "#334155",
+          "secondary": "#CBD5E1",
+          "text": "#0F172A",
+          "muted": "#64748B",
+          "pageBackground": "#F8FAFC"
         },
         "density": "compact",
         "textStyle": "serif",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
-          "style": "royal-blue-cap"
+          "color": "#334155",
+          "radius": 8,
+          "style": "slate-asymmetric-frame"
         },
         "primary": "#F59E0B",
         "accent": "#FDE68A",
@@ -6539,56 +6511,44 @@
         "text": "#1F2937"
       },
       "borderStyle": {
-        "id": "royal-blue-cap",
-        "className": "cover-border--royal-blue-cap",
-        "accentPlacement": "header-cap"
+        "id": "slate-asymmetric-frame",
+        "className": "cover-border--slate-asymmetric-frame",
+        "accentPlacement": "asymmetric-frame"
       },
       "decor": {
         "headerStyle": "ribbon",
         "footerStyle": "signature-bar",
-        "divider": "dashed",
+        "divider": "line",
         "iconStyle": "minimal",
         "objects": [
           {
-            "type": "circle",
-            "x": "22%",
-            "y": "28%",
-            "size": "120",
-            "opacity": 0.14
+            "type": "bar",
+            "x": "-2%",
+            "y": "8%",
+            "size": "100",
+            "opacity": 0.1,
+            "color": "#475569"
           },
           {
             "type": "diamond",
-            "x": "60%",
-            "y": "69%",
-            "size": "156",
-            "opacity": 0.14
-          },
-          {
-            "type": "star",
-            "x": "14%",
-            "y": "14%",
-            "size": "28",
-            "opacity": 0.1
-          },
-          {
-            "type": "square",
-            "x": "82%",
-            "y": "10%",
-            "size": "24",
-            "opacity": 0.08
+            "x": "91%",
+            "y": "91%",
+            "size": "58",
+            "opacity": 0.09,
+            "color": "#CBD5E1"
           }
         ],
         "borderStyle": "dashed",
         "cornerRadius": 12
       },
       "layoutOptions": {
-        "sectionSpacing": "tight",
-        "titleCase": "upper",
-        "contentWidth": "narrow",
-        "photoShape": "circle",
+        "sectionSpacing": "relaxed",
+        "titleCase": "normal",
+        "contentWidth": "wide",
+        "photoShape": "square",
         "borderRadius": 8,
-        "asideWidth": 36,
-        "gutter": 24
+        "asideWidth": 30,
+        "gutter": 20
       },
       "textStyles": {
         "fullName": {
@@ -6731,7 +6691,7 @@
           "min": 0,
           "max": 12
         },
-        "barLayout": ["single"],
+        "barLayout": ["single", "double"],
         "barWidth": {
           "min": 4,
           "max": 12
@@ -6745,7 +6705,9 @@
         "accent": "line",
         "accentIntensity": "subtle",
         "photoPosition": "left"
-      }
+      },
+      "sectionDividerStyle": "line",
+      "barLayout": ["single", "double"]
     },
     "fakeData": {
       "fullName": "Alex Martin",
@@ -6780,20 +6742,20 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#0F766E",
-          "secondary": "#EA580C",
-          "text": "#111827",
-          "muted": "#6B7280",
-          "pageBackground": "#F5F5F4"
+          "primary": "#7C2D12",
+          "secondary": "#FED7AA",
+          "text": "#292524",
+          "muted": "#78716C",
+          "pageBackground": "#FFFDF7"
         },
         "density": "airy",
         "textStyle": "sans",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
-          "style": "rose-corner-bloom"
+          "color": "#7C2D12",
+          "radius": 18,
+          "style": "ivory-editorial-mat"
         },
         "primary": "#4F46E5",
         "accent": "#A5B4FC",
@@ -6801,56 +6763,44 @@
         "text": "#172554"
       },
       "borderStyle": {
-        "id": "rose-corner-bloom",
-        "className": "cover-border--rose-corner-bloom",
-        "accentPlacement": "corner-bloom"
+        "id": "ivory-editorial-mat",
+        "className": "cover-border--ivory-editorial-mat",
+        "accentPlacement": "editorial-mat"
       },
       "decor": {
         "headerStyle": "plain",
         "footerStyle": "none",
-        "divider": "gradient",
+        "divider": "none",
         "iconStyle": "rounded",
         "objects": [
           {
-            "type": "circle",
-            "x": "29%",
-            "y": "39%",
-            "size": "140",
-            "opacity": 0.17
+            "type": "square",
+            "x": "4%",
+            "y": "4%",
+            "size": "54",
+            "opacity": 0.06,
+            "color": "#FED7AA"
           },
           {
             "type": "square",
-            "x": "55%",
-            "y": "66%",
-            "size": "174",
-            "opacity": 0.16
-          },
-          {
-            "type": "star",
-            "x": "86%",
-            "y": "84%",
-            "size": "28",
-            "opacity": 0.1
-          },
-          {
-            "type": "square",
-            "x": "18%",
-            "y": "90%",
-            "size": "24",
-            "opacity": 0.08
+            "x": "92%",
+            "y": "92%",
+            "size": "54",
+            "opacity": 0.06,
+            "color": "#7C2D12"
           }
         ],
         "borderStyle": "solid",
         "cornerRadius": 18
       },
       "layoutOptions": {
-        "sectionSpacing": "normal",
-        "titleCase": "normal",
-        "contentWidth": "normal",
-        "photoShape": "rounded",
-        "borderRadius": 12,
-        "asideWidth": 28,
-        "gutter": 16
+        "sectionSpacing": "tight",
+        "titleCase": "upper",
+        "contentWidth": "narrow",
+        "photoShape": "circle",
+        "borderRadius": 18,
+        "asideWidth": 32,
+        "gutter": 18
       },
       "textStyles": {
         "fullName": {
@@ -6993,7 +6943,7 @@
           "min": 16,
           "max": 30
         },
-        "barLayout": ["single", "double"],
+        "barLayout": [],
         "barWidth": {
           "min": 10,
           "max": 22
@@ -7011,7 +6961,9 @@
         "accent": "badge",
         "accentIntensity": "medium",
         "photoPosition": "right"
-      }
+      },
+      "sectionDividerStyle": "none",
+      "barLayout": []
     },
     "fakeData": {
       "fullName": "Jordan Lee",
@@ -7046,20 +6998,20 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#A855F7",
-          "secondary": "#22C55E",
-          "text": "#F3F4F6",
-          "muted": "#9CA3AF",
-          "pageBackground": "#111827"
+          "primary": "#0F766E",
+          "secondary": "#99F6E4",
+          "text": "#042F2E",
+          "muted": "#47615F",
+          "pageBackground": "#F0FDFA"
         },
         "density": "comfortable",
         "textStyle": "roman",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
-          "style": "slate-asymmetric-frame"
+          "color": "#0F766E",
+          "radius": 22,
+          "style": "bottom-contact-band"
         },
         "primary": "#2563EB",
         "accent": "#38BDF8",
@@ -7067,56 +7019,44 @@
         "text": "#0F172A"
       },
       "borderStyle": {
-        "id": "slate-asymmetric-frame",
-        "className": "cover-border--slate-asymmetric-frame",
-        "accentPlacement": "asymmetric-frame"
+        "id": "bottom-contact-band",
+        "className": "cover-border--bottom-contact-band",
+        "accentPlacement": "bottom-band"
       },
       "decor": {
         "headerStyle": "band",
         "footerStyle": "line",
-        "divider": "double-line",
+        "divider": "dashed",
         "iconStyle": "outline",
         "objects": [
           {
+            "type": "pill",
+            "x": "70%",
+            "y": "90%",
+            "size": "112",
+            "opacity": 0.12,
+            "color": "#14B8A6"
+          },
+          {
             "type": "circle",
-            "x": "36%",
-            "y": "50%",
-            "size": "160",
-            "opacity": 0.08
-          },
-          {
-            "type": "diamond",
-            "x": "50%",
-            "y": "63%",
-            "size": "192",
-            "opacity": 0.06
-          },
-          {
-            "type": "star",
-            "x": "14%",
-            "y": "14%",
-            "size": "28",
-            "opacity": 0.1
-          },
-          {
-            "type": "square",
-            "x": "82%",
-            "y": "10%",
-            "size": "24",
-            "opacity": 0.08
+            "x": "2%",
+            "y": "5%",
+            "size": "62",
+            "opacity": 0.08,
+            "color": "#99F6E4"
           }
         ],
         "borderStyle": "double",
         "cornerRadius": 0
       },
       "layoutOptions": {
-        "sectionSpacing": "relaxed",
-        "titleCase": "upper",
+        "sectionSpacing": "normal",
+        "titleCase": "normal",
         "contentWidth": "wide",
-        "photoShape": "square",
-        "borderRadius": 16,
-        "asideWidth": 30,
-        "gutter": 18
+        "photoShape": "rounded",
+        "borderRadius": 22,
+        "asideWidth": 34,
+        "gutter": 22
       },
       "textStyles": {
         "fullName": {
@@ -7273,7 +7213,9 @@
         "accent": "bar",
         "accentIntensity": "bold",
         "photoPosition": "left"
-      }
+      },
+      "sectionDividerStyle": "dashed",
+      "barLayout": ["single"]
     },
     "fakeData": {
       "fullName": "Alex Martin",
@@ -7308,20 +7250,20 @@
     "design": {
       "theme": {
         "palette": {
-          "primary": "#7C3AED",
-          "secondary": "#06B6D4",
-          "text": "#1F1147",
-          "muted": "#6D5A99",
-          "pageBackground": "#F5F3FF"
+          "primary": "#7E22CE",
+          "secondary": "#E9D5FF",
+          "text": "#2E1065",
+          "muted": "#6B4C7A",
+          "pageBackground": "#FCF7FF"
         },
         "density": "compact",
         "textStyle": "serif",
         "pageBorder": {
-          "enabled": false,
+          "enabled": true,
           "width": 2,
-          "color": "#CBD5E1",
-          "radius": 16,
-          "style": "ivory-editorial-mat"
+          "color": "#7E22CE",
+          "radius": 26,
+          "style": "dual-corner-sweep"
         },
         "primary": "#7C3AED",
         "accent": "#C4B5FD",
@@ -7329,56 +7271,44 @@
         "text": "#111827"
       },
       "borderStyle": {
-        "id": "ivory-editorial-mat",
-        "className": "cover-border--ivory-editorial-mat",
-        "accentPlacement": "editorial-mat"
+        "id": "dual-corner-sweep",
+        "className": "cover-border--dual-corner-sweep",
+        "accentPlacement": "opposite-corners"
       },
       "decor": {
         "headerStyle": "split-band",
         "footerStyle": "block",
-        "divider": "dots",
+        "divider": "gradient",
         "iconStyle": "minimal",
         "objects": [
           {
-            "type": "circle",
-            "x": "43%",
-            "y": "61%",
-            "size": "80",
-            "opacity": 0.11
+            "type": "blob",
+            "x": "-5%",
+            "y": "-5%",
+            "size": "130",
+            "opacity": 0.1,
+            "color": "#A855F7"
           },
           {
-            "type": "square",
-            "x": "45%",
-            "y": "60%",
-            "size": "210",
-            "opacity": 0.08
-          },
-          {
-            "type": "star",
-            "x": "86%",
-            "y": "14%",
-            "size": "28",
-            "opacity": 0.1
-          },
-          {
-            "type": "square",
-            "x": "18%",
-            "y": "90%",
-            "size": "24",
-            "opacity": 0.08
+            "type": "blob",
+            "x": "88%",
+            "y": "88%",
+            "size": "130",
+            "opacity": 0.1,
+            "color": "#E9D5FF"
           }
         ],
         "borderStyle": "dashed",
         "cornerRadius": 6
       },
       "layoutOptions": {
-        "sectionSpacing": "tight",
-        "titleCase": "normal",
-        "contentWidth": "narrow",
-        "photoShape": "circle",
-        "borderRadius": 20,
-        "asideWidth": 32,
-        "gutter": 20
+        "sectionSpacing": "relaxed",
+        "titleCase": "upper",
+        "contentWidth": "normal",
+        "photoShape": "square",
+        "borderRadius": 26,
+        "asideWidth": 36,
+        "gutter": 24
       },
       "textStyles": {
         "fullName": {
@@ -7521,7 +7451,7 @@
           "min": 2,
           "max": 16
         },
-        "barLayout": ["single", "double"],
+        "barLayout": ["double"],
         "barWidth": {
           "min": 6,
           "max": 16
@@ -7539,7 +7469,9 @@
         "accent": "shape",
         "accentIntensity": "subtle",
         "photoPosition": "right"
-      }
+      },
+      "sectionDividerStyle": "gradient",
+      "barLayout": ["double"]
     },
     "fakeData": {
       "fullName": "Jordan Lee",
