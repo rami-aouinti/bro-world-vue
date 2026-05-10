@@ -650,7 +650,14 @@ const sectionVariantOptionsMap: Record<string, string[]> = {
   ],
   certifications: ['classic', 'list', 'dot', 'cards'],
   references: ['classic', 'list', 'dot', 'cards'],
-  hobbies: ['classic', 'list', 'dot', 'cards'],
+  hobbies: [
+    'classic',
+    'list',
+    'dot',
+    'cards',
+    'hobby-icons',
+    'hobby-icons-separated',
+  ],
 }
 
 const sectionTypeOverrides = reactive<Record<string, string>>({})

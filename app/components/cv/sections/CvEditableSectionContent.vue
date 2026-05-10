@@ -125,6 +125,25 @@ function periodModelValue(value: string) {
   if (props.dateStyle !== 'stacked') return value
   return String(value || '').replace(/\s+(?:-|–|—|\/)\s+/, '\n')
 }
+
+function hobbyIcon(label: string) {
+  const normalized = label.toLowerCase()
+  if (normalized.includes('computer')) return 'mdi-laptop'
+  if (normalized.includes('read')) return 'mdi-book-open-page-variant'
+  if (normalized.includes('design')) return 'mdi-palette-outline'
+  if (normalized.includes('travel')) return 'mdi-airplane'
+  if (normalized.includes('sport')) return 'mdi-run'
+  return 'mdi-star-outline'
+}
+
+function isHobbyIconsSection() {
+  return (
+    props.sectionKey === 'hobbies' &&
+    [props.variant, props.contentStyle].some((style) =>
+      ['hobby-icons', 'hobby-icons-separated'].includes(style),
+    )
+  )
+}
 </script>
 
 <template>
@@ -132,50 +151,115 @@ function periodModelValue(value: string) {
     class="cv-rich-section"
     :class="[`cv-rich-section--${variant}`, `cv-rich-section--${sectionKey}`]"
   >
-    <div
-      v-for="(item, index) in items"
-      :key="index"
-      class="cv-rich-item"
-      :class="[
-        `cv-rich-item--${variant}`,
-        `cv-rich-item--content-${contentStyle}`,
-        `cv-rich-item--date-${dateStyle}`,
-        {
-          'cv-rich-item--complex': isComplexItem(item),
-          'cv-rich-item--timeline-complex': isTimelineComplexItem(item),
-          'cv-rich-item--leveled': isLeveledSection(),
-        },
-      ]"
-    >
-      <template v-if="isComplexItem(item)">
-        <template v-if="isTimelineComplexItem(item)">
-          <div class="cv-rich-timeline-dot" aria-hidden="true" />
-          <HoverRichTextEditor
-            v-if="splitComplexItem(item).period"
-            class="cv-rich-editor cv-rich-editor--period cv-rich-editor--timeline-period"
-            :model-value="periodModelValue(splitComplexItem(item).period)"
-            placeholder="Period"
-            font-size="12px"
-            font-weight="500"
-            font-family="var(--cv-text-body, inherit)"
-            color="inherit"
-            @update:model-value="
-              updateComplexPart(index, item, 'period', $event)
-            "
-          />
-          <div class="cv-rich-timeline-body">
+    <div v-if="isHobbyIconsSection()" class="cv-hobby-icons">
+      <div v-for="item in items" :key="item" class="cv-hobby-icon-item">
+        <v-icon :icon="hobbyIcon(item)" />
+        <span>{{ item }}</span>
+      </div>
+    </div>
+
+    <template v-else>
+      <div
+        v-for="(item, index) in items"
+        :key="index"
+        class="cv-rich-item"
+        :class="[
+          `cv-rich-item--${variant}`,
+          `cv-rich-item--content-${contentStyle}`,
+          `cv-rich-item--date-${dateStyle}`,
+          {
+            'cv-rich-item--complex': isComplexItem(item),
+            'cv-rich-item--timeline-complex': isTimelineComplexItem(item),
+            'cv-rich-item--leveled': isLeveledSection(),
+          },
+        ]"
+      >
+        <template v-if="isComplexItem(item)">
+          <template v-if="isTimelineComplexItem(item)">
+            <div class="cv-rich-timeline-dot" aria-hidden="true" />
             <HoverRichTextEditor
-              class="cv-rich-editor cv-rich-editor--title"
-              :model-value="splitComplexItem(item).title"
-              placeholder="Title"
-              font-size="13px"
-              font-weight="700"
-              font-family="var(--cv-text-entry-title, inherit)"
+              v-if="splitComplexItem(item).period"
+              class="cv-rich-editor cv-rich-editor--period cv-rich-editor--timeline-period"
+              :model-value="periodModelValue(splitComplexItem(item).period)"
+              placeholder="Period"
+              font-size="12px"
+              font-weight="500"
+              font-family="var(--cv-text-body, inherit)"
               color="inherit"
               @update:model-value="
-                updateComplexPart(index, item, 'title', $event)
+                updateComplexPart(index, item, 'period', $event)
               "
             />
+            <div class="cv-rich-timeline-body">
+              <HoverRichTextEditor
+                class="cv-rich-editor cv-rich-editor--title"
+                :model-value="splitComplexItem(item).title"
+                placeholder="Title"
+                font-size="13px"
+                font-weight="700"
+                font-family="var(--cv-text-entry-title, inherit)"
+                color="inherit"
+                @update:model-value="
+                  updateComplexPart(index, item, 'title', $event)
+                "
+              />
+              <HoverRichTextEditor
+                v-if="splitComplexItem(item).subtitle"
+                class="cv-rich-editor cv-rich-editor--subtitle"
+                :model-value="splitComplexItem(item).subtitle"
+                placeholder="Subtitle"
+                font-size="12px"
+                font-weight="600"
+                font-family="var(--cv-text-body, inherit)"
+                color="inherit"
+                @update:model-value="
+                  updateComplexPart(index, item, 'subtitle', $event)
+                "
+              />
+              <HoverRichTextEditor
+                v-if="splitComplexItem(item).description"
+                class="cv-rich-editor cv-rich-editor--description"
+                :model-value="splitComplexItem(item).description"
+                placeholder="Description"
+                font-size="11px"
+                font-weight="400"
+                font-family="var(--cv-text-body, inherit)"
+                color="inherit"
+                @update:model-value="
+                  updateComplexPart(index, item, 'description', $event)
+                "
+              />
+            </div>
+          </template>
+
+          <template v-else>
+            <div class="cv-rich-entry-head">
+              <HoverRichTextEditor
+                class="cv-rich-editor cv-rich-editor--title"
+                :model-value="splitComplexItem(item).title"
+                placeholder="Title"
+                font-size="13px"
+                font-weight="700"
+                font-family="var(--cv-text-entry-title, inherit)"
+                color="inherit"
+                @update:model-value="
+                  updateComplexPart(index, item, 'title', $event)
+                "
+              />
+              <HoverRichTextEditor
+                v-if="splitComplexItem(item).period"
+                class="cv-rich-editor cv-rich-editor--period"
+                :model-value="periodModelValue(splitComplexItem(item).period)"
+                placeholder="Period"
+                font-size="12px"
+                font-weight="500"
+                font-family="var(--cv-text-body, inherit)"
+                color="inherit"
+                @update:model-value="
+                  updateComplexPart(index, item, 'period', $event)
+                "
+              />
+            </div>
             <HoverRichTextEditor
               v-if="splitComplexItem(item).subtitle"
               class="cv-rich-editor cv-rich-editor--subtitle"
@@ -189,167 +273,113 @@ function periodModelValue(value: string) {
                 updateComplexPart(index, item, 'subtitle', $event)
               "
             />
-            <HoverRichTextEditor
+            <div
               v-if="splitComplexItem(item).description"
-              class="cv-rich-editor cv-rich-editor--description"
-              :model-value="splitComplexItem(item).description"
-              placeholder="Description"
-              font-size="11px"
-              font-weight="400"
-              font-family="var(--cv-text-body, inherit)"
-              color="inherit"
-              @update:model-value="
-                updateComplexPart(index, item, 'description', $event)
-              "
-            />
-          </div>
+              class="cv-rich-description-row"
+              :class="`cv-rich-description-row--${variant}`"
+            >
+              <span v-if="variant === 'list'" class="cv-rich-prefix">-</span>
+              <span v-else-if="variant === 'dot'" class="cv-rich-prefix"
+                >•</span
+              >
+              <HoverRichTextEditor
+                class="cv-rich-editor cv-rich-editor--description"
+                :model-value="splitComplexItem(item).description"
+                placeholder="Description"
+                font-size="12px"
+                font-weight="400"
+                font-family="var(--cv-text-body, inherit)"
+                color="inherit"
+                @update:model-value="
+                  updateComplexPart(index, item, 'description', $event)
+                "
+              />
+            </div>
+          </template>
+        </template>
+
+        <template v-else-if="isLeveledSection()">
+          <HoverRichTextEditor
+            class="cv-rich-editor cv-rich-editor--label"
+            :model-value="splitLeveledItem(item).label"
+            placeholder="Label"
+            font-size="13px"
+            font-weight="500"
+            font-family="var(--cv-text-body, inherit)"
+            color="inherit"
+            @update:model-value="updateLeveledLabel(index, item, $event)"
+          />
+          <template v-if="variant === 'stars'">
+            <span class="cv-rich-stars" aria-hidden="true"
+              >{{ '★'.repeat(filledStars(item))
+              }}{{ '☆'.repeat(5 - filledStars(item)) }}</span
+            >
+          </template>
+          <template v-else-if="variant === 'dots'">
+            <span class="cv-rich-dots" aria-hidden="true">
+              <span
+                v-for="dot in 5"
+                :key="dot"
+                class="cv-rich-dot"
+                :class="{ 'cv-rich-dot--filled': dot <= filledDots(item) }"
+              />
+            </span>
+          </template>
+          <template v-else-if="variant === 'progress-line'">
+            <span class="cv-rich-progress"
+              ><i :style="{ width: `${splitLeveledItem(item).value}%` }"
+            /></span>
+          </template>
+          <HoverRichTextEditor
+            v-else-if="
+              ![
+                'progress-circle',
+                'progress-circle-grid',
+                'progress-circle-ring',
+              ].includes(variant)
+            "
+            class="cv-rich-editor cv-rich-editor--value"
+            :model-value="`${splitLeveledItem(item).value}%`"
+            placeholder="Level"
+            font-size="12px"
+            font-weight="500"
+            font-family="var(--cv-text-body, inherit)"
+            color="inherit"
+            @update:model-value="updateLeveledValue(index, item, $event)"
+          />
+          <span
+            v-if="
+              [
+                'progress-circle',
+                'progress-circle-grid',
+                'progress-circle-ring',
+              ].includes(variant)
+            "
+            class="cv-rich-circle"
+            :style="{ '--level': splitLeveledItem(item).value }"
+          >
+            <span class="cv-rich-circle-value">
+              {{ splitLeveledItem(item).value }}%
+            </span>
+          </span>
         </template>
 
         <template v-else>
-          <div class="cv-rich-entry-head">
-            <HoverRichTextEditor
-              class="cv-rich-editor cv-rich-editor--title"
-              :model-value="splitComplexItem(item).title"
-              placeholder="Title"
-              font-size="13px"
-              font-weight="700"
-              font-family="var(--cv-text-entry-title, inherit)"
-              color="inherit"
-              @update:model-value="
-                updateComplexPart(index, item, 'title', $event)
-              "
-            />
-            <HoverRichTextEditor
-              v-if="splitComplexItem(item).period"
-              class="cv-rich-editor cv-rich-editor--period"
-              :model-value="periodModelValue(splitComplexItem(item).period)"
-              placeholder="Period"
-              font-size="12px"
-              font-weight="500"
-              font-family="var(--cv-text-body, inherit)"
-              color="inherit"
-              @update:model-value="
-                updateComplexPart(index, item, 'period', $event)
-              "
-            />
-          </div>
+          <span v-if="variant === 'list'" class="cv-rich-prefix">-</span>
+          <span v-else-if="variant === 'dot'" class="cv-rich-prefix">•</span>
           <HoverRichTextEditor
-            v-if="splitComplexItem(item).subtitle"
-            class="cv-rich-editor cv-rich-editor--subtitle"
-            :model-value="splitComplexItem(item).subtitle"
-            placeholder="Subtitle"
-            font-size="12px"
-            font-weight="600"
+            class="cv-rich-editor cv-rich-editor--simple"
+            :model-value="item"
+            placeholder="Text"
+            font-size="13px"
+            font-weight="500"
             font-family="var(--cv-text-body, inherit)"
             color="inherit"
-            @update:model-value="
-              updateComplexPart(index, item, 'subtitle', $event)
-            "
+            @update:model-value="updateSimpleItem(index, $event)"
           />
-          <div
-            v-if="splitComplexItem(item).description"
-            class="cv-rich-description-row"
-            :class="`cv-rich-description-row--${variant}`"
-          >
-            <span v-if="variant === 'list'" class="cv-rich-prefix">-</span>
-            <span v-else-if="variant === 'dot'" class="cv-rich-prefix">•</span>
-            <HoverRichTextEditor
-              class="cv-rich-editor cv-rich-editor--description"
-              :model-value="splitComplexItem(item).description"
-              placeholder="Description"
-              font-size="12px"
-              font-weight="400"
-              font-family="var(--cv-text-body, inherit)"
-              color="inherit"
-              @update:model-value="
-                updateComplexPart(index, item, 'description', $event)
-              "
-            />
-          </div>
         </template>
-      </template>
-
-      <template v-else-if="isLeveledSection()">
-        <HoverRichTextEditor
-          class="cv-rich-editor cv-rich-editor--label"
-          :model-value="splitLeveledItem(item).label"
-          placeholder="Label"
-          font-size="13px"
-          font-weight="500"
-          font-family="var(--cv-text-body, inherit)"
-          color="inherit"
-          @update:model-value="updateLeveledLabel(index, item, $event)"
-        />
-        <template v-if="variant === 'stars'">
-          <span class="cv-rich-stars" aria-hidden="true"
-            >{{ '★'.repeat(filledStars(item))
-            }}{{ '☆'.repeat(5 - filledStars(item)) }}</span
-          >
-        </template>
-        <template v-else-if="variant === 'dots'">
-          <span class="cv-rich-dots" aria-hidden="true">
-            <span
-              v-for="dot in 5"
-              :key="dot"
-              class="cv-rich-dot"
-              :class="{ 'cv-rich-dot--filled': dot <= filledDots(item) }"
-            />
-          </span>
-        </template>
-        <template v-else-if="variant === 'progress-line'">
-          <span class="cv-rich-progress"
-            ><i :style="{ width: `${splitLeveledItem(item).value}%` }"
-          /></span>
-        </template>
-        <HoverRichTextEditor
-          v-else-if="
-            ![
-              'progress-circle',
-              'progress-circle-grid',
-              'progress-circle-ring',
-            ].includes(variant)
-          "
-          class="cv-rich-editor cv-rich-editor--value"
-          :model-value="`${splitLeveledItem(item).value}%`"
-          placeholder="Level"
-          font-size="12px"
-          font-weight="500"
-          font-family="var(--cv-text-body, inherit)"
-          color="inherit"
-          @update:model-value="updateLeveledValue(index, item, $event)"
-        />
-        <span
-          v-if="
-            [
-              'progress-circle',
-              'progress-circle-grid',
-              'progress-circle-ring',
-            ].includes(variant)
-          "
-          class="cv-rich-circle"
-          :style="{ '--level': splitLeveledItem(item).value }"
-        >
-          <span class="cv-rich-circle-value">
-            {{ splitLeveledItem(item).value }}%
-          </span>
-        </span>
-      </template>
-
-      <template v-else>
-        <span v-if="variant === 'list'" class="cv-rich-prefix">-</span>
-        <span v-else-if="variant === 'dot'" class="cv-rich-prefix">•</span>
-        <HoverRichTextEditor
-          class="cv-rich-editor cv-rich-editor--simple"
-          :model-value="item"
-          placeholder="Text"
-          font-size="13px"
-          font-weight="500"
-          font-family="var(--cv-text-body, inherit)"
-          color="inherit"
-          @update:model-value="updateSimpleItem(index, $event)"
-        />
-      </template>
-    </div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -369,6 +399,22 @@ function periodModelValue(value: string) {
 
 .cv-rich-section--progress-circle-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cv-hobby-icons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 10px;
+}
+
+.cv-hobby-icon-item {
+  text-align: center;
+  border-inline-end: 1px dashed rgba(148, 163, 184, 0.55);
+}
+
+.cv-hobby-icon-item .v-icon {
+  color: var(--cv-secondary);
+  font-size: 30px;
 }
 
 .cv-rich-section--timeline.cv-rich-section--experience,
