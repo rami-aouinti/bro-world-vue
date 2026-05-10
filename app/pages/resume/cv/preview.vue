@@ -551,6 +551,12 @@ let isMeasuringCvPreview = false
 
 function scheduleCvPreviewMeasure(reset = false) {
   if (!import.meta.client || isMeasuringCvPreview) return
+
+  if (isCaptureMode.value) {
+    cvPreviewPageCount.value = 1
+    return
+  }
+
   if (reset) cvPreviewPageCount.value = 1
   if (cvPreviewMeasureTimer) window.clearTimeout(cvPreviewMeasureTimer)
   cvPreviewMeasureTimer = window.setTimeout(async () => {
