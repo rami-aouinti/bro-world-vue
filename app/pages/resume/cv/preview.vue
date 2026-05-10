@@ -28,6 +28,10 @@ import {
   resolveResumeTextFont,
   useResumeGoogleFonts,
 } from '~/composables/useResumeGoogleFonts'
+import {
+  isMainGeneratedCvLayout,
+  isSideGeneratedCvLayout,
+} from '~/utils/generatedCvLayoutRuntime'
 
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
 import ResumePreviewToolbar from '~/components/ResumePreviewToolbar.vue'
@@ -399,22 +403,11 @@ const normalizedStructure = computed(() => {
 })
 
 const isMainStructureLayout = computed(() =>
-  ['aside', 'no-aside', 'no-aside-split'].includes(
-    String(activeTemplate.value?.layout || ''),
-  ),
+  isMainGeneratedCvLayout(String(activeTemplate.value?.layout || '')),
 )
 
 const isSideContentLayout = computed(() =>
-  [
-    'aside-left',
-    'aside-right',
-    'aside-full-left',
-    'aside-full-right',
-    'aside-bar-left',
-    'aside-bar-right',
-    'identity-aside-left',
-    'identity-aside-right',
-  ].includes(String(activeTemplate.value?.layout || '')),
+  isSideGeneratedCvLayout(String(activeTemplate.value?.layout || '')),
 )
 
 type SectionOrderKey =
