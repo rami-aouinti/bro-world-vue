@@ -1,6 +1,23 @@
 <script setup lang="ts">
-type PreviewTemplate = { id?: string; value?: string; label?: string; name?: string; title?: string }
-type PaletteOption = { value?: string; title?: string; name?: string; primary?: string; secondary?: string; tertiary?: string; quaternary?: string; text?: string; dark?: string; light?: string }
+type PreviewTemplate = {
+  id?: string
+  value?: string
+  label?: string
+  name?: string
+  title?: string
+}
+type PaletteOption = {
+  value?: string
+  title?: string
+  name?: string
+  primary?: string
+  secondary?: string
+  tertiary?: string
+  quaternary?: string
+  text?: string
+  dark?: string
+  light?: string
+}
 type PaletteColorKey = 'primary' | 'secondary' | 'text' | 'pageBackground'
 
 withDefaults(
@@ -21,6 +38,7 @@ withDefaults(
     decorMenuOpen?: boolean
     showDecor?: boolean
     showSection?: boolean
+    showDesignControls?: boolean
     activeColors?: Partial<Record<PaletteColorKey, string>>
   }>(),
   {
@@ -40,14 +58,27 @@ withDefaults(
     decorMenuOpen: false,
     showDecor: false,
     showSection: false,
+    showDesignControls: true,
     activeColors: () => ({}),
   },
 )
 
 const emit = defineEmits<{
-  (e: 'update:menu-open' | 'update:palette-menu-open' | 'update:aside-menu-open' | 'update:bar-menu-open' | 'update:border-menu-open' | 'update:decor-menu-open', value: boolean): void
+  (
+    e:
+      | 'update:menu-open'
+      | 'update:palette-menu-open'
+      | 'update:aside-menu-open'
+      | 'update:bar-menu-open'
+      | 'update:border-menu-open'
+      | 'update:decor-menu-open',
+    value: boolean,
+  ): void
   (e: 'select-template' | 'select-palette', value: string): void
-  (e: 'update-palette-color', payload: { key: PaletteColorKey; value: string }): void
+  (
+    e: 'update-palette-color',
+    payload: { key: PaletteColorKey; value: string },
+  ): void
   (e: 'reset-palette' | 'save' | 'ai' | 'signature' | 'pdf' | 'section'): void
 }>()
 
@@ -56,10 +87,10 @@ function templateId(template: PreviewTemplate) {
 }
 
 function templateLabel(template: PreviewTemplate) {
-  return template.label || template.title || template.name || templateId(template)
+  return (
+    template.label || template.title || template.name || templateId(template)
+  )
 }
-
-
 
 const editablePaletteFields: Array<{ key: PaletteColorKey; label: string }> = [
   { key: 'primary', label: 'Primary' },
@@ -81,11 +112,14 @@ function onColorUpdate(key: PaletteColorKey, value: string) {
 </script>
 
 <template>
-  <div class="resume-preview-toolbar d-flex align-center justify-space-between ga-3 mb-4" role="toolbar" aria-label="Resume preview actions">
+  <div
+    class="resume-preview-toolbar d-flex align-center justify-space-between ga-3 mb-4"
+    role="toolbar"
+    aria-label="Resume preview actions"
+  >
     <div class="d-flex align-center ga-2 flex-wrap">
-
       <v-menu
-        v-if="$slots.aside"
+        v-if="showDesignControls && $slots.aside"
         :model-value="asideMenuOpen"
         location="bottom start"
         :close-on-content-click="false"
@@ -93,7 +127,12 @@ function onColorUpdate(key: PaletteColorKey, value: string) {
         @update:model-value="emit('update:aside-menu-open', $event)"
       >
         <template #activator="{ props: menuProps }">
-          <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-dock-left">Aside</v-btn>
+          <v-btn
+            v-bind="menuProps"
+            variant="outlined"
+            prepend-icon="mdi-dock-left"
+            >Aside</v-btn
+          >
         </template>
         <v-card class="pa-3" min-width="300">
           <slot name="aside" />
@@ -101,7 +140,7 @@ function onColorUpdate(key: PaletteColorKey, value: string) {
       </v-menu>
 
       <v-menu
-        v-if="$slots.bar"
+        v-if="showDesignControls && $slots.bar"
         :model-value="barMenuOpen"
         location="bottom start"
         :close-on-content-click="false"
@@ -109,7 +148,12 @@ function onColorUpdate(key: PaletteColorKey, value: string) {
         @update:model-value="emit('update:bar-menu-open', $event)"
       >
         <template #activator="{ props: menuProps }">
-          <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-view-agenda">Bar</v-btn>
+          <v-btn
+            v-bind="menuProps"
+            variant="outlined"
+            prepend-icon="mdi-view-agenda"
+            >Bar</v-btn
+          >
         </template>
         <v-card class="pa-3" min-width="300">
           <slot name="bar" />
@@ -117,7 +161,7 @@ function onColorUpdate(key: PaletteColorKey, value: string) {
       </v-menu>
 
       <v-menu
-        v-if="$slots.border"
+        v-if="showDesignControls && $slots.border"
         :model-value="borderMenuOpen"
         location="bottom start"
         :close-on-content-click="false"
@@ -125,7 +169,12 @@ function onColorUpdate(key: PaletteColorKey, value: string) {
         @update:model-value="emit('update:border-menu-open', $event)"
       >
         <template #activator="{ props: menuProps }">
-          <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-border-all">Border</v-btn>
+          <v-btn
+            v-bind="menuProps"
+            variant="outlined"
+            prepend-icon="mdi-border-all"
+            >Border</v-btn
+          >
         </template>
         <v-card class="pa-3" min-width="300">
           <slot name="border" />
@@ -133,7 +182,7 @@ function onColorUpdate(key: PaletteColorKey, value: string) {
       </v-menu>
 
       <v-menu
-        v-if="showDecor"
+        v-if="showDesignControls && showDecor"
         :model-value="decorMenuOpen"
         location="bottom start"
         :close-on-content-click="false"
@@ -141,16 +190,30 @@ function onColorUpdate(key: PaletteColorKey, value: string) {
         @update:model-value="emit('update:decor-menu-open', $event)"
       >
         <template #activator="{ props: menuProps }">
-          <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-shape-plus">Decor</v-btn>
+          <v-btn
+            v-bind="menuProps"
+            variant="outlined"
+            prepend-icon="mdi-shape-plus"
+            >Decor</v-btn
+          >
         </template>
         <v-card class="pa-3 decor-menu-card" min-width="300" @click.stop>
           <slot name="decor" />
         </v-card>
       </v-menu>
 
-      <v-menu :model-value="menuOpen" location="bottom start" @update:model-value="emit('update:menu-open', $event)">
+      <v-menu
+        :model-value="menuOpen"
+        location="bottom start"
+        @update:model-value="emit('update:menu-open', $event)"
+      >
         <template #activator="{ props: menuProps }">
-          <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-view-grid">Template</v-btn>
+          <v-btn
+            v-bind="menuProps"
+            variant="outlined"
+            prepend-icon="mdi-view-grid"
+            >Template</v-btn
+          >
         </template>
         <v-card class="pa-3" min-width="320">
           <div class="template-grid">
@@ -158,14 +221,27 @@ function onColorUpdate(key: PaletteColorKey, value: string) {
               v-for="template in templates"
               :key="`${templateKeyPrefix}-${templateId(template)}`"
               class="template-option"
-              :class="{ 'template-option--active': selectedTemplate === templateId(template) }"
+              :class="{
+                'template-option--active':
+                  selectedTemplate === templateId(template),
+              }"
               @click="emit('select-template', templateId(template))"
             >
-              <img v-if="getTemplateImage" :src="getTemplateImage(template)" :alt="templateLabel(template)">
+              <img
+                v-if="getTemplateImage"
+                :src="getTemplateImage(template)"
+                :alt="templateLabel(template)"
+              />
               <div class="template-option__meta">
                 <v-avatar class="template-option__avatar" size="24">
-                  <img v-if="getTemplateImage" :src="getTemplateImage(template)" :alt="templateLabel(template)">
-                  <span v-else>{{ templateLabel(template).slice(0, 1).toUpperCase() }}</span>
+                  <img
+                    v-if="getTemplateImage"
+                    :src="getTemplateImage(template)"
+                    :alt="templateLabel(template)"
+                  />
+                  <span v-else>{{
+                    templateLabel(template).slice(0, 1).toUpperCase()
+                  }}</span>
                 </v-avatar>
                 <span>{{ templateLabel(template) }}</span>
               </div>
@@ -175,13 +251,19 @@ function onColorUpdate(key: PaletteColorKey, value: string) {
       </v-menu>
 
       <v-menu
+        v-if="showDesignControls"
         :model-value="paletteMenuOpen"
         location="bottom start"
         :close-on-content-click="false"
         @update:model-value="emit('update:palette-menu-open', $event)"
       >
         <template #activator="{ props: menuProps }">
-          <v-btn v-bind="menuProps" variant="outlined" prepend-icon="mdi-palette">Palette</v-btn>
+          <v-btn
+            v-bind="menuProps"
+            variant="outlined"
+            prepend-icon="mdi-palette"
+            >Palette</v-btn
+          >
         </template>
         <v-card class="pa-3" min-width="280">
           <div class="d-flex flex-column ga-2">
@@ -196,21 +278,47 @@ function onColorUpdate(key: PaletteColorKey, value: string) {
                   class="palette-color-row__input"
                   :value="normalizeColor(activeColors?.[field.key], '#0f172a')"
                   type="color"
-                  @input="onColorUpdate(field.key, ($event.target as HTMLInputElement)?.value || '')"
-                  @change="onColorUpdate(field.key, ($event.target as HTMLInputElement)?.value || '')"
-                >
-                <span class="palette-color-row__hex">{{ normalizeColor(activeColors?.[field.key], '#0f172a').toUpperCase() }}</span>
+                  @input="
+                    onColorUpdate(
+                      field.key,
+                      ($event.target as HTMLInputElement)?.value || '',
+                    )
+                  "
+                  @change="
+                    onColorUpdate(
+                      field.key,
+                      ($event.target as HTMLInputElement)?.value || '',
+                    )
+                  "
+                />
+                <span class="palette-color-row__hex">{{
+                  normalizeColor(
+                    activeColors?.[field.key],
+                    '#0f172a',
+                  ).toUpperCase()
+                }}</span>
               </div>
             </div>
           </div>
-          <v-btn class="mt-3" size="small" variant="text" prepend-icon="mdi-restore" @click="emit('reset-palette')">Reset</v-btn>
+          <v-btn
+            class="mt-3"
+            size="small"
+            variant="text"
+            prepend-icon="mdi-restore"
+            @click="emit('reset-palette')"
+            >Reset</v-btn
+          >
         </v-card>
       </v-menu>
 
-      <v-btn v-if="showSection" variant="outlined" prepend-icon="mdi-plus" @click="emit('section')">Section</v-btn>
+      <v-btn
+        v-if="showSection"
+        variant="outlined"
+        prepend-icon="mdi-plus"
+        @click="emit('section')"
+        >Section</v-btn
+      >
     </div>
-
-
   </div>
 </template>
 
@@ -221,7 +329,8 @@ function onColorUpdate(key: PaletteColorKey, value: string) {
   z-index: 40;
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-on-surface)) 14%, transparent);
+  border: 1px solid
+    color-mix(in srgb, rgb(var(--v-theme-on-surface)) 14%, transparent);
   border-radius: 12px;
   background: linear-gradient(
     240deg,
@@ -239,7 +348,8 @@ function onColorUpdate(key: PaletteColorKey, value: string) {
 }
 
 .template-option {
-  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-on-surface)) 18%, transparent);
+  border: 1px solid
+    color-mix(in srgb, rgb(var(--v-theme-on-surface)) 18%, transparent);
   border-radius: 10px;
   background: rgb(var(--v-theme-surface));
   padding: 8px;
@@ -256,8 +366,13 @@ function onColorUpdate(key: PaletteColorKey, value: string) {
 }
 
 .template-option__avatar {
-  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-on-surface)) 16%, transparent);
-  background: color-mix(in srgb, rgb(var(--v-theme-primary)) 24%, rgb(var(--v-theme-surface)));
+  border: 1px solid
+    color-mix(in srgb, rgb(var(--v-theme-on-surface)) 16%, transparent);
+  background: color-mix(
+    in srgb,
+    rgb(var(--v-theme-primary)) 24%,
+    rgb(var(--v-theme-surface))
+  );
 }
 
 .template-option img {
@@ -287,7 +402,8 @@ function onColorUpdate(key: PaletteColorKey, value: string) {
   width: 26px;
   height: 26px;
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-on-surface)) 18%, transparent);
+  border: 1px solid
+    color-mix(in srgb, rgb(var(--v-theme-on-surface)) 18%, transparent);
   background: linear-gradient(
     135deg,
     var(--palette-primary) 0%,
@@ -305,7 +421,6 @@ function onColorUpdate(key: PaletteColorKey, value: string) {
   outline: 2px solid rgb(var(--v-theme-primary));
   outline-offset: 2px;
 }
-
 
 .palette-color-row {
   display: flex;
@@ -329,7 +444,8 @@ function onColorUpdate(key: PaletteColorKey, value: string) {
   width: 46px;
   height: 34px;
   border-radius: 8px;
-  border: 1px solid color-mix(in srgb, rgb(var(--v-theme-on-surface)) 22%, transparent);
+  border: 1px solid
+    color-mix(in srgb, rgb(var(--v-theme-on-surface)) 22%, transparent);
   background: transparent;
   padding: 2px;
   cursor: pointer;
@@ -338,7 +454,9 @@ function onColorUpdate(key: PaletteColorKey, value: string) {
 .palette-color-row__hex {
   min-width: 76px;
   font-size: 12px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
   color: color-mix(in srgb, rgb(var(--v-theme-on-surface)) 74%, transparent);
 }
 

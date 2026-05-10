@@ -5,6 +5,7 @@ import {
   getGeneratedTemplateFakeData,
 } from '~/utils/generatedTemplateNormalizer'
 import { readableMutedColorForBackground } from '~/utils/resumeColorContrast'
+import { useCoverBorderStyle } from '~/composables/useCoverBorderStyle'
 
 definePageMeta({ layout: false })
 
@@ -60,6 +61,9 @@ function getSelectedTemplateDesign() {
 }
 
 const selectedTemplateDesign = computed(() => getSelectedTemplateDesign())
+const { borderStyleClass, coverBorderCssVars } = useCoverBorderStyle(
+  selectedTemplateDesign,
+)
 const spacingMap: Record<string, number> = {
   compact: 24,
   normal: 30,
@@ -98,7 +102,6 @@ function toNumber(value: unknown, fallback: number): number {
 
 const resolvedStyles = computed(() => {
   const tpl = selectedTemplateDesign.value as any
-  const items = tpl?.items || {}
   const designConfig = tpl?.designConfig || defaultBarDesignConfig
   return {
     sectionDividerStyle:
@@ -215,7 +218,7 @@ const isLayoutRight = computed(
 
 <template>
   <main
-    class="capture-cover-page"
+    :class="['capture-cover-page', borderStyleClass]"
     :style="{
       '--cp-primary': selectedTemplateDesign.theme.palette.primary,
       '--cp-secondary': selectedTemplateDesign.theme.palette.secondary,
@@ -225,13 +228,7 @@ const isLayoutRight = computed(
         selectedTemplateDesign.theme.palette.muted,
       ),
       '--cp-bg': selectedTemplateDesign.theme.palette.pageBackground,
-      '--cp-page-border-width': selectedTemplateDesign.theme?.pageBorder
-        ?.enabled
-        ? `${selectedTemplateDesign.theme?.pageBorder?.width ?? 0}px`
-        : '0px',
-      '--cp-page-border-color':
-        selectedTemplateDesign.theme?.pageBorder?.color ?? 'transparent',
-      '--cp-page-border-radius': `${selectedTemplateDesign.theme?.pageBorder?.radius ?? 0}px`,
+      ...coverBorderCssVars,
       '--section-divider-style': resolvedStyles.sectionDividerStyle,
       '--section-spacing': `${resolvedStyles.sectionSpacing}px`,
       '--section-divider-color': resolvedStyles.sectionDividerColor,
@@ -293,18 +290,34 @@ const isLayoutRight = computed(
   </main>
 </template>
 
+<style lang="scss">
+@use '~/assets/styles/resume-cover-borders';
+</style>
+
+<style>
+html,
+body,
+#__nuxt {
+  width: 794px;
+  min-height: 1123px;
+  margin: 0;
+  background: #fff;
+}
+</style>
+
 <style scoped>
 .capture-cover-page {
   position: relative;
   overflow: hidden;
-  width: 850px;
-  height: 1123px;
-  padding: 80px;
+  box-sizing: border-box;
+  width: 794px;
+  min-height: 1123px;
+  padding: 64px;
+  padding-bottom: 74px;
   background: var(--cp-bg);
   color: var(--cp-text);
-  border-radius: var(--cp-page-border-radius, var(--cp-radius));
-  border: var(--cp-page-border-width, 0px) solid
-    var(--cp-page-border-color, transparent);
+  border: var(--cp-page-border-width) solid var(--cp-page-border-color);
+  border-radius: var(--cp-page-border-radius);
   box-shadow: var(--cp-shadow);
 }
 .hero {
