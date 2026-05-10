@@ -6,12 +6,22 @@ import {
   type NormalizedGeneratedTemplateSection,
 } from '~/utils/resumeGeneratedTemplate'
 
+export type GeneratedCvSectionTitleStyle =
+  | 'classic'
+  | 'pill-filled'
+  | 'pill-outline'
+  | 'icon-bar'
+  | 'ribbon'
+  | 'hexagon-icon'
+  | 'tab'
+
 export type GeneratedCvTemplateRuntimeSection =
   NormalizedGeneratedTemplateSection & {
     icon?: string
     iconAlternatives: string[]
     form: string
     column: GeneratedResumeTemplateColumn
+    titleStyle: GeneratedCvSectionTitleStyle
   }
 
 export type GeneratedCvTemplateRuntimeOptions = {
@@ -107,6 +117,21 @@ function normalizeColumn(value: unknown): GeneratedResumeTemplateColumn {
   return value === 'half' ? 'half' : 'full'
 }
 
+function normalizeTitleStyle(value: unknown): GeneratedCvSectionTitleStyle {
+  const allowed = new Set([
+    'classic',
+    'pill-filled',
+    'pill-outline',
+    'icon-bar',
+    'ribbon',
+    'hexagon-icon',
+    'tab',
+  ])
+  return typeof value === 'string' && allowed.has(value)
+    ? (value as GeneratedCvSectionTitleStyle)
+    : 'classic'
+}
+
 function isAsideZone(zone: NormalizedGeneratedTemplateSection['zone']) {
   return zone === 'aside' || zone === 'aside-left' || zone === 'aside-right'
 }
@@ -147,6 +172,7 @@ export function useGeneratedCvTemplateRuntime(
             section.form || 'classic',
           ),
           column: normalizeColumn(section.column ?? config.column),
+          titleStyle: normalizeTitleStyle(config.titleStyle),
         }
       },
     )
@@ -243,6 +269,11 @@ export function useGeneratedCvTemplateRuntime(
     return sectionByKey.value[key]?.column || 'full'
   }
 
+  function sectionTitleStyle(sectionKey: string) {
+    const key = normalizeSectionKey(sectionKey)
+    return sectionByKey.value[key]?.titleStyle || 'classic'
+  }
+
   function sectionOrder(sectionKey: string) {
     const key = normalizeSectionKey(sectionKey)
     return sectionByKey.value[key]?.order ?? Number.MAX_SAFE_INTEGER
@@ -260,6 +291,7 @@ export function useGeneratedCvTemplateRuntime(
     sectionIcon,
     sectionForm,
     sectionColumn,
+    sectionTitleStyle,
     sectionOrder,
     templateDesign,
   }
