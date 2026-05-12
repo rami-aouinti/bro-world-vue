@@ -218,13 +218,14 @@ const titleStyleIcon = computed(
   position: absolute;
   top: 4px;
   right: 4px;
-  z-index: 120;
+  z-index: 2600;
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
   gap: 4px;
   width: max-content;
-  max-width: calc(100% - 8px);
+  max-width: none;
+  flex-wrap: nowrap;
   padding: 4px;
   opacity: 0;
   pointer-events: none;
