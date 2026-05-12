@@ -350,16 +350,6 @@ const templateContentSections = computed(() =>
 const templateMainSections = computed(() =>
   allSections.value.map((section) => section.key),
 )
-const templateFullContentSections = computed(() =>
-  contentSections.value
-    .filter((section) => section.column !== 'half')
-    .map((section) => section.key),
-)
-const templateHalfContentSections = computed(() =>
-  contentSections.value
-    .filter((section) => section.column === 'half')
-    .map((section) => section.key),
-)
 const templateAsideSections = computed(() => {
   const layout = String(activeTemplate.value?.layout || '')
   if (layout.includes('left'))
@@ -374,23 +364,6 @@ const templateHeaderSections = computed(() =>
 const templateIdentitySections = computed(() =>
   identitySections.value.map((section) => section.key),
 )
-const templateMainTwoSideSections = computed(() => [
-  ...templateHalfContentSections.value,
-  ...templateAsideSections.value,
-])
-const templateMainTwoLeftSections = computed(() =>
-  templateMainTwoSideSections.value.filter((_, index) => index % 2 === 0),
-)
-const templateMainTwoRightSections = computed(() =>
-  templateMainTwoSideSections.value.filter((_, index) => index % 2 === 1),
-)
-const normalizedStructure = computed(() => {
-  const structure = String(activeTemplate.value?.structure || '')
-  if (structure.startsWith('structure-')) return structure
-  const layout = String(activeTemplate.value?.layout || '')
-  return layout === 'no-aside-split' ? 'structure-2' : 'structure-1'
-})
-
 const isMainStructureLayout = computed(() =>
   isMainGeneratedCvLayout(String(activeTemplate.value?.layout || '')),
 )
@@ -399,25 +372,12 @@ const isSideContentLayout = computed(() =>
   isSideGeneratedCvLayout(String(activeTemplate.value?.layout || '')),
 )
 
-type SectionOrderKey =
-  | 'asideOne'
-  | 'asideTwo'
-  | 'contentBase'
-  | 'contentStructure2'
-  | 'mainOne'
-  | 'mainTwoTop'
-  | 'mainTwoLeft'
-  | 'mainTwoRight'
+type SectionOrderKey = 'asideOne' | 'contentBase' | 'mainOne'
 
 const sectionOrders = reactive<Record<SectionOrderKey, string[]>>({
   asideOne: [],
-  asideTwo: [],
   contentBase: [],
-  contentStructure2: [],
   mainOne: [],
-  mainTwoTop: [],
-  mainTwoLeft: [],
-  mainTwoRight: [],
 })
 const orderMap = sectionOrders
 const activeSectionToolbarKey = ref<string | null>(null)
@@ -429,13 +389,8 @@ function sectionToolbarKey(orderKey: SectionOrderKey, section: string) {
 const templateSectionFallbacks = computed<Record<SectionOrderKey, string[]>>(
   () => ({
     asideOne: [...templateAsideSections.value],
-    asideTwo: [...templateAsideSections.value],
     contentBase: [...templateContentSections.value],
-    contentStructure2: [...templateContentSections.value],
     mainOne: [...templateMainSections.value],
-    mainTwoTop: [...templateFullContentSections.value],
-    mainTwoLeft: [...templateMainTwoLeftSections.value],
-    mainTwoRight: [...templateMainTwoRightSections.value],
   }),
 )
 
@@ -494,25 +449,10 @@ function visibleOrderedSections(
 const visibleAsideOneSections = computed(() =>
   visibleOrderedSections('asideOne', 'asideOne'),
 )
-const visibleAsideTwoSections = computed(() =>
-  visibleOrderedSections('asideTwo', 'asideTwo'),
-)
 const visibleContentBaseSections = computed(() =>
   visibleOrderedSections('contentBase'),
 )
-const visibleContentStructure2Sections = computed(() =>
-  visibleOrderedSections('contentStructure2'),
-)
 const visibleMainOneSections = computed(() => visibleOrderedSections('mainOne'))
-const visibleMainTwoTopSections = computed(() =>
-  visibleOrderedSections('mainTwoTop'),
-)
-const visibleMainTwoLeftSections = computed(() =>
-  visibleOrderedSections('mainTwoLeft'),
-)
-const visibleMainTwoRightSections = computed(() =>
-  visibleOrderedSections('mainTwoRight'),
-)
 
 const CV_PREVIEW_PDF_PAGE_HEIGHT = 1100
 const CV_PREVIEW_PAGE_WIDTH = 794
@@ -735,12 +675,9 @@ const addSectionOrder = reactive<{
   after: true,
 })
 const addSectionOrderZoneOptions = [
-  { title: 'Main one', value: 'mainOne' },
-  { title: 'Main two top', value: 'mainTwoTop' },
-  { title: 'Main two left', value: 'mainTwoLeft' },
-  { title: 'Main two right', value: 'mainTwoRight' },
-  { title: 'Aside one', value: 'asideOne' },
-  { title: 'Aside two', value: 'asideTwo' },
+  { title: 'Main', value: 'mainOne' },
+  { title: 'Content', value: 'contentBase' },
+  { title: 'Aside', value: 'asideOne' },
 ]
 const addSectionVariantOptions = [
   'classic',
@@ -2944,9 +2881,7 @@ watch(
           </template>
           <template #aside>
             <div
-              v-if="
-                isSideContentLayout && normalizedStructure === 'structure-1'
-              "
+              v-if="isSideContentLayout"
               :class="[
                 'cv-aside-sections',
                 {
@@ -3041,113 +2976,10 @@ watch(
                 />
               </div>
             </div>
-            <div
-              v-else-if="
-                isSideContentLayout && normalizedStructure === 'structure-2'
-              "
-              :class="[
-                'cv-aside-sections',
-                {
-                  'cv-aside-sections--full': [
-                    'aside-full-left',
-                    'aside-full-right',
-                  ].includes(String(activeTemplate?.layout || '')),
-                },
-              ]"
-            >
-              <div
-                v-for="section in visibleAsideTwoSections"
-                :key="`aside-s2-${section}`"
-                :class="['cv-aside-section-item']"
-                :style="sectionOffsetStyle('asideTwo', section)"
-                draggable="true"
-                @mouseenter="
-                  activeSectionToolbarKey = sectionToolbarKey(
-                    'asideTwo',
-                    section,
-                  )
-                "
-                @mouseleave="activeSectionToolbarKey = null"
-                @focusin="
-                  activeSectionToolbarKey = sectionToolbarKey(
-                    'asideTwo',
-                    section,
-                  )
-                "
-                @focusout="activeSectionToolbarKey = null"
-                @dragstart="onSectionDragStart('asideTwo', section)"
-                @dragover.prevent
-                @drop="onSectionDrop('asideTwo', section)"
-                @dragend="onSectionDragEnd"
-              >
-                <CvEditableSectionBlock
-                  :section="section"
-                  :section-key="toSectionKey(section)"
-                  :title="sectionDisplayTitle(section)"
-                  :icon="sectionIcon(toSectionKey(section))"
-                  :icon-options="getSectionIconOptions(toSectionKey(section))"
-                  :variant="
-                    effectiveSectionType(
-                      toSectionKey(section),
-                      sectionType(toSectionKey(section) as any),
-                    )
-                  "
-                  :variant-options="
-                    getSectionVariantOptions(toSectionKey(section))
-                  "
-                  :column="effectiveSectionColumn(toSectionKey(section))"
-                  :column-icon="sectionColumnIcon(toSectionKey(section))"
-                  :items="getEditableSectionItems(section)"
-                  :title-style="
-                    effectiveSectionTitleStyle(toSectionKey(section))
-                  "
-                  :content-style="sectionContentStyle(toSectionKey(section))"
-                  :date-style="sectionDateStyle(toSectionKey(section))"
-                  :level-style="sectionLevelStyle(toSectionKey(section))"
-                  :hobby-style="sectionHobbyStyle(toSectionKey(section))"
-                  :toolbar-active="
-                    activeSectionToolbarKey ===
-                    sectionToolbarKey('asideTwo', section)
-                  "
-                  @activate-toolbar="
-                    activeSectionToolbarKey = sectionToolbarKey(
-                      'asideTwo',
-                      section,
-                    )
-                  "
-                  @deactivate-toolbar="activeSectionToolbarKey = null"
-                  @update:title="updateSectionDisplayTitle(section, $event)"
-                  @update:icon="setSectionIcon(section, $event)"
-                  @update:variant="
-                    sectionTypeOverrides[toSectionKey(section)] = $event
-                  "
-                  @update:column="
-                    updateSectionColumn(toSectionKey(section), $event)
-                  "
-                  @update:title-style="
-                    updateSectionTitleStyle(toSectionKey(section), $event)
-                  "
-                  @add-item="addSectionItem(toSectionKey(section))"
-                  @hide="hideSectionFromZone('asideTwo', toSectionKey(section))"
-                  @move-up="shiftSectionByLine('asideTwo', section, 'up')"
-                  @move-down="shiftSectionByLine('asideTwo', section, 'down')"
-                  @drag-move="moveSection('asideTwo', section, 'down')"
-                  @update-item="
-                    (index, value) =>
-                      updateEditableSectionItem(section, index, value)
-                  "
-                />
-              </div>
-            </div>
           </template>
 
           <template #content>
-            <div
-              v-if="
-                isSideContentLayout && normalizedStructure === 'structure-1'
-              "
-              class="cv-sections-list"
-            >
+            <div v-if="isSideContentLayout" class="cv-sections-list">
               <div
                 v-for="section in visibleContentBaseSections"
                 :key="`content-base-${section}`"
@@ -3246,118 +3078,7 @@ watch(
                 />
               </div>
             </div>
-            <div
-              v-else-if="
-                isSideContentLayout && normalizedStructure === 'structure-2'
-              "
-              class="cv-sections-structure-2"
-            >
-              <div
-                v-for="section in visibleContentStructure2Sections"
-                :key="`content-s2-${section}`"
-                :class="[
-                  'cv-section-row',
-                  contentColumnClass(toSectionKey(section)),
-                  sectionPageSplitClass('contentStructure2', section),
-                ]"
-                :data-cv-section-key="
-                  sectionPageBreakKey('contentStructure2', section)
-                "
-                :style="[
-                  sectionOffsetStyle('contentStructure2', section),
-                  sectionPageBreakStyle(
-                    sectionPageBreakKey('contentStructure2', section),
-                  ),
-                ]"
-                draggable="true"
-                @mouseenter="
-                  activeSectionToolbarKey = sectionToolbarKey(
-                    'contentStructure2',
-                    section,
-                  )
-                "
-                @mouseleave="activeSectionToolbarKey = null"
-                @focusin="
-                  activeSectionToolbarKey = sectionToolbarKey(
-                    'contentStructure2',
-                    section,
-                  )
-                "
-                @focusout="activeSectionToolbarKey = null"
-                @dragstart="onSectionDragStart('contentStructure2', section)"
-                @dragover.prevent
-                @drop="onSectionDrop('contentStructure2', section)"
-                @dragend="onSectionDragEnd"
-              >
-                <CvEditableSectionBlock
-                  :section="section"
-                  :section-key="toSectionKey(section)"
-                  :title="sectionDisplayTitle(section)"
-                  :icon="sectionIcon(toSectionKey(section))"
-                  :icon-options="getSectionIconOptions(toSectionKey(section))"
-                  :variant="
-                    effectiveSectionType(
-                      toSectionKey(section),
-                      sectionType(toSectionKey(section) as any),
-                    )
-                  "
-                  :variant-options="
-                    getSectionVariantOptions(toSectionKey(section))
-                  "
-                  :column="effectiveSectionColumn(toSectionKey(section))"
-                  :column-icon="sectionColumnIcon(toSectionKey(section))"
-                  :items="getEditableSectionItems(section)"
-                  :title-style="
-                    effectiveSectionTitleStyle(toSectionKey(section))
-                  "
-                  :content-style="sectionContentStyle(toSectionKey(section))"
-                  :date-style="sectionDateStyle(toSectionKey(section))"
-                  :level-style="sectionLevelStyle(toSectionKey(section))"
-                  :hobby-style="sectionHobbyStyle(toSectionKey(section))"
-                  :toolbar-active="
-                    activeSectionToolbarKey ===
-                    sectionToolbarKey('contentStructure2', section)
-                  "
-                  @activate-toolbar="
-                    activeSectionToolbarKey = sectionToolbarKey(
-                      'contentStructure2',
-                      section,
-                    )
-                  "
-                  @deactivate-toolbar="activeSectionToolbarKey = null"
-                  @update:title="updateSectionDisplayTitle(section, $event)"
-                  @update:icon="setSectionIcon(section, $event)"
-                  @update:variant="
-                    sectionTypeOverrides[toSectionKey(section)] = $event
-                  "
-                  @update:column="
-                    updateSectionColumn(toSectionKey(section), $event)
-                  "
-                  @update:title-style="
-                    updateSectionTitleStyle(toSectionKey(section), $event)
-                  "
-                  @add-item="addSectionItem(toSectionKey(section))"
-                  @hide="hideSection(toSectionKey(section))"
-                  @move-up="
-                    shiftSectionByLine('contentStructure2', section, 'up')
-                  "
-                  @move-down="
-                    shiftSectionByLine('contentStructure2', section, 'down')
-                  "
-                  @drag-move="moveSection('contentStructure2', section, 'down')"
-                  @update-item="
-                    (index, value) =>
-                      updateEditableSectionItem(section, index, value)
-                  "
-                />
-              </div>
-            </div>
-            <div
-              v-else-if="
-                isMainStructureLayout && normalizedStructure === 'structure-1'
-              "
-              class="cv-sections-list"
-            >
+            <div v-else-if="isMainStructureLayout" class="cv-sections-list">
               <div
                 v-for="section in visibleMainOneSections"
                 :key="`s1-${section}`"
@@ -3451,320 +3172,6 @@ watch(
                   "
                 />
               </div>
-            </div>
-            <div
-              v-else-if="
-                isMainStructureLayout && normalizedStructure === 'structure-2'
-              "
-              class="cv-sections-structure-2"
-            >
-              <div
-                v-for="section in visibleMainTwoTopSections"
-                :key="`s2-top-${section}`"
-                :class="[
-                  'cv-section-row',
-                  contentColumnClass(toSectionKey(section)),
-                  sectionPageSplitClass('mainTwoTop', section),
-                ]"
-                :data-cv-section-key="
-                  sectionPageBreakKey('mainTwoTop', section)
-                "
-                :style="[
-                  sectionOffsetStyle('mainTwoTop', section),
-                  sectionPageBreakStyle(
-                    sectionPageBreakKey('mainTwoTop', section),
-                  ),
-                ]"
-                draggable="true"
-                @mouseenter="
-                  activeSectionToolbarKey = sectionToolbarKey(
-                    'mainTwoTop',
-                    section,
-                  )
-                "
-                @mouseleave="activeSectionToolbarKey = null"
-                @focusin="
-                  activeSectionToolbarKey = sectionToolbarKey(
-                    'mainTwoTop',
-                    section,
-                  )
-                "
-                @focusout="activeSectionToolbarKey = null"
-                @dragstart="onSectionDragStart('mainTwoTop', section)"
-                @dragover.prevent
-                @drop="onSectionDrop('mainTwoTop', section)"
-                @dragend="onSectionDragEnd"
-              >
-                <CvEditableSectionBlock
-                  :section="section"
-                  :section-key="toSectionKey(section)"
-                  :title="sectionDisplayTitle(section)"
-                  :icon="sectionIcon(toSectionKey(section))"
-                  :icon-options="getSectionIconOptions(toSectionKey(section))"
-                  :variant="
-                    effectiveSectionType(
-                      toSectionKey(section),
-                      sectionType(toSectionKey(section) as any),
-                    )
-                  "
-                  :variant-options="
-                    getSectionVariantOptions(toSectionKey(section))
-                  "
-                  :column="effectiveSectionColumn(toSectionKey(section))"
-                  :column-icon="sectionColumnIcon(toSectionKey(section))"
-                  :items="getEditableSectionItems(section)"
-                  :title-style="
-                    effectiveSectionTitleStyle(toSectionKey(section))
-                  "
-                  :content-style="sectionContentStyle(toSectionKey(section))"
-                  :date-style="sectionDateStyle(toSectionKey(section))"
-                  :level-style="sectionLevelStyle(toSectionKey(section))"
-                  :hobby-style="sectionHobbyStyle(toSectionKey(section))"
-                  :toolbar-active="
-                    activeSectionToolbarKey ===
-                    sectionToolbarKey('mainTwoTop', section)
-                  "
-                  @activate-toolbar="
-                    activeSectionToolbarKey = sectionToolbarKey(
-                      'mainTwoTop',
-                      section,
-                    )
-                  "
-                  @deactivate-toolbar="activeSectionToolbarKey = null"
-                  @update:title="updateSectionDisplayTitle(section, $event)"
-                  @update:icon="setSectionIcon(section, $event)"
-                  @update:variant="
-                    sectionTypeOverrides[toSectionKey(section)] = $event
-                  "
-                  @update:column="
-                    updateSectionColumn(toSectionKey(section), $event)
-                  "
-                  @update:title-style="
-                    updateSectionTitleStyle(toSectionKey(section), $event)
-                  "
-                  @add-item="addSectionItem(toSectionKey(section))"
-                  @hide="hideSection(toSectionKey(section))"
-                  @move-up="shiftSectionByLine('mainTwoTop', section, 'up')"
-                  @move-down="shiftSectionByLine('mainTwoTop', section, 'down')"
-                  @drag-move="moveSection('mainTwoTop', section, 'down')"
-                  @update-item="
-                    (index, value) =>
-                      updateEditableSectionItem(section, index, value)
-                  "
-                />
-              </div>
-              <v-row class="mt-1" dense>
-                <v-col cols="6">
-                  <div
-                    v-for="section in visibleMainTwoLeftSections"
-                    :key="`s2-left-${section}`"
-                    :class="[
-                      'cv-section-row',
-                      contentColumnClass(toSectionKey(section)),
-                      sectionPageSplitClass('mainTwoLeft', section),
-                    ]"
-                    :data-cv-section-key="
-                      sectionPageBreakKey('mainTwoLeft', section)
-                    "
-                    :style="[
-                      sectionOffsetStyle('mainTwoLeft', section),
-                      sectionPageBreakStyle(
-                        sectionPageBreakKey('mainTwoLeft', section),
-                      ),
-                    ]"
-                    draggable="true"
-                    @mouseenter="
-                      activeSectionToolbarKey = sectionToolbarKey(
-                        'mainTwoLeft',
-                        section,
-                      )
-                    "
-                    @mouseleave="activeSectionToolbarKey = null"
-                    @focusin="
-                      activeSectionToolbarKey = sectionToolbarKey(
-                        'mainTwoLeft',
-                        section,
-                      )
-                    "
-                    @focusout="activeSectionToolbarKey = null"
-                    @dragstart="onSectionDragStart('mainTwoLeft', section)"
-                    @dragover.prevent
-                    @drop="onSectionDrop('mainTwoLeft', section)"
-                    @dragend="onSectionDragEnd"
-                  >
-                    <CvEditableSectionBlock
-                      :section="section"
-                      :section-key="toSectionKey(section)"
-                      :title="sectionDisplayTitle(section)"
-                      :icon="sectionIcon(toSectionKey(section))"
-                      :icon-options="
-                        getSectionIconOptions(toSectionKey(section))
-                      "
-                      :variant="
-                        effectiveSectionType(
-                          toSectionKey(section),
-                          sectionType(toSectionKey(section) as any),
-                        )
-                      "
-                      :variant-options="
-                        getSectionVariantOptions(toSectionKey(section))
-                      "
-                      :column="effectiveSectionColumn(toSectionKey(section))"
-                      :column-icon="sectionColumnIcon(toSectionKey(section))"
-                      :items="getEditableSectionItems(section)"
-                      :title-style="
-                        effectiveSectionTitleStyle(toSectionKey(section))
-                      "
-                      :content-style="
-                        sectionContentStyle(toSectionKey(section))
-                      "
-                      :date-style="sectionDateStyle(toSectionKey(section))"
-                      :level-style="sectionLevelStyle(toSectionKey(section))"
-                      :hobby-style="sectionHobbyStyle(toSectionKey(section))"
-                      :toolbar-active="
-                        activeSectionToolbarKey ===
-                        sectionToolbarKey('mainTwoLeft', section)
-                      "
-                      @activate-toolbar="
-                        activeSectionToolbarKey = sectionToolbarKey(
-                          'mainTwoLeft',
-                          section,
-                        )
-                      "
-                      @deactivate-toolbar="activeSectionToolbarKey = null"
-                      @update:title="updateSectionDisplayTitle(section, $event)"
-                      @update:icon="setSectionIcon(section, $event)"
-                      @update:variant="
-                        sectionTypeOverrides[toSectionKey(section)] = $event
-                      "
-                      @update:column="
-                        updateSectionColumn(toSectionKey(section), $event)
-                      "
-                      @update:title-style="
-                        updateSectionTitleStyle(toSectionKey(section), $event)
-                      "
-                      @add-item="addSectionItem(toSectionKey(section))"
-                      @hide="hideSection(toSectionKey(section))"
-                      @move-up="
-                        shiftSectionByLine('mainTwoLeft', section, 'up')
-                      "
-                      @move-down="
-                        shiftSectionByLine('mainTwoLeft', section, 'down')
-                      "
-                      @drag-move="moveSection('mainTwoLeft', section, 'down')"
-                      @update-item="
-                        (index, value) =>
-                          updateEditableSectionItem(section, index, value)
-                      "
-                    />
-                  </div>
-                </v-col>
-                <v-col cols="6">
-                  <div
-                    v-for="section in visibleMainTwoRightSections"
-                    :key="`s2-right-${section}`"
-                    :class="[
-                      'cv-section-row',
-                      contentColumnClass(toSectionKey(section)),
-                      sectionPageSplitClass('mainTwoRight', section),
-                    ]"
-                    :data-cv-section-key="
-                      sectionPageBreakKey('mainTwoRight', section)
-                    "
-                    :style="[
-                      sectionOffsetStyle('mainTwoRight', section),
-                      sectionPageBreakStyle(
-                        sectionPageBreakKey('mainTwoRight', section),
-                      ),
-                    ]"
-                    draggable="true"
-                    @mouseenter="
-                      activeSectionToolbarKey = sectionToolbarKey(
-                        'mainTwoRight',
-                        section,
-                      )
-                    "
-                    @mouseleave="activeSectionToolbarKey = null"
-                    @focusin="
-                      activeSectionToolbarKey = sectionToolbarKey(
-                        'mainTwoRight',
-                        section,
-                      )
-                    "
-                    @focusout="activeSectionToolbarKey = null"
-                    @dragstart="onSectionDragStart('mainTwoRight', section)"
-                    @dragover.prevent
-                    @drop="onSectionDrop('mainTwoRight', section)"
-                    @dragend="onSectionDragEnd"
-                  >
-                    <CvEditableSectionBlock
-                      :section="section"
-                      :section-key="toSectionKey(section)"
-                      :title="sectionDisplayTitle(section)"
-                      :icon="sectionIcon(toSectionKey(section))"
-                      :icon-options="
-                        getSectionIconOptions(toSectionKey(section))
-                      "
-                      :variant="
-                        effectiveSectionType(
-                          toSectionKey(section),
-                          sectionType(toSectionKey(section) as any),
-                        )
-                      "
-                      :variant-options="
-                        getSectionVariantOptions(toSectionKey(section))
-                      "
-                      :column="effectiveSectionColumn(toSectionKey(section))"
-                      :column-icon="sectionColumnIcon(toSectionKey(section))"
-                      :items="getEditableSectionItems(section)"
-                      :title-style="
-                        effectiveSectionTitleStyle(toSectionKey(section))
-                      "
-                      :content-style="
-                        sectionContentStyle(toSectionKey(section))
-                      "
-                      :date-style="sectionDateStyle(toSectionKey(section))"
-                      :level-style="sectionLevelStyle(toSectionKey(section))"
-                      :hobby-style="sectionHobbyStyle(toSectionKey(section))"
-                      :toolbar-active="
-                        activeSectionToolbarKey ===
-                        sectionToolbarKey('mainTwoRight', section)
-                      "
-                      @activate-toolbar="
-                        activeSectionToolbarKey = sectionToolbarKey(
-                          'mainTwoRight',
-                          section,
-                        )
-                      "
-                      @deactivate-toolbar="activeSectionToolbarKey = null"
-                      @update:title="updateSectionDisplayTitle(section, $event)"
-                      @update:icon="setSectionIcon(section, $event)"
-                      @update:variant="
-                        sectionTypeOverrides[toSectionKey(section)] = $event
-                      "
-                      @update:column="
-                        updateSectionColumn(toSectionKey(section), $event)
-                      "
-                      @update:title-style="
-                        updateSectionTitleStyle(toSectionKey(section), $event)
-                      "
-                      @add-item="addSectionItem(toSectionKey(section))"
-                      @hide="hideSection(toSectionKey(section))"
-                      @move-up="
-                        shiftSectionByLine('mainTwoRight', section, 'up')
-                      "
-                      @move-down="
-                        shiftSectionByLine('mainTwoRight', section, 'down')
-                      "
-                      @drag-move="moveSection('mainTwoRight', section, 'down')"
-                      @update-item="
-                        (index, value) =>
-                          updateEditableSectionItem(section, index, value)
-                      "
-                    />
-                  </div>
-                </v-col>
-              </v-row>
             </div>
             <div v-else class="cv-sections-list cv-sections-list--fallback">
               <div
@@ -4438,8 +3845,7 @@ watch(
   padding: 24px;
 }
 
-.cv-sections-list,
-.cv-sections-structure-2 {
+.cv-sections-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px 12px;
