@@ -10627,5 +10627,1285 @@
       "image": "/img/team-4.jpg",
       "description": "Iris Morgan brings a refined executive profile with measurable impact, cross-functional leadership, and premium presentation for high-stakes applications."
     }
+  },
+  {
+    "id": "cpage-053",
+    "name": "Prism Edge Cover",
+    "version": "1.2.00",
+    "layout": "split",
+    "structure": "cover-structure-1",
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
+    "design": {
+      "theme": {
+        "palette": {
+          "primary": "#0EA5E9",
+          "secondary": "#A78BFA",
+          "text": "#0F172A",
+          "muted": "#64748B",
+          "pageBackground": "#F0FDFF"
+        },
+        "density": "airy",
+        "textStyle": "sans",
+        "pageBorder": {
+          "enabled": true,
+          "width": 4,
+          "color": "#0EA5E9",
+          "radius": 22,
+          "style": "prism-edge-frame"
+        },
+        "primary": "#0EA5E9",
+        "accent": "#A78BFA",
+        "background": "#F0FDFF",
+        "text": "#0F172A"
+      },
+      "borderStyle": {
+        "id": "prism-edge-frame",
+        "className": "cover-border--prism-edge-frame",
+        "accentPlacement": "prism-edge"
+      },
+      "decor": {
+        "headerStyle": "split-band",
+        "footerStyle": "accent-line",
+        "divider": "gradient",
+        "iconStyle": "rounded",
+        "objects": [
+          {
+            "type": "ring",
+            "x": "84%",
+            "y": "7%",
+            "size": "168",
+            "opacity": 0.1,
+            "color": "#0EA5E9"
+          },
+          {
+            "type": "bar",
+            "x": "10%",
+            "y": "91%",
+            "size": "112",
+            "opacity": 0.12,
+            "color": "#A78BFA"
+          }
+        ],
+        "borderStyle": "solid",
+        "cornerRadius": 18
+      },
+      "layoutOptions": {
+        "sectionSpacing": "wide",
+        "titleCase": "upper",
+        "contentWidth": "normal",
+        "photoShape": "circle",
+        "borderRadius": 22,
+        "asideWidth": 34,
+        "gutter": 22
+      },
+      "textStyles": {
+        "fullName": {
+          "kind": "display",
+          "fontFamily": "Montserrat",
+          "fallback": "serif",
+          "fontWeight": 800,
+          "letterSpacing": "-0.04em",
+          "lineHeight": 0.98
+        },
+        "role": {
+          "kind": "subtitle",
+          "fontFamily": "Open Sans",
+          "fallback": "sans",
+          "fontWeight": 600,
+          "letterSpacing": "0.025em",
+          "lineHeight": 1.18
+        },
+        "heading": {
+          "kind": "heading",
+          "fontFamily": "Montserrat",
+          "fallback": "serif",
+          "fontWeight": 700,
+          "letterSpacing": "-0.02em",
+          "lineHeight": 1.12
+        },
+        "summary": {
+          "kind": "body",
+          "fontFamily": "Open Sans",
+          "fallback": "sans",
+          "fontWeight": 400,
+          "letterSpacing": "0em",
+          "lineHeight": 1.55
+        },
+        "email": {
+          "kind": "meta",
+          "fontFamily": "Open Sans",
+          "fallback": "sans",
+          "fontWeight": 500,
+          "letterSpacing": "0.01em",
+          "lineHeight": 1.35
+        },
+        "phone": {
+          "kind": "meta",
+          "fontFamily": "Open Sans",
+          "fallback": "sans",
+          "fontWeight": 500,
+          "letterSpacing": "0.01em",
+          "lineHeight": 1.35
+        }
+      },
+      "typography": {
+        "provider": "google-fonts",
+        "googleFonts": ["Montserrat", "Open Sans"],
+        "scale": "compact",
+        "fonts": {
+          "display": "Montserrat",
+          "body": "Open Sans"
+        }
+      },
+      "items": {
+        "fullName": {
+          "size": {
+            "min": 50,
+            "max": 80
+          },
+          "styles": ["regular", "medium", "semibold", "bold"],
+          "colors": ["#0F172A", "#64748B", "#0EA5E9"]
+        },
+        "role": {
+          "size": {
+            "min": 25,
+            "max": 40
+          },
+          "styles": ["regular", "medium", "semibold", "bold"],
+          "colors": ["#0F172A", "#64748B", "#0EA5E9"]
+        },
+        "heading": {
+          "size": {
+            "min": 25,
+            "max": 40
+          },
+          "styles": ["regular", "medium", "semibold", "bold"],
+          "colors": ["#0F172A", "#64748B", "#0EA5E9"]
+        },
+        "summary": {
+          "size": {
+            "min": 20,
+            "max": 30
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#0F172A", "#64748B", "#0EA5E9"]
+        },
+        "email": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#0F172A", "#64748B", "#0EA5E9"]
+        },
+        "phone": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#0F172A", "#64748B", "#0EA5E9"]
+        },
+        "date": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#0F172A", "#64748B", "#0EA5E9"]
+        },
+        "location": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#0F172A", "#64748B", "#0EA5E9"]
+        }
+      },
+      "designTokens": {
+        "borderRadius": "lg",
+        "shadowDepth": "medium",
+        "gradientStyle": "linear-vivid",
+        "patternOverlay": "prism",
+        "typographyScale": "balanced",
+        "primary": "#0EA5E9",
+        "secondary": "#A78BFA",
+        "surface": "#F0FDFF",
+        "text": "#0F172A"
+      },
+      "designConfig": {
+        "barRadius": {
+          "min": 8,
+          "max": 30
+        },
+        "barLayout": ["single"],
+        "barWidth": {
+          "min": 8,
+          "max": 18
+        },
+        "secondaryBarWidth": {
+          "min": 3,
+          "max": 12
+        },
+        "photoType": "circle",
+        "photoSize": 136
+      },
+      "hero": {
+        "alignment": "left",
+        "showPhoto": true,
+        "accent": "shape",
+        "accentIntensity": "bold",
+        "photoPosition": "right"
+      },
+      "sectionDividerStyle": "gradient",
+      "barLayout": ["single"]
+    },
+    "fakeData": {
+      "fullName": "Maya Laurent",
+      "role": "Brand Experience Lead",
+      "image": "/img/team-1.jpg",
+      "description": "Maya Laurent presents premium brand systems, campaign storytelling, and polished stakeholder presentations with a premium border system designed for standout applications."
+    }
+  },
+  {
+    "id": "cpage-054",
+    "name": "Champagne Filigree Cover",
+    "version": "1.2.00",
+    "layout": "classic",
+    "structure": "cover-structure-2",
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
+    "design": {
+      "theme": {
+        "palette": {
+          "primary": "#B45309",
+          "secondary": "#FDE68A",
+          "text": "#3F2E1D",
+          "muted": "#78716C",
+          "pageBackground": "#FFFBEB"
+        },
+        "density": "compact",
+        "textStyle": "serif",
+        "pageBorder": {
+          "enabled": true,
+          "width": 3,
+          "color": "#B45309",
+          "radius": 12,
+          "style": "champagne-corner-filigree"
+        },
+        "primary": "#B45309",
+        "accent": "#FDE68A",
+        "background": "#FFFBEB",
+        "text": "#3F2E1D"
+      },
+      "borderStyle": {
+        "id": "champagne-corner-filigree",
+        "className": "cover-border--champagne-corner-filigree",
+        "accentPlacement": "corner-filigree"
+      },
+      "decor": {
+        "headerStyle": "minimal-line",
+        "footerStyle": "signature",
+        "divider": "hairline",
+        "iconStyle": "line",
+        "objects": [
+          {
+            "type": "ring",
+            "x": "12%",
+            "y": "9%",
+            "size": "132",
+            "opacity": 0.08,
+            "color": "#B45309"
+          },
+          {
+            "type": "bar",
+            "x": "82%",
+            "y": "88%",
+            "size": "86",
+            "opacity": 0.1,
+            "color": "#FDE68A"
+          }
+        ],
+        "borderStyle": "double",
+        "cornerRadius": 22
+      },
+      "layoutOptions": {
+        "sectionSpacing": "normal",
+        "titleCase": "title",
+        "contentWidth": "narrow",
+        "photoShape": "rounded",
+        "borderRadius": 12,
+        "asideWidth": 30,
+        "gutter": 18
+      },
+      "textStyles": {
+        "fullName": {
+          "kind": "display",
+          "fontFamily": "Cormorant Garamond",
+          "fallback": "serif",
+          "fontWeight": 800,
+          "letterSpacing": "-0.04em",
+          "lineHeight": 0.98
+        },
+        "role": {
+          "kind": "subtitle",
+          "fontFamily": "Lato",
+          "fallback": "sans",
+          "fontWeight": 600,
+          "letterSpacing": "0.025em",
+          "lineHeight": 1.18
+        },
+        "heading": {
+          "kind": "heading",
+          "fontFamily": "Cormorant Garamond",
+          "fallback": "serif",
+          "fontWeight": 700,
+          "letterSpacing": "-0.02em",
+          "lineHeight": 1.12
+        },
+        "summary": {
+          "kind": "body",
+          "fontFamily": "Lato",
+          "fallback": "sans",
+          "fontWeight": 400,
+          "letterSpacing": "0em",
+          "lineHeight": 1.55
+        },
+        "email": {
+          "kind": "meta",
+          "fontFamily": "Lato",
+          "fallback": "sans",
+          "fontWeight": 500,
+          "letterSpacing": "0.01em",
+          "lineHeight": 1.35
+        },
+        "phone": {
+          "kind": "meta",
+          "fontFamily": "Lato",
+          "fallback": "sans",
+          "fontWeight": 500,
+          "letterSpacing": "0.01em",
+          "lineHeight": 1.35
+        }
+      },
+      "typography": {
+        "provider": "google-fonts",
+        "googleFonts": ["Cormorant Garamond", "Lato"],
+        "scale": "comfortable",
+        "fonts": {
+          "display": "Cormorant Garamond",
+          "body": "Lato"
+        }
+      },
+      "items": {
+        "fullName": {
+          "size": {
+            "min": 50,
+            "max": 80
+          },
+          "styles": ["regular", "medium", "semibold", "bold"],
+          "colors": ["#3F2E1D", "#78716C", "#B45309"]
+        },
+        "role": {
+          "size": {
+            "min": 25,
+            "max": 40
+          },
+          "styles": ["regular", "medium", "semibold", "bold"],
+          "colors": ["#3F2E1D", "#78716C", "#B45309"]
+        },
+        "heading": {
+          "size": {
+            "min": 25,
+            "max": 40
+          },
+          "styles": ["regular", "medium", "semibold", "bold"],
+          "colors": ["#3F2E1D", "#78716C", "#B45309"]
+        },
+        "summary": {
+          "size": {
+            "min": 20,
+            "max": 30
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#3F2E1D", "#78716C", "#B45309"]
+        },
+        "email": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#3F2E1D", "#78716C", "#B45309"]
+        },
+        "phone": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#3F2E1D", "#78716C", "#B45309"]
+        },
+        "date": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#3F2E1D", "#78716C", "#B45309"]
+        },
+        "location": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#3F2E1D", "#78716C", "#B45309"]
+        }
+      },
+      "designTokens": {
+        "borderRadius": "xl",
+        "shadowDepth": "strong",
+        "gradientStyle": "soft",
+        "patternOverlay": "filigree",
+        "typographyScale": "loose",
+        "primary": "#B45309",
+        "secondary": "#FDE68A",
+        "surface": "#FFFBEB",
+        "text": "#3F2E1D"
+      },
+      "designConfig": {
+        "barRadius": {
+          "min": 0,
+          "max": 30
+        },
+        "barLayout": ["double"],
+        "barWidth": {
+          "min": 6,
+          "max": 16
+        },
+        "photoType": "rounded",
+        "photoSize": 120,
+        "secondaryBarWidth": {
+          "min": 3,
+          "max": 12
+        }
+      },
+      "hero": {
+        "alignment": "center",
+        "showPhoto": false,
+        "accent": "line",
+        "accentIntensity": "subtle",
+        "photoPosition": "top"
+      },
+      "sectionDividerStyle": "hairline",
+      "barLayout": ["double"]
+    },
+    "fakeData": {
+      "fullName": "Noah Sinclair",
+      "role": "Finance Transformation Manager",
+      "image": "/img/team-2.jpg",
+      "description": "Noah Sinclair presents board-ready reporting, process optimization, and refined executive communication with a premium border system designed for standout applications."
+    }
+  },
+  {
+    "id": "cpage-055",
+    "name": "Editorial Ink Cover",
+    "version": "1.2.00",
+    "layout": "minimal",
+    "structure": "cover-structure-3",
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
+    "design": {
+      "theme": {
+        "palette": {
+          "primary": "#111827",
+          "secondary": "#9CA3AF",
+          "text": "#111827",
+          "muted": "#4B5563",
+          "pageBackground": "#F9FAFB"
+        },
+        "density": "compact",
+        "textStyle": "serif",
+        "pageBorder": {
+          "enabled": true,
+          "width": 4,
+          "color": "#111827",
+          "radius": 12,
+          "style": "editorial-ink-brackets"
+        },
+        "primary": "#111827",
+        "accent": "#9CA3AF",
+        "background": "#F9FAFB",
+        "text": "#111827"
+      },
+      "borderStyle": {
+        "id": "editorial-ink-brackets",
+        "className": "cover-border--editorial-ink-brackets",
+        "accentPlacement": "ink-brackets"
+      },
+      "decor": {
+        "headerStyle": "editorial",
+        "footerStyle": "block",
+        "divider": "bold",
+        "iconStyle": "square",
+        "objects": [
+          {
+            "type": "ring",
+            "x": "86%",
+            "y": "12%",
+            "size": "116",
+            "opacity": 0.05,
+            "color": "#111827"
+          },
+          {
+            "type": "bar",
+            "x": "14%",
+            "y": "92%",
+            "size": "124",
+            "opacity": 0.09,
+            "color": "#9CA3AF"
+          }
+        ],
+        "borderStyle": "solid",
+        "cornerRadius": 4
+      },
+      "layoutOptions": {
+        "sectionSpacing": "compact",
+        "titleCase": "upper",
+        "contentWidth": "normal",
+        "photoShape": "square",
+        "borderRadius": 12,
+        "asideWidth": 26,
+        "gutter": 16
+      },
+      "textStyles": {
+        "fullName": {
+          "kind": "display",
+          "fontFamily": "Bebas Neue",
+          "fallback": "serif",
+          "fontWeight": 800,
+          "letterSpacing": "-0.04em",
+          "lineHeight": 0.98
+        },
+        "role": {
+          "kind": "subtitle",
+          "fontFamily": "Roboto",
+          "fallback": "sans",
+          "fontWeight": 600,
+          "letterSpacing": "0.025em",
+          "lineHeight": 1.18
+        },
+        "heading": {
+          "kind": "heading",
+          "fontFamily": "Bebas Neue",
+          "fallback": "serif",
+          "fontWeight": 700,
+          "letterSpacing": "-0.02em",
+          "lineHeight": 1.12
+        },
+        "summary": {
+          "kind": "body",
+          "fontFamily": "Roboto",
+          "fallback": "sans",
+          "fontWeight": 400,
+          "letterSpacing": "0em",
+          "lineHeight": 1.55
+        },
+        "email": {
+          "kind": "meta",
+          "fontFamily": "Roboto",
+          "fallback": "sans",
+          "fontWeight": 500,
+          "letterSpacing": "0.01em",
+          "lineHeight": 1.35
+        },
+        "phone": {
+          "kind": "meta",
+          "fontFamily": "Roboto",
+          "fallback": "sans",
+          "fontWeight": 500,
+          "letterSpacing": "0.01em",
+          "lineHeight": 1.35
+        }
+      },
+      "typography": {
+        "provider": "google-fonts",
+        "googleFonts": ["Bebas Neue", "Roboto"],
+        "scale": "compact",
+        "fonts": {
+          "display": "Bebas Neue",
+          "body": "Roboto"
+        }
+      },
+      "items": {
+        "fullName": {
+          "size": {
+            "min": 50,
+            "max": 80
+          },
+          "styles": ["regular", "medium", "semibold", "bold"],
+          "colors": ["#111827", "#4B5563", "#111827"]
+        },
+        "role": {
+          "size": {
+            "min": 25,
+            "max": 40
+          },
+          "styles": ["regular", "medium", "semibold", "bold"],
+          "colors": ["#111827", "#4B5563", "#111827"]
+        },
+        "heading": {
+          "size": {
+            "min": 25,
+            "max": 40
+          },
+          "styles": ["regular", "medium", "semibold", "bold"],
+          "colors": ["#111827", "#4B5563", "#111827"]
+        },
+        "summary": {
+          "size": {
+            "min": 20,
+            "max": 30
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#111827", "#4B5563", "#111827"]
+        },
+        "email": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#111827", "#4B5563", "#111827"]
+        },
+        "phone": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#111827", "#4B5563", "#111827"]
+        },
+        "date": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#111827", "#4B5563", "#111827"]
+        },
+        "location": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#111827", "#4B5563", "#111827"]
+        }
+      },
+      "designTokens": {
+        "borderRadius": "sm",
+        "shadowDepth": "flat",
+        "gradientStyle": "solid",
+        "patternOverlay": "paper",
+        "typographyScale": "tight",
+        "primary": "#111827",
+        "secondary": "#9CA3AF",
+        "surface": "#F9FAFB",
+        "text": "#111827"
+      },
+      "designConfig": {
+        "barRadius": {
+          "min": 8,
+          "max": 30
+        },
+        "barLayout": ["single"],
+        "barWidth": {
+          "min": 8,
+          "max": 18
+        },
+        "secondaryBarWidth": {
+          "min": 3,
+          "max": 12
+        },
+        "photoType": "square",
+        "photoSize": 112
+      },
+      "hero": {
+        "alignment": "left",
+        "showPhoto": false,
+        "accent": "frame",
+        "accentIntensity": "strong",
+        "photoPosition": "left"
+      },
+      "sectionDividerStyle": "bold",
+      "barLayout": ["split"]
+    },
+    "fakeData": {
+      "fullName": "Elena Brooks",
+      "role": "Editorial Program Director",
+      "image": "/img/team-3.jpg",
+      "description": "Elena Brooks presents content governance, publication calendars, and high-trust narrative design with a premium border system designed for standout applications."
+    }
+  },
+  {
+    "id": "cpage-056",
+    "name": "Aurora Glass Cover",
+    "version": "1.2.00",
+    "layout": "timeline",
+    "structure": "cover-structure-1",
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
+    "design": {
+      "theme": {
+        "palette": {
+          "primary": "#7C3AED",
+          "secondary": "#22D3EE",
+          "text": "#1E1B4B",
+          "muted": "#64748B",
+          "pageBackground": "#F5F3FF"
+        },
+        "density": "airy",
+        "textStyle": "sans",
+        "pageBorder": {
+          "enabled": true,
+          "width": 3,
+          "color": "#7C3AED",
+          "radius": 22,
+          "style": "aurora-glass-panel"
+        },
+        "primary": "#7C3AED",
+        "accent": "#22D3EE",
+        "background": "#F5F3FF",
+        "text": "#1E1B4B"
+      },
+      "borderStyle": {
+        "id": "aurora-glass-panel",
+        "className": "cover-border--aurora-glass-panel",
+        "accentPlacement": "glass-panel"
+      },
+      "decor": {
+        "headerStyle": "glass-card",
+        "footerStyle": "soft-wave",
+        "divider": "glow",
+        "iconStyle": "glass",
+        "objects": [
+          {
+            "type": "ring",
+            "x": "82%",
+            "y": "6%",
+            "size": "210",
+            "opacity": 0.14,
+            "color": "#7C3AED"
+          },
+          {
+            "type": "bar",
+            "x": "18%",
+            "y": "88%",
+            "size": "96",
+            "opacity": 0.12,
+            "color": "#22D3EE"
+          }
+        ],
+        "borderStyle": "soft",
+        "cornerRadius": 28
+      },
+      "layoutOptions": {
+        "sectionSpacing": "wide",
+        "titleCase": "title",
+        "contentWidth": "wide",
+        "photoShape": "circle",
+        "borderRadius": 22,
+        "asideWidth": 38,
+        "gutter": 24
+      },
+      "textStyles": {
+        "fullName": {
+          "kind": "display",
+          "fontFamily": "Abril Fatface",
+          "fallback": "serif",
+          "fontWeight": 800,
+          "letterSpacing": "-0.04em",
+          "lineHeight": 0.98
+        },
+        "role": {
+          "kind": "subtitle",
+          "fontFamily": "Source Sans 3",
+          "fallback": "sans",
+          "fontWeight": 600,
+          "letterSpacing": "0.025em",
+          "lineHeight": 1.18
+        },
+        "heading": {
+          "kind": "heading",
+          "fontFamily": "Abril Fatface",
+          "fallback": "serif",
+          "fontWeight": 700,
+          "letterSpacing": "-0.02em",
+          "lineHeight": 1.12
+        },
+        "summary": {
+          "kind": "body",
+          "fontFamily": "Source Sans 3",
+          "fallback": "sans",
+          "fontWeight": 400,
+          "letterSpacing": "0em",
+          "lineHeight": 1.55
+        },
+        "email": {
+          "kind": "meta",
+          "fontFamily": "Source Sans 3",
+          "fallback": "sans",
+          "fontWeight": 500,
+          "letterSpacing": "0.01em",
+          "lineHeight": 1.35
+        },
+        "phone": {
+          "kind": "meta",
+          "fontFamily": "Source Sans 3",
+          "fallback": "sans",
+          "fontWeight": 500,
+          "letterSpacing": "0.01em",
+          "lineHeight": 1.35
+        }
+      },
+      "typography": {
+        "provider": "google-fonts",
+        "googleFonts": ["Abril Fatface", "Source Sans 3"],
+        "scale": "comfortable",
+        "fonts": {
+          "display": "Abril Fatface",
+          "body": "Source Sans 3"
+        }
+      },
+      "items": {
+        "fullName": {
+          "size": {
+            "min": 50,
+            "max": 80
+          },
+          "styles": ["regular", "medium", "semibold", "bold"],
+          "colors": ["#1E1B4B", "#64748B", "#7C3AED"]
+        },
+        "role": {
+          "size": {
+            "min": 25,
+            "max": 40
+          },
+          "styles": ["regular", "medium", "semibold", "bold"],
+          "colors": ["#1E1B4B", "#64748B", "#7C3AED"]
+        },
+        "heading": {
+          "size": {
+            "min": 25,
+            "max": 40
+          },
+          "styles": ["regular", "medium", "semibold", "bold"],
+          "colors": ["#1E1B4B", "#64748B", "#7C3AED"]
+        },
+        "summary": {
+          "size": {
+            "min": 20,
+            "max": 30
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#1E1B4B", "#64748B", "#7C3AED"]
+        },
+        "email": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#1E1B4B", "#64748B", "#7C3AED"]
+        },
+        "phone": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#1E1B4B", "#64748B", "#7C3AED"]
+        },
+        "date": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#1E1B4B", "#64748B", "#7C3AED"]
+        },
+        "location": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#1E1B4B", "#64748B", "#7C3AED"]
+        }
+      },
+      "designTokens": {
+        "borderRadius": "xl",
+        "shadowDepth": "soft",
+        "gradientStyle": "radial",
+        "patternOverlay": "aurora",
+        "typographyScale": "balanced",
+        "primary": "#7C3AED",
+        "secondary": "#22D3EE",
+        "surface": "#F5F3FF",
+        "text": "#1E1B4B"
+      },
+      "designConfig": {
+        "barRadius": {
+          "min": 0,
+          "max": 30
+        },
+        "barLayout": ["single"],
+        "barWidth": {
+          "min": 6,
+          "max": 16
+        },
+        "photoType": "circle",
+        "photoSize": 140,
+        "secondaryBarWidth": {
+          "min": 3,
+          "max": 12
+        }
+      },
+      "hero": {
+        "alignment": "right",
+        "showPhoto": true,
+        "accent": "orb",
+        "accentIntensity": "soft",
+        "photoPosition": "right"
+      },
+      "sectionDividerStyle": "glow",
+      "barLayout": ["double"]
+    },
+    "fakeData": {
+      "fullName": "Sofia Chen",
+      "role": "Product Design Strategist",
+      "image": "/img/team-4.jpg",
+      "description": "Sofia Chen presents human-centered product launches, design systems, and cross-functional facilitation with a premium border system designed for standout applications."
+    }
+  },
+  {
+    "id": "cpage-057",
+    "name": "Obsidian Gate Cover",
+    "version": "1.2.00",
+    "layout": "executive",
+    "structure": "cover-structure-2",
+    "sections": {
+      "hero": {
+        "order": 10,
+        "icon": "mdi-file-account-outline",
+        "form": "cover-hero"
+      },
+      "recipient": {
+        "order": 20,
+        "icon": "mdi-account-tie-outline",
+        "form": "contact-block"
+      },
+      "details": {
+        "order": 30,
+        "icon": "mdi-format-list-bulleted",
+        "form": "metadata"
+      }
+    },
+    "design": {
+      "theme": {
+        "palette": {
+          "primary": "#D97706",
+          "secondary": "#FACC15",
+          "text": "#0F172A",
+          "muted": "#6B7280",
+          "pageBackground": "#FFFBEB"
+        },
+        "density": "compact",
+        "textStyle": "serif",
+        "pageBorder": {
+          "enabled": true,
+          "width": 4,
+          "color": "#D97706",
+          "radius": 12,
+          "style": "obsidian-gold-gate"
+        },
+        "primary": "#D97706",
+        "accent": "#FACC15",
+        "background": "#FFFBEB",
+        "text": "#0F172A"
+      },
+      "borderStyle": {
+        "id": "obsidian-gold-gate",
+        "className": "cover-border--obsidian-gold-gate",
+        "accentPlacement": "gold-gate"
+      },
+      "decor": {
+        "headerStyle": "side-rail",
+        "footerStyle": "solid-band",
+        "divider": "double",
+        "iconStyle": "solid",
+        "objects": [
+          {
+            "type": "ring",
+            "x": "8%",
+            "y": "86%",
+            "size": "148",
+            "opacity": 0.08,
+            "color": "#D97706"
+          },
+          {
+            "type": "bar",
+            "x": "88%",
+            "y": "12%",
+            "size": "118",
+            "opacity": 0.11,
+            "color": "#FACC15"
+          }
+        ],
+        "borderStyle": "solid",
+        "cornerRadius": 10
+      },
+      "layoutOptions": {
+        "sectionSpacing": "normal",
+        "titleCase": "upper",
+        "contentWidth": "normal",
+        "photoShape": "square",
+        "borderRadius": 12,
+        "asideWidth": 32,
+        "gutter": 20
+      },
+      "textStyles": {
+        "fullName": {
+          "kind": "display",
+          "fontFamily": "Raleway",
+          "fallback": "serif",
+          "fontWeight": 800,
+          "letterSpacing": "-0.04em",
+          "lineHeight": 0.98
+        },
+        "role": {
+          "kind": "subtitle",
+          "fontFamily": "Nunito Sans",
+          "fallback": "sans",
+          "fontWeight": 600,
+          "letterSpacing": "0.025em",
+          "lineHeight": 1.18
+        },
+        "heading": {
+          "kind": "heading",
+          "fontFamily": "Raleway",
+          "fallback": "serif",
+          "fontWeight": 700,
+          "letterSpacing": "-0.02em",
+          "lineHeight": 1.12
+        },
+        "summary": {
+          "kind": "body",
+          "fontFamily": "Nunito Sans",
+          "fallback": "sans",
+          "fontWeight": 400,
+          "letterSpacing": "0em",
+          "lineHeight": 1.55
+        },
+        "email": {
+          "kind": "meta",
+          "fontFamily": "Nunito Sans",
+          "fallback": "sans",
+          "fontWeight": 500,
+          "letterSpacing": "0.01em",
+          "lineHeight": 1.35
+        },
+        "phone": {
+          "kind": "meta",
+          "fontFamily": "Nunito Sans",
+          "fallback": "sans",
+          "fontWeight": 500,
+          "letterSpacing": "0.01em",
+          "lineHeight": 1.35
+        }
+      },
+      "typography": {
+        "provider": "google-fonts",
+        "googleFonts": ["Nunito Sans", "Raleway"],
+        "scale": "compact",
+        "fonts": {
+          "display": "Raleway",
+          "body": "Nunito Sans"
+        }
+      },
+      "items": {
+        "fullName": {
+          "size": {
+            "min": 50,
+            "max": 80
+          },
+          "styles": ["regular", "medium", "semibold", "bold"],
+          "colors": ["#0F172A", "#6B7280", "#D97706"]
+        },
+        "role": {
+          "size": {
+            "min": 25,
+            "max": 40
+          },
+          "styles": ["regular", "medium", "semibold", "bold"],
+          "colors": ["#0F172A", "#6B7280", "#D97706"]
+        },
+        "heading": {
+          "size": {
+            "min": 25,
+            "max": 40
+          },
+          "styles": ["regular", "medium", "semibold", "bold"],
+          "colors": ["#0F172A", "#6B7280", "#D97706"]
+        },
+        "summary": {
+          "size": {
+            "min": 20,
+            "max": 30
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#0F172A", "#6B7280", "#D97706"]
+        },
+        "email": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#0F172A", "#6B7280", "#D97706"]
+        },
+        "phone": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#0F172A", "#6B7280", "#D97706"]
+        },
+        "date": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#0F172A", "#6B7280", "#D97706"]
+        },
+        "location": {
+          "size": {
+            "min": 14,
+            "max": 20
+          },
+          "styles": ["regular", "medium", "semibold"],
+          "colors": ["#0F172A", "#6B7280", "#D97706"]
+        }
+      },
+      "designTokens": {
+        "borderRadius": "md",
+        "shadowDepth": "medium",
+        "gradientStyle": "linear-vivid",
+        "patternOverlay": "gate",
+        "typographyScale": "compact",
+        "primary": "#D97706",
+        "secondary": "#FACC15",
+        "surface": "#FFFBEB",
+        "text": "#0F172A"
+      },
+      "designConfig": {
+        "barRadius": {
+          "min": 8,
+          "max": 30
+        },
+        "barLayout": ["double"],
+        "barWidth": {
+          "min": 8,
+          "max": 18
+        },
+        "secondaryBarWidth": {
+          "min": 3,
+          "max": 12
+        },
+        "photoType": "square",
+        "photoSize": 124
+      },
+      "hero": {
+        "alignment": "left",
+        "showPhoto": false,
+        "accent": "bar",
+        "accentIntensity": "bold",
+        "photoPosition": "left"
+      },
+      "sectionDividerStyle": "double",
+      "barLayout": ["single"]
+    },
+    "fakeData": {
+      "fullName": "Victor Hayes",
+      "role": "Operations Executive",
+      "image": "/img/team-1.jpg",
+      "description": "Victor Hayes presents enterprise operations, vendor governance, and high-impact transformation programs with a premium border system designed for standout applications."
+    }
   }
 ]

@@ -1,4 +1,5 @@
 import { computed, toValue, type MaybeRefOrGetter } from 'vue'
+import { cvIcon } from '~/utils/cvIconAssets'
 import { getGeneratedTemplateDesign } from '~/utils/generatedTemplateNormalizer'
 import {
   normalizeGeneratedTemplate,
@@ -65,18 +66,18 @@ export type GeneratedCvTemplateRuntimeOptions = {
 }
 
 const FALLBACK_SECTION_ICON_MAP: Record<string, string> = {
-  profile: 'mdi-account-outline',
-  experience: 'mdi-briefcase-outline',
-  education: 'mdi-school-outline',
-  skills: 'mdi-tools',
-  certifications: 'mdi-certificate-outline',
-  languages: 'mdi-translate',
-  references: 'mdi-account-group-outline',
-  hobbies: 'mdi-heart-outline',
-  interests: 'mdi-heart-outline',
-  projects: 'mdi-folder-star-outline',
-  contact: 'mdi-card-account-phone-outline',
-  languagesLabel: 'mdi-format-letter-case',
+  profile: cvIcon('profile-user'),
+  experience: cvIcon('briefcase'),
+  education: cvIcon('education-cap'),
+  skills: cvIcon('skills-tools'),
+  certifications: cvIcon('certificate'),
+  languages: cvIcon('languages-globe'),
+  references: cvIcon('references-people'),
+  hobbies: cvIcon('hobby-heart'),
+  interests: cvIcon('hobby-heart'),
+  projects: cvIcon('projects-folder'),
+  contact: cvIcon('contact-card'),
+  languagesLabel: cvIcon('translate'),
 }
 
 const SECTION_FORM_ALIASES: Record<string, string> = {
@@ -182,52 +183,55 @@ export function useGeneratedCvTemplateRuntime(
     const template = toValue(activeTemplate) || {}
     const sections = template?.sections || {}
     const iconOverrides = toValue(options.sectionIconOverrides) || {}
-    const normalizedSections = normalizeGeneratedTemplate(template).map(
-      (section): GeneratedCvTemplateRuntimeSection => {
-        const config = readSectionConfig(sections, section.sourceKey) as Record<
-          string,
-          any
-        >
-        const key = normalizeSectionKey(section.key)
-        const iconOverride = iconOverrides[key]
-        const icon =
-          iconOverride ||
-          (typeof config.icon === 'string' ? config.icon : undefined)
-        const iconAlternatives = Array.isArray(config.iconAlternatives)
-          ? config.iconAlternatives.filter(
-              (item): item is string => typeof item === 'string' && !!item,
-            )
-          : []
-
-        return {
-          ...section,
-          key,
-          icon,
-          iconAlternatives,
-          form: readSectionForm(
+    const normalizedSections: GeneratedCvTemplateRuntimeSection[] =
+      normalizeGeneratedTemplate(template).map(
+        (section): GeneratedCvTemplateRuntimeSection => {
+          const config = readSectionConfig(
             sections,
             section.sourceKey,
-            section.form || 'classic',
-          ),
-          column: normalizeColumn(section.column ?? config.column),
-          titleStyle: normalizeTitleStyle(config.titleStyle),
-          contentStyle:
-            typeof config.contentStyle === 'string'
-              ? config.contentStyle
-              : undefined,
-          dateStyle:
-            typeof config.dateStyle === 'string' ? config.dateStyle : undefined,
-          levelStyle:
-            typeof config.levelStyle === 'string'
-              ? config.levelStyle
-              : undefined,
-          hobbyStyle:
-            typeof config.hobbyStyle === 'string'
-              ? config.hobbyStyle
-              : undefined,
-        }
-      },
-    )
+          ) as Record<string, any>
+          const key = normalizeSectionKey(section.key)
+          const iconOverride = iconOverrides[key]
+          const icon =
+            iconOverride ||
+            (typeof config.icon === 'string' ? config.icon : undefined)
+          const iconAlternatives = Array.isArray(config.iconAlternatives)
+            ? config.iconAlternatives.filter(
+                (item): item is string => typeof item === 'string' && !!item,
+              )
+            : []
+
+          return {
+            ...section,
+            key,
+            icon,
+            iconAlternatives,
+            form: readSectionForm(
+              sections,
+              section.sourceKey,
+              section.form || 'classic',
+            ),
+            column: normalizeColumn(section.column ?? config.column),
+            titleStyle: normalizeTitleStyle(config.titleStyle),
+            contentStyle:
+              typeof config.contentStyle === 'string'
+                ? config.contentStyle
+                : undefined,
+            dateStyle:
+              typeof config.dateStyle === 'string'
+                ? config.dateStyle
+                : undefined,
+            levelStyle:
+              typeof config.levelStyle === 'string'
+                ? config.levelStyle
+                : undefined,
+            hobbyStyle:
+              typeof config.hobbyStyle === 'string'
+                ? config.hobbyStyle
+                : undefined,
+          }
+        },
+      )
 
     return {
       ...template,
@@ -237,35 +241,39 @@ export function useGeneratedCvTemplateRuntime(
   })
 
   const templateDesign = computed(() => normalizedTemplate.value.design)
+  const runtimeSections = computed<GeneratedCvTemplateRuntimeSection[]>(
+    () =>
+      normalizedTemplate.value.sections as GeneratedCvTemplateRuntimeSection[],
+  )
   const allSections = computed(() =>
-    normalizedTemplate.value.sections.filter(
+    runtimeSections.value.filter(
       (section) =>
         section.enabled &&
         (section.zone === 'content' || isAsideZone(section.zone)),
     ),
   )
   const contentSections = computed(() =>
-    normalizedTemplate.value.sections.filter(
+    runtimeSections.value.filter(
       (section) => section.enabled && section.zone === 'content',
     ),
   )
   const asideSections = computed(() =>
-    normalizedTemplate.value.sections.filter(
+    runtimeSections.value.filter(
       (section) => section.enabled && isAsideZone(section.zone),
     ),
   )
   const headerSections = computed(() =>
-    normalizedTemplate.value.sections.filter(
+    runtimeSections.value.filter(
       (section) => section.enabled && section.zone === 'header',
     ),
   )
   const identitySections = computed(() =>
-    normalizedTemplate.value.sections.filter(
+    runtimeSections.value.filter(
       (section) => section.enabled && section.zone === 'identity',
     ),
   )
   const leftAsideSections = computed(() =>
-    normalizedTemplate.value.sections.filter(
+    runtimeSections.value.filter(
       (section) =>
         section.enabled &&
         (section.zone === 'aside-left' ||
@@ -274,7 +282,7 @@ export function useGeneratedCvTemplateRuntime(
     ),
   )
   const rightAsideSections = computed(() =>
-    normalizedTemplate.value.sections.filter(
+    runtimeSections.value.filter(
       (section) =>
         section.enabled &&
         (section.zone === 'aside-right' ||
@@ -283,7 +291,7 @@ export function useGeneratedCvTemplateRuntime(
     ),
   )
   const sectionByKey = computed(() =>
-    normalizedTemplate.value.sections.reduce(
+    runtimeSections.value.reduce(
       (acc, section) => {
         acc[section.key] = section
         return acc

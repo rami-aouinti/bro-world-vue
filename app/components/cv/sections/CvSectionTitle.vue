@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.vue'
+import { cvIconTitle } from '~/utils/cvIconAssets'
 
 defineProps<{
   sectionKey: string
@@ -27,7 +28,7 @@ defineEmits<{
     <v-menu>
       <template #activator="{ props }">
         <button v-bind="props" class="cv-section-title-icon-btn">
-          <v-icon :icon="icon" size="16" />
+          <CvSvgIcon :icon="icon" size="16" />
         </button>
       </template>
 
@@ -35,11 +36,11 @@ defineEmits<{
         <v-list-item
           v-for="altIcon in iconAlternatives"
           :key="altIcon"
-          :title="altIcon"
+          :title="cvIconTitle(altIcon)"
           @click="$emit('update:icon', altIcon)"
         >
           <template #prepend>
-            <v-icon :icon="altIcon" size="16" />
+            <CvSvgIcon :icon="altIcon" size="16" />
           </template>
         </v-list-item>
       </v-list>
