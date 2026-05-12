@@ -401,10 +401,11 @@ function removeResumeLine(section: ResumeSectionKey, index: number) {
 
 function formatResumeDateRange(section: RecruitResumeSection) {
   const startDate = section.startDate || ''
-  const endDate = section.endDate || ''
+  const rawEndDate = section.endDate || ''
+  const endDate = rawEndDate.toLowerCase() === 'present' ? 'Now' : rawEndDate
   if (!startDate && !endDate) return ''
   if (startDate && endDate) return `${startDate} → ${endDate}`
-  if (startDate) return `${startDate} → Present`
+  if (startDate) return `${startDate} → Now`
   return endDate
 }
 
