@@ -23,6 +23,10 @@ import CvLayoutAsideBarLeft from '~/components/cv/layouts/CvLayoutAsideBarLeft.v
 import CvLayoutAsideBarRight from '~/components/cv/layouts/CvLayoutAsideBarRight.vue'
 import CvLayoutIdentityAsideLeft from '~/components/cv/layouts/CvLayoutIdentityAsideLeft.vue'
 import CvLayoutIdentityAsideRight from '~/components/cv/layouts/CvLayoutIdentityAsideRight.vue'
+import CvLayoutProCurveLeft from '~/components/cv/layouts/CvLayoutProCurveLeft.vue'
+import CvLayoutImpactRibbonLeft from '~/components/cv/layouts/CvLayoutImpactRibbonLeft.vue'
+import CvLayoutOrangeFlowSplit from '~/components/cv/layouts/CvLayoutOrangeFlowSplit.vue'
+import CvLayoutPrestigeSwoop from '~/components/cv/layouts/CvLayoutPrestigeSwoop.vue'
 import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 import {
   resolveResumeTextFont,
@@ -166,6 +170,10 @@ const cvLayoutComponentMap = {
   'aside-bar-right': CvLayoutAsideBarRight,
   'identity-aside-left': CvLayoutIdentityAsideLeft,
   'identity-aside-right': CvLayoutIdentityAsideRight,
+  'pro-curve-left': CvLayoutProCurveLeft,
+  'impact-ribbon-left': CvLayoutImpactRibbonLeft,
+  'orange-flow-split': CvLayoutOrangeFlowSplit,
+  'prestige-swoop': CvLayoutPrestigeSwoop,
 } as const
 
 const activeLayoutComponent = computed(
@@ -456,6 +464,8 @@ const visibleMainOneSections = computed(() => visibleOrderedSections('mainOne'))
 
 const CV_PREVIEW_PDF_PAGE_HEIGHT = 1100
 const CV_PREVIEW_PAGE_WIDTH = 794
+const CV_PREVIEW_MAX_PAGE_COUNT = 6
+const CV_PREVIEW_PAGE_END_BAR_HEIGHT = 24
 const cvPreviewRef = ref<HTMLElement | null>(null)
 const cvPreviewPageCount = ref(1)
 let cvPreviewMeasureTimer: ReturnType<typeof setTimeout> | undefined
@@ -478,15 +488,20 @@ function measureCvPreviewHeight() {
     cvPreviewRef.value?.querySelector<HTMLElement>('.cv-preview-page')
   if (!preview) return
 
-  const neededHeight = Math.max(
-    CV_PREVIEW_PDF_PAGE_HEIGHT,
-    preview.scrollHeight,
-    Math.ceil(preview.getBoundingClientRect().height),
+  const currentHeight = cvPreviewHeight.value
+  const rectHeight = Math.ceil(preview.getBoundingClientRect().height)
+  const measuredHeight = Math.max(preview.scrollHeight, rectHeight)
+  const contentHeight =
+    measuredHeight > currentHeight
+      ? measuredHeight - CV_PREVIEW_PAGE_END_BAR_HEIGHT
+      : measuredHeight
+  const neededHeight = Math.max(CV_PREVIEW_PDF_PAGE_HEIGHT, contentHeight)
+  const nextPageCount = Math.min(
+    CV_PREVIEW_MAX_PAGE_COUNT,
+    Math.max(1, Math.ceil(neededHeight / CV_PREVIEW_PDF_PAGE_HEIGHT)),
   )
-  cvPreviewPageCount.value = Math.max(
-    1,
-    Math.ceil(neededHeight / CV_PREVIEW_PDF_PAGE_HEIGHT),
-  )
+  if (nextPageCount !== cvPreviewPageCount.value)
+    cvPreviewPageCount.value = nextPageCount
 }
 
 let isMeasuringCvPreview = false
@@ -1149,6 +1164,22 @@ function getSectionItems(rawSection: string): string[] {
     return `${label}${suffix}`
   }
 
+  if (key === 'contact') {
+    const info = data.resumeInformation || {}
+    const contactItems = [
+      ['Email', info.email || data.email],
+      ['Phone', info.phone || data.phone],
+      ['Address', info.adresse || data.location],
+      ['Home', info.homepage || data.homepage],
+      ['Portfolio', info.repo_profile || data.repositoryPage],
+    ]
+      .map(([label, value]) =>
+        value ? `${label}: ${String(value).replace(/^https?:\/\//, '')}` : '',
+      )
+      .filter(Boolean)
+    return [...contactItems, ...extra]
+  }
+
   if (key === 'experience') {
     const isStackedDates =
       effectiveSectionType(key, sectionType(key as any)) ===
@@ -1399,6 +1430,11 @@ const shouldRenderIdentityProfile = computed(() => {
   )
 })
 const headerContactItems = computed(() => {
+  const hasAsideContact = templateAsideSections.value.some(
+    (section) => toSectionKey(section) === 'contact',
+  )
+  if (hasAsideContact) return []
+
   const sections = templateHeaderSections.value
   if (sections.length > 0 && !sections.includes('contact')) return []
   return headerProfile.value.contact
@@ -2896,7 +2932,10 @@ watch(
               <div
                 v-for="section in visibleAsideOneSections"
                 :key="`aside-s1-${section}`"
-                :class="['cv-aside-section-item']"
+                :class="[
+                  'cv-aside-section-item',
+                  `cv-aside-section-item--${toSectionKey(section)}`,
+                ]"
                 :style="sectionOffsetStyle('asideOne', section)"
                 draggable="true"
                 @mouseenter="
@@ -3736,6 +3775,7 @@ watch(
   height: auto !important;
   min-height: var(--cv-preview-total-height, 1100px) !important;
   overflow: visible !important;
+  box-sizing: border-box;
   padding-bottom: var(--cv-page-end-bar-height, 24px);
   border: var(--cv-page-border-width, 0px) solid
     var(--cv-page-border-color, transparent);
