@@ -165,6 +165,7 @@ function hobbyIcon(label: string) {
     class="cv-rich-section"
     :class="[
       `cv-rich-section--${variant}`,
+      contentStyle ? `cv-rich-section--${contentStyle}` : null,
       `cv-rich-section--${sectionKey}`,
       `cv-rich-section--hobby-${hobbyStyle}`,
     ]"
@@ -209,8 +210,7 @@ function hobbyIcon(label: string) {
           `cv-rich-item--level-${levelStyle}`,
           {
             'cv-rich-item--complex': isComplexItem(item),
-            'cv-rich-item--timeline-complex':
-              isComplexItem(item) && variant.includes('timeline'),
+            'cv-rich-item--timeline-complex': isTimelineComplexItem(item),
             'cv-rich-item--leveled': isLeveledSection(),
           },
         ]"
@@ -631,6 +631,12 @@ function hobbyIcon(label: string) {
   top: 6px;
   width: 11px;
   height: 11px;
+}
+
+.cv-rich-item--content-timeline-date-badges .cv-rich-timeline-dot,
+.cv-rich-item--content-timeline-badges .cv-rich-timeline-dot,
+.cv-rich-item--content-timeline-stacked-dates .cv-rich-timeline-dot {
+  display: none;
 }
 
 .cv-rich-item--content-timeline-badges .cv-rich-editor--period {
