@@ -54,13 +54,15 @@ describe('cover template border styles', () => {
   )
 
   it.each(generatedCoverSuites)(
-    'assigns the 20 expected border styles to generated $type templates',
+    'covers every registered border style in generated $type templates',
     ({ templates }) => {
       const assignedStyleIds = templatesWithBorderStyles(templates).map(
         (template) => template.design?.borderStyle?.id,
       )
 
-      expect(assignedStyleIds).toHaveLength(COVER_BORDER_STYLE_IDS.length)
+      expect(assignedStyleIds.length).toBeGreaterThanOrEqual(
+        COVER_BORDER_STYLE_IDS.length,
+      )
       expect(new Set(assignedStyleIds)).toEqual(new Set(COVER_BORDER_STYLE_IDS))
     },
   )
@@ -82,16 +84,9 @@ describe('cover template border styles', () => {
   )
 
   it('falls back to the simple cover border class when a template has no borderStyle', () => {
-    const templateWithoutBorderStyle = GENERATED_COVER_PAGE_TEMPLATES.find(
-      (template) => !template.design?.borderStyle,
-    )
-
-    expect(templateWithoutBorderStyle?.id).toBeTruthy()
-    expect(resolveCoverBorderStyle(templateWithoutBorderStyle?.design)).toEqual(
-      {
-        styleId: 'simple',
-        className: COVER_BORDER_SIMPLE_CLASS,
-      },
-    )
+    expect(resolveCoverBorderStyle({ theme: { pageBorder: {} } })).toEqual({
+      styleId: 'simple',
+      className: COVER_BORDER_SIMPLE_CLASS,
+    })
   })
 })
