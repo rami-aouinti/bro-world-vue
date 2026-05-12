@@ -359,7 +359,10 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
         template === 'two-columns'
       "
       class="renderer-list"
-      :class="{ 'renderer-list--two-columns': template === 'two-columns' }"
+      :class="{
+        'renderer-list--two-columns': template === 'two-columns',
+        'renderer-list--progress-circle': template === 'progress-circle',
+      }"
     >
       <li
         v-for="(item, index) in normalizedItems"
@@ -666,6 +669,13 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
   grid-column: 2;
 }
 
+.renderer-list--progress-circle .renderer-list-content {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: var(--section-space-xs);
+}
+
 .renderer-list-main {
   flex: 1 1 auto;
   min-width: 0;
@@ -677,6 +687,12 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+}
+
+.renderer-list--progress-circle .renderer-list-end {
+  margin-left: 0;
+  width: 100%;
+  justify-content: flex-start;
 }
 
 .renderer-rating {
@@ -716,6 +732,10 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
   display: block;
   height: 100%;
   background: color-mix(in srgb, currentColor 75%, transparent);
+}
+
+.renderer-list--progress-circle .renderer-circle {
+  margin-top: var(--section-space-2xs);
 }
 
 .renderer-circle {
