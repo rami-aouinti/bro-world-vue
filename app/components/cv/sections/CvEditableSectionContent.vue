@@ -653,6 +653,9 @@ function hobbyIcon(label: string) {
 }
 
 .cv-rich-item--content-timeline-stacked-dates .cv-rich-editor--period {
+  align-self: start;
+  justify-self: end;
+  width: fit-content;
   max-width: 42px;
   white-space: normal;
   line-height: 1.05;
@@ -662,10 +665,13 @@ function hobbyIcon(label: string) {
 }
 
 .cv-rich-item--date-stacked .cv-rich-editor--period {
+  align-self: start;
+  justify-self: end;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: fit-content;
   min-width: 42px;
   white-space: pre-line;
   text-align: center;
@@ -674,6 +680,10 @@ function hobbyIcon(label: string) {
 
 .cv-rich-item--date-badge-right .cv-rich-editor--period,
 .cv-rich-item--date-badge-left .cv-rich-editor--period {
+  align-self: start;
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
   border-radius: 999px;
   padding: 3px 8px;
   background: color-mix(in srgb, var(--cv-secondary, #ef4444) 78%, #111827);
