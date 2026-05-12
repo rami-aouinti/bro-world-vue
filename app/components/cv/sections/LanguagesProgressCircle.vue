@@ -32,13 +32,15 @@ function splitItem(raw: string) {
 <style scoped>
 .cv-item-row {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   margin-bottom: 6px;
+  text-align: center;
 }
 .label {
-  text-align: start;
+  text-align: center;
 }
 .circle {
   display: inline-flex;

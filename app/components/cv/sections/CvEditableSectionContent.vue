@@ -444,13 +444,13 @@ function hobbyIcon(label: string) {
 .cv-rich-section--progress-circle-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px 18px;
-  justify-items: center;
+  place-items: start center;
 }
 
 .cv-rich-section--progress-circle-ring {
   grid-template-columns: repeat(auto-fit, minmax(54px, 1fr));
   gap: 12px;
-  justify-items: center;
+  place-items: start center;
 }
 
 .cv-hobby-icons {
@@ -797,6 +797,65 @@ function hobbyIcon(label: string) {
   grid-template-columns: minmax(0, 1fr) minmax(88px, 130px) 34px;
   align-items: center;
   gap: 8px;
+}
+
+.cv-rich-item--progress-circle.cv-rich-item--leveled,
+.cv-rich-item--progress-circle-grid.cv-rich-item--leveled,
+.cv-rich-item--progress-circle-ring.cv-rich-item--leveled {
+  grid-template-columns: 1fr;
+  place-items: start center;
+  gap: 6px;
+  text-align: center;
+}
+
+.cv-rich-item--progress-circle-grid.cv-rich-item--leveled,
+.cv-rich-item--progress-circle-ring.cv-rich-item--leveled,
+.cv-rich-item--level-circle-grid.cv-rich-item--leveled,
+.cv-rich-item--level-circle-ring.cv-rich-item--leveled {
+  justify-self: center;
+  width: fit-content;
+  min-width: 54px;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.cv-rich-item--progress-circle-grid .cv-rich-editor--label,
+.cv-rich-item--progress-circle-ring .cv-rich-editor--label,
+.cv-rich-item--level-circle-grid .cv-rich-editor--label,
+.cv-rich-item--level-circle-ring .cv-rich-editor--label,
+.cv-rich-item--progress-circle-grid .cv-rich-circle,
+.cv-rich-item--progress-circle-ring .cv-rich-circle,
+.cv-rich-item--level-circle-grid .cv-rich-circle,
+.cv-rich-item--level-circle-ring .cv-rich-circle {
+  justify-self: center;
+  margin-inline: auto;
+}
+
+.cv-rich-item--progress-circle-grid
+  .cv-rich-editor--label
+  :deep(.hover-editor__content),
+.cv-rich-item--progress-circle-grid
+  .cv-rich-editor--label
+  :deep(.hover-editor__content p),
+.cv-rich-item--progress-circle-ring
+  .cv-rich-editor--label
+  :deep(.hover-editor__content),
+.cv-rich-item--progress-circle-ring
+  .cv-rich-editor--label
+  :deep(.hover-editor__content p),
+.cv-rich-item--level-circle-grid
+  .cv-rich-editor--label
+  :deep(.hover-editor__content),
+.cv-rich-item--level-circle-grid
+  .cv-rich-editor--label
+  :deep(.hover-editor__content p),
+.cv-rich-item--level-circle-ring
+  .cv-rich-editor--label
+  :deep(.hover-editor__content),
+.cv-rich-item--level-circle-ring
+  .cv-rich-editor--label
+  :deep(.hover-editor__content p) {
+  text-align: center;
 }
 
 .cv-progress-line-row {
