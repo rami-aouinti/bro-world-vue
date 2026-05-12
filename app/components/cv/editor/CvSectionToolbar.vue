@@ -170,12 +170,12 @@ const titleStyleIcon = computed(
       class="cv-icon-select"
     >
       <template #selection="{ item }">
-        <v-icon :icon="item?.value || icon" size="16" />
+        <CvSvgIcon :icon="item?.value || icon" size="16" />
       </template>
       <template #item="{ item, props: itemProps }">
         <v-list-item v-bind="itemProps" :title="item?.title">
           <template #prepend>
-            <v-icon :icon="item?.value" size="16" />
+            <CvSvgIcon :icon="item?.value" size="16" />
           </template>
         </v-list-item>
       </template>

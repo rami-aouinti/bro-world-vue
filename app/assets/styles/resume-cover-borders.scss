@@ -861,6 +861,164 @@
   opacity: 0.82;
 }
 
+.capture-cover-page.cover-border--prism-edge-frame::before,
+.capture-cover-letter.cover-border--prism-edge-frame::before {
+  inset: 18px;
+  border-radius: 28px;
+  background:
+    linear-gradient(135deg, var(--cover-edge), transparent 23%) left top / 46%
+      46% no-repeat,
+    linear-gradient(225deg, var(--cover-edge-2), transparent 23%) right top /
+      46% 46% no-repeat,
+    linear-gradient(45deg, var(--cover-edge-2), transparent 23%) left bottom /
+      46% 46% no-repeat,
+    linear-gradient(315deg, var(--cover-edge), transparent 23%) right bottom /
+      46% 46% no-repeat;
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb, var(--cover-edge) 42%, transparent),
+    inset 0 0 0 16px color-mix(in srgb, var(--cover-edge-2) 10%, transparent);
+}
+
+.capture-cover-page.cover-border--prism-edge-frame::after,
+.capture-cover-letter.cover-border--prism-edge-frame::after {
+  inset: 44px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--cover-edge-ink) 16%, transparent);
+  background: linear-gradient(
+    135deg,
+    transparent 0 48%,
+    color-mix(in srgb, var(--cover-edge) 16%, transparent) 49% 51%,
+    transparent 52%
+  );
+}
+
+.capture-cover-page.cover-border--champagne-corner-filigree::before,
+.capture-cover-letter.cover-border--champagne-corner-filigree::before {
+  inset: 24px;
+  border-radius: 34px;
+  background:
+    radial-gradient(
+      circle at 48px 48px,
+      transparent 0 24px,
+      var(--cover-edge) 25px 27px,
+      transparent 28px
+    ),
+    radial-gradient(
+      circle at calc(100% - 48px) calc(100% - 48px),
+      transparent 0 24px,
+      var(--cover-edge-2) 25px 27px,
+      transparent 28px
+    ),
+    linear-gradient(var(--cover-edge), var(--cover-edge)) left 72px top 48px /
+      118px 2px no-repeat,
+    linear-gradient(90deg, var(--cover-edge), var(--cover-edge)) left 48px top
+      72px / 2px 118px no-repeat,
+    linear-gradient(var(--cover-edge-2), var(--cover-edge-2)) right 72px bottom
+      48px / 118px 2px no-repeat,
+    linear-gradient(90deg, var(--cover-edge-2), var(--cover-edge-2)) right 48px
+      bottom 72px / 2px 118px no-repeat;
+  border: 1px solid color-mix(in srgb, var(--cover-edge) 22%, transparent);
+}
+
+.capture-cover-page.cover-border--champagne-corner-filigree::after,
+.capture-cover-letter.cover-border--champagne-corner-filigree::after {
+  inset: 58px;
+  border-radius: 26px;
+  border: 1px dashed color-mix(in srgb, var(--cover-edge) 28%, transparent);
+}
+
+.capture-cover-page.cover-border--editorial-ink-brackets::before,
+.capture-cover-letter.cover-border--editorial-ink-brackets::before {
+  inset: 34px;
+  background:
+    linear-gradient(var(--cover-edge-ink), var(--cover-edge-ink)) left top /
+      172px 7px no-repeat,
+    linear-gradient(var(--cover-edge-ink), var(--cover-edge-ink)) left top / 7px
+      172px no-repeat,
+    linear-gradient(var(--cover-edge-ink), var(--cover-edge-ink)) right bottom /
+      172px 7px no-repeat,
+    linear-gradient(var(--cover-edge-ink), var(--cover-edge-ink)) right bottom /
+      7px 172px no-repeat,
+    linear-gradient(var(--cover-edge), var(--cover-edge)) right top / 116px 3px
+      no-repeat,
+    linear-gradient(var(--cover-edge), var(--cover-edge)) left bottom / 116px
+      3px no-repeat;
+}
+
+.capture-cover-page.cover-border--editorial-ink-brackets::after,
+.capture-cover-letter.cover-border--editorial-ink-brackets::after {
+  inset: 62px 44px;
+  border-top: 1px solid color-mix(in srgb, var(--cover-edge) 26%, transparent);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--cover-edge) 26%, transparent);
+}
+
+.capture-cover-page.cover-border--aurora-glass-panel::before,
+.capture-cover-letter.cover-border--aurora-glass-panel::before {
+  inset: 0 0 0 auto;
+  width: 225px;
+  background:
+    radial-gradient(
+      circle at 42% 16%,
+      color-mix(in srgb, var(--cover-edge-2) 48%, transparent),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      color-mix(in srgb, var(--cover-edge) 42%, transparent),
+      transparent 34%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.54),
+      color-mix(in srgb, var(--cover-edge-2) 20%, transparent)
+    );
+  border-left: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow: -28px 0 50px
+    color-mix(in srgb, var(--cover-edge) 14%, transparent);
+}
+
+.capture-cover-page.cover-border--aurora-glass-panel::after,
+.capture-cover-letter.cover-border--aurora-glass-panel::after {
+  inset: 30px 34px 30px auto;
+  width: 168px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--cover-edge-paper) 72%, transparent);
+  box-shadow: inset 0 0 42px
+    color-mix(in srgb, var(--cover-edge-2) 18%, transparent);
+}
+
+.capture-cover-page.cover-border--obsidian-gold-gate::before,
+.capture-cover-letter.cover-border--obsidian-gold-gate::before {
+  inset: 0 auto 0 0;
+  width: 92px;
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--cover-edge-ink) 94%, #000),
+      color-mix(in srgb, var(--cover-edge-ink) 72%, #000)
+    ),
+    linear-gradient(var(--cover-edge-2), var(--cover-edge-2)) center top 42px /
+      38px 2px no-repeat,
+    linear-gradient(var(--cover-edge-2), var(--cover-edge-2)) center bottom
+      42px / 38px 2px no-repeat;
+  border-right: 6px solid var(--cover-edge);
+  box-shadow: 22px 0 0 color-mix(in srgb, var(--cover-edge) 16%, transparent);
+}
+
+.capture-cover-page.cover-border--obsidian-gold-gate::after,
+.capture-cover-letter.cover-border--obsidian-gold-gate::after {
+  inset: 0 0 0 auto;
+  width: 34px;
+  background: linear-gradient(
+    180deg,
+    var(--cover-edge),
+    var(--cover-edge-2),
+    var(--cover-edge)
+  );
+  box-shadow: -20px 0 0 color-mix(in srgb, var(--cover-edge) 14%, transparent);
+}
+
 .cover-border-thumb {
   --cover-edge: var(--thumb-primary, #2563eb);
   --cover-edge-2: var(--thumb-secondary, #93c5fd);
@@ -1148,4 +1306,70 @@
     linear-gradient(#60a5fa 1px, transparent 1px),
     linear-gradient(90deg, #60a5fa 1px, transparent 1px);
   background-size: 9px 9px;
+}
+
+.cover-border-thumb.cover-border--prism-edge-frame::before {
+  inset: 5px;
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, #06b6d4, transparent 42%) left top / 50% 50%
+      no-repeat,
+    linear-gradient(315deg, #7c3aed, transparent 42%) right bottom / 50% 50%
+      no-repeat;
+  box-shadow: inset 0 0 0 2px rgba(14, 165, 233, 0.55);
+}
+
+.cover-border-thumb.cover-border--champagne-corner-filigree::before {
+  inset: 7px;
+  border: 1px solid #d97706;
+  border-radius: 8px;
+  background:
+    radial-gradient(
+      circle at 12px 12px,
+      transparent 0 6px,
+      #facc15 7px 8px,
+      transparent 9px
+    ),
+    radial-gradient(
+      circle at calc(100% - 12px) calc(100% - 12px),
+      transparent 0 6px,
+      #d97706 7px 8px,
+      transparent 9px
+    );
+}
+
+.cover-border-thumb.cover-border--editorial-ink-brackets::before {
+  inset: 7px;
+  background:
+    linear-gradient(#111827, #111827) left top / 26px 4px no-repeat,
+    linear-gradient(#111827, #111827) left top / 4px 26px no-repeat,
+    linear-gradient(#111827, #111827) right bottom / 26px 4px no-repeat,
+    linear-gradient(#111827, #111827) right bottom / 4px 26px no-repeat;
+}
+
+.cover-border-thumb.cover-border--aurora-glass-panel::before {
+  inset: 0 0 0 auto;
+  width: 24px;
+  background:
+    radial-gradient(
+      circle at 40% 20%,
+      rgba(34, 211, 238, 0.75),
+      transparent 36%
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(168, 85, 247, 0.34));
+  box-shadow: -8px 0 16px rgba(124, 58, 237, 0.18);
+}
+
+.cover-border-thumb.cover-border--obsidian-gold-gate::before {
+  inset: 0 auto 0 0;
+  width: 17px;
+  background: #111827;
+  border-right: 3px solid #d97706;
+  box-shadow: 8px 0 0 rgba(217, 119, 6, 0.22);
+}
+
+.cover-border-thumb.cover-border--obsidian-gold-gate::after {
+  inset: 0 0 0 auto;
+  width: 7px;
+  background: linear-gradient(180deg, #d97706, #facc15, #92400e);
 }
