@@ -14,6 +14,9 @@ import CvLayoutAsideFullRight from '~/components/cv/layouts/CvLayoutAsideFullRig
 import CvLayoutAsideBarLeft from '~/components/cv/layouts/CvLayoutAsideBarLeft.vue'
 import CvLayoutAsideBarRight from '~/components/cv/layouts/CvLayoutAsideBarRight.vue'
 import CvLayoutProCurveLeft from '~/components/cv/layouts/CvLayoutProCurveLeft.vue'
+import CvLayoutImpactRibbonLeft from '~/components/cv/layouts/CvLayoutImpactRibbonLeft.vue'
+import CvLayoutOrangeFlowSplit from '~/components/cv/layouts/CvLayoutOrangeFlowSplit.vue'
+import CvLayoutPrestigeSwoop from '~/components/cv/layouts/CvLayoutPrestigeSwoop.vue'
 
 definePageMeta({ layout: false })
 
@@ -73,6 +76,9 @@ const cvLayoutComponentMap = {
   'aside-bar-left': CvLayoutAsideBarLeft,
   'aside-bar-right': CvLayoutAsideBarRight,
   'pro-curve-left': CvLayoutProCurveLeft,
+  'impact-ribbon-left': CvLayoutImpactRibbonLeft,
+  'orange-flow-split': CvLayoutOrangeFlowSplit,
+  'prestige-swoop': CvLayoutPrestigeSwoop,
 } as const
 
 const activeLayoutComponent = computed(

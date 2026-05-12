@@ -15,5 +15,8 @@ export function isSideGeneratedCvLayout(layout: string) {
     'identity-aside-left',
     'identity-aside-right',
     'pro-curve-left',
+    'impact-ribbon-left',
+    'orange-flow-split',
+    'prestige-swoop',
   ].includes(layout)
 }

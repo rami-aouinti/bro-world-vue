@@ -24,6 +24,9 @@ import CvLayoutAsideBarRight from '~/components/cv/layouts/CvLayoutAsideBarRight
 import CvLayoutIdentityAsideLeft from '~/components/cv/layouts/CvLayoutIdentityAsideLeft.vue'
 import CvLayoutIdentityAsideRight from '~/components/cv/layouts/CvLayoutIdentityAsideRight.vue'
 import CvLayoutProCurveLeft from '~/components/cv/layouts/CvLayoutProCurveLeft.vue'
+import CvLayoutImpactRibbonLeft from '~/components/cv/layouts/CvLayoutImpactRibbonLeft.vue'
+import CvLayoutOrangeFlowSplit from '~/components/cv/layouts/CvLayoutOrangeFlowSplit.vue'
+import CvLayoutPrestigeSwoop from '~/components/cv/layouts/CvLayoutPrestigeSwoop.vue'
 import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 import {
   resolveResumeTextFont,
@@ -168,6 +171,9 @@ const cvLayoutComponentMap = {
   'identity-aside-left': CvLayoutIdentityAsideLeft,
   'identity-aside-right': CvLayoutIdentityAsideRight,
   'pro-curve-left': CvLayoutProCurveLeft,
+  'impact-ribbon-left': CvLayoutImpactRibbonLeft,
+  'orange-flow-split': CvLayoutOrangeFlowSplit,
+  'prestige-swoop': CvLayoutPrestigeSwoop,
 } as const
 
 const activeLayoutComponent = computed(
