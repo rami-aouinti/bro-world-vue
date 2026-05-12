@@ -16,6 +16,7 @@ const { data: resume, pending, error } = await useAsyncData<ResumeApiItem | null
 
 const formatDate = (value?: string | null) => {
   if (!value) return t('resumePreview.publicProfile.present')
+  if (value.toLowerCase() === 'present') return t('resumePreview.publicProfile.present')
   const parsed = new Date(value)
   if (Number.isNaN(parsed.getTime())) return value
   return parsed.toLocaleDateString('fr-FR', { year: 'numeric', month: 'short' })
