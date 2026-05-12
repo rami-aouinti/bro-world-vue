@@ -671,9 +671,18 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 
 .renderer-list--progress-circle .renderer-list-content {
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   justify-content: flex-start;
   gap: var(--section-space-xs);
+  text-align: center;
+}
+
+.renderer-list--progress-circle .renderer-list-main {
+  flex: 0 1 auto;
+}
+
+.renderer-list--progress-circle .renderer-heading-row {
+  justify-content: center;
 }
 
 .renderer-list-main {
@@ -691,8 +700,7 @@ const normalizedItems = computed<NormalizedItem[]>(() => {
 
 .renderer-list--progress-circle .renderer-list-end {
   margin-left: 0;
-  width: 100%;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .renderer-rating {
