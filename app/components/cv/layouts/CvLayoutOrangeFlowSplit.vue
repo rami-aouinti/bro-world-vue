@@ -314,6 +314,17 @@
     color-mix(in srgb, var(--cv-secondary, #fb8500) 42%, transparent);
 }
 
+.cv-layout--orange-flow-split .cv-header :deep(.cv-header-contact) {
+  display: none;
+}
+
+.cv-layout--orange-flow-split .cv-header :deep(.cv-header-layout--header-left),
+.cv-layout--orange-flow-split
+  .cv-header
+  :deep(.cv-header-layout--header-right) {
+  grid-template-columns: 1fr;
+}
+
 @media (max-width: 720px) {
   .cv-grid {
     grid-template-columns: 1fr;

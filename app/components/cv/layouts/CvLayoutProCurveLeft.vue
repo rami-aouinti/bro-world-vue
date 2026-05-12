@@ -345,6 +345,20 @@
   box-shadow: 12px 0 0 rgba(249, 115, 22, 0.18);
 }
 
+.cv-layout--pro-curve-left .cv-header :deep(.cv-header-contact) {
+  display: none;
+}
+
+.cv-layout--pro-curve-left .cv-header :deep(.cv-header-layout--header-left),
+.cv-layout--pro-curve-left .cv-header :deep(.cv-header-layout--header-right) {
+  grid-template-columns: 1fr;
+}
+
+.cv-layout--pro-curve-left .cv-header :deep(.cv-header-identity) {
+  align-items: flex-start;
+  text-align: left;
+}
+
 @media (max-width: 720px) {
   .cv-layout {
     background: var(--cv-page-background, #f8fafc);

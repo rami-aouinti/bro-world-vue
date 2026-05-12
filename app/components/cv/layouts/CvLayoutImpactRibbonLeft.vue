@@ -322,6 +322,38 @@
     0 1px 0 color-mix(in srgb, var(--cv-primary, #111827) 36%, transparent);
 }
 
+.cv-layout--impact-ribbon-left .cv-header :deep(.cv-header-contact) {
+  display: none;
+}
+
+.cv-layout--impact-ribbon-left .cv-header :deep(.cv-header-layout--header-left),
+.cv-layout--impact-ribbon-left
+  .cv-header
+  :deep(.cv-header-layout--header-right) {
+  grid-template-columns: 1fr;
+}
+
+.cv-layout--impact-ribbon-left .cv-header :deep(.cv-header-identity) {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.cv-layout--impact-ribbon-left .cv-main :deep(.cv-section-row) {
+  margin-bottom: 16px;
+  padding-top: 8px;
+  border-radius: 18px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.92),
+    rgba(255, 255, 255, 0)
+  );
+}
+
+.cv-layout--impact-ribbon-left .cv-main :deep(.cv-section-title-shell) {
+  color: var(--cv-secondary, #ef233c) !important;
+  text-transform: uppercase;
+}
+
 @media (max-width: 720px) {
   .cv-layout::before {
     width: 100%;

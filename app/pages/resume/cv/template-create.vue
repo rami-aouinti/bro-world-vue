@@ -1419,6 +1419,11 @@ const shouldRenderIdentityProfile = computed(() => {
   )
 })
 const headerContactItems = computed(() => {
+  const hasAsideContact = templateAsideSections.value.some(
+    (section) => toSectionKey(section) === 'contact',
+  )
+  if (hasAsideContact) return []
+
   const sections = templateHeaderSections.value
   if (sections.length > 0 && !sections.includes('contact')) return []
   return headerProfile.value.contact
