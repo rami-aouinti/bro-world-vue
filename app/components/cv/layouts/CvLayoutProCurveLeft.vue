@@ -264,6 +264,87 @@
   font-weight: 800;
 }
 
+/* Polished editorial pass: closer to the reference CVs, restrained and print-safe. */
+.cv-layout--pro-curve-left {
+  background:
+    radial-gradient(
+      circle at 15% 8%,
+      rgba(255, 255, 255, 0.92) 0 74px,
+      transparent 75px
+    ),
+    linear-gradient(
+      90deg,
+      var(--cv-primary, #101827) 0 var(--cv-aside-width, 252px),
+      var(--cv-page-background, #f8fafc) var(--cv-aside-width, 252px)
+    );
+}
+
+.cv-layout--pro-curve-left .cv-layout__ambient--top {
+  top: -54px;
+  right: -34px;
+  width: 220px;
+  height: 132px;
+  opacity: 0.38;
+}
+
+.cv-layout--pro-curve-left .cv-layout__ambient--bottom {
+  display: none;
+}
+
+.cv-layout--pro-curve-left .cv-header {
+  min-height: 176px;
+  padding: 30px 36px 24px calc(var(--cv-aside-width, 252px) + 34px);
+}
+
+.cv-layout--pro-curve-left .cv-header__dark-panel {
+  width: var(--cv-aside-width, 252px);
+  border-bottom-right-radius: 34px;
+}
+
+.cv-layout--pro-curve-left .cv-header__accent-swoosh {
+  left: calc(var(--cv-aside-width, 252px) - 18px);
+  right: 0;
+  width: auto;
+  height: 132px;
+  border-bottom-left-radius: 140px 76px;
+  border-bottom-right-radius: 0;
+  box-shadow: 0 14px 0 rgba(15, 23, 42, 0.08);
+}
+
+.cv-layout--pro-curve-left .cv-header__accent-swoosh--shadow {
+  display: none;
+}
+
+.cv-layout--pro-curve-left .cv-content {
+  grid-template-columns: minmax(224px, var(--cv-aside-width, 252px)) minmax(
+      0,
+      1fr
+    );
+  gap: 26px;
+  padding: 20px 30px 38px 0;
+}
+
+.cv-layout--pro-curve-left .cv-aside-panel {
+  padding: 22px 18px 34px;
+  background: transparent;
+  border-bottom-right-radius: 0;
+}
+
+.cv-layout--pro-curve-left .cv-aside-panel::after {
+  display: none;
+}
+
+.cv-layout--pro-curve-left .cv-main :deep(.cv-section-title-shell) {
+  min-width: min(100%, 360px);
+  border-radius: 999px 0 0 999px;
+  background: linear-gradient(
+    90deg,
+    var(--cv-secondary, #f97316) 0%,
+    color-mix(in srgb, var(--cv-secondary, #f97316) 20%, white) 100%
+  );
+  box-shadow: 12px 0 0 rgba(249, 115, 22, 0.18);
+}
+
 @media (max-width: 720px) {
   .cv-layout {
     background: var(--cv-page-background, #f8fafc);
