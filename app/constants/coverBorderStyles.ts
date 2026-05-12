@@ -29,6 +29,11 @@ export type CoverBorderStyleId =
   | 'platinum-inset-frame'
   | 'gradient-silk-sash'
   | 'architect-blueprint-lines'
+  | 'prism-edge-frame'
+  | 'champagne-corner-filigree'
+  | 'editorial-ink-brackets'
+  | 'aurora-glass-panel'
+  | 'obsidian-gold-gate'
 
 export type CoverBorderAccentPlacement =
   | 'right-swoosh'
@@ -61,6 +66,11 @@ export type CoverBorderAccentPlacement =
   | 'inset-frame'
   | 'silk-sash'
   | 'blueprint-lines'
+  | 'prism-edge'
+  | 'corner-filigree'
+  | 'ink-brackets'
+  | 'glass-panel'
+  | 'gold-gate'
 
 export type CoverBorderStyle = {
   id: CoverBorderStyleId
@@ -390,6 +400,62 @@ export const COVER_BORDER_STYLES: CoverBorderStyle[] = [
     cssVars: {
       '--cover-border-blueprint-step': '28px',
       '--cover-border-blueprint-opacity': '0.18',
+    },
+  },
+
+  {
+    id: 'prism-edge-frame',
+    name: 'Prism edge frame',
+    className: 'cover-border--prism-edge-frame',
+    accentPlacement: 'prism-edge',
+    recommendedPalettes: ['aurora', 'sky-light', 'ocean'],
+    cssVars: {
+      '--cover-border-prism-depth': '30px',
+      '--cover-border-prism-opacity': '0.34',
+    },
+  },
+  {
+    id: 'champagne-corner-filigree',
+    name: 'Champagne corner filigree',
+    className: 'cover-border--champagne-corner-filigree',
+    accentPlacement: 'corner-filigree',
+    recommendedPalettes: ['elegant', 'ivory-light', 'amber'],
+    cssVars: {
+      '--cover-border-filigree-size': '172px',
+      '--cover-border-filigree-weight': '2px',
+    },
+  },
+  {
+    id: 'editorial-ink-brackets',
+    name: 'Editorial ink brackets',
+    className: 'cover-border--editorial-ink-brackets',
+    accentPlacement: 'ink-brackets',
+    recommendedPalettes: ['graphite', 'classic', 'slate'],
+    cssVars: {
+      '--cover-border-bracket-length': '160px',
+      '--cover-border-bracket-weight': '7px',
+    },
+  },
+  {
+    id: 'aurora-glass-panel',
+    name: 'Aurora glass panel',
+    className: 'cover-border--aurora-glass-panel',
+    accentPlacement: 'glass-panel',
+    recommendedPalettes: ['aurora', 'plum', 'sky-light'],
+    cssVars: {
+      '--cover-border-panel-width': '190px',
+      '--cover-border-panel-blur': '18px',
+    },
+  },
+  {
+    id: 'obsidian-gold-gate',
+    name: 'Obsidian gold gate',
+    className: 'cover-border--obsidian-gold-gate',
+    accentPlacement: 'gold-gate',
+    recommendedPalettes: ['charcoal', 'executive', 'amber'],
+    cssVars: {
+      '--cover-border-gate-width': '76px',
+      '--cover-border-gate-gap': '18px',
     },
   },
   {
