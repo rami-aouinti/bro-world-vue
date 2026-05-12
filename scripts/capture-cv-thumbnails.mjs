@@ -44,7 +44,7 @@ await page.route('https://fonts.googleapis.com/**', async (route) => {
 await page.route('https://fonts.gstatic.com/**', async (route) => {
   await route.abort()
 })
-const CAPTURE_MAX_HEIGHT = 1500
+const CAPTURE_MAX_HEIGHT = 1000
 const CAPTURE_MAX_WIDTH = 1200
 
 for (const tpl of generatedCvTemplates) {
