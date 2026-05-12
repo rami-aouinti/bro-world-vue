@@ -1157,6 +1157,22 @@ function getSectionItems(rawSection: string): string[] {
     return `${label}${suffix}`
   }
 
+  if (key === 'contact') {
+    const info = data.resumeInformation || {}
+    const contactItems = [
+      ['Email', info.email || data.email],
+      ['Phone', info.phone || data.phone],
+      ['Address', info.adresse || data.location],
+      ['Home', info.homepage || data.homepage],
+      ['Portfolio', info.repo_profile || data.repositoryPage],
+    ]
+      .map(([label, value]) =>
+        value ? `${label}: ${String(value).replace(/^https?:\/\//, '')}` : '',
+      )
+      .filter(Boolean)
+    return [...contactItems, ...extra]
+  }
+
   if (key === 'experience') {
     const isStackedDates =
       effectiveSectionType(key, sectionType(key as any)) ===
@@ -2904,7 +2920,10 @@ watch(
               <div
                 v-for="section in visibleAsideOneSections"
                 :key="`aside-s1-${section}`"
-                :class="['cv-aside-section-item']"
+                :class="[
+                  'cv-aside-section-item',
+                  `cv-aside-section-item--${toSectionKey(section)}`,
+                ]"
                 :style="sectionOffsetStyle('asideOne', section)"
                 draggable="true"
                 @mouseenter="

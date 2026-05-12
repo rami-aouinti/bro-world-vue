@@ -227,6 +227,28 @@
   position: relative;
 }
 
+.cv-aside-panel :deep(.cv-aside-section-item--contact) {
+  padding: 16px 16px 14px;
+  border-radius: 26px 0 26px 26px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 3px solid var(--cv-secondary, #fb8500);
+  box-shadow: 12px 12px 0
+    color-mix(in srgb, var(--cv-primary, #201a1c) 86%, transparent);
+}
+
+.cv-aside-panel :deep(.cv-aside-section-item--contact .cv-section-title-shell) {
+  width: 100%;
+  box-shadow: none;
+  border-radius: 999px;
+}
+
+.cv-aside-panel :deep(.cv-aside-section-item--contact .cv-rich-item),
+.cv-aside-panel :deep(.cv-aside-section-item--contact .cv-rich-editor),
+.cv-aside-panel :deep(.cv-aside-section-item--contact p) {
+  color: var(--cv-primary, #201a1c) !important;
+  font-weight: 800;
+}
+
 @media (max-width: 720px) {
   .cv-grid {
     grid-template-columns: 1fr;

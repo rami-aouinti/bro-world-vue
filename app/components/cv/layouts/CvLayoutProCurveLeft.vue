@@ -243,6 +243,27 @@
     0 0 0 10px rgba(255, 255, 255, 0.9);
 }
 
+.cv-aside-panel :deep(.cv-aside-section-item--contact) {
+  margin: 8px 4px 18px 0;
+  padding: 14px 14px 12px;
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--cv-secondary, #f97316) 92%, white);
+  color: var(--cv-primary, #101827) !important;
+  box-shadow: 10px 10px 0 rgba(255, 255, 255, 0.14);
+}
+
+.cv-aside-panel :deep(.cv-aside-section-item--contact .cv-section-title-shell) {
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: var(--cv-primary, #101827) !important;
+}
+
+.cv-aside-panel :deep(.cv-aside-section-item--contact .cv-rich-item),
+.cv-aside-panel :deep(.cv-aside-section-item--contact .cv-rich-editor),
+.cv-aside-panel :deep(.cv-aside-section-item--contact p) {
+  color: var(--cv-primary, #101827) !important;
+  font-weight: 800;
+}
+
 @media (max-width: 720px) {
   .cv-layout {
     background: var(--cv-page-background, #f8fafc);

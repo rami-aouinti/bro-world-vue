@@ -213,6 +213,27 @@
     0 0 0 34px rgba(255, 255, 255, 0.92);
 }
 
+.cv-aside-panel :deep(.cv-aside-section-item--contact) {
+  padding: 15px 14px;
+  border-radius: 24px;
+  background: #fff;
+  border: 2px solid color-mix(in srgb, var(--cv-secondary, #b91c1c) 54%, white);
+  box-shadow: -10px 10px 0
+    color-mix(in srgb, var(--cv-primary, #1f2933) 14%, transparent);
+}
+
+.cv-aside-panel :deep(.cv-aside-section-item--contact .cv-section-title-shell) {
+  width: 100%;
+  box-shadow: -10px 0 0 var(--cv-primary, #1f2933);
+}
+
+.cv-aside-panel :deep(.cv-aside-section-item--contact .cv-rich-item),
+.cv-aside-panel :deep(.cv-aside-section-item--contact .cv-rich-editor),
+.cv-aside-panel :deep(.cv-aside-section-item--contact p) {
+  color: var(--cv-primary, #1f2933) !important;
+  font-weight: 800;
+}
+
 @media (max-width: 720px) {
   .cv-page-grid {
     grid-template-columns: 1fr;

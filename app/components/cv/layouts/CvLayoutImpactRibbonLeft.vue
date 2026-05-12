@@ -246,6 +246,26 @@
     0 0 0 18px var(--cv-primary, #111827);
 }
 
+.cv-aside-panel :deep(.cv-aside-section-item--contact) {
+  margin: 0 0 24px;
+  padding: 16px 14px;
+  border-radius: 0 28px 28px 0;
+  background: var(--cv-secondary, #ef233c);
+  color: #fff !important;
+  box-shadow: 12px 12px 0 rgba(255, 255, 255, 0.1);
+}
+
+.cv-aside-panel :deep(.cv-aside-section-item--contact .cv-section-title-shell) {
+  border-bottom-color: rgba(255, 255, 255, 0.82);
+}
+
+.cv-aside-panel :deep(.cv-aside-section-item--contact .cv-rich-item),
+.cv-aside-panel :deep(.cv-aside-section-item--contact .cv-rich-editor),
+.cv-aside-panel :deep(.cv-aside-section-item--contact p) {
+  color: #fff !important;
+  font-weight: 800;
+}
+
 @media (max-width: 720px) {
   .cv-layout::before {
     width: 100%;
