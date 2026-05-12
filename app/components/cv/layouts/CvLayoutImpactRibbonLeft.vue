@@ -21,10 +21,15 @@
   isolation: isolate;
   width: 100%;
   min-height: 1123px;
-  overflow: hidden;
+  overflow: hidden !important;
+  contain: paint;
   background: var(--cv-page-background, #ffffff);
   color: var(--cv-page-text, #111827);
   border: 1px solid rgba(15, 23, 42, 0.18);
+}
+
+.cv-layout * {
+  box-sizing: border-box;
 }
 
 .cv-layout::before,
@@ -39,15 +44,15 @@
 
 .cv-layout::before {
   inset: 0 auto 0 0;
-  width: 36%;
+  width: min(34%, 270px);
   background: var(--cv-primary, #111827);
 }
 
 .cv-layout::after {
-  top: -115px;
-  left: -78px;
-  width: 455px;
-  height: 455px;
+  top: -86px;
+  left: -66px;
+  width: 335px;
+  height: 335px;
   border-radius: 50%;
   background: var(--cv-secondary, #ef233c);
   transform: rotate(-8deg);
@@ -56,41 +61,41 @@
 .cv-blob--photo {
   top: -78px;
   left: -108px;
-  width: 355px;
-  height: 455px;
+  width: 265px;
+  height: 360px;
   border-radius: 47% 42% 58% 52%;
   background: var(--cv-primary, #111827);
   box-shadow:
-    92px 44px 0 -6px var(--cv-primary, #111827),
-    118px 52px 0 18px var(--cv-secondary, #ef233c),
-    148px 78px 0 44px rgba(255, 255, 255, 0.98);
+    58px 34px 0 -10px var(--cv-primary, #111827),
+    78px 44px 0 8px var(--cv-secondary, #ef233c),
+    102px 62px 0 24px rgba(255, 255, 255, 0.98);
 }
 
 .cv-blob--mid {
-  left: -96px;
-  top: 344px;
-  width: 340px;
-  height: 300px;
+  left: -86px;
+  top: 366px;
+  width: 245px;
+  height: 240px;
   border-radius: 44% 36% 58% 42%;
   background: var(--cv-primary, #111827);
-  box-shadow: 80px 44px 0 36px var(--cv-secondary, #ef233c);
+  box-shadow: 58px 36px 0 24px var(--cv-secondary, #ef233c);
 }
 
 .cv-blob--bottom {
-  left: -115px;
-  bottom: -190px;
-  width: 430px;
-  height: 510px;
+  left: -96px;
+  bottom: -120px;
+  width: 310px;
+  height: 360px;
   border-radius: 50%;
   background: var(--cv-primary, #111827);
-  box-shadow: 95px -18px 0 50px var(--cv-secondary, #ef233c);
+  box-shadow: 64px -14px 0 34px var(--cv-secondary, #ef233c);
 }
 
 .cv-ribbon--contact {
   top: 252px;
   left: 0;
-  width: 342px;
-  height: 145px;
+  width: min(300px, 38%);
+  height: 122px;
   background: var(--cv-secondary, #ef233c);
   clip-path: polygon(0 0, 83% 12%, 100% 50%, 83% 88%, 0 100%);
   box-shadow: 0 16px 0
@@ -110,13 +115,13 @@
 
 .cv-aside-panel {
   min-width: 0;
-  padding: 248px 28px 34px 28px;
+  padding: 226px 24px 34px 24px;
   color: #fff;
 }
 
 .cv-body {
   min-width: 0;
-  padding: 64px 44px 44px 34px;
+  padding: 54px 40px 42px 30px;
 }
 
 .cv-header {

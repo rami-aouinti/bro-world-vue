@@ -21,7 +21,8 @@
   isolation: isolate;
   width: 100%;
   min-height: 1123px;
-  overflow: hidden;
+  overflow: hidden !important;
+  contain: paint;
   background:
     radial-gradient(
       circle at 86% 9%,
@@ -31,6 +32,10 @@
     var(--cv-page-background, #ffffff);
   color: var(--cv-page-text, #1f2937);
   border: 1px solid rgba(15, 23, 42, 0.18);
+}
+
+.cv-layout * {
+  box-sizing: border-box;
 }
 
 .cv-layout::before,
@@ -43,10 +48,10 @@
 }
 
 .cv-layout::before {
-  top: -135px;
-  left: -65px;
-  width: 560px;
-  height: 530px;
+  top: -108px;
+  left: -54px;
+  width: 420px;
+  height: 390px;
   border-radius: 48% 52% 58% 42%;
   background: var(--cv-primary, #201a1c);
   box-shadow:
@@ -55,12 +60,12 @@
 }
 
 .cv-layout::after {
-  top: -52px;
-  right: -108px;
-  width: 390px;
-  height: 430px;
+  top: -36px;
+  right: -54px;
+  width: 260px;
+  height: 290px;
   border-radius: 50%;
-  border: 30px solid var(--cv-secondary, #fb8500);
+  border: 22px solid var(--cv-secondary, #fb8500);
   box-shadow:
     -34px 26px 0 -4px #fff,
     -66px 54px 0 2px var(--cv-secondary, #fb8500),
@@ -70,18 +75,18 @@
 .cv-wave--top-left {
   top: 138px;
   left: -36px;
-  width: 520px;
-  height: 220px;
+  width: 405px;
+  height: 170px;
   border-radius: 0 0 80% 0;
   background: var(--cv-secondary, #fb8500);
   transform: skewY(-4deg);
 }
 
 .cv-wave--center {
-  top: 292px;
-  right: 72px;
-  width: 360px;
-  height: 330px;
+  top: 315px;
+  right: 58px;
+  width: 260px;
+  height: 245px;
   border-radius: 48% 52% 50% 50%;
   background: var(--cv-primary, #201a1c);
   box-shadow:
@@ -90,19 +95,19 @@
 }
 
 .cv-wave--right {
-  top: 410px;
-  right: -158px;
-  width: 420px;
-  height: 260px;
+  top: 430px;
+  right: -92px;
+  width: 285px;
+  height: 190px;
   border-radius: 50%;
   background: var(--cv-secondary, #fb8500);
 }
 
 .cv-wave--bottom {
   left: -20px;
-  bottom: -98px;
-  width: 56%;
-  height: 165px;
+  bottom: -58px;
+  width: 50%;
+  height: 118px;
   border-radius: 50% 50% 0 0;
   background: var(--cv-secondary, #fb8500);
   box-shadow: 0 -18px 0 var(--cv-primary, #201a1c);
@@ -137,11 +142,11 @@
 .cv-left :deep(.cv-sections-list) {
   grid-template-columns: 1fr;
   gap: 18px;
-  margin-top: 172px;
+  margin-top: 116px;
 }
 
 .cv-aside-panel {
-  padding-top: 202px;
+  padding-top: 172px;
   color: var(--cv-primary, #201a1c);
 }
 
@@ -210,7 +215,7 @@
 }
 
 .cv-header :deep(.cv-header-avatar) {
-  transform: translate(390px, -12px);
+  transform: none;
   box-shadow:
     0 0 0 8px #d1d5db,
     0 0 0 14px var(--cv-primary, #201a1c),

@@ -20,10 +20,15 @@
   isolation: isolate;
   width: 100%;
   min-height: 1123px;
-  overflow: hidden;
+  overflow: hidden !important;
+  contain: paint;
   background: var(--cv-page-background, #fff);
   color: var(--cv-page-text, #1f2937);
   border: 1px solid rgba(15, 23, 42, 0.2);
+}
+
+.cv-layout * {
+  box-sizing: border-box;
 }
 
 .cv-layout::before,
@@ -36,20 +41,20 @@
 
 .cv-layout::before {
   z-index: 0;
-  top: -128px;
+  top: -108px;
   left: 0;
   width: 100%;
-  height: 330px;
+  height: 270px;
   background: var(--cv-secondary, #b91c1c);
   clip-path: ellipse(68% 42% at 50% 0%);
 }
 
 .cv-layout::after {
   z-index: 0;
-  top: -70px;
-  left: 74px;
-  width: 86%;
-  height: 270px;
+  top: -56px;
+  left: 62px;
+  width: 84%;
+  height: 220px;
   border-radius: 0 0 50% 50%;
   border-bottom: 34px solid var(--cv-primary, #1f2933);
   transform: rotate(-2deg);
@@ -61,10 +66,10 @@
 
 .cv-stripe--top {
   z-index: 0;
-  top: 74px;
-  left: -120px;
-  width: 440px;
-  height: 240px;
+  top: 86px;
+  left: -92px;
+  width: 320px;
+  height: 190px;
   border-radius: 50%;
   background: var(--cv-primary, #1f2933);
   transform: rotate(-20deg);
@@ -83,10 +88,10 @@
 
 .cv-stripe--bottom {
   z-index: 0;
-  right: -145px;
-  bottom: -98px;
-  width: 440px;
-  height: 250px;
+  right: -95px;
+  bottom: -62px;
+  width: 310px;
+  height: 190px;
   border-radius: 50%;
   border: 12px solid var(--cv-secondary, #b91c1c);
   box-shadow:
@@ -107,12 +112,12 @@
 
 .cv-aside-panel {
   min-width: 0;
-  padding: 270px 22px 36px 32px;
+  padding: 236px 22px 36px 28px;
 }
 
 .cv-main-wrap {
   min-width: 0;
-  padding: 64px 42px 42px 10px;
+  padding: 54px 40px 42px 14px;
 }
 
 .cv-header {
@@ -201,7 +206,7 @@
 }
 
 .cv-header :deep(.cv-header-avatar) {
-  transform: translate(-410px, 34px);
+  transform: none;
   box-shadow:
     0 0 0 12px #fff,
     0 0 0 28px var(--cv-primary, #1f2933),

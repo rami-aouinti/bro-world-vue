@@ -23,12 +23,17 @@
   isolation: isolate;
   width: 100%;
   min-height: 1123px;
-  overflow: hidden;
+  overflow: hidden !important;
+  contain: paint;
   background:
     linear-gradient(90deg, var(--cv-primary, #101827) 0 30%, transparent 30%),
     var(--cv-page-background, #f8fafc);
   color: var(--cv-page-text, #111827);
   border: 1px solid rgba(148, 163, 184, 0.42);
+}
+
+.cv-layout * {
+  box-sizing: border-box;
 }
 
 .cv-layout__ambient {
@@ -39,18 +44,18 @@
 }
 
 .cv-layout__ambient--top {
-  top: -116px;
-  right: -102px;
-  width: 360px;
-  height: 220px;
+  top: -72px;
+  right: -54px;
+  width: 270px;
+  height: 170px;
   background: color-mix(in srgb, var(--cv-secondary, #f97316) 20%, white);
 }
 
 .cv-layout__ambient--bottom {
   left: 19%;
-  bottom: -120px;
-  width: 260px;
-  height: 260px;
+  bottom: -70px;
+  width: 190px;
+  height: 190px;
   background: color-mix(in srgb, var(--cv-secondary, #f97316) 16%, transparent);
 }
 
@@ -78,9 +83,9 @@
 .cv-header__accent-swoosh {
   z-index: 1;
   top: 0;
-  right: -34px;
-  width: 72%;
-  height: 146px;
+  right: 0;
+  width: 68%;
+  height: 136px;
   background: var(--cv-secondary, #f97316);
   border-bottom-left-radius: 210px 92px;
   border-bottom-right-radius: 64px;
@@ -91,7 +96,7 @@
 .cv-header__accent-swoosh--shadow {
   z-index: 0;
   top: 126px;
-  right: -30px;
+  right: 0;
   height: 36px;
   background: color-mix(in srgb, var(--cv-primary, #101827) 8%, white);
   box-shadow: none;
@@ -123,7 +128,7 @@
   padding: 18px 16px 34px 18px;
   color: #fff;
   background: var(--cv-primary, #101827);
-  border-bottom-right-radius: 92% 170px;
+  border-bottom-right-radius: 58px;
 }
 
 .cv-aside-panel::after {
@@ -131,8 +136,8 @@
   position: absolute;
   right: -1px;
   bottom: -1px;
-  width: 54%;
-  height: 250px;
+  width: 42%;
+  height: 170px;
   background: var(--cv-page-background, #f8fafc);
   border-top-left-radius: 100% 240px;
 }
