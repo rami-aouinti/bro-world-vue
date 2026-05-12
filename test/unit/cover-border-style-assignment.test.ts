@@ -19,6 +19,11 @@ const newPremiumBorderStyleIds = [
   'platinum-inset-frame',
   'gradient-silk-sash',
   'architect-blueprint-lines',
+  'prism-edge-frame',
+  'champagne-corner-filigree',
+  'editorial-ink-brackets',
+  'aurora-glass-panel',
+  'obsidian-gold-gate',
 ]
 
 describe('generated cover border style assignments', () => {
@@ -53,19 +58,19 @@ describe('generated cover border style assignments', () => {
     expect(usedStyleIds).toEqual(new Set(Object.keys(COVER_BORDER_STYLE_BY_ID)))
   })
 
-  it('adds 10 new premium cover page and cover letter templates', () => {
-    const coverPageAdditions = GENERATED_COVER_PAGE_TEMPLATES.slice(-10)
-    const coverLetterAdditions = GENERATED_COVER_LETTER_TEMPLATES.slice(-10)
+  it('adds 15 new premium cover page and cover letter templates', () => {
+    const coverPageAdditions = GENERATED_COVER_PAGE_TEMPLATES.slice(-15)
+    const coverLetterAdditions = GENERATED_COVER_LETTER_TEMPLATES.slice(-15)
 
     expect(coverPageAdditions.map((template) => template.id)).toEqual(
       Array.from(
-        { length: 10 },
+        { length: 15 },
         (_, index) => `cpage-${String(index + 43).padStart(3, '0')}`,
       ),
     )
     expect(coverLetterAdditions.map((template) => template.id)).toEqual(
       Array.from(
-        { length: 10 },
+        { length: 15 },
         (_, index) => `cletter-${String(index + 43).padStart(3, '0')}`,
       ),
     )
