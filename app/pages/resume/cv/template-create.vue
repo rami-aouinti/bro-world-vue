@@ -41,6 +41,12 @@ import HoverRichTextEditor from '~/components/Resume/Create/HoverRichTextEditor.
 import ResumePreviewToolbar from '~/components/ResumePreviewToolbar.vue'
 import ResumePreviewPageBreak from '~/components/ResumePreviewPageBreak.vue'
 import CvEditableSectionBlock from '~/components/cv/sections/CvEditableSectionBlock.vue'
+import {
+  CV_CONTACT_ICON_OPTIONS,
+  CV_SECTION_ICON_OPTIONS,
+  cvIcon,
+  cvIconTitle,
+} from '~/utils/cvIconAssets'
 
 const { t } = useI18n()
 
@@ -858,7 +864,7 @@ function confirmAddSection() {
     ...addSectionVariantOptions.map((v) => v.value),
   ]
   sectionTypeOverrides[key] = addSectionVariant.value
-  fallbackSectionIconMap[key] = 'mdi-text-box-outline'
+  fallbackSectionIconMap[key] = cvIcon('profile-summary')
   editableSectionItems[key] = ['Label name · Label value']
   addSectionModalOpen.value = false
 }
@@ -1028,9 +1034,15 @@ function getSectionIconOptions(sectionKey: string) {
   const section = normalizedTemplate.value.sections.find(
     (item) => item.key === toSectionKey(sectionKey),
   )
-  return [sectionIcon(sectionKey), ...(section?.iconAlternatives || [])]
+  return [
+    sectionIcon(sectionKey),
+    ...(CV_SECTION_ICON_OPTIONS[
+      toSectionKey(sectionKey) as keyof typeof CV_SECTION_ICON_OPTIONS
+    ] || []),
+    ...(section?.iconAlternatives || []),
+  ]
     .filter((icon, index, icons) => icon && icons.indexOf(icon) === index)
-    .map((icon) => ({ title: icon, value: icon }))
+    .map((icon) => ({ title: cvIconTitle(icon), value: icon }))
 }
 
 function setSectionIcon(sectionKey: string, icon: unknown) {
@@ -1280,30 +1292,40 @@ watch(
 
 const contactIconOverrides = reactive<Record<string, string>>({})
 const contactIconAlternatives: Record<string, string[]> = {
-  email: ['mdi-email-outline', 'mdi-email', 'mdi-at', 'mdi-email-open-outline'],
+  email: [
+    cvIcon('email'),
+    ...CV_CONTACT_ICON_OPTIONS.email,
+    'mdi-email-outline',
+    'mdi-at',
+  ],
   phone: [
+    cvIcon('phone'),
+    ...CV_CONTACT_ICON_OPTIONS.phone,
     'mdi-phone-outline',
-    'mdi-phone',
     'mdi-cellphone',
-    'mdi-phone-classic',
   ],
   birthDate: [
+    cvIcon('birthday'),
+    ...CV_CONTACT_ICON_OPTIONS.birthDate,
     'mdi-cake-variant-outline',
-    'mdi-cake-variant',
-    'mdi-calendar-heart',
     'mdi-calendar-outline',
   ],
   adresse: [
+    cvIcon('location'),
+    ...CV_CONTACT_ICON_OPTIONS.adresse,
     'mdi-map-marker-outline',
-    'mdi-map-marker',
-    'mdi-map-marker-radius',
     'mdi-home-map-marker',
   ],
-  homepage: ['mdi-home-outline', 'mdi-home', 'mdi-web', 'mdi-link-variant'],
+  homepage: [
+    cvIcon('homepage'),
+    ...CV_CONTACT_ICON_OPTIONS.homepage,
+    'mdi-home-outline',
+    'mdi-web',
+  ],
   repo_profile: [
+    cvIcon('github'),
+    ...CV_CONTACT_ICON_OPTIONS.repo_profile,
     'mdi-github',
-    'mdi-git',
-    'mdi-source-repository',
     'mdi-gitlab',
   ],
 }
@@ -1325,7 +1347,7 @@ const headerProfile = computed(() => {
     contact: [
       {
         key: 'email',
-        icon: contactIconOverrides.email || 'mdi-email-outline',
+        icon: contactIconOverrides.email || cvIcon('email'),
         type: 'text',
         label: '',
         value:
@@ -1334,7 +1356,7 @@ const headerProfile = computed(() => {
       },
       {
         key: 'phone',
-        icon: contactIconOverrides.phone || 'mdi-phone-outline',
+        icon: contactIconOverrides.phone || cvIcon('phone'),
         type: 'text',
         label: '',
         value:
@@ -1343,7 +1365,7 @@ const headerProfile = computed(() => {
       },
       {
         key: 'birthDate',
-        icon: contactIconOverrides.birthDate || 'mdi-cake-variant-outline',
+        icon: contactIconOverrides.birthDate || cvIcon('birthday'),
         type: 'text',
         label: '',
         value:
@@ -1352,7 +1374,7 @@ const headerProfile = computed(() => {
       },
       {
         key: 'adresse',
-        icon: contactIconOverrides.adresse || 'mdi-map-marker-outline',
+        icon: contactIconOverrides.adresse || cvIcon('location'),
         type: 'text',
         label: '',
         value:
@@ -1361,7 +1383,7 @@ const headerProfile = computed(() => {
       },
       {
         key: 'homepage',
-        icon: contactIconOverrides.homepage || 'mdi-home-outline',
+        icon: contactIconOverrides.homepage || cvIcon('homepage'),
         type: 'link',
         label: 'Home Page',
         value:
@@ -1372,7 +1394,7 @@ const headerProfile = computed(() => {
       },
       {
         key: 'repo_profile',
-        icon: contactIconOverrides.repo_profile || 'mdi-github',
+        icon: contactIconOverrides.repo_profile || cvIcon('github'),
         type: 'link',
         label: 'Repository Profile',
         value:
@@ -2336,7 +2358,7 @@ watch(
                       variant="text"
                       class="cv-contact-icon-btn"
                     >
-                      <v-icon :icon="item.icon" size="16" />
+                      <CvSvgIcon :icon="item.icon" size="16" />
                     </v-btn>
                   </template>
                   <v-list density="compact" class="cv-icon-menu-list">
@@ -2345,11 +2367,11 @@ watch(
                         item.icon,
                       ]"
                       :key="`${item.key}-${altIcon}`"
-                      :title="altIcon"
+                      :title="cvIconTitle(altIcon)"
                       @click="updateContactIcon(item.key, altIcon)"
                     >
                       <template #prepend>
-                        <v-icon :icon="altIcon" size="16" />
+                        <CvSvgIcon :icon="altIcon" size="16" />
                       </template>
                     </v-list-item>
                   </v-list>
@@ -2412,7 +2434,7 @@ watch(
                             variant="text"
                             class="cv-contact-icon-btn"
                           >
-                            <v-icon :icon="item.icon" size="16" />
+                            <CvSvgIcon :icon="item.icon" size="16" />
                           </v-btn>
                         </template>
                         <v-list density="compact" class="cv-icon-menu-list">
@@ -2421,11 +2443,11 @@ watch(
                               item.key
                             ] || [item.icon]"
                             :key="`${item.key}-${altIcon}`"
-                            :title="altIcon"
+                            :title="cvIconTitle(altIcon)"
                             @click="updateContactIcon(item.key, altIcon)"
                           >
                             <template #prepend
-                              ><v-icon :icon="altIcon" size="16"
+                              ><CvSvgIcon :icon="altIcon" size="16"
                             /></template>
                           </v-list-item>
                         </v-list>
@@ -2645,7 +2667,7 @@ watch(
                             variant="text"
                             class="cv-contact-icon-btn"
                           >
-                            <v-icon :icon="item.icon" size="16" />
+                            <CvSvgIcon :icon="item.icon" size="16" />
                           </v-btn>
                         </template>
                         <v-list density="compact" class="cv-icon-menu-list">
@@ -2654,11 +2676,11 @@ watch(
                               item.key
                             ] || [item.icon]"
                             :key="`${item.key}-${altIcon}`"
-                            :title="altIcon"
+                            :title="cvIconTitle(altIcon)"
                             @click="updateContactIcon(item.key, altIcon)"
                           >
                             <template #prepend
-                              ><v-icon :icon="altIcon" size="16"
+                              ><CvSvgIcon :icon="altIcon" size="16"
                             /></template>
                           </v-list-item>
                         </v-list>
@@ -2804,7 +2826,7 @@ watch(
                             variant="text"
                             class="cv-contact-icon-btn"
                           >
-                            <v-icon :icon="item.icon" size="16" />
+                            <CvSvgIcon :icon="item.icon" size="16" />
                           </v-btn>
                         </template>
                         <v-list density="compact" class="cv-icon-menu-list">
@@ -2813,11 +2835,11 @@ watch(
                               item.key
                             ] || [item.icon]"
                             :key="`${item.key}-${altIcon}`"
-                            :title="altIcon"
+                            :title="cvIconTitle(altIcon)"
                             @click="updateContactIcon(item.key, altIcon)"
                           >
                             <template #prepend
-                              ><v-icon :icon="altIcon" size="16"
+                              ><CvSvgIcon :icon="altIcon" size="16"
                             /></template>
                           </v-list-item>
                         </v-list>
