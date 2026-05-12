@@ -42,6 +42,11 @@ const COVER_BORDER_STYLE_CLASS_MAP = {
   'platinum-inset-frame': 'cover-border--platinum-inset-frame',
   'gradient-silk-sash': 'cover-border--gradient-silk-sash',
   'architect-blueprint-lines': 'cover-border--architect-blueprint-lines',
+  'prism-edge-frame': 'cover-border--prism-edge-frame',
+  'champagne-corner-filigree': 'cover-border--champagne-corner-filigree',
+  'editorial-ink-brackets': 'cover-border--editorial-ink-brackets',
+  'aurora-glass-panel': 'cover-border--aurora-glass-panel',
+  'obsidian-gold-gate': 'cover-border--obsidian-gold-gate',
 } as const
 
 type CoverBorderStyleId = keyof typeof COVER_BORDER_STYLE_CLASS_MAP
