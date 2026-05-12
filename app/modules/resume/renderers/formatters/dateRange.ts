@@ -32,7 +32,7 @@ export function formatDateRange(startDate: unknown, endDate: unknown): string {
   }
 
   if (formattedStart) {
-    return `${formattedStart} – Present`
+    return `${formattedStart} – Now`
   }
 
   if (formattedEnd) {

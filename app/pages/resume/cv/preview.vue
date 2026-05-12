@@ -1016,6 +1016,7 @@ function effectiveSectionType(section: string, fallback: string) {
 function formatShortDate(value: any) {
   if (!value) return ''
   const str = String(value)
+  if (str.toLowerCase() === 'present') return 'Now'
   const parts = str.split('-')
   if (parts.length >= 2) return `${parts[1]}.${parts[0].slice(2)}`
   return str
@@ -1154,7 +1155,7 @@ function getSectionItems(rawSection: string): string[] {
       'timeline-stacked-dates'
     const toExperienceItem = (item: any) => {
       const from = formatShortDate(item.startDate)
-      const to = item.endDate ? formatShortDate(item.endDate) : 'Present'
+      const to = item.endDate ? formatShortDate(item.endDate) : 'Now'
       const date = from
         ? isStackedDates
           ? `${from}\n${to}`
