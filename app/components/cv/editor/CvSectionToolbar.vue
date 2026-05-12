@@ -218,7 +218,7 @@ const titleStyleIcon = computed(
   position: absolute;
   top: 4px;
   right: 4px;
-  z-index: 120;
+  z-index: 2600;
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
