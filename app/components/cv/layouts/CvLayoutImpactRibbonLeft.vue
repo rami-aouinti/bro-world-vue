@@ -266,6 +266,94 @@
   font-weight: 800;
 }
 
+/* Polished editorial pass: slim left rail, clean red ribbon language. */
+.cv-layout--impact-ribbon-left::after {
+  top: -74px;
+  left: -58px;
+  width: 270px;
+  height: 270px;
+  opacity: 0.95;
+}
+
+.cv-layout--impact-ribbon-left .cv-blob--photo {
+  width: 220px;
+  height: 300px;
+  box-shadow:
+    46px 26px 0 -8px var(--cv-primary, #111827),
+    66px 36px 0 8px var(--cv-secondary, #ef233c),
+    84px 54px 0 22px #fff;
+}
+
+.cv-layout--impact-ribbon-left .cv-blob--mid,
+.cv-layout--impact-ribbon-left .cv-blob--bottom,
+.cv-layout--impact-ribbon-left .cv-ribbon--contact {
+  opacity: 0.9;
+}
+
+.cv-layout--impact-ribbon-left .cv-blob--mid {
+  width: 205px;
+  height: 205px;
+}
+
+.cv-layout--impact-ribbon-left .cv-blob--bottom {
+  width: 260px;
+  height: 300px;
+}
+
+.cv-layout--impact-ribbon-left .cv-body {
+  padding: 54px 46px 44px 36px;
+}
+
+.cv-layout--impact-ribbon-left .cv-aside-panel {
+  padding: 220px 24px 34px 24px;
+}
+
+.cv-layout--impact-ribbon-left .cv-main :deep(.cv-section-row) {
+  padding-left: 46px;
+}
+
+.cv-layout--impact-ribbon-left .cv-main :deep(.cv-section-title-shell) {
+  border: 0;
+  padding: 9px 18px;
+  border-radius: 4px;
+  background: #fff !important;
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb, var(--cv-secondary, #ef233c) 72%, white),
+    0 1px 0 color-mix(in srgb, var(--cv-primary, #111827) 36%, transparent);
+}
+
+.cv-layout--impact-ribbon-left .cv-header :deep(.cv-header-contact) {
+  display: none;
+}
+
+.cv-layout--impact-ribbon-left .cv-header :deep(.cv-header-layout--header-left),
+.cv-layout--impact-ribbon-left
+  .cv-header
+  :deep(.cv-header-layout--header-right) {
+  grid-template-columns: 1fr;
+}
+
+.cv-layout--impact-ribbon-left .cv-header :deep(.cv-header-identity) {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.cv-layout--impact-ribbon-left .cv-main :deep(.cv-section-row) {
+  margin-bottom: 16px;
+  padding-top: 8px;
+  border-radius: 18px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.92),
+    rgba(255, 255, 255, 0)
+  );
+}
+
+.cv-layout--impact-ribbon-left .cv-main :deep(.cv-section-title-shell) {
+  color: var(--cv-secondary, #ef233c) !important;
+  text-transform: uppercase;
+}
+
 @media (max-width: 720px) {
   .cv-layout::before {
     width: 100%;

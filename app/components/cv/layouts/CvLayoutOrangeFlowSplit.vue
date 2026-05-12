@@ -6,11 +6,11 @@
     <div class="cv-wave cv-wave--bottom" />
 
     <section class="cv-grid">
+      <aside class="cv-aside-panel"><slot name="aside" /></aside>
       <main class="cv-left">
         <header class="cv-header"><slot name="header" /></header>
         <slot name="content" />
       </main>
-      <aside class="cv-aside-panel"><slot name="aside" /></aside>
     </section>
   </div>
 </template>
@@ -247,6 +247,82 @@
 .cv-aside-panel :deep(.cv-aside-section-item--contact p) {
   color: var(--cv-primary, #201a1c) !important;
   font-weight: 800;
+}
+
+/* Polished editorial pass: contact stays left, orange waves are decorative not dominant. */
+.cv-layout--orange-flow-split {
+  background:
+    linear-gradient(
+      90deg,
+      var(--cv-primary, #201a1c) 0 var(--cv-aside-width, 272px),
+      var(--cv-page-background, #fff) var(--cv-aside-width, 272px)
+    ),
+    var(--cv-page-background, #fff);
+}
+
+.cv-layout--orange-flow-split::before {
+  width: 360px;
+  height: 320px;
+  opacity: 0.96;
+}
+
+.cv-layout--orange-flow-split::after {
+  width: 225px;
+  height: 245px;
+  opacity: 0.9;
+}
+
+.cv-layout--orange-flow-split .cv-wave--top-left {
+  width: 320px;
+  height: 136px;
+  opacity: 0.92;
+}
+
+.cv-layout--orange-flow-split .cv-wave--center {
+  width: 210px;
+  height: 205px;
+  opacity: 0.86;
+}
+
+.cv-layout--orange-flow-split .cv-wave--right,
+.cv-layout--orange-flow-split .cv-wave--bottom {
+  opacity: 0.22;
+}
+
+.cv-layout--orange-flow-split .cv-grid {
+  grid-template-columns: minmax(230px, var(--cv-aside-width, 272px)) minmax(
+      0,
+      1fr
+    );
+  gap: 34px;
+  padding: 38px 38px 44px 30px;
+}
+
+.cv-layout--orange-flow-split .cv-aside-panel {
+  padding: 196px 18px 32px;
+  color: #fff;
+}
+
+.cv-layout--orange-flow-split .cv-left :deep(.cv-sections-list) {
+  margin-top: 86px;
+}
+
+.cv-layout--orange-flow-split .cv-left :deep(.cv-section-title-shell),
+.cv-layout--orange-flow-split .cv-aside-panel :deep(.cv-section-title-shell) {
+  border-radius: 999px 0 0 999px;
+  box-shadow: 10px 0 0
+    color-mix(in srgb, var(--cv-secondary, #fb8500) 42%, transparent);
+}
+
+.cv-layout--orange-flow-split .cv-header :deep(.cv-header-contact) {
+  display: none;
+}
+
+.cv-layout--orange-flow-split .cv-header :deep(.cv-header-layout--header-left),
+.cv-layout--orange-flow-split
+  .cv-header
+  :deep(.cv-header-layout--header-right) {
+  grid-template-columns: 1fr;
 }
 
 @media (max-width: 720px) {

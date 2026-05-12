@@ -234,6 +234,73 @@
   font-weight: 800;
 }
 
+/* Polished editorial pass: elegant red/navy arcs with a readable two-column page. */
+.cv-layout--prestige-swoop::before {
+  height: 230px;
+  opacity: 0.95;
+}
+
+.cv-layout--prestige-swoop::after {
+  height: 180px;
+  left: 54px;
+  width: 86%;
+}
+
+.cv-layout--prestige-swoop .cv-stripe--top {
+  width: 260px;
+  height: 158px;
+  opacity: 0.98;
+}
+
+.cv-layout--prestige-swoop .cv-stripe--inner {
+  top: 210px;
+  height: 520px;
+}
+
+.cv-layout--prestige-swoop .cv-stripe--bottom {
+  width: 260px;
+  height: 160px;
+  opacity: 0.82;
+}
+
+.cv-layout--prestige-swoop .cv-aside-panel {
+  padding: 230px 24px 36px 28px;
+}
+
+.cv-layout--prestige-swoop .cv-main-wrap {
+  padding: 52px 44px 42px 20px;
+}
+
+.cv-layout--prestige-swoop .cv-main :deep(.cv-section-title-shell),
+.cv-layout--prestige-swoop .cv-aside-panel :deep(.cv-section-title-shell) {
+  box-shadow: -14px 0 0 var(--cv-primary, #1f2933);
+}
+
+.cv-layout--prestige-swoop .cv-header :deep(.cv-header-contact) {
+  display: none;
+}
+
+.cv-layout--prestige-swoop .cv-header :deep(.cv-header-layout--header-left),
+.cv-layout--prestige-swoop .cv-header :deep(.cv-header-layout--header-right) {
+  grid-template-columns: 1fr;
+}
+
+.cv-layout--prestige-swoop .cv-header :deep(.cv-header-avatar) {
+  transform: translate(calc(-1 * var(--cv-aside-width, 245px) - 44px), 34px);
+  position: relative;
+  z-index: 3;
+}
+
+.cv-layout--prestige-swoop .cv-header :deep(.cv-header-identity) {
+  align-items: flex-start;
+  text-align: left;
+  padding-left: 40px;
+}
+
+.cv-layout--prestige-swoop .cv-main :deep(.cv-section-row) {
+  margin-bottom: 14px;
+}
+
 @media (max-width: 720px) {
   .cv-page-grid {
     grid-template-columns: 1fr;
