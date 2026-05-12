@@ -13,6 +13,7 @@ import CvLayoutAsideFullLeft from '~/components/cv/layouts/CvLayoutAsideFullLeft
 import CvLayoutAsideFullRight from '~/components/cv/layouts/CvLayoutAsideFullRight.vue'
 import CvLayoutAsideBarLeft from '~/components/cv/layouts/CvLayoutAsideBarLeft.vue'
 import CvLayoutAsideBarRight from '~/components/cv/layouts/CvLayoutAsideBarRight.vue'
+import CvLayoutProCurveLeft from '~/components/cv/layouts/CvLayoutProCurveLeft.vue'
 
 definePageMeta({ layout: false })
 
@@ -71,6 +72,7 @@ const cvLayoutComponentMap = {
   'aside-full-right': CvLayoutAsideFullRight,
   'aside-bar-left': CvLayoutAsideBarLeft,
   'aside-bar-right': CvLayoutAsideBarRight,
+  'pro-curve-left': CvLayoutProCurveLeft,
 } as const
 
 const activeLayoutComponent = computed(
@@ -149,7 +151,7 @@ function previewValue(key: string): string {
       <template #content>
         <div class="capture-content">
           <div
-            v-for="[sectionKey, sectionVariant] in sectionEntries"
+            v-for="[sectionKey] in sectionEntries"
             :key="sectionKey"
             class="capture-section"
           >
