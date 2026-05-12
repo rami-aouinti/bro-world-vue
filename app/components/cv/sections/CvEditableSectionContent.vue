@@ -444,13 +444,13 @@ function hobbyIcon(label: string) {
 .cv-rich-section--progress-circle-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px 18px;
-  justify-items: center;
+  place-items: start center;
 }
 
 .cv-rich-section--progress-circle-ring {
   grid-template-columns: repeat(auto-fit, minmax(54px, 1fr));
   gap: 12px;
-  justify-items: center;
+  place-items: start center;
 }
 
 .cv-hobby-icons {
@@ -624,18 +624,13 @@ function hobbyIcon(label: string) {
   margin-bottom: 14px;
 }
 
-.cv-rich-item--content-timeline-dots::before,
-.cv-rich-item--content-timeline-badges::before,
-.cv-rich-item--content-timeline-stacked-dates::before {
-  content: '';
-  position: absolute;
+.cv-rich-item--content-timeline-dots .cv-rich-timeline-dot,
+.cv-rich-item--content-timeline-badges .cv-rich-timeline-dot,
+.cv-rich-item--content-timeline-stacked-dates .cv-rich-timeline-dot {
   left: -22px;
   top: 6px;
   width: 11px;
   height: 11px;
-  border-radius: 999px;
-  border: 2px solid var(--cv-secondary, #93c5fd);
-  background: var(--cv-page-background, #fff);
 }
 
 .cv-rich-item--content-timeline-badges .cv-rich-editor--period {
@@ -653,6 +648,9 @@ function hobbyIcon(label: string) {
 }
 
 .cv-rich-item--content-timeline-stacked-dates .cv-rich-editor--period {
+  align-self: start;
+  justify-self: end;
+  width: fit-content;
   max-width: 42px;
   white-space: normal;
   line-height: 1.05;
@@ -662,10 +660,13 @@ function hobbyIcon(label: string) {
 }
 
 .cv-rich-item--date-stacked .cv-rich-editor--period {
+  align-self: start;
+  justify-self: end;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: fit-content;
   min-width: 42px;
   white-space: pre-line;
   text-align: center;
@@ -674,6 +675,10 @@ function hobbyIcon(label: string) {
 
 .cv-rich-item--date-badge-right .cv-rich-editor--period,
 .cv-rich-item--date-badge-left .cv-rich-editor--period {
+  align-self: start;
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
   border-radius: 999px;
   padding: 3px 8px;
   background: color-mix(in srgb, var(--cv-secondary, #ef4444) 78%, #111827);
@@ -703,6 +708,43 @@ function hobbyIcon(label: string) {
 
 .cv-rich-item--date-badge-left .cv-rich-editor--period {
   justify-self: end;
+}
+
+.cv-rich-item--content-timeline-date-badges.cv-rich-item--timeline-complex,
+.cv-rich-item--content-timeline-badges.cv-rich-item--timeline-complex,
+.cv-rich-item--content-timeline-stacked-dates.cv-rich-item--timeline-complex {
+  grid-template-columns: minmax(70px, 104px) minmax(0, 1fr);
+}
+
+.cv-rich-item--content-timeline-date-badges .cv-rich-editor--timeline-period,
+.cv-rich-item--content-timeline-badges .cv-rich-editor--timeline-period,
+.cv-rich-item--content-timeline-stacked-dates .cv-rich-editor--timeline-period {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.cv-rich-item--content-timeline-date-badges .cv-rich-timeline-body,
+.cv-rich-item--content-timeline-badges .cv-rich-timeline-body,
+.cv-rich-item--content-timeline-stacked-dates .cv-rich-timeline-body {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.cv-rich-item--content-timeline-date-badges.cv-rich-item--date-badge-right
+  .cv-rich-editor--timeline-period,
+.cv-rich-item--content-timeline-badges.cv-rich-item--date-badge-right
+  .cv-rich-editor--timeline-period,
+.cv-rich-item--content-timeline-stacked-dates.cv-rich-item--date-badge-right
+  .cv-rich-editor--timeline-period {
+  justify-self: end;
+}
+
+.cv-rich-item--content-timeline-stacked-dates.cv-rich-item--date-badge-right
+  .cv-rich-editor--timeline-period,
+.cv-rich-item--content-timeline-stacked-dates.cv-rich-item--date-badge-left
+  .cv-rich-editor--timeline-period {
+  border-radius: 18px;
+  white-space: pre-line;
 }
 
 .cv-rich-item--date-pill .cv-rich-editor--period {
@@ -797,6 +839,64 @@ function hobbyIcon(label: string) {
   grid-template-columns: minmax(0, 1fr) minmax(88px, 130px) 34px;
   align-items: center;
   gap: 8px;
+}
+
+.cv-rich-item--progress-circle-grid.cv-rich-item--leveled,
+.cv-rich-item--progress-circle-ring.cv-rich-item--leveled {
+  grid-template-columns: 1fr;
+  place-items: start center;
+  gap: 6px;
+  text-align: center;
+}
+
+.cv-rich-item--progress-circle-grid.cv-rich-item--leveled,
+.cv-rich-item--progress-circle-ring.cv-rich-item--leveled,
+.cv-rich-item--level-circle-grid.cv-rich-item--leveled,
+.cv-rich-item--level-circle-ring.cv-rich-item--leveled {
+  justify-self: center;
+  width: fit-content;
+  min-width: 54px;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.cv-rich-item--progress-circle-grid .cv-rich-editor--label,
+.cv-rich-item--progress-circle-ring .cv-rich-editor--label,
+.cv-rich-item--level-circle-grid .cv-rich-editor--label,
+.cv-rich-item--level-circle-ring .cv-rich-editor--label,
+.cv-rich-item--progress-circle-grid .cv-rich-circle,
+.cv-rich-item--progress-circle-ring .cv-rich-circle,
+.cv-rich-item--level-circle-grid .cv-rich-circle,
+.cv-rich-item--level-circle-ring .cv-rich-circle {
+  justify-self: center;
+  margin-inline: auto;
+}
+
+.cv-rich-item--progress-circle-grid
+  .cv-rich-editor--label
+  :deep(.hover-editor__content),
+.cv-rich-item--progress-circle-grid
+  .cv-rich-editor--label
+  :deep(.hover-editor__content p),
+.cv-rich-item--progress-circle-ring
+  .cv-rich-editor--label
+  :deep(.hover-editor__content),
+.cv-rich-item--progress-circle-ring
+  .cv-rich-editor--label
+  :deep(.hover-editor__content p),
+.cv-rich-item--level-circle-grid
+  .cv-rich-editor--label
+  :deep(.hover-editor__content),
+.cv-rich-item--level-circle-grid
+  .cv-rich-editor--label
+  :deep(.hover-editor__content p),
+.cv-rich-item--level-circle-ring
+  .cv-rich-editor--label
+  :deep(.hover-editor__content),
+.cv-rich-item--level-circle-ring
+  .cv-rich-editor--label
+  :deep(.hover-editor__content p) {
+  text-align: center;
 }
 
 .cv-progress-line-row {

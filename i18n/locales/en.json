@@ -3399,7 +3399,7 @@
       }
     },
     "publicProfile": {
-      "present": "Present",
+      "present": "Now",
       "errors": {
         "loadTitle": "Unable to load this public resume"
       },
