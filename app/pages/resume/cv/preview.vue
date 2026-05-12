@@ -464,6 +464,8 @@ const visibleMainOneSections = computed(() => visibleOrderedSections('mainOne'))
 
 const CV_PREVIEW_PDF_PAGE_HEIGHT = 1100
 const CV_PREVIEW_PAGE_WIDTH = 794
+const CV_PREVIEW_MAX_PAGE_COUNT = 6
+const CV_PREVIEW_PAGE_END_BAR_HEIGHT = 24
 const cvPreviewRef = ref<HTMLElement | null>(null)
 const cvPreviewPageCount = ref(1)
 let cvPreviewMeasureTimer: ReturnType<typeof setTimeout> | undefined
@@ -486,15 +488,20 @@ function measureCvPreviewHeight() {
     cvPreviewRef.value?.querySelector<HTMLElement>('.cv-preview-page')
   if (!preview) return
 
-  const neededHeight = Math.max(
-    CV_PREVIEW_PDF_PAGE_HEIGHT,
-    preview.scrollHeight,
-    Math.ceil(preview.getBoundingClientRect().height),
+  const currentHeight = cvPreviewHeight.value
+  const rectHeight = Math.ceil(preview.getBoundingClientRect().height)
+  const measuredHeight = Math.max(preview.scrollHeight, rectHeight)
+  const contentHeight =
+    measuredHeight > currentHeight
+      ? measuredHeight - CV_PREVIEW_PAGE_END_BAR_HEIGHT
+      : measuredHeight
+  const neededHeight = Math.max(CV_PREVIEW_PDF_PAGE_HEIGHT, contentHeight)
+  const nextPageCount = Math.min(
+    CV_PREVIEW_MAX_PAGE_COUNT,
+    Math.max(1, Math.ceil(neededHeight / CV_PREVIEW_PDF_PAGE_HEIGHT)),
   )
-  cvPreviewPageCount.value = Math.max(
-    1,
-    Math.ceil(neededHeight / CV_PREVIEW_PDF_PAGE_HEIGHT),
-  )
+  if (nextPageCount !== cvPreviewPageCount.value)
+    cvPreviewPageCount.value = nextPageCount
 }
 
 let isMeasuringCvPreview = false
@@ -3763,6 +3770,7 @@ watch(
   height: auto !important;
   min-height: var(--cv-preview-total-height, 1100px) !important;
   overflow: visible !important;
+  box-sizing: border-box;
   padding-bottom: var(--cv-page-end-bar-height, 24px);
   border: var(--cv-page-border-width, 0px) solid
     var(--cv-page-border-color, transparent);
