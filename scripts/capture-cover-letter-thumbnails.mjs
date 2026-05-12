@@ -2,14 +2,7 @@ import { mkdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-let chromium
-try {
-  ;({ chromium } = await import('playwright'))
-} catch {
-  throw new Error(
-    'Missing dependency "playwright". Run: pnpm add -D playwright && pnpm exec playwright install chromium',
-  )
-}
+import { launchChromium } from './playwright-browser.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -26,32 +19,7 @@ const generatedCoverLetterTemplates = JSON.parse(templatesRaw)
 
 await mkdir(outDir, { recursive: true })
 
-async function launchBrowser() {
-  const explicitPath = process.env.CHROMIUM_PATH
-  if (explicitPath) {
-    return chromium.launch({ headless: true, executablePath: explicitPath })
-  }
-
-  try {
-    return await chromium.launch({ headless: true })
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
-
-    if (
-      message.includes('libnspr4.so') ||
-      message.includes('error while loading shared libraries')
-    ) {
-      console.warn(
-        'Playwright bundled Chromium is missing Linux system libs, retrying with system Chrome channel...',
-      )
-      return chromium.launch({ headless: true, channel: 'chrome' })
-    }
-
-    throw error
-  }
-}
-
-const browser = await launchBrowser()
+const browser = await launchChromium({ headless: true })
 const page = await browser.newPage({ viewport: { width: 794, height: 1000 } })
 
 for (const tpl of generatedCoverLetterTemplates) {
