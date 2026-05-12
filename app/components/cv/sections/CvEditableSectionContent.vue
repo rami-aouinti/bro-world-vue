@@ -624,18 +624,13 @@ function hobbyIcon(label: string) {
   margin-bottom: 14px;
 }
 
-.cv-rich-item--content-timeline-dots::before,
-.cv-rich-item--content-timeline-badges::before,
-.cv-rich-item--content-timeline-stacked-dates::before {
-  content: '';
-  position: absolute;
+.cv-rich-item--content-timeline-dots .cv-rich-timeline-dot,
+.cv-rich-item--content-timeline-badges .cv-rich-timeline-dot,
+.cv-rich-item--content-timeline-stacked-dates .cv-rich-timeline-dot {
   left: -22px;
   top: 6px;
   width: 11px;
   height: 11px;
-  border-radius: 999px;
-  border: 2px solid var(--cv-secondary, #93c5fd);
-  background: var(--cv-page-background, #fff);
 }
 
 .cv-rich-item--content-timeline-badges .cv-rich-editor--period {
@@ -713,6 +708,43 @@ function hobbyIcon(label: string) {
 
 .cv-rich-item--date-badge-left .cv-rich-editor--period {
   justify-self: end;
+}
+
+.cv-rich-item--content-timeline-date-badges.cv-rich-item--timeline-complex,
+.cv-rich-item--content-timeline-badges.cv-rich-item--timeline-complex,
+.cv-rich-item--content-timeline-stacked-dates.cv-rich-item--timeline-complex {
+  grid-template-columns: minmax(70px, 104px) minmax(0, 1fr);
+}
+
+.cv-rich-item--content-timeline-date-badges .cv-rich-editor--timeline-period,
+.cv-rich-item--content-timeline-badges .cv-rich-editor--timeline-period,
+.cv-rich-item--content-timeline-stacked-dates .cv-rich-editor--timeline-period {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.cv-rich-item--content-timeline-date-badges .cv-rich-timeline-body,
+.cv-rich-item--content-timeline-badges .cv-rich-timeline-body,
+.cv-rich-item--content-timeline-stacked-dates .cv-rich-timeline-body {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.cv-rich-item--content-timeline-date-badges.cv-rich-item--date-badge-right
+  .cv-rich-editor--timeline-period,
+.cv-rich-item--content-timeline-badges.cv-rich-item--date-badge-right
+  .cv-rich-editor--timeline-period,
+.cv-rich-item--content-timeline-stacked-dates.cv-rich-item--date-badge-right
+  .cv-rich-editor--timeline-period {
+  justify-self: end;
+}
+
+.cv-rich-item--content-timeline-stacked-dates.cv-rich-item--date-badge-right
+  .cv-rich-editor--timeline-period,
+.cv-rich-item--content-timeline-stacked-dates.cv-rich-item--date-badge-left
+  .cv-rich-editor--timeline-period {
+  border-radius: 18px;
+  white-space: pre-line;
 }
 
 .cv-rich-item--date-pill .cv-rich-editor--period {
