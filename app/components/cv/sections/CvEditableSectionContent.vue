@@ -799,7 +799,6 @@ function hobbyIcon(label: string) {
   gap: 8px;
 }
 
-.cv-rich-item--progress-circle.cv-rich-item--leveled,
 .cv-rich-item--progress-circle-grid.cv-rich-item--leveled,
 .cv-rich-item--progress-circle-ring.cv-rich-item--leveled {
   grid-template-columns: 1fr;
