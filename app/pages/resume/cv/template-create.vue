@@ -23,6 +23,7 @@ import CvLayoutAsideBarLeft from '~/components/cv/layouts/CvLayoutAsideBarLeft.v
 import CvLayoutAsideBarRight from '~/components/cv/layouts/CvLayoutAsideBarRight.vue'
 import CvLayoutIdentityAsideLeft from '~/components/cv/layouts/CvLayoutIdentityAsideLeft.vue'
 import CvLayoutIdentityAsideRight from '~/components/cv/layouts/CvLayoutIdentityAsideRight.vue'
+import CvLayoutProCurveLeft from '~/components/cv/layouts/CvLayoutProCurveLeft.vue'
 import { listMyResumes, type ResumeApiItem } from '~/services/resumeApi'
 import {
   resolveResumeTextFont,
@@ -161,6 +162,7 @@ const cvLayoutComponentMap = {
   'aside-bar-right': CvLayoutAsideBarRight,
   'identity-aside-left': CvLayoutIdentityAsideLeft,
   'identity-aside-right': CvLayoutIdentityAsideRight,
+  'pro-curve-left': CvLayoutProCurveLeft,
 } as const
 
 const activeLayoutComponent = computed(
@@ -2850,9 +2852,7 @@ watch(
               <div
                 v-for="section in visibleAsideOneSections"
                 :key="`aside-s1-${section}`"
-                :class="[
-                  'cv-aside-section-item',
-                ]"
+                :class="['cv-aside-section-item']"
                 :style="sectionOffsetStyle('asideOne', section)"
                 draggable="true"
                 @mouseenter="
@@ -2950,9 +2950,7 @@ watch(
               <div
                 v-for="section in visibleAsideTwoSections"
                 :key="`aside-s2-${section}`"
-                :class="[
-                  'cv-aside-section-item',
-                ]"
+                :class="['cv-aside-section-item']"
                 :style="sectionOffsetStyle('asideTwo', section)"
                 draggable="true"
                 @mouseenter="
