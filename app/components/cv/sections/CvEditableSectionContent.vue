@@ -803,9 +803,38 @@ function hobbyIcon(label: string) {
 .cv-rich-item--progress-circle-grid.cv-rich-item--leveled,
 .cv-rich-item--progress-circle-ring.cv-rich-item--leveled {
   grid-template-columns: 1fr;
-  justify-items: center;
-  align-items: start;
+  place-items: start center;
   gap: 6px;
+  text-align: center;
+}
+
+.cv-rich-item--progress-circle-grid.cv-rich-item--leveled,
+.cv-rich-item--progress-circle-ring.cv-rich-item--leveled {
+  justify-self: center;
+  width: fit-content;
+  min-width: 54px;
+  max-width: 100%;
+}
+
+.cv-rich-item--progress-circle-grid .cv-rich-editor--label,
+.cv-rich-item--progress-circle-ring .cv-rich-editor--label,
+.cv-rich-item--progress-circle-grid .cv-rich-circle,
+.cv-rich-item--progress-circle-ring .cv-rich-circle {
+  justify-self: center;
+}
+
+.cv-rich-item--progress-circle-grid
+  .cv-rich-editor--label
+  :deep(.hover-editor__content),
+.cv-rich-item--progress-circle-grid
+  .cv-rich-editor--label
+  :deep(.hover-editor__content p),
+.cv-rich-item--progress-circle-ring
+  .cv-rich-editor--label
+  :deep(.hover-editor__content),
+.cv-rich-item--progress-circle-ring
+  .cv-rich-editor--label
+  :deep(.hover-editor__content p) {
   text-align: center;
 }
 
