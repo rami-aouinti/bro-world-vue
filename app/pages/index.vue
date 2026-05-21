@@ -2,7 +2,21 @@
 import HomeRightRailLocalContext from '~/components/Home/RightRailLocalContext.vue'
 import LeftDrawerRandomGames from '~/components/Home/LeftDrawerRandomGames.vue'
 
+const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
+
+const overviewCards = computed(() => {
+  const sections = t('home.index.sections', {}, { returnObjects: true }) as Array<{
+    title: string
+    description: string
+    links: [string, string][]
+  }>
+
+  return sections.map((section) => ({
+    ...section,
+    links: section.links.map(([label, to]) => ({ label, to })),
+  }))
+})
 
 definePageMeta({
   title: 'appbar.home',
@@ -38,6 +52,50 @@ definePageMeta({
 
     <v-container fluid class="home-content-shell">
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
+
+      <template v-else>
+        <v-card class="hero-card" rounded="xl" elevation="2">
+          <v-card-text class="pa-6 pa-md-8">
+            <p class="hero-badge mb-3">{{ t('home.index.badge') }}</p>
+            <h1 class="text-h4 text-md-h3 font-weight-bold mb-3">{{ t('home.index.heroTitle') }}</h1>
+            <p class="text-body-1 text-medium-emphasis mb-6">{{ t('home.index.heroSubtitle') }}</p>
+            <div class="hero-actions">
+              <v-btn color="primary" size="large" to="/world">{{ t('home.index.ctaPrimary') }}</v-btn>
+              <v-btn variant="outlined" size="large" to="/about">{{ t('home.index.ctaSecondary') }}</v-btn>
+            </div>
+          </v-card-text>
+        </v-card>
+
+        <v-row class="mt-4" dense>
+          <v-col
+            v-for="(card, cardIndex) in overviewCards"
+            :key="`${card.title}-${cardIndex}`"
+            cols="12"
+            md="6"
+          >
+            <v-card class="fill-height" rounded="xl" elevation="1">
+              <v-card-title class="text-h6 font-weight-bold">{{ card.title }}</v-card-title>
+              <v-card-text>
+                <p class="text-body-2 text-medium-emphasis mb-4">{{ card.description }}</p>
+                <v-list density="compact" class="card-links-list">
+                  <v-list-item
+                    v-for="link in card.links"
+                    :key="`${card.title}-${link.to}`"
+                    :to="link.to"
+                    link
+                    rounded="lg"
+                  >
+                    <template #prepend>
+                      <v-icon size="18" icon="mdi-arrow-top-right" />
+                    </template>
+                    <v-list-item-title class="text-body-2">{{ link.label }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+      </template>
     </v-container>
   </div>
 </template>
@@ -47,6 +105,28 @@ definePageMeta({
   max-width: 920px;
   margin: 0 auto;
   padding-bottom: 24px;
+}
+
+.hero-card {
+  background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.08), rgba(var(--v-theme-surface), 1));
+}
+
+.hero-badge {
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: rgb(var(--v-theme-primary));
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.card-links-list :deep(.v-list-item) {
+  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+  margin-bottom: 8px;
 }
 
 @media (max-width: 959px) {
