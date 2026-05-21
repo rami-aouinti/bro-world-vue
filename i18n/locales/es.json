@@ -854,7 +854,21 @@
             ]
           ]
         }
-      ]
+      ],
+      "progressHighlights": [
+        "Visibilidad del pipeline CRM en segundos.",
+        "Sigue ofertas, postulaciones y flujo de contratación.",
+        "Explora cursos, clases y exámenes rápidamente.",
+        "Abre juegos, quiz deportivos y contenido comunitario al instante."
+      ],
+      "publicPagesTitle": "Descubre About, Service y FAQ en un clic",
+      "publicPagesDescription": "Lee la visión de la plataforma en About, explora capacidades en Service y encuentra respuestas prácticas en FAQ. Luego salta directo a Blog, Sports y Games.",
+      "aboutLink": "Resumen de About",
+      "serviceLink": "Destacados de Service",
+      "faqLink": "Respuestas rápidas FAQ",
+      "blogLink": "Leer últimos posts",
+      "sportsLink": "Abrir app de deportes",
+      "gamesLink": "Abrir centro de juegos"
     }
   },
   "profile": {

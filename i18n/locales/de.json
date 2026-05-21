@@ -880,7 +880,21 @@
             ]
           ]
         }
-      ]
+      ],
+      "progressHighlights": [
+        "CRM-Pipeline-Transparenz in wenigen Sekunden.",
+        "Verfolge Stellenangebote, Bewerbungen und Hiring-Flow.",
+        "Entdecke Kurse, Klassen und Prüfungen besonders schnell.",
+        "Öffne Games, Sport-Quiz und Community-Inhalte sofort."
+      ],
+      "publicPagesTitle": "About, Service & FAQ mit einem Klick entdecken",
+      "publicPagesDescription": "Lies die Plattformvision auf About, erkunde Funktionen auf Service und finde praktische Antworten im FAQ. Springe danach direkt zu Blog, Sports und Games.",
+      "aboutLink": "About-Seite ansehen",
+      "serviceLink": "Service-Highlights",
+      "faqLink": "FAQ-Schnellantworten",
+      "blogLink": "Neueste Blogposts lesen",
+      "sportsLink": "Sport-App öffnen",
+      "gamesLink": "Game-Center öffnen"
     }
   },
   "profile": {

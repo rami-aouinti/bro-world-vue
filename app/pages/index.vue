@@ -4,6 +4,35 @@ import LeftDrawerRandomGames from '~/components/Home/LeftDrawerRandomGames.vue'
 
 const { t } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
+const activeHighlight = ref(0)
+
+const highlightMessages = computed(() => t('home.index.progressHighlights', {}, { returnObjects: true }) as string[])
+
+let highlightTimer: ReturnType<typeof setInterval> | null = null
+
+onMounted(() => {
+  highlightTimer = setInterval(() => {
+    const total = highlightMessages.value.length || 1
+    activeHighlight.value = (activeHighlight.value + 1) % total
+  }, 2400)
+})
+
+onBeforeUnmount(() => {
+  if (highlightTimer) clearInterval(highlightTimer)
+})
+
+const overviewCards = computed(() => {
+  const sections = t('home.index.sections', {}, { returnObjects: true }) as Array<{
+    title: string
+    description: string
+    links: [string, string][]
+  }>
+
+  return sections.map((section) => ({
+    ...section,
+    links: section.links.map(([label, to]) => ({ label, to })),
+  }))
+})
 
 const overviewCards = computed(() => {
   const sections = t('home.index.sections', {}, { returnObjects: true }) as Array<{
@@ -66,6 +95,17 @@ definePageMeta({
           </v-card-text>
         </v-card>
 
+        <v-card class="progress-showcase mt-4" rounded="xl" variant="outlined">
+          <v-card-text class="d-flex flex-wrap align-center ga-3">
+            <v-icon icon="mdi-sparkles" color="primary" />
+            <Transition name="fade-slide" mode="out-in">
+              <p :key="activeHighlight" class="mb-0 text-body-1 font-weight-medium">
+                {{ highlightMessages[activeHighlight] }}
+              </p>
+            </Transition>
+          </v-card-text>
+        </v-card>
+
         <v-row class="mt-4" dense>
           <v-col
             v-for="(card, cardIndex) in overviewCards"
@@ -95,6 +135,20 @@ definePageMeta({
             </v-card>
           </v-col>
         </v-row>
+        <v-card class="mt-4" rounded="xl" variant="tonal" color="primary">
+          <v-card-text>
+            <h2 class="text-h6 mb-3">{{ t('home.index.publicPagesTitle') }}</h2>
+            <p class="mb-4">{{ t('home.index.publicPagesDescription') }}</p>
+            <div class="quick-links">
+              <v-btn variant="flat" color="primary" to="/about">{{ t('home.index.aboutLink') }}</v-btn>
+              <v-btn variant="flat" color="primary" to="/service">{{ t('home.index.serviceLink') }}</v-btn>
+              <v-btn variant="flat" color="primary" to="/faq">{{ t('home.index.faqLink') }}</v-btn>
+              <v-btn variant="outlined" to="/blog">{{ t('home.index.blogLink') }}</v-btn>
+              <v-btn variant="outlined" to="/applications/sports">{{ t('home.index.sportsLink') }}</v-btn>
+              <v-btn variant="outlined" to="/games">{{ t('home.index.gamesLink') }}</v-btn>
+            </div>
+          </v-card-text>
+        </v-card>
       </template>
     </v-container>
   </div>
@@ -122,6 +176,31 @@ definePageMeta({
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+}
+
+.progress-showcase {
+  border-style: dashed;
+}
+
+.quick-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 240ms ease;
+}
+
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
 }
 
 .card-links-list :deep(.v-list-item) {

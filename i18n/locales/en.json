@@ -1111,7 +1111,21 @@
             ]
           ]
         }
-      ]
+      ],
+      "progressHighlights": [
+        "Live CRM pipeline visibility in seconds.",
+        "Track job offers, applications, and hiring flow.",
+        "Explore learning classes, courses, and exams quickly.",
+        "Open games, sports quizzes, and community content instantly."
+      ],
+      "publicPagesTitle": "Discover About, Service & FAQ in one click",
+      "publicPagesDescription": "Read the platform vision on About, explore capabilities on Service, and get practical answers on FAQ. Then jump directly to Blog, Sports, and Games.",
+      "aboutLink": "About page overview",
+      "serviceLink": "Service page highlights",
+      "faqLink": "FAQ quick answers",
+      "blogLink": "Read latest blog posts",
+      "sportsLink": "Open sports application",
+      "gamesLink": "Launch games center"
     }
   },
   "profile": {
