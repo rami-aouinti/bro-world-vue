@@ -2,9 +2,7 @@
 import HomeRightRailLocalContext from '~/components/Home/RightRailLocalContext.vue'
 import LeftDrawerRandomGames from '~/components/Home/LeftDrawerRandomGames.vue'
 
-const { loggedIn } = useUserSession()
 const { isPageSkeletonVisible } = usePageSkeleton()
-const deferredInteractiveReady = ref(false)
 
 definePageMeta({
   title: 'appbar.home',
@@ -14,12 +12,6 @@ definePageMeta({
     'Bro World Space, social network, CRM, jobs, learning, games, online collaboration, productivity platform',
   robots: { index: true, follow: true, 'max-image-preview': 'large' },
   sitemap: { changefreq: 'daily', priority: 1 },
-})
-
-onMounted(() => {
-  requestAnimationFrame(() => {
-    deferredInteractiveReady.value = true
-  })
 })
 </script>
 
@@ -43,29 +35,35 @@ onMounted(() => {
         </template>
       </template>
     </AppPageDrawers>
-    <v-container fluid class="home-feed-shell">
+
+    <v-container fluid class="home-content-shell">
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
-      <template v-else>
-        <BlogPostFeed
-          :show-composer="loggedIn && deferredInteractiveReady"
-          :show-stories="loggedIn && deferredInteractiveReady"
-          :content-preview-lines="2"
-          show-read-more
-        />
-      </template>
+      <v-card v-else class="pa-4 pa-sm-6" rounded="xl" variant="flat">
+        <v-card-title class="text-h5 font-weight-bold px-0">
+          Bienvenue sur Bro World
+        </v-card-title>
+        <v-card-text class="px-0 text-medium-emphasis">
+          Les posts sont maintenant regroupés sur la page Blog.
+        </v-card-text>
+        <v-card-actions class="px-0">
+          <v-btn color="primary" to="/blog" prepend-icon="mdi-post-outline">
+            Aller au blog
+          </v-btn>
+        </v-card-actions>
+      </v-card>
     </v-container>
   </div>
 </template>
 
 <style scoped>
-.home-feed-shell {
+.home-content-shell {
   max-width: 920px;
   margin: 0 auto;
   padding-bottom: 24px;
 }
 
 @media (max-width: 959px) {
-  .home-feed-shell {
+  .home-content-shell {
     padding-inline: 8px;
   }
 }
