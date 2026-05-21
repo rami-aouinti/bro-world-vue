@@ -2,11 +2,21 @@
 import HomeRightRailLocalContext from '~/components/Home/RightRailLocalContext.vue'
 import LeftDrawerRandomGames from '~/components/Home/LeftDrawerRandomGames.vue'
 
-const { t } = useI18n()
+const { t, tm, rt } = useI18n()
 const { isPageSkeletonVisible } = usePageSkeleton()
 const activeHighlight = ref(0)
 
-const highlightMessages = computed(() => t('home.index.progressHighlights', {}, { returnObjects: true }) as string[])
+const highlightMessages = computed(() => {
+  const translated = tm('home.index.progressHighlights')
+
+  if (!Array.isArray(translated)) {
+    return []
+  }
+
+  return translated.map((entry) =>
+    typeof entry === 'string' ? entry : rt(entry),
+  )
+})
 
 let highlightTimer: ReturnType<typeof setInterval> | null = null
 
@@ -22,20 +32,7 @@ onBeforeUnmount(() => {
 })
 
 const overviewCards = computed(() => {
-  const sections = t('home.index.sections', {}, { returnObjects: true }) as Array<{
-    title: string
-    description: string
-    links: [string, string][]
-  }>
-
-  return sections.map((section) => ({
-    ...section,
-    links: section.links.map(([label, to]) => ({ label, to })),
-  }))
-})
-
-const overviewCards = computed(() => {
-  const sections = t('home.index.sections', {}, { returnObjects: true }) as Array<{
+  const sections = tm('home.index.sections') as Array<{
     title: string
     description: string
     links: [string, string][]
