@@ -105,7 +105,7 @@ definePageMeta({
           </v-card-text>
         </v-card>
 
-        <v-card class="progress-showcase mt-4" rounded="xl" variant="outlined">
+        <v-card class="progress-showcase postcard-gradient-card mt-4" rounded="xl" variant="outlined">
           <v-card-text class="d-flex flex-wrap align-center ga-3">
             <v-icon icon="mdi-sparkles" color="primary" />
             <Transition name="fade-slide" mode="out-in">
@@ -123,17 +123,18 @@ definePageMeta({
             cols="12"
             md="6"
           >
-            <v-card class="fill-height" rounded="xl" elevation="1">
+            <v-card class="fill-height postcard-gradient-card" rounded="xl" elevation="1">
               <v-card-title class="text-h6 font-weight-bold">{{ card.title }}</v-card-title>
               <v-card-text>
                 <p class="text-body-2 text-medium-emphasis mb-4">{{ card.description }}</p>
-                <v-list density="compact" class="card-links-list">
+                <v-list density="compact" class="card-links-list postcard-gradient-card">
                   <v-list-item
                     v-for="link in card.links"
                     :key="`${card.title}-${link.to}`"
                     :to="link.to"
                     link
                     rounded="lg"
+                    class="postcard-gradient-card"
                   >
                     <template #prepend>
                       <v-icon size="18" icon="mdi-arrow-top-right" />
@@ -145,7 +146,7 @@ definePageMeta({
             </v-card>
           </v-col>
         </v-row>
-        <v-card class="mt-4" rounded="xl" variant="tonal" color="primary">
+        <v-card class="mt-4 postcard-gradient-card" rounded="xl">
           <v-card-text>
             <h2 class="text-h6 mb-3">{{ t('home.index.publicPagesTitle') }}</h2>
             <p class="mb-4">{{ t('home.index.publicPagesDescription') }}</p>
