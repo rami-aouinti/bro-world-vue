@@ -34,6 +34,19 @@ const overviewCards = computed(() => {
   }))
 })
 
+const overviewCards = computed(() => {
+  const sections = t('home.index.sections', {}, { returnObjects: true }) as Array<{
+    title: string
+    description: string
+    links: [string, string][]
+  }>
+
+  return sections.map((section) => ({
+    ...section,
+    links: section.links.map(([label, to]) => ({ label, to })),
+  }))
+})
+
 definePageMeta({
   title: 'appbar.home',
   description:
