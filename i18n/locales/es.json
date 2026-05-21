@@ -714,6 +714,161 @@
         "majorEventsTitle": "Eventos importantes de hoy",
         "emptyState": "No hay eventos disponibles en este momento."
       }
+    },
+    "index": {
+      "badge": "Explora Bro World Space",
+      "heroTitle": "Construye, aprende, colabora y juega en una sola plataforma",
+      "heroSubtitle": "Descubre cada área principal de Bro World Space con secciones curadas, tarjetas útiles y enlaces rápidos.",
+      "ctaPrimary": "Abrir World Hub",
+      "ctaSecondary": "Leer resumen de la plataforma",
+      "sections": [
+        {
+          "title": "Social y Comunidad",
+          "description": "Mantente conectado con tu red, sigue novedades y colabora en tiempo real.",
+          "links": [
+            [
+              "Ir al feed principal",
+              "/home"
+            ],
+            [
+              "Abrir perfil",
+              "/profile"
+            ],
+            [
+              "Leer el blog",
+              "/blog"
+            ],
+            [
+              "Contactar al equipo",
+              "/contact"
+            ]
+          ]
+        },
+        {
+          "title": "Trabajo y CRM",
+          "description": "Gestiona proyectos, tareas, repositorios y flujos de negocio con herramientas sólidas.",
+          "links": [
+            [
+              "Abrir espacio CRM",
+              "/world/crm"
+            ],
+            [
+              "Ver proyectos",
+              "/world/crm/projects"
+            ],
+            [
+              "Ver repositorios",
+              "/world/crm/repositories"
+            ],
+            [
+              "Centro admin CRM",
+              "/world/crm/admin"
+            ]
+          ]
+        },
+        {
+          "title": "Carrera y Oportunidades",
+          "description": "Encuentra ofertas, envía postulaciones y sigue tus oportunidades.",
+          "links": [
+            [
+              "Explorar ofertas",
+              "/world/jobs/offers"
+            ],
+            [
+              "Mis postulaciones",
+              "/world/jobs/applications"
+            ],
+            [
+              "Panel de empleos",
+              "/world/jobs"
+            ],
+            [
+              "Crear oferta nueva",
+              "/platform/job/new"
+            ]
+          ]
+        },
+        {
+          "title": "Aprendizaje y Educación",
+          "description": "Accede a cursos, clases, exámenes y recursos para crecer continuamente.",
+          "links": [
+            [
+              "Hub de aprendizaje",
+              "/world/learning"
+            ],
+            [
+              "Cursos",
+              "/world/learning/courses"
+            ],
+            [
+              "Clases",
+              "/world/learning/classes"
+            ],
+            [
+              "Exámenes",
+              "/world/learning/exams"
+            ]
+          ]
+        },
+        {
+          "title": "Juegos y Diversión",
+          "description": "Juega, reta a tus amigos y descubre categorías de entretenimiento y habilidad.",
+          "links": [
+            [
+              "Centro de juegos",
+              "/games"
+            ],
+            [
+              "Quiz de deportes",
+              "/applications/sports"
+            ],
+            [
+              "Quiz general",
+              "/applications/quiz"
+            ],
+            [
+              "Calendario en vivo",
+              "/calendar"
+            ]
+          ]
+        },
+        {
+          "title": "CV y Herramientas Profesionales",
+          "description": "Crea CVs, cartas de presentación y portadas con plantillas avanzadas.",
+          "links": [
+            [
+              "Constructor de CV",
+              "/resume"
+            ],
+            [
+              "Mis archivos CV",
+              "/resume/my-files"
+            ],
+            [
+              "Crear plantilla CV",
+              "/resume/cv/template-create"
+            ],
+            [
+              "Documentación CV",
+              "/resume/documentation"
+            ]
+          ]
+        }
+      ],
+      "progressHighlights": [
+        "Visibilidad del pipeline CRM en segundos.",
+        "Sigue ofertas, postulaciones y flujo de contratación.",
+        "Explora cursos, clases y exámenes rápidamente.",
+        "Abre juegos, quiz deportivos y contenido comunitario al instante."
+      ],
+      "publicPagesTitle": "Descubre About, Service y FAQ en un clic",
+      "publicPagesDescription": "Lee la visión de la plataforma en About, explora capacidades en Service y encuentra respuestas prácticas en FAQ. Luego salta directo a Blog, Sports y Games.",
+      "aboutLink": "Resumen de About",
+      "serviceLink": "Destacados de Service",
+      "faqLink": "Respuestas rápidas FAQ",
+      "blogLink": "Leer últimos posts",
+      "sportsLink": "Abrir app de deportes",
+      "gamesLink": "Abrir centro de juegos"
     }
   },
   "profile": {
