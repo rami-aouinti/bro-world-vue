@@ -112,6 +112,12 @@ const navMenus = [
         icon: 'mdi-file-account-outline',
         detail: 'appbar.mega.applications.items.resume',
       },
+      {
+        label: 'appbar.blog',
+        to: '/blog',
+        icon: 'mdi-checkbook',
+        detail: 'appbar.mega.applications.items.blog',
+      },
     ],
     twoColumns: true,
     compactCards: true,

@@ -67,6 +67,7 @@
     "sports": "Sports",
     "quiz": "Quiz",
     "resume": "Resume",
+    "blog": "Blog",
     "coinCheckout": {
       "title": "Buy coins",
       "currentBalance": "Current balance: {coins} coins",
@@ -114,6 +115,7 @@
           "games": "Play and manage interactive game experiences from one place.",
           "sports": "Track sports apps, scores, and fan-focused modules in real time.",
           "quiz": "Create engaging quizzes for onboarding, training, and community growth.",
+          "blog": "Add new Posts",
           "resume": "Build polished resumes with guided sections, live preview, and export-ready formats."
         }
       },

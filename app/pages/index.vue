@@ -38,19 +38,6 @@ definePageMeta({
 
     <v-container fluid class="home-content-shell">
       <SkeletonPageContent v-if="isPageSkeletonVisible" />
-      <v-card v-else class="pa-4 pa-sm-6" rounded="xl" variant="flat">
-        <v-card-title class="text-h5 font-weight-bold px-0">
-          Bienvenue sur Bro World
-        </v-card-title>
-        <v-card-text class="px-0 text-medium-emphasis">
-          Les posts sont maintenant regroupés sur la page Blog.
-        </v-card-text>
-        <v-card-actions class="px-0">
-          <v-btn color="primary" to="/blog" prepend-icon="mdi-post-outline">
-            Aller au blog
-          </v-btn>
-        </v-card-actions>
-      </v-card>
     </v-container>
   </div>
 </template>
