@@ -33,14 +33,27 @@ onBeforeUnmount(() => {
 
 const overviewCards = computed(() => {
   const sections = tm('home.index.sections') as Array<{
-    title: string
-    description: string
-    links: [string, string][]
+    title: unknown
+    description: unknown
+    links: [unknown, string][]
   }>
 
+  if (!Array.isArray(sections)) {
+    return []
+  }
+
   return sections.map((section) => ({
-    ...section,
-    links: section.links.map(([label, to]) => ({ label, to })),
+    title: typeof section.title === 'string' ? section.title : rt(section.title),
+    description:
+      typeof section.description === 'string'
+        ? section.description
+        : rt(section.description),
+    links: Array.isArray(section.links)
+      ? section.links.map(([label, to]) => ({
+          label: typeof label === 'string' ? label : rt(label),
+          to,
+        }))
+      : [],
   }))
 })
 
