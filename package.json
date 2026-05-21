@@ -66,6 +66,7 @@
     "nuxt-schema-org": "^6.0.4",
     "pinia": "^3.0.4",
     "prisma": "^6.19.3",
+    "vue-echarts": "^8.0.1",
     "vuetify": "^4.0.4"
   }
 }

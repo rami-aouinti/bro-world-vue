@@ -74,6 +74,9 @@ importers:
       prisma:
         specifier: ^6.19.3
         version: 6.19.3(magicast@0.5.2)(typescript@6.0.3)
+      vue-echarts:
+        specifier: ^8.0.1
+        version: 8.0.1(echarts@6.0.0)(vue@3.5.34(typescript@6.0.3))
       vuetify:
         specifier: ^4.0.4
         version: 4.0.7(typescript@6.0.3)(vite-plugin-vuetify@2.1.3)(vue@3.5.34(typescript@6.0.3))
